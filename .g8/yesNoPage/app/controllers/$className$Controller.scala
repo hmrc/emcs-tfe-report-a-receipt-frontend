@@ -11,30 +11,33 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import views.html.$className$View
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class $className$Controller @Inject()(
                                        override val messagesApi: MessagesApi,
                                        override val sessionRepository: SessionRepository,
                                        override val navigator: Navigator,
-                                       identify: IdentifierAction,
+                                       auth: AuthAction,
+                                       withMovement: MovementAction,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        formProvider: $className$FormProvider,
                                        val controllerComponents: MessagesControllerComponents,
                                        view: $className$View
-                                     )(implicit ec: ExecutionContext) extends BaseNavigationController {
+                                     ) extends BaseNavigationController {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    Ok(view(fillForm($className$Page, formProvider()), mode))
-  }
+  def onPageLoad(ern: String, arc: String, mode: Mode): Action[AnyContent] =
+    (auth(ern) andThen withMovement(arc) andThen getData andThen requireData) { implicit request =>
+      Ok(view(fillForm($className$Page, formProvider()), mode))
+    }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
-    formProvider().bindFromRequest().fold(
-      formWithErrors =>
-        Future.successful(BadRequest(view(formWithErrors, mode))),
-      value =>
-        saveAndRedirect($className$Page, value, mode)
-    )
-  }
+  def onSubmit(ern: String, arc: String, mode: Mode): Action[AnyContent] =
+    (auth(ern) andThen withMovement(arc) andThen getData andThen requireData).async { implicit request =>
+      formProvider().bindFromRequest().fold(
+        formWithErrors =>
+          Future.successful(BadRequest(view(formWithErrors, mode))),
+        value =>
+          saveAndRedirect($className$Page, value, mode)
+      )
+    }
 }

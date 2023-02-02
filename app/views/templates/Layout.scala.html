@@ -14,12 +14,12 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
+@import config.AppConfig
 @import uk.gov.hmrc.hmrcfrontend.views.config.StandardAlphaBanner
 @import views.html.helper.CSPNonce
 
 @this(
-    appConfig: FrontendAppConfig,
+    appConfig: AppConfig,
     govukLayout: GovukLayout,
     govukBackLink: GovukBackLink,
     hmrcHead: HmrcHead,
@@ -87,7 +87,7 @@
     pageTitle   = Some(pageTitle),
     headBlock   = Some(head),
     headerBlock = Some(hmrcStandardHeader(
-        serviceUrl  = Some(routes.IndexController.onPageLoad.url),
+        serviceUrl  = Some(appConfig.emcsTfeHomeUrl),
         signOutUrl  = if(showSignOut) Some(controllers.auth.routes.AuthController.signOut.url) else None,
         phaseBanner = Some(betaBanner(appConfig.feedbackUrl))
     )),

@@ -23,7 +23,7 @@ import play.api.mvc.RequestHeader
 import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
 
 @Singleton
-class FrontendAppConfig @Inject() (configuration: Configuration) {
+class AppConfig @Inject()(configuration: Configuration) {
 
   val host: String    = configuration.get[String]("host")
   val appName: String = configuration.get[String]("appName")
@@ -43,6 +43,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   val languageTranslationEnabled: Boolean =
     configuration.get[Boolean]("features.welsh-translation")
+
+  val emcsTfeHomeUrl: String = configuration.get[String]("urls.emcsTfeHome")
 
   def languageMap: Map[String, Lang] = Map(
     "en" -> Lang("en"),

@@ -28,12 +28,11 @@ import play.api.libs.json._
 
 class UserAnswersSpec extends SpecBase {
 
-  val userAnswers = UserAnswers("someId")
   object TestPage extends QuestionPage[String] {
     override def path: JsPath = JsPath \ toString
     override def toString: String = "TestPage"
-    override def cleanup(value: Option[String], userAnswers: UserAnswers): UserAnswers = {
-      userAnswers.remove(TestPage2)
+    override def cleanup(value: Option[String], emptyUserAnswers: UserAnswers): UserAnswers = {
+      emptyUserAnswers.remove(TestPage2)
     }
   }
 
@@ -49,7 +48,7 @@ class UserAnswersSpec extends SpecBase {
       "when no data exists for that page" - {
 
         "must set the answer for the first time" in {
-          userAnswers.set(TestPage, "foo") mustBe userAnswers.copy(data = Json.obj(
+          emptyUserAnswers.set(TestPage, "foo") mustBe emptyUserAnswers.copy(data = Json.obj(
             "TestPage" -> "foo"
           ))
         }
@@ -58,10 +57,10 @@ class UserAnswersSpec extends SpecBase {
       "when data exists for that page" - {
 
         "must change the answer" in {
-          val withData = userAnswers.copy(data = Json.obj(
+          val withData = emptyUserAnswers.copy(data = Json.obj(
             "TestPage" -> "foo"
           ))
-          withData.set(TestPage, "bar") mustBe userAnswers.copy(data = Json.obj(
+          withData.set(TestPage, "bar") mustBe emptyUserAnswers.copy(data = Json.obj(
             "TestPage" -> "bar"
           ))
         }
@@ -70,11 +69,11 @@ class UserAnswersSpec extends SpecBase {
       "when data exists for that page and TestPage2 exists" - {
 
         "must change the answer AND remove TestPage2 as part of the cleanup rules" in {
-          val withData = userAnswers.copy(data = Json.obj(
+          val withData = emptyUserAnswers.copy(data = Json.obj(
             "TestPage" -> "foo",
             "TestPage2" -> "bar",
           ))
-          withData.set(TestPage, "bar") mustBe userAnswers.copy(data = Json.obj(
+          withData.set(TestPage, "bar") mustBe emptyUserAnswers.copy(data = Json.obj(
             "TestPage" -> "bar"
           ))
         }
@@ -86,14 +85,14 @@ class UserAnswersSpec extends SpecBase {
       "when no data exists for that page" - {
 
         "must return None" in {
-          userAnswers.get(TestPage) mustBe None
+          emptyUserAnswers.get(TestPage) mustBe None
         }
       }
 
       "when data exists for that page" - {
 
         "must Some(data)" in {
-          val withData = userAnswers.copy(data = Json.obj(
+          val withData = emptyUserAnswers.copy(data = Json.obj(
             "TestPage" -> "foo"
           ))
           withData.get(TestPage) mustBe Some("foo")
@@ -105,8 +104,8 @@ class UserAnswersSpec extends SpecBase {
 
       "when no data exists for that page" - {
 
-        "must return the userAnswers unchanged" in {
-          val withData = userAnswers.copy(data = Json.obj(
+        "must return the emptyUserAnswers unchanged" in {
+          val withData = emptyUserAnswers.copy(data = Json.obj(
             "TestPage" -> "foo"
           ))
           withData.remove(TestPage2) mustBe withData
@@ -116,21 +115,21 @@ class UserAnswersSpec extends SpecBase {
       "when data exists for that page" - {
 
         "must remove the answer" in {
-          val withData = userAnswers.copy(data = Json.obj(
+          val withData = emptyUserAnswers.copy(data = Json.obj(
             "TestPage" -> "foo"
           ))
-          withData.remove(TestPage) mustBe userAnswers
+          withData.remove(TestPage) mustBe emptyUserAnswers
         }
       }
 
       "when data exists for that page and TestPage2 exists" - {
 
         "must remove the answer AND remove TestPage2 as part of the cleanup rules" in {
-          val withData = userAnswers.copy(data = Json.obj(
+          val withData = emptyUserAnswers.copy(data = Json.obj(
             "TestPage" -> "foo",
             "TestPage2" -> "bar",
           ))
-          withData.remove(TestPage) mustBe userAnswers
+          withData.remove(TestPage) mustBe emptyUserAnswers
         }
       }
     }
@@ -140,14 +139,14 @@ class UserAnswersSpec extends SpecBase {
       "when failed to update the UserAnswers" - {
 
         "must throw the exception" in {
-          intercept[JsResultException](userAnswers.cleanUp(TestPage2)(JsError("OhNo")))
+          intercept[JsResultException](emptyUserAnswers.cleanUp(TestPage2)(JsError("OhNo")))
         }
       }
 
       "when updated UserAnswers successfully" - {
 
         "must return the user answers" in {
-          userAnswers.cleanUp(TestPage2)(JsSuccess(userAnswers.data)) mustBe userAnswers
+          emptyUserAnswers.cleanUp(TestPage2)(JsSuccess(emptyUserAnswers.data)) mustBe emptyUserAnswers
         }
       }
     }

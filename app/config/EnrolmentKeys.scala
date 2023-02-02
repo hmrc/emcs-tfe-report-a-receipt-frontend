@@ -14,18 +14,13 @@
  * limitations under the License.
  */
 
-package controllers.actions
+package config
 
-import models.UserAnswers
-import models.requests.{MovementRequest, OptionalDataRequest}
+object EnrolmentKeys {
 
-import scala.concurrent.{ExecutionContext, Future}
+  val EMCS_ENROLMENT = "HMRC-EMCS-ORG"
+  val ERN = "ExciseNumber"
+  val ACTIVATED = "activated"
+  val INACTIVE = "inactive"
 
-class FakeDataRetrievalAction(dataToReturn: Option[UserAnswers]) extends DataRetrievalAction {
-
-  override protected def transform[A](request: MovementRequest[A]): Future[OptionalDataRequest[A]] =
-    Future(OptionalDataRequest(request, dataToReturn))
-
-  override protected implicit val executionContext: ExecutionContext =
-    scala.concurrent.ExecutionContext.Implicits.global
 }

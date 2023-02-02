@@ -16,9 +16,11 @@
 
 package models.requests
 
-import play.api.mvc.{Request, WrappedRequest}
 import models.UserAnswers
+import play.api.mvc.WrappedRequest
 
-case class OptionalDataRequest[A] (request: Request[A], userId: String, userAnswers: Option[UserAnswers]) extends WrappedRequest[A](request)
-
-case class DataRequest[A] (request: Request[A], userId: String, userAnswers: UserAnswers) extends WrappedRequest[A](request)
+case class DataRequest[A](request: MovementRequest[A], userAnswers: UserAnswers) extends WrappedRequest[A](request) {
+  val internalId = request.internalId
+  val ern = request.ern
+  val arc = request.arc
+}

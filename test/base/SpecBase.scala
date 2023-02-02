@@ -17,17 +17,18 @@
 package base
 
 import controllers.actions._
+import fixtures.BaseFixtures
 import models.UserAnswers
+import models.requests.{DataRequest, MovementRequest, UserRequest}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
-import org.scalatest.freespec.AnyFreeSpec
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.mvc.Request
 import play.api.test.FakeRequest
 
 trait SpecBase
@@ -36,19 +37,18 @@ trait SpecBase
     with TryValues
     with OptionValues
     with ScalaFutures
-    with IntegrationPatience {
-
-  val userAnswersId: String = "id"
-
-  def emptyUserAnswers : UserAnswers = UserAnswers(userAnswersId)
+    with IntegrationPatience
+    with BaseFixtures {
 
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
+
+  def dataRequest[A](request: Request[A], answers: UserAnswers = emptyUserAnswers): DataRequest[A] =
+    DataRequest(MovementRequest(UserRequest(request, testErn, testInternalId, testCredId), testArc), answers)
 
   protected def applicationBuilder(userAnswers: Option[UserAnswers] = None): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(
-        bind[DataRequiredAction].to[DataRequiredActionImpl],
-        bind[IdentifierAction].to[FakeIdentifierAction],
+        bind[AuthAction].to[FakeAuthAction],
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers))
       )
 }

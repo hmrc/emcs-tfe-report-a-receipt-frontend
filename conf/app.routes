@@ -2,25 +2,25 @@
 
 ->          /hmrc-frontend                               hmrcfrontend.Routes
 
-GET         /                                            controllers.IndexController.onPageLoad
-
 GET         /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
 
 GET         /language/:lang                              controllers.LanguageSwitchController.switchToLanguage(lang: String)
 
-GET         /refresh-session                             controllers.KeepAliveController.keepAlive
+GET         /refresh-session                             controllers.KeepAliveController.keepAlive()
 
 GET         /there-is-a-problem                          controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
 
-GET         /check-your-answers                          controllers.CheckYourAnswersController.onPageLoad
+GET         /account/sign-out-survey                     controllers.auth.AuthController.signOut()
+GET         /account/sign-out                            controllers.auth.AuthController.signOutNoSurvey()
+GET         /account/signed-out                          controllers.auth.SignedOutController.onPageLoad()
 
-GET         /account/sign-out-survey                     controllers.auth.AuthController.signOut
-GET         /account/sign-out                            controllers.auth.AuthController.signOutNoSurvey
-GET         /account/signed-out                          controllers.auth.SignedOutController.onPageLoad
+GET         /unauthorised                                controllers.UnauthorisedController.onPageLoad()
 
-GET         /unauthorised                                controllers.UnauthorisedController.onPageLoad
+GET         /:ern/:arc                                   controllers.IndexController.onPageLoad(ern: String, arc: String)
 
-GET         /when-receive-movement                       controllers.DateOfArrivalController.onPageLoad(mode: Mode = NormalMode)
-POST        /when-receive-movement                       controllers.DateOfArrivalController.onSubmit(mode: Mode = NormalMode)
-GET         /when-receive-movement/change                controllers.DateOfArrivalController.onPageLoad(mode: Mode = CheckMode)
-POST        /when-receive-movement/change                controllers.DateOfArrivalController.onSubmit(mode: Mode = CheckMode)
+GET         /:ern/:arc/when-receive-movement             controllers.DateOfArrivalController.onPageLoad(ern: String, arc: String, mode: Mode = NormalMode)
+POST        /:ern/:arc/when-receive-movement             controllers.DateOfArrivalController.onSubmit(ern: String, arc: String, mode: Mode = NormalMode)
+GET         /:ern/:arc/when-receive-movement/change      controllers.DateOfArrivalController.onPageLoad(ern: String, arc: String, mode: Mode = CheckMode)
+POST        /:ern/:arc/when-receive-movement/change      controllers.DateOfArrivalController.onSubmit(ern: String, arc: String, mode: Mode = CheckMode)
+
+GET         /:ern/:arc/check-your-answers                controllers.CheckYourAnswersController.onPageLoad(ern: String, arc: String)

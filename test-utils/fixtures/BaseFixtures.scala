@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package controllers.actions
+package fixtures
 
 import models.UserAnswers
-import models.requests.{MovementRequest, OptionalDataRequest}
 
-import scala.concurrent.{ExecutionContext, Future}
+trait BaseFixtures {
 
-class FakeDataRetrievalAction(dataToReturn: Option[UserAnswers]) extends DataRetrievalAction {
+  val testCredId: String = "credId"
+  val testInternalId: String = "internalId"
+  val testErn: String = "ern"
+  val testArc: String = "arc"
 
-  override protected def transform[A](request: MovementRequest[A]): Future[OptionalDataRequest[A]] =
-    Future(OptionalDataRequest(request, dataToReturn))
-
-  override protected implicit val executionContext: ExecutionContext =
-    scala.concurrent.ExecutionContext.Implicits.global
+  val emptyUserAnswers: UserAnswers = UserAnswers(testInternalId, testErn, testArc)
 }

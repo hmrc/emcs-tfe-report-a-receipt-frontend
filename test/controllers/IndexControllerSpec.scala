@@ -20,7 +20,6 @@ import base.SpecBase
 import models.NormalMode
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.IndexView
 
 class IndexControllerSpec extends SpecBase {
 
@@ -31,12 +30,12 @@ class IndexControllerSpec extends SpecBase {
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.IndexController.onPageLoad.url)
+        val request = FakeRequest(GET, routes.IndexController.onPageLoad(testErn, testArc).url)
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result) mustEqual Some(routes.DateOfArrivalController.onPageLoad(NormalMode).url)
+        redirectLocation(result) mustBe Some(routes.DateOfArrivalController.onPageLoad(testErn, testArc, NormalMode).url)
       }
     }
   }

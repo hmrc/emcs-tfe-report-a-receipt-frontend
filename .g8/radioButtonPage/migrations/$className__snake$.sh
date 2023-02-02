@@ -6,11 +6,11 @@ echo "Applying migration $className;format="snake"$"
 echo "Adding routes to conf/app.routes"
 
 echo "" >> ../conf/app.routes
-echo "GET        /$className;format="decap"$                        controllers.$className$Controller.onPageLoad(mode: Mode = NormalMode)" >> ../conf/app.routes
-echo "POST       /$className;format="decap"$                        controllers.$className$Controller.onSubmit(mode: Mode = NormalMode)" >> ../conf/app.routes
+echo "GET        /:ern/:arc/$className;format="decap"$                        controllers.$className$Controller.onPageLoad(ern: String, arc: String, mode: Mode = NormalMode)" >> ../conf/app.routes
+echo "POST       /:ern/:arc/$className;format="decap"$                        controllers.$className$Controller.onSubmit(ern: String, arc: String, mode: Mode = NormalMode)" >> ../conf/app.routes
 
-echo "GET        /change$className$                  controllers.$className$Controller.onPageLoad(mode: Mode = CheckMode)" >> ../conf/app.routes
-echo "POST       /change$className$                  controllers.$className$Controller.onSubmit(mode: Mode = CheckMode)" >> ../conf/app.routes
+echo "GET        /:ern/:arc/$className$/change                  controllers.$className$Controller.onPageLoad(ern: String, arc: String, mode: Mode = CheckMode)" >> ../conf/app.routes
+echo "POST       /:ern/:arc/$className$/change                  controllers.$className$Controller.onSubmit(ern: String, arc: String, mode: Mode = CheckMode)" >> ../conf/app.routes
 
 echo "Adding messages to conf.messages"
 echo "" >> ../conf/messages.en
@@ -21,6 +21,15 @@ echo "$className;format="decap"$.$option2key;format="decap"$ = $option2msg$" >> 
 echo "$className;format="decap"$.checkYourAnswersLabel = $title$" >> ../conf/messages.en
 echo "$className;format="decap"$.error.required = Select $className;format="decap"$" >> ../conf/messages.en
 echo "$className;format="decap"$.change.hidden = $className$" >> ../conf/messages.en
+
+echo "" >> ../conf/messages.cy
+echo "$className;format="decap"$.title = $title$" >> ../conf/messages.cy
+echo "$className;format="decap"$.heading = $title$" >> ../conf/messages.cy
+echo "$className;format="decap"$.$option1key;format="decap"$ = $option1msg$" >> ../conf/messages.cy
+echo "$className;format="decap"$.$option2key;format="decap"$ = $option2msg$" >> ../conf/messages.cy
+echo "$className;format="decap"$.checkYourAnswersLabel = $title$" >> ../conf/messages.cy
+echo "$className;format="decap"$.error.required = Select $className;format="decap"$" >> ../conf/messages.cy
+echo "$className;format="decap"$.change.hidden = $className$" >> ../conf/messages.cy
 
 echo "Adding to UserAnswersEntryGenerators"
 awk '/trait UserAnswersEntryGenerators/ {\

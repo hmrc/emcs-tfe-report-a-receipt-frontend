@@ -1,3 +1,4 @@
+@import models.requests.DataRequest
 @import viewmodels.InputWidth._
 
 @this(
@@ -5,14 +6,15 @@
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukInput: GovukInput,
-    govukButton: GovukButton
+    govukButton: GovukButton,
+    h1: components.h1
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode)(implicit request: DataRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("$className;format="decap"$.title"))) {
 
-    @formHelper(action = routes.$className$Controller.onSubmit(mode)) {
+    @formHelper(action = routes.$className$Controller.onSubmit(request.ern, request.arc, mode)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -21,7 +23,7 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages("$className;format="decap"$.heading")).asPageHeading()
+                label = LabelViewModel(HtmlContent(heading))
             )
             .withWidth(Full)
         )
@@ -30,4 +32,8 @@
             ButtonViewModel(messages("site.continue"))
         )
     }
+}
+
+@heading = {
+    @h1("$className;format="decap"$.heading", Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
 }

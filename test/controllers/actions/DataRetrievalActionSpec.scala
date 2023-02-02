@@ -17,8 +17,7 @@
 package controllers.actions
 
 import base.SpecBase
-import models.UserAnswers
-import models.requests.{IdentifierRequest, OptionalDataRequest}
+import models.requests.{MovementRequest, OptionalDataRequest, UserRequest}
 import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
@@ -30,7 +29,7 @@ import scala.concurrent.Future
 class DataRetrievalActionSpec extends SpecBase with MockitoSugar {
 
   class Harness(sessionRepository: SessionRepository) extends DataRetrievalActionImpl(sessionRepository) {
-    def callTransform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = transform(request)
+    def callTransform[A](request: MovementRequest[A]): Future[OptionalDataRequest[A]] = transform(request)
   }
 
   "Data Retrieval Action" - {
@@ -40,10 +39,10 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar {
       "must set userAnswers to 'None' in the request" in {
 
         val sessionRepository = mock[SessionRepository]
-        when(sessionRepository.get("id")) thenReturn Future(None)
+        when(sessionRepository.get(testInternalId, testErn, testArc)) thenReturn Future(None)
         val action = new Harness(sessionRepository)
 
-        val result = action.callTransform(IdentifierRequest(FakeRequest(), "id")).futureValue
+        val result = action.callTransform(MovementRequest(UserRequest(FakeRequest(), testErn, testInternalId, testCredId), testArc)).futureValue
 
         result.userAnswers must not be defined
       }
@@ -54,10 +53,10 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar {
       "must build a userAnswers object and add it to the request" in {
 
         val sessionRepository = mock[SessionRepository]
-        when(sessionRepository.get("id")) thenReturn Future(Some(UserAnswers("id")))
+        when(sessionRepository.get(testInternalId, testErn, testArc)) thenReturn Future(Some(emptyUserAnswers))
         val action = new Harness(sessionRepository)
 
-        val result = action.callTransform(new IdentifierRequest(FakeRequest(), "id")).futureValue
+        val result = action.callTransform(MovementRequest(UserRequest(FakeRequest(), testErn, testInternalId, testCredId), testArc)).futureValue
 
         result.userAnswers mustBe defined
       }

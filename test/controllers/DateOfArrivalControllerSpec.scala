@@ -16,8 +16,6 @@
 
 package controllers
 
-import java.time.{LocalDate, ZoneOffset}
-
 import base.SpecBase
 import forms.DateOfArrivalFormProvider
 import models.{NormalMode, UserAnswers}
@@ -33,6 +31,7 @@ import play.api.test.Helpers._
 import repositories.SessionRepository
 import views.html.DateOfArrivalView
 
+import java.time.{LocalDate, ZoneOffset}
 import scala.concurrent.Future
 
 class DateOfArrivalControllerSpec extends SpecBase with MockitoSugar {
@@ -44,9 +43,7 @@ class DateOfArrivalControllerSpec extends SpecBase with MockitoSugar {
 
   val validAnswer = LocalDate.now(ZoneOffset.UTC)
 
-  lazy val dateOfArrivalRoute = routes.DateOfArrivalController.onPageLoad(NormalMode).url
-
-  override val emptyUserAnswers = UserAnswers(userAnswersId)
+  lazy val dateOfArrivalRoute = routes.DateOfArrivalController.onPageLoad(testErn, testArc, NormalMode).url
 
   def getRequest(): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(GET, dateOfArrivalRoute)
@@ -66,28 +63,28 @@ class DateOfArrivalControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val result = route(application, getRequest).value
+        val result = route(application, getRequest()).value
 
         val view = application.injector.instanceOf[DateOfArrivalView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(getRequest, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(dataRequest(getRequest()), messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(DateOfArrivalPage, validAnswer)
+      val userAnswers = UserAnswers(testInternalId, testErn, testCredId).set(DateOfArrivalPage, validAnswer)
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val view = application.injector.instanceOf[DateOfArrivalView]
 
-        val result = route(application, getRequest).value
+        val result = route(application, getRequest()).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(getRequest, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(dataRequest(getRequest()), messages(application)).toString
       }
     }
 
@@ -106,7 +103,7 @@ class DateOfArrivalControllerSpec extends SpecBase with MockitoSugar {
           .build()
 
       running(application) {
-        val result = route(application, postRequest).value
+        val result = route(application, postRequest()).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual onwardRoute.url
@@ -129,7 +126,7 @@ class DateOfArrivalControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(dataRequest(postRequest()), messages(application)).toString
       }
     }
 
@@ -138,7 +135,7 @@ class DateOfArrivalControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val result = route(application, getRequest).value
+        val result = route(application, getRequest()).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
@@ -150,7 +147,7 @@ class DateOfArrivalControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val result = route(application, postRequest).value
+        val result = route(application, postRequest()).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url

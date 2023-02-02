@@ -14,9 +14,12 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
+
 @this(
     layout: templates.Layout,
-    govukButton: GovukButton
+    govukButton: GovukButton,
+    appConfig: AppConfig
 )
 
 @()(implicit request: Request[_], messages: Messages)
@@ -30,7 +33,7 @@
     <p class="govuk-body">
         @govukButton(
             ButtonViewModel(messages("site.startAgain"))
-                .asLink(routes.IndexController.onPageLoad.url)
+                .asLink(appConfig.emcsTfeHomeUrl)
         )
     </p>
 }

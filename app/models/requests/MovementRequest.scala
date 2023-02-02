@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-package controllers.actions
+package models.requests
 
-import models.UserAnswers
-import models.requests.{MovementRequest, OptionalDataRequest}
+import play.api.mvc.WrappedRequest
 
-import scala.concurrent.{ExecutionContext, Future}
+case class MovementRequest[A](request: UserRequest[A], arc: String) extends WrappedRequest[A](request) {
 
-class FakeDataRetrievalAction(dataToReturn: Option[UserAnswers]) extends DataRetrievalAction {
-
-  override protected def transform[A](request: MovementRequest[A]): Future[OptionalDataRequest[A]] =
-    Future(OptionalDataRequest(request, dataToReturn))
-
-  override protected implicit val executionContext: ExecutionContext =
-    scala.concurrent.ExecutionContext.Implicits.global
+  val internalId = request.internalId
+  val ern = request.ern
 }

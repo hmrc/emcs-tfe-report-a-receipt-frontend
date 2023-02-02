@@ -18,41 +18,43 @@ package controllers
 
 import controllers.actions._
 import forms.DateOfArrivalFormProvider
-import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
 import pages.DateOfArrivalPage
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.DateOfArrivalView
 
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.Inject
+import scala.concurrent.Future
 
 class DateOfArrivalController @Inject()(
                                          override val messagesApi: MessagesApi,
                                          override val sessionRepository: SessionRepository,
                                          override val navigator: Navigator,
-                                         identify: IdentifierAction,
+                                         auth: AuthAction,
+                                         withMovement: MovementAction,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,
                                          formProvider: DateOfArrivalFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
                                          view: DateOfArrivalView
-                                       )(implicit ec: ExecutionContext) extends BaseNavigationController {
+                                       ) extends BaseNavigationController {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    Ok(view(fillForm(DateOfArrivalPage, formProvider()), mode))
-  }
+  def onPageLoad(ern: String, arc: String, mode: Mode): Action[AnyContent] =
+    (auth(ern) andThen withMovement(arc) andThen getData andThen requireData) { implicit request =>
+      Ok(view(fillForm(DateOfArrivalPage, formProvider()), mode))
+    }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
-    formProvider().bindFromRequest().fold(
-      formWithErrors =>
-        Future.successful(BadRequest(view(formWithErrors, mode))),
-      value => {
-        saveAndRedirect(DateOfArrivalPage, value, mode)
-      }
-    )
-  }
+  def onSubmit(ern: String, arc: String, mode: Mode): Action[AnyContent] =
+    (auth(ern) andThen withMovement(arc) andThen getData andThen requireData).async { implicit request =>
+      formProvider().bindFromRequest().fold(
+        formWithErrors =>
+          Future.successful(BadRequest(view(formWithErrors, mode))),
+        value => {
+          saveAndRedirect(DateOfArrivalPage, value, mode)
+        }
+      )
+    }
 }

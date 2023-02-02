@@ -1,6 +1,7 @@
 package repositories
 
-import config.FrontendAppConfig
+import config.AppConfig
+import fixtures.BaseFixtures
 import models.UserAnswers
 import org.mockito.Mockito.when
 import org.mongodb.scala.model.Filters
@@ -23,14 +24,15 @@ class SessionRepositorySpec
     with ScalaFutures
     with IntegrationPatience
     with OptionValues
-    with MockitoSugar {
+    with MockitoSugar
+    with BaseFixtures {
 
   private val instant = Instant.now.truncatedTo(ChronoUnit.MILLIS)
   private val stubClock: Clock = Clock.fixed(instant, ZoneId.systemDefault)
 
-  private val userAnswers = UserAnswers("id", Json.obj("foo" -> "bar"), Instant.ofEpochSecond(1))
+  private val userAnswers = UserAnswers(testInternalId, testErn, testArc, Json.obj("foo" -> "bar"), Instant.ofEpochSecond(1))
 
-  private val mockAppConfig = mock[FrontendAppConfig]
+  private val mockAppConfig = mock[AppConfig]
   when(mockAppConfig.cacheTtl) thenReturn 1
 
   protected override val repository = new SessionRepository(
@@ -46,7 +48,13 @@ class SessionRepositorySpec
       val expectedResult = userAnswers copy (lastUpdated = instant)
 
       val setResult     = repository.set(userAnswers).futureValue
-      val updatedRecord = find(Filters.equal("_id", userAnswers.id)).futureValue.headOption.value
+      val updatedRecord = find(
+        Filters.and(
+          Filters.equal("internalId", userAnswers.internalId),
+          Filters.equal("ern", userAnswers.ern),
+          Filters.equal("arc", userAnswers.arc)
+        )
+      ).futureValue.headOption.value
 
       setResult mustEqual true
       updatedRecord mustEqual expectedResult
@@ -61,7 +69,7 @@ class SessionRepositorySpec
 
         insert(userAnswers).futureValue
 
-        val result         = repository.get(userAnswers.id).futureValue
+        val result         = repository.get(userAnswers.internalId, userAnswers.ern, userAnswers.arc).futureValue
         val expectedResult = userAnswers copy (lastUpdated = instant)
 
         result.value mustEqual expectedResult
@@ -72,7 +80,7 @@ class SessionRepositorySpec
 
       "must return None" in {
 
-        repository.get("id that does not exist").futureValue must not be defined
+        repository.get(userAnswers.internalId, userAnswers.ern, "wrongArc").futureValue mustBe None
       }
     }
   }
@@ -83,14 +91,14 @@ class SessionRepositorySpec
 
       insert(userAnswers).futureValue
 
-      val result = repository.clear(userAnswers.id).futureValue
+      val result = repository.clear(userAnswers).futureValue
 
       result mustEqual true
-      repository.get(userAnswers.id).futureValue must not be defined
+      repository.get(userAnswers.internalId, userAnswers.ern, userAnswers.arc).futureValue mustBe None
     }
 
     "must return true when there is no record to remove" in {
-      val result = repository.clear("id that does not exist").futureValue
+      val result = repository.clear(userAnswers).futureValue
 
       result mustEqual true
     }
@@ -104,12 +112,18 @@ class SessionRepositorySpec
 
         insert(userAnswers).futureValue
 
-        val result = repository.keepAlive(userAnswers.id).futureValue
+        val result = repository.keepAlive(userAnswers.internalId, userAnswers.ern, userAnswers.arc).futureValue
 
         val expectedUpdatedAnswers = userAnswers copy (lastUpdated = instant)
 
         result mustEqual true
-        val updatedAnswers = find(Filters.equal("_id", userAnswers.id)).futureValue.headOption.value
+        val updatedAnswers = find(
+          Filters.and(
+            Filters.equal("internalId", userAnswers.internalId),
+            Filters.equal("ern", userAnswers.ern),
+            Filters.equal("arc", userAnswers.arc)
+          )
+        ).futureValue.headOption.value
         updatedAnswers mustEqual expectedUpdatedAnswers
       }
     }
@@ -118,7 +132,7 @@ class SessionRepositorySpec
 
       "must return true" in {
 
-        repository.keepAlive("id that does not exist").futureValue mustEqual true
+        repository.keepAlive(userAnswers.internalId, userAnswers.ern, "wrongArc").futureValue mustEqual true
       }
     }
   }

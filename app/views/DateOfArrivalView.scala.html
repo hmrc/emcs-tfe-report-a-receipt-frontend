@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import viewmodels.LegendSize
+@import models.requests.DataRequest
 
 @this(
         layout: templates.Layout,
@@ -25,11 +25,11 @@
         h1: components.h1
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode)(implicit request: DataRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("dateOfArrival.title"))) {
 
-    @formHelper(action = routes.DateOfArrivalController.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.DateOfArrivalController.onSubmit(request.ern, request.arc, mode), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value.day")))
@@ -50,5 +50,5 @@
 }
 
 @heading = {
-    @h1("dateOfArrival.heading", Some(messages("dateOfArrival.subHeading")), "govuk-fieldset__heading")
+    @h1("dateOfArrival.heading", Some(messages("arc.subHeading", request.arc)), "govuk-fieldset__heading")
 }

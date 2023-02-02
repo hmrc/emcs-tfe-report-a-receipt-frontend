@@ -38,7 +38,7 @@ object DateOfArrivalSummary  {
           key     = "dateOfArrival.checkYourAnswersLabel",
           value   = ValueViewModel(answer.format(dateFormatter)),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.DateOfArrivalController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", routes.DateOfArrivalController.onPageLoad(answers.ern, answers.arc, CheckMode).url)
               .withVisuallyHiddenText(messages("dateOfArrival.change.hidden"))
           )
         )

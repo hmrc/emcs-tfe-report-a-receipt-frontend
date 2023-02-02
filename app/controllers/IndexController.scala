@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.actions.{DataRetrievalAction, IdentifierAction}
+import controllers.actions.{AuthAction, DataRetrievalAction, MovementAction}
 import models.{NormalMode, UserAnswers}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -27,16 +27,17 @@ import javax.inject.Inject
 class IndexController @Inject()(override val messagesApi: MessagesApi,
                                 val sessionRepository: SessionRepository,
                                 val controllerComponents: MessagesControllerComponents,
-                                identify: IdentifierAction,
+                                authAction: AuthAction,
+                                withMovement: MovementAction,
                                 getData: DataRetrievalAction) extends BaseController {
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData).async { implicit request =>
+  def onPageLoad(ern: String, arc: String): Action[AnyContent] = (authAction(ern) andThen withMovement(arc) andThen getData).async { implicit request =>
     val userAnswers = request.userAnswers match {
       case Some(answers) => answers
-      case _ => UserAnswers(request.userId)
+      case _ => UserAnswers(request.internalId, request.ern, request.arc)
     }
     sessionRepository.set(userAnswers).map { _ =>
-      Redirect(routes.DateOfArrivalController.onPageLoad(NormalMode))
+      Redirect(routes.DateOfArrivalController.onPageLoad(ern, arc, NormalMode))
     }
   }
 }

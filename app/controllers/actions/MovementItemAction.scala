@@ -16,20 +16,24 @@
 
 package controllers.actions
 
-import javax.inject.Inject
-import models.requests.IdentifierRequest
-import play.api.mvc._
+import models.requests.{MovementRequest, UserRequest}
+import play.api.mvc.ActionTransformer
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class FakeIdentifierAction @Inject()(bodyParsers: PlayBodyParsers) extends IdentifierAction {
+class MovementActionImpl @Inject()(ec: ExecutionContext) extends MovementAction {
 
-  override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] =
-    block(IdentifierRequest(request, "id"))
+  override def apply(arc: String): ActionTransformer[UserRequest, MovementRequest] = new ActionTransformer[UserRequest, MovementRequest] {
 
-  override def parser: BodyParser[AnyContent] =
-    bodyParsers.default
+    override val executionContext = ec
 
-  override protected def executionContext: ExecutionContext =
-    scala.concurrent.ExecutionContext.Implicits.global
+    override protected def transform[A](request: UserRequest[A]): Future[MovementRequest[A]] = {
+      Future.successful(MovementRequest(request, arc))
+    }
+  }
+}
+
+trait MovementAction {
+  def apply(arc: String): ActionTransformer[UserRequest, MovementRequest]
 }

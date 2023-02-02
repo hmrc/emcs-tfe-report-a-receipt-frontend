@@ -1,7 +1,7 @@
 
 # emcs-tfe-report-a-receipt-frontend
 
-This is a placeholder README.md for a new repository
+Contains the frontend journey for EMCS TFE to Report a Receipt of a Movement. Using hmrc-scaffold-g8.  
 
 ### License
 

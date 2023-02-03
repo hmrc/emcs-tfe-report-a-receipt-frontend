@@ -12,8 +12,8 @@ import viewmodels.implicits._
 
 object $className$Summary  {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get($className$Page).map {
+  def row(userAnswers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+    userAnswers.get($className$Page).map {
       answers =>
 
         val value = ValueViewModel(
@@ -29,7 +29,7 @@ object $className$Summary  {
           key     = "$className;format="decap"$.checkYourAnswersLabel",
           value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", routes.$className$Controller.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", routes.$className$Controller.onPageLoad(userAnswers.ern, userAnswers.arc, CheckMode).url)
               .withVisuallyHiddenText(messages("$className;format="decap"$.change.hidden"))
           )
         )

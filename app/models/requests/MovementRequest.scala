@@ -16,9 +16,10 @@
 
 package models.requests
 
+import models.response.emcsTfe.GetMovementResponse
 import play.api.mvc.WrappedRequest
 
-case class MovementRequest[A](request: UserRequest[A], arc: String) extends WrappedRequest[A](request) {
+case class MovementRequest[A](request: UserRequest[A], arc: String, movementDetails: GetMovementResponse) extends WrappedRequest[A](request) {
 
   val internalId = request.internalId
   val ern = request.ern

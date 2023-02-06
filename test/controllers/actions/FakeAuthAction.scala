@@ -29,13 +29,13 @@ class FakeAuthAction @Inject()(bodyParsers: PlayBodyParsers) extends AuthAction 
 
     new ActionBuilder[UserRequest, AnyContent] with ActionFunction[Request, UserRequest] {
 
-    override def invokeBlock[A](request: Request[A], block: UserRequest[A] => Future[Result]): Future[Result] =
-      block(UserRequest(request, ern, testInternalId, testCredId))
+      override def invokeBlock[A](request: Request[A], block: UserRequest[A] => Future[Result]): Future[Result] =
+        block(UserRequest(request, ern, testInternalId, testCredId))
 
-    override def parser: BodyParser[AnyContent] =
-      bodyParsers.default
+      override def parser: BodyParser[AnyContent] =
+        bodyParsers.default
 
-    override protected def executionContext: ExecutionContext =
-      scala.concurrent.ExecutionContext.Implicits.global
-  }
+      override protected def executionContext: ExecutionContext =
+        scala.concurrent.ExecutionContext.Implicits.global
+    }
 }

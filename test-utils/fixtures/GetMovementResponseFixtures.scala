@@ -21,7 +21,7 @@ import play.api.libs.json.{JsValue, Json}
 
 import java.time.LocalDate
 
-trait GetMovementResponseFixtures extends BaseFixtures {
+trait GetMovementResponseFixtures { _: BaseFixtures =>
 
   val getMovementResponseModel: GetMovementResponse = GetMovementResponse(
     localReferenceNumber = "MyLrn",

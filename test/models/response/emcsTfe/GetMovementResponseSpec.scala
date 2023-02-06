@@ -22,11 +22,10 @@
 package models.response.emcsTfe
 
 import base.SpecBase
-import fixtures.GetMovementResponseFixtures
 import play.api.libs.json.{JsSuccess, Json}
 
 
-class GetMovementResponseSpec extends SpecBase with GetMovementResponseFixtures {
+class GetMovementResponseSpec extends SpecBase {
 
   "GetMovementResponse" - {
     "should read from json" in {

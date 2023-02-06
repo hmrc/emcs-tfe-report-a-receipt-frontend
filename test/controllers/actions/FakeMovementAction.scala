@@ -14,26 +14,22 @@
  * limitations under the License.
  */
 
-package mocks
+package controllers.actions
 
-import connectors.emcsTfe.GetMovementConnector
-import models.response.ErrorResponse
+import models.requests.{MovementRequest, UserRequest}
 import models.response.emcsTfe.GetMovementResponse
-import org.scalamock.handlers.CallHandler4
-import org.scalamock.scalatest.MockFactory
-import uk.gov.hmrc.http.HeaderCarrier
+import play.api.mvc.{ActionRefiner, Result}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockEmcsTfeConnector extends MockFactory {
+class FakeMovementAction(movementData: GetMovementResponse) extends MovementAction {
 
-  lazy val mockGetMovementConnector: GetMovementConnector = mock[GetMovementConnector]
+  override def apply(arc: String): ActionRefiner[UserRequest, MovementRequest] = new ActionRefiner[UserRequest, MovementRequest] {
 
-  object MockEmcsTfeConnector {
+    override def refine[A](request: UserRequest[A]): Future[Either[Result, MovementRequest[A]]] =
+      Future.successful(Right(MovementRequest(request, arc, movementData)))
 
-    def getMovement(ern: String,
-                    arc: String): CallHandler4[String, String, HeaderCarrier, ExecutionContext, Future[Either[ErrorResponse, GetMovementResponse]]] =
-      (mockGetMovementConnector.getMovement(_: String, _: String)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(ern, arc, *, *)
+    override protected def executionContext: ExecutionContext =
+      scala.concurrent.ExecutionContext.Implicits.global
   }
 }

@@ -17,7 +17,7 @@
 package base
 
 import controllers.actions._
-import fixtures.BaseFixtures
+import fixtures.{BaseFixtures, GetMovementResponseFixtures}
 import models.UserAnswers
 import models.requests.{DataRequest, MovementRequest, UserRequest}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -38,17 +38,19 @@ trait SpecBase
     with OptionValues
     with ScalaFutures
     with IntegrationPatience
-    with BaseFixtures {
+    with BaseFixtures
+    with GetMovementResponseFixtures {
 
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
   def dataRequest[A](request: Request[A], answers: UserAnswers = emptyUserAnswers): DataRequest[A] =
-    DataRequest(MovementRequest(UserRequest(request, testErn, testInternalId, testCredId), testArc), answers)
+    DataRequest(MovementRequest(UserRequest(request, testErn, testInternalId, testCredId), testArc, getMovementResponseModel), answers)
 
   protected def applicationBuilder(userAnswers: Option[UserAnswers] = None): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(
         bind[AuthAction].to[FakeAuthAction],
-        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers))
+        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers)),
+        bind[MovementAction].toInstance(new FakeMovementAction(getMovementResponseModel))
       )
 }

@@ -21,9 +21,10 @@ import play.api.Configuration
 import play.api.i18n.Lang
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
-class AppConfig @Inject()(configuration: Configuration) {
+class AppConfig @Inject()(servicesConfig: ServicesConfig, configuration: Configuration) {
 
   val host: String    = configuration.get[String]("host")
   val appName: String = configuration.get[String]("appName")
@@ -55,4 +56,7 @@ class AppConfig @Inject()(configuration: Configuration) {
   val countdown: Int = configuration.get[Int]("timeout-dialog.countdown")
 
   val cacheTtl: Int = configuration.get[Int]("mongodb.timeToLiveInSeconds")
+
+  private def emcsTfeService: String = servicesConfig.baseUrl("emcs-tfe")
+  def emcsTfeBaseUrl: String = s"$emcsTfeService/emcs-tfe"
 }

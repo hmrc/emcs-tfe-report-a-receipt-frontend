@@ -44,12 +44,12 @@ class DateOfArrivalController @Inject()(
 
   def onPageLoad(ern: String, arc: String, mode: Mode): Action[AnyContent] =
     (auth(ern) andThen withMovement(arc) andThen getData andThen requireData) { implicit request =>
-      Ok(view(fillForm(DateOfArrivalPage, formProvider()), mode))
+      Ok(view(fillForm(DateOfArrivalPage, formProvider(request.movementDetails.dateOfDispatch)), mode))
     }
 
   def onSubmit(ern: String, arc: String, mode: Mode): Action[AnyContent] =
     (auth(ern) andThen withMovement(arc) andThen getData andThen requireData).async { implicit request =>
-      formProvider().bindFromRequest().fold(
+      formProvider(request.movementDetails.dateOfDispatch).bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value => {

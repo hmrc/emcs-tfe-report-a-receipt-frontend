@@ -12,8 +12,9 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
+import utils.TimeMachine
 
-import java.time.{Clock, Instant, ZoneId}
+import java.time.{Clock, Instant, LocalDateTime, ZoneId}
 import java.time.temporal.ChronoUnit
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -27,8 +28,11 @@ class SessionRepositorySpec
     with MockitoSugar
     with BaseFixtures {
 
-  private val instant = Instant.now.truncatedTo(ChronoUnit.MILLIS)
-  private val stubClock: Clock = Clock.fixed(instant, ZoneId.systemDefault)
+  private val instantNow = Instant.now.truncatedTo(ChronoUnit.MILLIS)
+  private val timeMachine: TimeMachine = new TimeMachine {
+    override def now(): LocalDateTime = instantNow.atZone(ZoneId.of("UTC")).toLocalDateTime
+    override def instant(): Instant = instantNow
+  }
 
   private val userAnswers = UserAnswers(testInternalId, testErn, testArc, Json.obj("foo" -> "bar"), Instant.ofEpochSecond(1))
 
@@ -38,14 +42,14 @@ class SessionRepositorySpec
   protected override val repository = new SessionRepository(
     mongoComponent = mongoComponent,
     appConfig      = mockAppConfig,
-    clock          = stubClock
+    time           = timeMachine
   )
 
   ".set" - {
 
     "must set the last updated time on the supplied user answers to `now`, and save them" in {
 
-      val expectedResult = userAnswers copy (lastUpdated = instant)
+      val expectedResult = userAnswers copy (lastUpdated = instantNow)
 
       val setResult     = repository.set(userAnswers).futureValue
       val updatedRecord = find(
@@ -70,7 +74,7 @@ class SessionRepositorySpec
         insert(userAnswers).futureValue
 
         val result         = repository.get(userAnswers.internalId, userAnswers.ern, userAnswers.arc).futureValue
-        val expectedResult = userAnswers copy (lastUpdated = instant)
+        val expectedResult = userAnswers copy (lastUpdated = instantNow)
 
         result.value mustEqual expectedResult
       }
@@ -114,7 +118,7 @@ class SessionRepositorySpec
 
         val result = repository.keepAlive(userAnswers.internalId, userAnswers.ern, userAnswers.arc).futureValue
 
-        val expectedUpdatedAnswers = userAnswers copy (lastUpdated = instant)
+        val expectedUpdatedAnswers = userAnswers copy (lastUpdated = instantNow)
 
         result mustEqual true
         val updatedAnswers = find(

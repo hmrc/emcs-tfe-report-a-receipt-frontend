@@ -29,19 +29,28 @@ import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import utils.TimeMachine
 import views.html.DateOfArrivalView
 
-import java.time.{LocalDate, ZoneOffset}
+import java.time.{Instant, LocalDate, LocalDateTime, ZoneOffset}
 import scala.concurrent.Future
 
 class DateOfArrivalControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new DateOfArrivalFormProvider()
-  private def form = formProvider()
+  val fixedNow = LocalDateTime.now()
+  val dateOfDispatch = fixedNow.minusDays(3)
+
+  val timeMachine = new TimeMachine {
+    override def now(): LocalDateTime = fixedNow
+    override def instant(): Instant = Instant.now()
+  }
+
+  val formProvider = new DateOfArrivalFormProvider(timeMachine)
+  private def form = formProvider(dateOfDispatch.toLocalDate)
 
   def onwardRoute = Call("GET", "/foo")
 
-  val validAnswer = LocalDate.now(ZoneOffset.UTC)
+  val validAnswer = fixedNow.toLocalDate
 
   lazy val dateOfArrivalRoute = routes.DateOfArrivalController.onPageLoad(testErn, testArc, NormalMode).url
 

@@ -46,6 +46,8 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig, configuration: Configu
     configuration.get[Boolean]("features.welsh-translation")
 
   val emcsTfeHomeUrl: String = configuration.get[String]("urls.emcsTfeHome")
+  def emcsMovementDetailsUrl(ern: String, arc: String): String =
+    configuration.get[String]("urls.emcsTfeMovementDetails") + s"/$ern/$arc"
 
   def languageMap: Map[String, Lang] = Map(
     "en" -> Lang("en"),

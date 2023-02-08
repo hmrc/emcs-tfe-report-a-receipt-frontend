@@ -17,14 +17,16 @@
 package forms
 
 import java.time.LocalDate
-
 import forms.mappings.Mappings
+
 import javax.inject.Inject
 import play.api.data.Form
+import play.api.data.validation.{Constraint, Invalid, Valid}
+import utils.{DateUtils, TimeMachine}
 
-class DateOfArrivalFormProvider @Inject() extends Mappings {
+class DateOfArrivalFormProvider @Inject()(timeMachine: TimeMachine) extends Mappings with DateUtils {
 
-  def apply(): Form[LocalDate] =
+  def apply(dateOfDispatch: LocalDate): Form[LocalDate] =
     Form(
       "value" -> localDate(
         invalidKey     = "dateOfArrival.error.invalid",
@@ -32,5 +34,15 @@ class DateOfArrivalFormProvider @Inject() extends Mappings {
         twoRequiredKey = "dateOfArrival.error.required.two",
         requiredKey    = "dateOfArrival.error.required"
       )
+        .verifying(notInFuture("dateOfArrival.error.notInFuture"))
+        .verifying(notBeforeDateOfDispatch(dateOfDispatch, "dateOfArrival.error.notBeforeDateOfDispatch"))
     )
+
+  def notBeforeDateOfDispatch(dateOfDispatch: LocalDate, errorKey: String): Constraint[LocalDate] = Constraint { date =>
+    if (!date.isBefore(dateOfDispatch)) Valid else Invalid(errorKey, dateOfDispatch.formatDateForUIOutput())
+  }
+
+  def notInFuture(errorKey: String): Constraint[LocalDate] = Constraint { date =>
+    if (!date.isAfter(timeMachine.now().toLocalDate)) Valid else Invalid(errorKey)
+  }
 }

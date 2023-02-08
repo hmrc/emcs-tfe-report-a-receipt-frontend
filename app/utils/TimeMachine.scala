@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-package models.requests
+package utils
 
-import models.UserAnswers
-import play.api.mvc.WrappedRequest
+import java.time.{Instant, LocalDateTime, ZoneId}
+import javax.inject.Inject
 
-case class DataRequest[A](request: MovementRequest[A], userAnswers: UserAnswers) extends WrappedRequest[A](request) {
-  val internalId = request.internalId
-  val ern = request.ern
-  val arc = request.arc
-  val movementDetails = request.movementDetails
+trait TimeMachine {
+  def now(): LocalDateTime
+  def instant(): Instant
+}
+
+class TimeMachineImpl @Inject()() extends TimeMachine {
+  override def now(): LocalDateTime = LocalDateTime.now(ZoneId.of("UTC"))
+  override def instant(): Instant = Instant.now()
 }

@@ -14,14 +14,20 @@
  * limitations under the License.
  */
 
-package models.requests
+package fixtures.messages
 
-import models.UserAnswers
-import play.api.mvc.WrappedRequest
+import play.api.i18n.Lang
 
-case class DataRequest[A](request: MovementRequest[A], userAnswers: UserAnswers) extends WrappedRequest[A](request) {
-  val internalId = request.internalId
-  val ern = request.ern
-  val arc = request.arc
-  val movementDetails = request.movementDetails
+sealed trait i18n {
+  val lang: Lang
 }
+
+trait EN extends i18n {
+  override val lang: Lang = Lang("en")
+}
+object EN extends EN
+
+trait CY extends i18n {
+  override val lang: Lang = Lang("cy")
+}
+object CY extends CY

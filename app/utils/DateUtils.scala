@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package models.requests
+package utils
 
-import models.UserAnswers
-import play.api.mvc.WrappedRequest
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
-case class DataRequest[A](request: MovementRequest[A], userAnswers: UserAnswers) extends WrappedRequest[A](request) {
-  val internalId = request.internalId
-  val ern = request.ern
-  val arc = request.arc
-  val movementDetails = request.movementDetails
+trait DateUtils {
+  implicit class LocalDateExtensions(date: LocalDate) {
+    def formatDateForUIOutput(): String = {
+      val f = DateTimeFormatter.ofPattern("dd MMMM yyyy")
+      f.format(date)
+    }
+  }
 }

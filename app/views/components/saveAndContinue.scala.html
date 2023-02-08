@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,16 +12,28 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package models.requests
+@import config.AppConfig
+@import models.requests.DataRequest
 
-import models.UserAnswers
-import play.api.mvc.WrappedRequest
+@this(
+        govukButton: GovukButton,
+        appConfig: AppConfig
+)
 
-case class DataRequest[A](request: MovementRequest[A], userAnswers: UserAnswers) extends WrappedRequest[A](request) {
-  val internalId = request.internalId
-  val ern = request.ern
-  val arc = request.arc
-  val movementDetails = request.movementDetails
-}
+@()(implicit messages: Messages, request: DataRequest[_])
+
+<div class="govuk-button-group">
+
+  @govukButton(
+      ButtonViewModel(messages("site.saveAndContinue"))
+  )
+
+  @govukButton(
+      ButtonViewModel(messages("site.saveAndReturnToMovement"))
+              .asSecondaryButton()
+              .asLink(appConfig.emcsMovementDetailsUrl(request.ern, request.arc))
+  )
+
+</div>

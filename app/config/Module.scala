@@ -20,8 +20,6 @@ import com.google.inject.AbstractModule
 import controllers.actions._
 import utils.{TimeMachine, TimeMachineImpl}
 
-import java.time.{Clock, ZoneOffset}
-
 class Module extends AbstractModule {
 
   override def configure(): Unit = {

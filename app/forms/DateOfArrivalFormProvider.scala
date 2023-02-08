@@ -22,11 +22,12 @@ import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
 import play.api.data.validation.{Constraint, Invalid, Valid}
+import play.api.i18n.Messages
 import utils.{DateUtils, TimeMachine}
 
 class DateOfArrivalFormProvider @Inject()(timeMachine: TimeMachine) extends Mappings with DateUtils {
 
-  def apply(dateOfDispatch: LocalDate): Form[LocalDate] =
+  def apply(dateOfDispatch: LocalDate)(implicit messages: Messages): Form[LocalDate] =
     Form(
       "value" -> localDate(
         invalidKey     = "dateOfArrival.error.invalid",
@@ -38,7 +39,8 @@ class DateOfArrivalFormProvider @Inject()(timeMachine: TimeMachine) extends Mapp
         .verifying(notBeforeDateOfDispatch(dateOfDispatch, "dateOfArrival.error.notBeforeDateOfDispatch"))
     )
 
-  def notBeforeDateOfDispatch(dateOfDispatch: LocalDate, errorKey: String): Constraint[LocalDate] = Constraint { date =>
+  def notBeforeDateOfDispatch(dateOfDispatch: LocalDate, errorKey: String)
+                             (implicit messages: Messages): Constraint[LocalDate] = Constraint { date =>
     if (!date.isBefore(dateOfDispatch)) Valid else Invalid(errorKey, dateOfDispatch.formatDateForUIOutput())
   }
 

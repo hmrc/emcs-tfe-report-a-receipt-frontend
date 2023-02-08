@@ -20,7 +20,7 @@ import fixtures.messages.DateOfArrivalMessages
 import forms.behaviours.DateBehaviours
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.FormError
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.i18n.{Lang, Messages, MessagesApi}
 import utils.{DateUtils, TimeMachine}
 
 import java.time.{Instant, LocalDateTime, ZoneOffset}
@@ -29,6 +29,8 @@ class DateOfArrivalFormProviderSpec extends DateBehaviours with DateUtils with G
 
   val fixedNow = LocalDateTime.now(ZoneOffset.UTC)
   val dateOfDispatch = fixedNow.minusDays(3)
+
+  implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(Lang("en")))
 
   val timeMachine = new TimeMachine {
     override def now(): LocalDateTime = fixedNow

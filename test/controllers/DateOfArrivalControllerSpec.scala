@@ -24,6 +24,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.DateOfArrivalPage
+import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call}
 import play.api.test.FakeRequest
@@ -32,7 +33,7 @@ import repositories.SessionRepository
 import utils.TimeMachine
 import views.html.DateOfArrivalView
 
-import java.time.{Instant, LocalDate, LocalDateTime, ZoneOffset}
+import java.time.{Instant, LocalDateTime}
 import scala.concurrent.Future
 
 class DateOfArrivalControllerSpec extends SpecBase with MockitoSugar {
@@ -46,7 +47,7 @@ class DateOfArrivalControllerSpec extends SpecBase with MockitoSugar {
   }
 
   val formProvider = new DateOfArrivalFormProvider(timeMachine)
-  private def form = formProvider(dateOfDispatch.toLocalDate)
+  private def form(implicit messages: Messages) = formProvider(dateOfDispatch.toLocalDate)
 
   def onwardRoute = Call("GET", "/foo")
 
@@ -72,12 +73,12 @@ class DateOfArrivalControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
+        implicit val msgs = messages(application)
         val result = route(application, getRequest()).value
-
         val view = application.injector.instanceOf[DateOfArrivalView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(dataRequest(getRequest()), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(dataRequest(getRequest()), msgs).toString
       }
     }
 
@@ -88,12 +89,12 @@ class DateOfArrivalControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
+        implicit val msgs = messages(application)
         val view = application.injector.instanceOf[DateOfArrivalView]
-
         val result = route(application, getRequest()).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(dataRequest(getRequest()), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(dataRequest(getRequest()), msgs).toString
       }
     }
 
@@ -128,14 +129,13 @@ class DateOfArrivalControllerSpec extends SpecBase with MockitoSugar {
           .withFormUrlEncodedBody(("value", "invalid value"))
 
       running(application) {
+        implicit val msgs = messages(application)
         val boundForm = form.bind(Map("value" -> "invalid value"))
-
         val view = application.injector.instanceOf[DateOfArrivalView]
-
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(dataRequest(postRequest()), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(dataRequest(postRequest()), msgs).toString
       }
     }
 

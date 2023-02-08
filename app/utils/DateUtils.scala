@@ -16,14 +16,16 @@
 
 package utils
 
+import play.api.i18n.Messages
+
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 trait DateUtils {
   implicit class LocalDateExtensions(date: LocalDate) {
-    def formatDateForUIOutput(): String = {
-      val f = DateTimeFormatter.ofPattern("dd MMMM yyyy")
-      f.format(date)
+    def formatDateForUIOutput()(implicit messages: Messages): String = {
+      val monthMessage = messages(s"site.month.${date.getMonthValue}")
+      s"${date.getDayOfMonth} $monthMessage ${date.getYear}"
     }
   }
 }

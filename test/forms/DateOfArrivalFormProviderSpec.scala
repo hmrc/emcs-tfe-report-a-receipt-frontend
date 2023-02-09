@@ -16,23 +16,139 @@
 
 package forms
 
-import java.time.{LocalDate, ZoneOffset}
-
+import fixtures.messages.DateOfArrivalMessages
 import forms.behaviours.DateBehaviours
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.data.FormError
+import play.api.i18n.{Lang, Messages, MessagesApi}
+import utils.{DateUtils, TimeMachine}
 
-class DateOfArrivalFormProviderSpec extends DateBehaviours {
+import java.time.{Instant, LocalDate, LocalDateTime}
 
-  val form = new DateOfArrivalFormProvider()()
+class DateOfArrivalFormProviderSpec extends DateBehaviours with DateUtils with GuiceOneAppPerSuite {
+
+  val fixedNow = LocalDate.of(2023, 2, 9)
+  val dateOfDispatch = fixedNow.minusDays(3)
+
+  implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(Lang("en")))
+
+  val timeMachine = new TimeMachine {
+    override def now(): LocalDateTime = fixedNow.atStartOfDay()
+    override def instant(): Instant = Instant.now()
+  }
+
+  val form = new DateOfArrivalFormProvider(timeMachine)(dateOfDispatch)
 
   ".value" - {
 
     val validData = datesBetween(
-      min = LocalDate.of(2000, 1, 1),
-      max = LocalDate.now(ZoneOffset.UTC)
+      min = dateOfDispatch,
+      max = fixedNow
     )
 
     behave like dateField(form, "value", validData)
 
     behave like mandatoryDateField(form, "value", "dateOfArrival.error.required.all")
+
+    "accept a date that is equal to the dateOfDispatch" in {
+
+      val date = dateOfDispatch
+
+      val data = Map(
+        s"value.day" -> date.getDayOfMonth.toString,
+        s"value.month" -> date.getMonthValue.toString,
+        s"value.year" -> date.getYear.toString
+      )
+
+      val result = form.bind(data)
+
+      result.errors mustBe Seq()
+      result.value mustBe Some(date)
+    }
+
+    "return an error when date is before dateOfDispatch" in {
+
+      val date = dateOfDispatch.minusDays(1)
+
+      val data = Map(
+        s"value.day" -> date.getDayOfMonth.toString,
+        s"value.month" -> date.getMonthValue.toString,
+        s"value.year" -> date.getYear.toString
+      )
+
+      val result = form.bind(data)
+      result.errors must contain only FormError("value", "dateOfArrival.error.notBeforeDateOfDispatch", Seq(dateOfDispatch.formatDateForUIOutput()))
+    }
+
+    "return an error when date is after todays date" in {
+
+      val date = fixedNow.plusDays(1)
+
+      val data = Map(
+        s"value.day" -> date.getDayOfMonth.toString,
+        s"value.month" -> date.getMonthValue.toString,
+        s"value.year" -> date.getYear.toString
+      )
+
+      val result = form.bind(data)
+      result.errors must contain only FormError("value", "dateOfArrival.error.notInFuture")
+    }
+
+    "accept a date that is equal to todays date" in {
+
+      val date = fixedNow
+
+      val data = Map(
+        s"value.day" -> date.getDayOfMonth.toString,
+        s"value.month" -> date.getMonthValue.toString,
+        s"value.year" -> date.getYear.toString
+      )
+
+      val result = form.bind(data)
+
+      result.errors mustBe Seq()
+      result.value mustBe Some(date)
+    }
+  }
+
+  "Error Messages" - {
+
+    Seq(DateOfArrivalMessages.English, DateOfArrivalMessages.Welsh) foreach { messagesForLanguage =>
+
+      implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(messagesForLanguage.lang))
+
+      s"when output for language code '${messagesForLanguage.lang.code}'" - {
+
+        "have the correct error message for no date" in {
+          messages("dateOfArrival.error.required.all") mustBe
+            messagesForLanguage.requiredError
+        }
+
+        "have the correct error message for when one of the fields is missing" in {
+          messages("dateOfArrival.error.required.two", "day", "month") mustBe
+            messagesForLanguage.twoRequiredError("day", "month")
+        }
+
+        "have the correct error message for when two of the fields are missing" in {
+          messages("dateOfArrival.error.required", "day") mustBe
+            messagesForLanguage.oneRequiredError("day")
+        }
+
+        "have the correct error message for when the date isn't a real date" in {
+          messages("dateOfArrival.error.invalid") mustBe
+            messagesForLanguage.invalidDate
+        }
+
+        "have the correct error message for when the date is before the date of dispatch" in {
+          messages("dateOfArrival.error.notBeforeDateOfDispatch", dateOfDispatch.formatDateForUIOutput()) mustBe
+            messagesForLanguage.notBeforeDateOfDispatch("6 February 2023")
+        }
+
+        "have the correct error message for when the date is in the future" in {
+          messages("dateOfArrival.error.notInFuture") mustBe
+            messagesForLanguage.notInFuture
+        }
+      }
+    }
   }
 }

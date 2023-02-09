@@ -18,8 +18,7 @@ package config
 
 import com.google.inject.AbstractModule
 import controllers.actions._
-
-import java.time.{Clock, ZoneOffset}
+import utils.{TimeMachine, TimeMachineImpl}
 
 class Module extends AbstractModule {
 
@@ -29,6 +28,6 @@ class Module extends AbstractModule {
     bind(classOf[MovementAction]).to(classOf[MovementActionImpl]).asEagerSingleton()
     bind(classOf[DataRequiredAction]).to(classOf[DataRequiredActionImpl]).asEagerSingleton()
     bind(classOf[AuthAction]).to(classOf[AuthActionImpl]).asEagerSingleton()
-    bind(classOf[Clock]).toInstance(Clock.systemDefaultZone.withZone(ZoneOffset.UTC))
+    bind(classOf[TimeMachine]).to(classOf[TimeMachineImpl]).asEagerSingleton()
   }
 }

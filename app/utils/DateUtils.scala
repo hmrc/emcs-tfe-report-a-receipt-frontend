@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-package models.requests
+package utils
 
-import models.UserAnswers
-import play.api.mvc.WrappedRequest
+import play.api.i18n.Messages
 
-case class DataRequest[A](request: MovementRequest[A], userAnswers: UserAnswers) extends WrappedRequest[A](request) {
-  val internalId = request.internalId
-  val ern = request.ern
-  val arc = request.arc
-  val movementDetails = request.movementDetails
+import java.time.LocalDate
+
+trait DateUtils {
+  implicit class LocalDateExtensions(date: LocalDate) {
+    def formatDateForUIOutput()(implicit messages: Messages): String = {
+      val monthMessage = messages(s"date.month.${date.getMonthValue}")
+      s"${date.getDayOfMonth} $monthMessage ${date.getYear}"
+    }
+  }
 }

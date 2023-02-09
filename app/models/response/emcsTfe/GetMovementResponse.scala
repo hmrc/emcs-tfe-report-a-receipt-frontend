@@ -14,13 +14,20 @@
  * limitations under the License.
  */
 
-package models.requests
+package models.response.emcsTfe
 
-import models.response.emcsTfe.GetMovementResponse
-import play.api.mvc.WrappedRequest
+import play.api.libs.json.{Format, Json}
 
-case class MovementRequest[A](request: UserRequest[A], arc: String, movementDetails: GetMovementResponse) extends WrappedRequest[A](request) {
+import java.time.LocalDate
 
-  val internalId = request.internalId
-  val ern = request.ern
+
+case class GetMovementResponse(localReferenceNumber: String,
+                               eadStatus: String,
+                               consignorName: String,
+                               dateOfDispatch: LocalDate,
+                               journeyTime: String,
+                               numberOfItems: Int)
+
+object GetMovementResponse {
+  implicit val format: Format[GetMovementResponse] = Json.format
 }

@@ -16,24 +16,38 @@
 
 package controllers.actions
 
+import connectors.emcsTfe.GetMovementConnector
+import handlers.ErrorHandler
 import models.requests.{MovementRequest, UserRequest}
-import play.api.mvc.ActionTransformer
+import play.api.mvc.Results.BadRequest
+import play.api.mvc.{ActionRefiner, Result}
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class MovementActionImpl @Inject()(ec: ExecutionContext) extends MovementAction {
+class MovementActionImpl @Inject()(getMovementConnector: GetMovementConnector,
+                                   errorHandler: ErrorHandler)
+                                  (implicit ec: ExecutionContext) extends MovementAction {
 
-  override def apply(arc: String): ActionTransformer[UserRequest, MovementRequest] = new ActionTransformer[UserRequest, MovementRequest] {
+  override def apply(arc: String): ActionRefiner[UserRequest, MovementRequest] = new ActionRefiner[UserRequest, MovementRequest] {
 
-    override val executionContext = ec
+    override def executionContext: ExecutionContext = ec
 
-    override protected def transform[A](request: UserRequest[A]): Future[MovementRequest[A]] = {
-      Future.successful(MovementRequest(request, arc))
+    override def refine[A](request: UserRequest[A]): Future[Either[Result, MovementRequest[A]]] = {
+
+      implicit val hc = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+
+      getMovementConnector.getMovement(request.ern, arc).map {
+        case Left(_) =>
+          Left(BadRequest(errorHandler.badRequestTemplate(request)))
+        case Right(movementDetails) =>
+          Right(MovementRequest(request, arc, movementDetails))
+      }
     }
   }
 }
 
 trait MovementAction {
-  def apply(arc: String): ActionTransformer[UserRequest, MovementRequest]
+  def apply(arc: String): ActionRefiner[UserRequest, MovementRequest]
 }

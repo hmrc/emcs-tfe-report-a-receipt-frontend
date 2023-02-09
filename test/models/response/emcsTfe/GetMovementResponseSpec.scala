@@ -14,13 +14,25 @@
  * limitations under the License.
  */
 
-package models.requests
+/*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ */
 
-import models.response.emcsTfe.GetMovementResponse
-import play.api.mvc.WrappedRequest
+package models.response.emcsTfe
 
-case class MovementRequest[A](request: UserRequest[A], arc: String, movementDetails: GetMovementResponse) extends WrappedRequest[A](request) {
+import base.SpecBase
+import play.api.libs.json.{JsSuccess, Json}
 
-  val internalId = request.internalId
-  val ern = request.ern
+
+class GetMovementResponseSpec extends SpecBase {
+
+  "GetMovementResponse" - {
+    "should read from json" in {
+      Json.fromJson[GetMovementResponse](getMovementResponseJson) mustBe JsSuccess(getMovementResponseModel)
+    }
+    "should write to json" in {
+      Json.toJson(getMovementResponseModel) mustBe getMovementResponseJson
+    }
+  }
 }

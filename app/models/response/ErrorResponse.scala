@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package models.requests
+package models.response
 
-import models.response.emcsTfe.GetMovementResponse
-import play.api.mvc.WrappedRequest
+sealed trait ErrorResponse {
+  val message: String
+}
 
-case class MovementRequest[A](request: UserRequest[A], arc: String, movementDetails: GetMovementResponse) extends WrappedRequest[A](request) {
+case object UnexpectedDownstreamResponseError extends ErrorResponse {
+  val message = "Unexpected downstream response status"
+}
 
-  val internalId = request.internalId
-  val ern = request.ern
+case object JsonValidationError extends ErrorResponse {
+  val message = "JSON validation error"
 }

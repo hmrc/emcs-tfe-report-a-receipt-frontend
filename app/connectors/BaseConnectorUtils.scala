@@ -17,7 +17,7 @@
 package connectors
 
 import play.api.libs.json.{JsError, JsSuccess, JsValue, Reads}
-import uk.gov.hmrc.http.{HttpReads, HttpResponse}
+import uk.gov.hmrc.http.HttpResponse
 import utils.Logging
 
 import scala.util.{Success, Try}

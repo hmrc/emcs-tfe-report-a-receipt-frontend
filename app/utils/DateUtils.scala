@@ -19,7 +19,6 @@ package utils
 import play.api.i18n.Messages
 
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 trait DateUtils {
   implicit class LocalDateExtensions(date: LocalDate) {

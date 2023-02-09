@@ -23,27 +23,27 @@ import play.api.data.FormError
 import play.api.i18n.{Lang, Messages, MessagesApi}
 import utils.{DateUtils, TimeMachine}
 
-import java.time.{Instant, LocalDateTime, ZoneOffset}
+import java.time.{Instant, LocalDate, LocalDateTime}
 
 class DateOfArrivalFormProviderSpec extends DateBehaviours with DateUtils with GuiceOneAppPerSuite {
 
-  val fixedNow = LocalDateTime.now(ZoneOffset.UTC)
+  val fixedNow = LocalDate.of(2023, 2, 9)
   val dateOfDispatch = fixedNow.minusDays(3)
 
   implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(Lang("en")))
 
   val timeMachine = new TimeMachine {
-    override def now(): LocalDateTime = fixedNow
+    override def now(): LocalDateTime = fixedNow.atStartOfDay()
     override def instant(): Instant = Instant.now()
   }
 
-  val form = new DateOfArrivalFormProvider(timeMachine)(dateOfDispatch.toLocalDate)
+  val form = new DateOfArrivalFormProvider(timeMachine)(dateOfDispatch)
 
   ".value" - {
 
     val validData = datesBetween(
-      min = dateOfDispatch.toLocalDate,
-      max = fixedNow.toLocalDate
+      min = dateOfDispatch,
+      max = fixedNow
     )
 
     behave like dateField(form, "value", validData)
@@ -63,7 +63,7 @@ class DateOfArrivalFormProviderSpec extends DateBehaviours with DateUtils with G
       val result = form.bind(data)
 
       result.errors mustBe Seq()
-      result.value mustBe Some(date.toLocalDate)
+      result.value mustBe Some(date)
     }
 
     "return an error when date is before dateOfDispatch" in {
@@ -77,7 +77,7 @@ class DateOfArrivalFormProviderSpec extends DateBehaviours with DateUtils with G
       )
 
       val result = form.bind(data)
-      result.errors must contain only FormError("value", "dateOfArrival.error.notBeforeDateOfDispatch", Seq(dateOfDispatch.toLocalDate.formatDateForUIOutput()))
+      result.errors must contain only FormError("value", "dateOfArrival.error.notBeforeDateOfDispatch", Seq(dateOfDispatch.formatDateForUIOutput()))
     }
 
     "return an error when date is after todays date" in {
@@ -107,7 +107,7 @@ class DateOfArrivalFormProviderSpec extends DateBehaviours with DateUtils with G
       val result = form.bind(data)
 
       result.errors mustBe Seq()
-      result.value mustBe Some(date.toLocalDate)
+      result.value mustBe Some(date)
     }
   }
 
@@ -140,8 +140,8 @@ class DateOfArrivalFormProviderSpec extends DateBehaviours with DateUtils with G
         }
 
         "have the correct error message for when the date is before the date of dispatch" in {
-          messages("dateOfArrival.error.notBeforeDateOfDispatch", dateOfDispatch.toLocalDate.formatDateForUIOutput()) mustBe
-            messagesForLanguage.notBeforeDateOfDispatch(dateOfDispatch.toLocalDate.formatDateForUIOutput())
+          messages("dateOfArrival.error.notBeforeDateOfDispatch", dateOfDispatch.formatDateForUIOutput()) mustBe
+            messagesForLanguage.notBeforeDateOfDispatch("6 February 2023")
         }
 
         "have the correct error message for when the date is in the future" in {

@@ -24,7 +24,7 @@ import java.time.format.DateTimeFormatter
 trait DateUtils {
   implicit class LocalDateExtensions(date: LocalDate) {
     def formatDateForUIOutput()(implicit messages: Messages): String = {
-      val monthMessage = messages(s"site.month.${date.getMonthValue}")
+      val monthMessage = messages(s"date.month.${date.getMonthValue}")
       s"${date.getDayOfMonth} $monthMessage ${date.getYear}"
     }
   }

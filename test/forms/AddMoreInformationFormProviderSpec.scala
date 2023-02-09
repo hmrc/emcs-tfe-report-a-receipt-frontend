@@ -16,27 +16,27 @@
 
 package forms
 
-import fixtures.messages.AcceptMovementMessages
-import forms.behaviours.OptionFieldBehaviours
-import models.AcceptMovement
+import fixtures.messages.AddMoreInformationMessages
+import forms.behaviours.BooleanFieldBehaviours
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.FormError
 import play.api.i18n.{Messages, MessagesApi}
 
-class AcceptMovementFormProviderSpec extends OptionFieldBehaviours with GuiceOneAppPerSuite {
+class AddMoreInformationFormProviderSpec extends BooleanFieldBehaviours with GuiceOneAppPerSuite {
 
-  val form = new AcceptMovementFormProvider()()
+  val requiredKey = "addMoreInformation.error.required"
+  val invalidKey = "error.boolean"
+
+  val form = new AddMoreInformationFormProvider()()
 
   ".value" - {
 
     val fieldName = "value"
-    val requiredKey = "acceptMovement.error.required"
 
-    behave like optionsField[AcceptMovement](
+    behave like booleanField(
       form,
       fieldName,
-      validValues  = AcceptMovement.values,
-      invalidError = FormError(fieldName, "error.invalid")
+      invalidError = FormError(fieldName, invalidKey)
     )
 
     behave like mandatoryField(
@@ -48,14 +48,14 @@ class AcceptMovementFormProviderSpec extends OptionFieldBehaviours with GuiceOne
 
   "Error Messages" - {
 
-    Seq(AcceptMovementMessages.English, AcceptMovementMessages.Welsh) foreach { messagesForLanguage =>
+    Seq(AddMoreInformationMessages.English, AddMoreInformationMessages.Welsh) foreach { messagesForLanguage =>
 
       implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(messagesForLanguage.lang))
 
       s"when output for language code '${messagesForLanguage.lang.code}'" - {
 
         "have the correct error message when no option is selected" in {
-          messages("acceptMovement.error.required") mustBe messagesForLanguage.requiredError
+          messages("addMoreInformation.error.required") mustBe messagesForLanguage.requiredError
         }
       }
     }

@@ -25,6 +25,7 @@ object AcceptMovementMessages {
     val unsatisfactory: String
     val refused: String
     val partiallyRefused: String
+    val requiredError: String
   }
 
   object English extends ViewMessages with BaseEnglish {
@@ -34,6 +35,7 @@ object AcceptMovementMessages {
     override val unsatisfactory = "Yes, but it is unsatisfactory"
     override val refused = "No, I want to refuse it"
     override val partiallyRefused = "No, I want to partially refuse it"
+    override val requiredError: String = "Select if you want to accept this movement"
   }
 
   object Welsh extends ViewMessages with BaseWelsh {
@@ -43,5 +45,6 @@ object AcceptMovementMessages {
     override val unsatisfactory = "Yes, but it is unsatisfactory"
     override val refused = "No, I want to refuse it"
     override val partiallyRefused = "No, I want to partially refuse it"
+    override val requiredError: String = "Select if you want to accept this movement"
   }
 }

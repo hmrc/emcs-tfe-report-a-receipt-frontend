@@ -18,6 +18,7 @@ package navigation
 
 import base.SpecBase
 import controllers.routes
+import models.AcceptMovement.{PartiallyRefused, Refused, Satisfactory, Unsatisfactory}
 import pages._
 import models._
 
@@ -40,9 +41,74 @@ class NavigatorSpec extends SpecBase {
         navigator.nextPage(DateOfArrivalPage, NormalMode, emptyUserAnswers) mustBe routes.AcceptMovementController.onPageLoad(testErn, testArc, NormalMode)
       }
 
-      "must go from AcceptMovement page to CheckYourAnswers page" in {
+      "for the AcceptMovementPage page" - {
 
-        navigator.nextPage(AcceptMovementPage, NormalMode, emptyUserAnswers) mustBe routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+        s"when the user answers is $Satisfactory" - {
+
+          "must go to the AddMoreInformation page" in {
+
+            val userAnswers = emptyUserAnswers.set(AcceptMovementPage, Satisfactory)
+
+            navigator.nextPage(AcceptMovementPage, NormalMode, userAnswers) mustBe routes.AddMoreInformationController.onPageLoad(testErn, testArc, NormalMode)
+          }
+        }
+
+        s"when the user answers is $Unsatisfactory" - {
+
+          //TODO: Update this as part of future stories to go through the actual flow
+          "must go to the CheckAnswersPage page" in {
+
+            val userAnswers = emptyUserAnswers.set(AcceptMovementPage, Unsatisfactory)
+
+            navigator.nextPage(AcceptMovementPage, NormalMode, userAnswers) mustBe routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+          }
+        }
+
+        s"when the user answers is $Refused" - {
+
+          //TODO: Update this as part of future stories to go through the actual flow
+          "must go to the CheckAnswersPage page" in {
+
+            val userAnswers = emptyUserAnswers.set(AcceptMovementPage, Refused)
+
+            navigator.nextPage(AcceptMovementPage, NormalMode, userAnswers) mustBe routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+          }
+        }
+
+        s"when the user answers is $PartiallyRefused" - {
+
+          //TODO: Update this as part of future stories to go through the actual flow
+          "must go to the CheckAnswersPage page" in {
+
+            val userAnswers = emptyUserAnswers.set(AcceptMovementPage, PartiallyRefused)
+
+            navigator.nextPage(AcceptMovementPage, NormalMode, userAnswers) mustBe routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+          }
+        }
+      }
+
+      "for the AddMoreInformation page" - {
+
+        s"when the user answers is Yes" - {
+
+          //TODO: Future story will have this route to the MoreInformation page
+          "must go to the CheckYourAnswers page" in {
+
+            val userAnswers = emptyUserAnswers.set(AddMoreInformationPage, true)
+
+            navigator.nextPage(AddMoreInformationPage, NormalMode, userAnswers) mustBe routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+          }
+        }
+
+        s"when the user answers is No" - {
+
+          "must go to the CheckYourAnswers page" in {
+
+            val userAnswers = emptyUserAnswers.set(AddMoreInformationPage, false)
+
+            navigator.nextPage(AddMoreInformationPage, NormalMode, userAnswers) mustBe routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+          }
+        }
       }
     }
 

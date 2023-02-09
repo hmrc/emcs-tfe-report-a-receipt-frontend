@@ -21,7 +21,7 @@ import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction,
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.checkAnswers.DateOfArrivalSummary
+import viewmodels.checkAnswers.{AcceptMovementSummary, DateOfArrivalSummary}
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 
@@ -39,7 +39,8 @@ class CheckYourAnswersController @Inject()(
     (auth(ern) andThen withMovement(arc) andThen getData andThen requireData) { implicit request =>
       Ok(view(SummaryListViewModel(
         rows = Seq(
-          DateOfArrivalSummary.row(request.userAnswers)
+          DateOfArrivalSummary.row(request.userAnswers),
+          AcceptMovementSummary.row(request.userAnswers)
         ).flatten
       )))
     }

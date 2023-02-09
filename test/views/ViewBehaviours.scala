@@ -14,16 +14,20 @@
  * limitations under the License.
  */
 
-package generators
+package views
 
-import org.scalacheck.Arbitrary
-import pages._
+import base.ViewSpecBase
+import org.jsoup.nodes.Document
 
-trait PageGenerators {
+trait ViewBehaviours { _: ViewSpecBase =>
 
-  implicit lazy val arbitraryAcceptMovementPage: Arbitrary[AcceptMovementPage.type] =
-    Arbitrary(AcceptMovementPage)
-
-  implicit lazy val arbitraryDateOfArrivalPage: Arbitrary[DateOfArrivalPage.type] =
-    Arbitrary(DateOfArrivalPage)
+  def pageWithExpectedElementsAndMessages(checks: Seq[(String, String)])(implicit document: Document): Unit = checks foreach {
+    case (selector, message) =>
+      s"element with selector '$selector'" - {
+        s"must have the message '$message'" in {
+          document.select(selector).text() mustBe message
+        }
+      }
+  }
 }
+

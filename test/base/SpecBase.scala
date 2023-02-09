@@ -25,7 +25,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
 import play.api.Application
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Request
@@ -41,7 +41,9 @@ trait SpecBase
     with BaseFixtures
     with GetMovementResponseFixtures {
 
-  def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
+  def messagesApi(app: Application): MessagesApi = app.injector.instanceOf[MessagesApi]
+  def messages(app: Application): Messages = messagesApi(app).preferred(FakeRequest())
+  def messages(app: Application, lang: Lang): Messages = messagesApi(app).preferred(Seq(lang))
 
   def dataRequest[A](request: Request[A], answers: UserAnswers = emptyUserAnswers): DataRequest[A] =
     DataRequest(MovementRequest(UserRequest(request, testErn, testInternalId, testCredId), testArc, getMovementResponseModel), answers)

@@ -83,3 +83,13 @@ dateOfArrival.error.invalid = The date you received the movement must be a real 
 dateOfArrival.error.notBeforeDateOfDispatch = The date you received the movement must be the same as or after {0} when the movement started
 dateOfArrival.error.notInFuture = The date you received the movement must be today or in the past
 dateOfArrival.change.hidden = when the movement arrived
+
+acceptMovement.title = Do you want to accept this movement?
+acceptMovement.heading = Do you want to accept this movement?
+acceptMovement.satisfactory = Yes, it is satisfactory
+acceptMovement.unsatisfactory = Yes, but it is unsatisfactory
+acceptMovement.refused = No, I want to refuse it
+acceptMovement.partiallyRefused = No, I want to partially refuse it
+acceptMovement.checkYourAnswersLabel = Accept this movement
+acceptMovement.error.required = Select if you want to accept this movement
+acceptMovement.change.hidden = answer for whether you accept this movement

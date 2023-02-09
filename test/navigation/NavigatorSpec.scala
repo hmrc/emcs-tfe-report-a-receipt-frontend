@@ -35,9 +35,14 @@ class NavigatorSpec extends SpecBase {
         navigator.nextPage(UnknownPage, NormalMode, emptyUserAnswers) mustBe routes.IndexController.onPageLoad(testErn, testArc)
       }
 
-      "must go from DateOfArrival page to CheckYourAnswers" in {
+      "must go from DateOfArrival page to AcceptMovement page" in {
 
-        navigator.nextPage(DateOfArrivalPage, NormalMode, emptyUserAnswers) mustBe routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+        navigator.nextPage(DateOfArrivalPage, NormalMode, emptyUserAnswers) mustBe routes.AcceptMovementController.onPageLoad(testErn, testArc, NormalMode)
+      }
+
+      "must go from AcceptMovement page to CheckYourAnswers page" in {
+
+        navigator.nextPage(AcceptMovementPage, NormalMode, emptyUserAnswers) mustBe routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
       }
     }
 

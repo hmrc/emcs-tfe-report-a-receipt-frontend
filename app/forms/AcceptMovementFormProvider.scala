@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package generators
+package forms
 
-import org.scalacheck.Arbitrary
-import pages._
+import javax.inject.Inject
 
-trait PageGenerators {
+import forms.mappings.Mappings
+import play.api.data.Form
+import models.AcceptMovement
 
-  implicit lazy val arbitraryAcceptMovementPage: Arbitrary[AcceptMovementPage.type] =
-    Arbitrary(AcceptMovementPage)
+class AcceptMovementFormProvider @Inject() extends Mappings {
 
-  implicit lazy val arbitraryDateOfArrivalPage: Arbitrary[DateOfArrivalPage.type] =
-    Arbitrary(DateOfArrivalPage)
+  def apply(): Form[AcceptMovement] =
+    Form(
+      "value" -> enumerable[AcceptMovement]("acceptMovement.error.required")
+    )
 }

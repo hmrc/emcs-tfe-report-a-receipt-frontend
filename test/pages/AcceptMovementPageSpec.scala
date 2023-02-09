@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-package generators
+package pages
 
-import org.scalacheck.Arbitrary
-import pages._
+import models.AcceptMovement
+import pages.behaviours.PageBehaviours
 
-trait PageGenerators {
+class AcceptMovementSpec extends PageBehaviours {
 
-  implicit lazy val arbitraryAcceptMovementPage: Arbitrary[AcceptMovementPage.type] =
-    Arbitrary(AcceptMovementPage)
+  "AcceptMovementPage" - {
 
-  implicit lazy val arbitraryDateOfArrivalPage: Arbitrary[DateOfArrivalPage.type] =
-    Arbitrary(DateOfArrivalPage)
+    beRetrievable[AcceptMovement](AcceptMovementPage)
+
+    beSettable[AcceptMovement](AcceptMovementPage)
+
+    beRemovable[AcceptMovement](AcceptMovementPage)
+  }
 }

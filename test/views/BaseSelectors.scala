@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-package generators
+package views
 
-import org.scalacheck.Arbitrary
-import pages._
+trait BaseSelectors {
 
-trait PageGenerators {
+  val title = "title"
+  val h1: String = "h1"
+  val p: Int => String = i => s"main p:nth-of-type($i)"
+  val link: Int => String = i => s"main a:nth-of-type($i)"
+  val button = ".govuk-button"
+  val secondaryButton = ".govuk-button--secondary"
 
-  implicit lazy val arbitraryAcceptMovementPage: Arbitrary[AcceptMovementPage.type] =
-    Arbitrary(AcceptMovementPage)
-
-  implicit lazy val arbitraryDateOfArrivalPage: Arbitrary[DateOfArrivalPage.type] =
-    Arbitrary(DateOfArrivalPage)
+  def radioButton(radioIndex: Int) = s".govuk-radios > div:nth-child($radioIndex) > label"
 }
+
+object BaseSelectors extends BaseSelectors
+

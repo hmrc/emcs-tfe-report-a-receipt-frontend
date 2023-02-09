@@ -20,19 +20,28 @@ import play.api.i18n.Lang
 
 
 sealed trait BaseMessages { _: i18n =>
+  def title(heading: String): String
   val opensInNewTab: String
   def arcSubheading(arc: String): String
   val lang: Lang
+  val saveAndContinue: String
+  val saveAndReturnToMovement: String
 }
 
 trait BaseEnglish extends BaseMessages with EN {
+  override def title(heading: String) = s"$heading - Excise Movement and Control System - GOV.UK"
   override val opensInNewTab: String = "(opens in new tab)"
   override def arcSubheading(arc: String): String = s"Report of receipt for $arc"
+  override val saveAndContinue = "Save and continue"
+  override val saveAndReturnToMovement = "Save and return to movement"
 }
 object BaseEnglish extends BaseEnglish
 
 trait BaseWelsh extends BaseMessages with CY {
+  override def title(heading: String) = s"$heading - Excise Movement and Control System - GOV.UK"
   override val opensInNewTab: String = "(opens in new tab)"
   override def arcSubheading(arc: String): String = s"Report of receipt for $arc"
+  override val saveAndContinue = "Save and continue"
+  override val saveAndReturnToMovement = "Save and return to movement"
 }
 object BaseWelsh extends BaseWelsh

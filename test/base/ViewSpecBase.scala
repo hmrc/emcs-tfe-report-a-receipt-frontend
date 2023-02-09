@@ -14,16 +14,27 @@
  * limitations under the License.
  */
 
-package generators
+package base
 
-import org.scalacheck.Arbitrary
-import pages._
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
+import org.scalatest.BeforeAndAfterAll
+import play.api.Play
+import play.twirl.api.Html
 
-trait PageGenerators {
+trait ViewSpecBase extends SpecBase with BeforeAndAfterAll {
 
-  implicit lazy val arbitraryAcceptMovementPage: Arbitrary[AcceptMovementPage.type] =
-    Arbitrary(AcceptMovementPage)
+  lazy val app = applicationBuilder().build()
 
-  implicit lazy val arbitraryDateOfArrivalPage: Arbitrary[DateOfArrivalPage.type] =
-    Arbitrary(DateOfArrivalPage)
+  override def beforeAll(): Unit = {
+    super.beforeAll()
+    Play.start(app)
+  }
+
+  override def afterAll(): Unit = {
+    super.afterAll()
+    Play.stop(app)
+  }
+
+  def asDocument(html: Html): Document = Jsoup.parse(html.toString())
 }

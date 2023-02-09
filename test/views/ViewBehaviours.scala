@@ -19,13 +19,20 @@ package views
 import base.ViewSpecBase
 import org.jsoup.nodes.Document
 
+import scala.util.{Failure, Success, Try}
+
 trait ViewBehaviours { _: ViewSpecBase =>
 
   def pageWithExpectedElementsAndMessages(checks: Seq[(String, String)])(implicit document: Document): Unit = checks foreach {
     case (selector, message) =>
       s"element with selector '$selector'" - {
         s"must have the message '$message'" in {
-          document.select(selector).text() mustBe message
+          Try {
+            document.select(selector).first()
+          } match {
+            case Failure(_) => fail(s"Could not find element with CSS selector: '$selector'")
+            case Success(element) => element.text() mustBe message
+          }
         }
       }
   }

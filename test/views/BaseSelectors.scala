@@ -26,6 +26,9 @@ trait BaseSelectors {
   val secondaryButton = ".govuk-button--secondary"
 
   def radioButton(radioIndex: Int) = s".govuk-radios > div:nth-child($radioIndex) > label"
+  val dateDay = s".govuk-date-input .govuk-date-input__item:nth-of-type(1)"
+  val dateMonth = s".govuk-date-input .govuk-date-input__item:nth-of-type(2)"
+  val dateYear = s".govuk-date-input .govuk-date-input__item:nth-of-type(3)"
 }
 
 object BaseSelectors extends BaseSelectors

@@ -17,37 +17,41 @@
 package views
 
 import base.ViewSpecBase
-import fixtures.messages.AcceptMovementMessages
-import forms.AcceptMovementFormProvider
+import fixtures.messages.DateOfArrivalMessages
+import forms.DateOfArrivalFormProvider
 import models.NormalMode
 import org.jsoup.Jsoup
 import play.api.test.FakeRequest
-import views.html.AcceptMovementView
+import views.html.DateOfArrivalView
 
-class AcceptMovementViewSpec extends ViewSpecBase with ViewBehaviours {
+import java.time.LocalDate
 
-  lazy val form = app.injector.instanceOf[AcceptMovementFormProvider].apply()
-  lazy val view = app.injector.instanceOf[AcceptMovementView]
+class DateOfArrivalViewSpec extends ViewSpecBase with ViewBehaviours {
 
   object Selectors extends BaseSelectors
 
-  "AcceptMovement view" - {
+  "DateOfArrival view" - {
 
-    Seq(AcceptMovementMessages.English, AcceptMovementMessages.Welsh).foreach { messagesForLanguage =>
+    Seq(DateOfArrivalMessages.English, DateOfArrivalMessages.Welsh).foreach { messagesForLanguage =>
 
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
 
+        val dateOfDispatch = LocalDate.now()
+
         implicit val msgs = messages(app, messagesForLanguage.lang)
         implicit val request = dataRequest(FakeRequest(), emptyUserAnswers)
+
+        val form = app.injector.instanceOf[DateOfArrivalFormProvider].apply(dateOfDispatch)
+        val view = app.injector.instanceOf[DateOfArrivalView]
+
         implicit val doc = Jsoup.parse(view(form, NormalMode).toString())
 
         behave like pageWithExpectedElementsAndMessages(Seq(
           Selectors.title -> messagesForLanguage.title,
           Selectors.h1 -> (messagesForLanguage.arcSubheading(testArc) + " " + messagesForLanguage.heading),
-          Selectors.radioButton(1) -> messagesForLanguage.satisfactory,
-          Selectors.radioButton(2) -> messagesForLanguage.unsatisfactory,
-          Selectors.radioButton(3) -> messagesForLanguage.refused,
-          Selectors.radioButton(4) -> messagesForLanguage.partiallyRefused,
+          Selectors.dateDay -> messagesForLanguage.day,
+          Selectors.dateMonth -> messagesForLanguage.month,
+          Selectors.dateYear -> messagesForLanguage.year,
           Selectors.button -> messagesForLanguage.saveAndContinue,
           Selectors.secondaryButton -> messagesForLanguage.saveAndReturnToMovement
         ))

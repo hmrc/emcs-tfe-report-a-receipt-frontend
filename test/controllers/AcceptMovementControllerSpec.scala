@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import forms.AcceptMovementFormProvider
-import models.{NormalMode, AcceptMovement, UserAnswers}
+import models.{AcceptMovement, NormalMode}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

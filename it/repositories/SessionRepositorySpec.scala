@@ -14,8 +14,8 @@ import play.api.libs.json.Json
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 import utils.TimeMachine
 
-import java.time.{Clock, Instant, LocalDateTime, ZoneId}
 import java.time.temporal.ChronoUnit
+import java.time.{Instant, LocalDateTime, ZoneId}
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class SessionRepositorySpec

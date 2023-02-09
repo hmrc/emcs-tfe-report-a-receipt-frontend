@@ -17,13 +17,12 @@
 package generators
 
 import models._
-import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
 
   implicit lazy val arbitraryAcceptMovement: Arbitrary[AcceptMovement] =
     Arbitrary {
-      Gen.oneOf(AcceptMovement.values.toSeq)
+      Gen.oneOf(AcceptMovement.values)
     }
 }

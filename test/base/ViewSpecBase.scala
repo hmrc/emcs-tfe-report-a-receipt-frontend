@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,29 +12,29 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(
-    layout: templates.Layout,
-    govukButton: GovukButton
-)
+package base
 
-@(continueUrl: String)(implicit request: Request[_], messages: Messages)
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
+import org.scalatest.BeforeAndAfterAll
+import play.api.Play
+import play.twirl.api.Html
 
-@layout(pageTitle = titleNoForm(messages("journeyRecovery.continue.title"))) {
+trait ViewSpecBase extends SpecBase with BeforeAndAfterAll {
 
-    <h1 class="govuk-heading-xl">@messages("journeyRecovery.continue.heading")</h1>
+  lazy val app = applicationBuilder().build()
 
-    <p class="govuk-body">@messages("journeyRecovery.continue.guidance")</p>
+  override def beforeAll(): Unit = {
+    super.beforeAll()
+    Play.start(app)
+  }
 
-    <p class="govuk-body">
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-                .asLink(continueUrl)
-        )
-    </p>
-}
+  override def afterAll(): Unit = {
+    super.afterAll()
+    Play.stop(app)
+  }
 
-@{
-    //$COVERAGE-OFF$
+  def asDocument(html: Html): Document = Jsoup.parse(html.toString())
 }

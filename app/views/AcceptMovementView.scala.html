@@ -20,27 +20,28 @@
         layout: templates.Layout,
         formHelper: FormWithCSRF,
         govukErrorSummary: GovukErrorSummary,
-        govukDateInput: GovukDateInput,
+        govukRadios: GovukRadios,
+        govukButton: GovukButton,
         h1: components.h1,
         saveAndContinue: components.saveAndContinue
 )
 
 @(form: Form[_], mode: Mode)(implicit request: DataRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("dateOfArrival.title"))) {
+@layout(pageTitle = title(form, messages("acceptMovement.title"))) {
 
-    @formHelper(action = routes.DateOfArrivalController.onSubmit(request.ern, request.arc, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.AcceptMovementController.onSubmit(request.ern, request.arc, mode), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value.day")))
+            @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
         }
 
-        @govukDateInput(
-            DateViewModel(
+        @govukRadios(
+            RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(HtmlContent(heading)).withCssClass("govuk-fieldset__legend govuk-fieldset__legend--l")
+                legend = LegendViewModel(HtmlContent(heading)).withCssClass("govuk-fieldset__legend govuk-fieldset__legend--l"),
+                items  = AcceptMovement.options
             )
-            .withHint(HintViewModel(messages("dateOfArrival.hint")))
         )
 
         @saveAndContinue()
@@ -48,7 +49,7 @@
 }
 
 @heading = {
-    @h1("dateOfArrival.heading", Some(messages("arc.subHeading", request.arc)), "govuk-fieldset__heading")
+    @h1("acceptMovement.heading", Some(messages("arc.subHeading", request.arc)), "govuk-fieldset__heading")
 }
 
 @{

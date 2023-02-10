@@ -21,6 +21,9 @@ import pages._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryAcceptMovementPage: Arbitrary[AcceptMovementPage.type] =
+    Arbitrary(AcceptMovementPage)
+
   implicit lazy val arbitraryDateOfArrivalPage: Arbitrary[DateOfArrivalPage.type] =
     Arbitrary(DateOfArrivalPage)
 }

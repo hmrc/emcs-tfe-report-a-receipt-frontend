@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,29 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(
-    layout: templates.Layout,
-    govukButton: GovukButton
-)
+package pages
 
-@(continueUrl: String)(implicit request: Request[_], messages: Messages)
+import models.AcceptMovement
+import pages.behaviours.PageBehaviours
 
-@layout(pageTitle = titleNoForm(messages("journeyRecovery.continue.title"))) {
+class AcceptMovementSpec extends PageBehaviours {
 
-    <h1 class="govuk-heading-xl">@messages("journeyRecovery.continue.heading")</h1>
+  "AcceptMovementPage" - {
 
-    <p class="govuk-body">@messages("journeyRecovery.continue.guidance")</p>
+    beRetrievable[AcceptMovement](AcceptMovementPage)
 
-    <p class="govuk-body">
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-                .asLink(continueUrl)
-        )
-    </p>
-}
+    beSettable[AcceptMovement](AcceptMovementPage)
 
-@{
-    //$COVERAGE-OFF$
+    beRemovable[AcceptMovement](AcceptMovementPage)
+  }
 }

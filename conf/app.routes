@@ -24,3 +24,8 @@ GET         /:ern/:arc/when-receive-movement/change      controllers.DateOfArriv
 POST        /:ern/:arc/when-receive-movement/change      controllers.DateOfArrivalController.onSubmit(ern: String, arc: String, mode: Mode = CheckMode)
 
 GET         /:ern/:arc/check-your-answers                controllers.CheckYourAnswersController.onPageLoad(ern: String, arc: String)
+
+GET         /:ern/:arc/choose-accept-movement            controllers.AcceptMovementController.onPageLoad(ern: String, arc: String, mode: Mode = NormalMode)
+POST        /:ern/:arc/choose-accept-movement            controllers.AcceptMovementController.onSubmit(ern: String, arc: String, mode: Mode = NormalMode)
+GET         /:ern/:arc/choose-accept-movement/change     controllers.AcceptMovementController.onPageLoad(ern: String, arc: String, mode: Mode = CheckMode)
+POST        /:ern/:arc/choose-accept-movement/change     controllers.AcceptMovementController.onSubmit(ern: String, arc: String, mode: Mode = CheckMode)

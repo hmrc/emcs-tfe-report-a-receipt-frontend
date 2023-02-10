@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package generators
+package pages
 
-import org.scalacheck.Arbitrary
-import pages._
+import pages.behaviours.PageBehaviours
 
-trait PageGenerators {
+class AddMoreInformationPageSpec extends PageBehaviours {
 
-  implicit lazy val arbitraryAddMoreInformationPage: Arbitrary[AddMoreInformationPage.type] =
-    Arbitrary(AddMoreInformationPage)
+  "AddMoreInformationPage" - {
 
-  implicit lazy val arbitraryAcceptMovementPage: Arbitrary[AcceptMovementPage.type] =
-    Arbitrary(AcceptMovementPage)
+    beRetrievable[Boolean](AddMoreInformationPage)
 
-  implicit lazy val arbitraryDateOfArrivalPage: Arbitrary[DateOfArrivalPage.type] =
-    Arbitrary(DateOfArrivalPage)
+    beSettable[Boolean](AddMoreInformationPage)
+
+    beRemovable[Boolean](AddMoreInformationPage)
+  }
 }

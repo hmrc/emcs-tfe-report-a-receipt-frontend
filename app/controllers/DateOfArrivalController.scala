@@ -33,22 +33,22 @@ class DateOfArrivalController @Inject()(
                                          override val messagesApi: MessagesApi,
                                          override val sessionRepository: SessionRepository,
                                          override val navigator: Navigator,
-                                         auth: AuthAction,
-                                         withMovement: MovementAction,
-                                         getData: DataRetrievalAction,
-                                         requireData: DataRequiredAction,
+                                         override val auth: AuthAction,
+                                         override val withMovement: MovementAction,
+                                         override val getData: DataRetrievalAction,
+                                         override val requireData: DataRequiredAction,
                                          formProvider: DateOfArrivalFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
                                          view: DateOfArrivalView
-                                       ) extends BaseNavigationController {
+                                       ) extends BaseNavigationController with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String, mode: Mode): Action[AnyContent] =
-    (auth(ern) andThen withMovement(arc) andThen getData andThen requireData) { implicit request =>
+    authorisedDataRequest(ern, arc) { implicit request =>
       Ok(view(fillForm(DateOfArrivalPage, formProvider(request.movementDetails.dateOfDispatch)), mode))
     }
 
   def onSubmit(ern: String, arc: String, mode: Mode): Action[AnyContent] =
-    (auth(ern) andThen withMovement(arc) andThen getData andThen requireData).async { implicit request =>
+    authorisedDataRequestAsync(ern, arc) { implicit request =>
       formProvider(request.movementDetails.dateOfDispatch).bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode))),

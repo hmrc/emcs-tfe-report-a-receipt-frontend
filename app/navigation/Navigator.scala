@@ -16,12 +16,13 @@
 
 package navigation
 
-import javax.inject.{Inject, Singleton}
-
-import play.api.mvc.Call
 import controllers.routes
-import pages._
+import models.AcceptMovement.Satisfactory
 import models._
+import pages._
+import play.api.mvc.Call
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class Navigator @Inject()() extends BaseNavigator {
@@ -30,6 +31,11 @@ class Navigator @Inject()() extends BaseNavigator {
     case DateOfArrivalPage =>
       (userAnswers: UserAnswers) => routes.AcceptMovementController.onPageLoad(userAnswers.ern, userAnswers.arc, NormalMode)
     case AcceptMovementPage =>
+      (userAnswers: UserAnswers) => userAnswers.get(AcceptMovementPage) match {
+        case Some(Satisfactory) => routes.AddMoreInformationController.onPageLoad(userAnswers.ern, userAnswers.arc, NormalMode)
+        case _ => routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)
+      }
+    case AddMoreInformationPage =>
       (userAnswers: UserAnswers) => routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)
     case _ =>
       (userAnswers: UserAnswers) => routes.IndexController.onPageLoad(userAnswers.ern, userAnswers.arc)

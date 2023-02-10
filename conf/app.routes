@@ -29,3 +29,8 @@ GET         /:ern/:arc/choose-accept-movement            controllers.AcceptMovem
 POST        /:ern/:arc/choose-accept-movement            controllers.AcceptMovementController.onSubmit(ern: String, arc: String, mode: Mode = NormalMode)
 GET         /:ern/:arc/choose-accept-movement/change     controllers.AcceptMovementController.onPageLoad(ern: String, arc: String, mode: Mode = CheckMode)
 POST        /:ern/:arc/choose-accept-movement/change     controllers.AcceptMovementController.onSubmit(ern: String, arc: String, mode: Mode = CheckMode)
+
+GET         /:ern/:arc/choose-more-information-movement           controllers.AddMoreInformationController.onPageLoad(ern: String, arc: String, mode: Mode = NormalMode)
+POST        /:ern/:arc/choose-more-information-movement           controllers.AddMoreInformationController.onSubmit(ern: String, arc: String, mode: Mode = NormalMode)
+GET         /:ern/:arc/choose-more-information-movement/change    controllers.AddMoreInformationController.onPageLoad(ern: String, arc: String, mode: Mode = CheckMode)
+POST        /:ern/:arc/choose-more-information-movement/change    controllers.AddMoreInformationController.onSubmit(ern: String, arc: String, mode: Mode = CheckMode)

@@ -17,19 +17,19 @@
 package controllers
 
 import controllers.actions._
-import forms.AcceptMovementFormProvider
+import forms.AddMoreInformationFormProvider
 import models.Mode
 import navigation.Navigator
-import pages.AcceptMovementPage
+import pages.AddMoreInformationPage
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import views.html.AcceptMovementView
+import views.html.AddMoreInformationView
 
 import javax.inject.Inject
 import scala.concurrent.Future
 
-class AcceptMovementController @Inject()(
+class AddMoreInformationController @Inject()(
                                        override val messagesApi: MessagesApi,
                                        override val sessionRepository: SessionRepository,
                                        override val navigator: Navigator,
@@ -37,14 +37,14 @@ class AcceptMovementController @Inject()(
                                        override val withMovement: MovementAction,
                                        override val getData: DataRetrievalAction,
                                        override val requireData: DataRequiredAction,
-                                       formProvider: AcceptMovementFormProvider,
+                                       formProvider: AddMoreInformationFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
-                                       view: AcceptMovementView
+                                       view: AddMoreInformationView
                                      ) extends BaseNavigationController with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String, mode: Mode): Action[AnyContent] =
     authorisedDataRequest(ern, arc) { implicit request =>
-      Ok(view(fillForm(AcceptMovementPage, formProvider()), mode))
+      Ok(view(fillForm(AddMoreInformationPage, formProvider()), mode))
     }
 
   def onSubmit(ern: String, arc: String, mode: Mode): Action[AnyContent] =
@@ -53,7 +53,7 @@ class AcceptMovementController @Inject()(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
-          saveAndRedirect(AcceptMovementPage, value, mode)
+          saveAndRedirect(AddMoreInformationPage, value, mode)
       )
     }
 }

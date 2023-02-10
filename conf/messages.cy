@@ -93,3 +93,9 @@ acceptMovement.partiallyRefused = No, I want to partially refuse it
 acceptMovement.checkYourAnswersLabel = Accept this movement
 acceptMovement.error.required = Select if you want to accept this movement
 acceptMovement.change.hidden = answer for whether you accept this movement
+
+addMoreInformation.title = Do you want to give any more information about this movement?
+addMoreInformation.heading = Do you want to give any more information about this movement?
+addMoreInformation.checkYourAnswersLabel = Give any more information about this movement
+addMoreInformation.error.required = Select yes if you want to give more information about this movement
+addMoreInformation.change.hidden = if you want to give any more information about this movement

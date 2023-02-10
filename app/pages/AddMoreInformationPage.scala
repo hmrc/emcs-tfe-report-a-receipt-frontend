@@ -14,19 +14,13 @@
  * limitations under the License.
  */
 
-package generators
+package pages
 
-import org.scalacheck.Arbitrary
-import pages._
+import play.api.libs.json.JsPath
 
-trait PageGenerators {
+case object AddMoreInformationPage extends QuestionPage[Boolean] {
 
-  implicit lazy val arbitraryAddMoreInformationPage: Arbitrary[AddMoreInformationPage.type] =
-    Arbitrary(AddMoreInformationPage)
+  override def path: JsPath = JsPath \ toString
 
-  implicit lazy val arbitraryAcceptMovementPage: Arbitrary[AcceptMovementPage.type] =
-    Arbitrary(AcceptMovementPage)
-
-  implicit lazy val arbitraryDateOfArrivalPage: Arbitrary[DateOfArrivalPage.type] =
-    Arbitrary(DateOfArrivalPage)
+  override def toString: String = "addMoreInformation"
 }

@@ -16,12 +16,13 @@
 
 package controllers
 
+import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction, MovementAction}
 import models._
 import models.requests.DataRequest
 import navigation.BaseNavigator
 import pages.QuestionPage
 import play.api.libs.json.Format
-import play.api.mvc.Result
+import play.api.mvc.{Action, AnyContent, Result}
 import repositories.SessionRepository
 
 import scala.concurrent.Future
@@ -30,6 +31,7 @@ trait BaseNavigationController extends BaseController {
 
   val sessionRepository: SessionRepository
   val navigator: BaseNavigator
+
   def saveAndRedirect[A](page: QuestionPage[A], answer: A, mode: Mode)
                         (implicit request: DataRequest[_], format: Format[A]): Future[Result] =
     save(page, answer).map { updatedAnswers =>

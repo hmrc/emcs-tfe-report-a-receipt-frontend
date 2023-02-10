@@ -17,7 +17,7 @@
 package controllers
 
 import com.google.inject.Inject
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction, MovementAction}
+import controllers.actions.{AuthAction, AuthActionHelper, DataRequiredAction, DataRetrievalAction, MovementAction}
 import pages.AddMoreInformationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -28,13 +28,13 @@ import views.html.CheckYourAnswersView
 
 class CheckYourAnswersController @Inject()(
                                             override val messagesApi: MessagesApi,
-                                            auth: AuthAction,
-                                            withMovement: MovementAction,
-                                            getData: DataRetrievalAction,
-                                            requireData: DataRequiredAction,
+                                            override val auth: AuthAction,
+                                            override val withMovement: MovementAction,
+                                            override val getData: DataRetrievalAction,
+                                            override val requireData: DataRequiredAction,
                                             val controllerComponents: MessagesControllerComponents,
                                             view: CheckYourAnswersView
-                                          ) extends FrontendBaseController with I18nSupport {
+                                          ) extends FrontendBaseController with I18nSupport with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String): Action[AnyContent] =
     (auth(ern) andThen withMovement(arc) andThen getData andThen requireData) { implicit request =>

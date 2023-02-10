@@ -33,22 +33,22 @@ class AcceptMovementController @Inject()(
                                        override val messagesApi: MessagesApi,
                                        override val sessionRepository: SessionRepository,
                                        override val navigator: Navigator,
-                                       auth: AuthAction,
-                                       withMovement: MovementAction,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
+                                       override val auth: AuthAction,
+                                       override val withMovement: MovementAction,
+                                       override val getData: DataRetrievalAction,
+                                       override val requireData: DataRequiredAction,
                                        formProvider: AcceptMovementFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
                                        view: AcceptMovementView
-                                     ) extends BaseNavigationController {
+                                     ) extends BaseNavigationController with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String, mode: Mode): Action[AnyContent] =
-    (auth(ern) andThen withMovement(arc) andThen getData andThen requireData) { implicit request =>
+    authorisedDataRequest(ern, arc) { implicit request =>
       Ok(view(fillForm(AcceptMovementPage, formProvider()), mode))
     }
 
   def onSubmit(ern: String, arc: String, mode: Mode): Action[AnyContent] =
-    (auth(ern) andThen withMovement(arc) andThen getData andThen requireData).async { implicit request =>
+    authorisedDataRequestAsync(ern, arc) { implicit request =>
       formProvider().bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode))),

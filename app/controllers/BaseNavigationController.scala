@@ -16,13 +16,12 @@
 
 package controllers
 
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction, MovementAction}
 import models._
 import models.requests.DataRequest
 import navigation.BaseNavigator
 import pages.QuestionPage
 import play.api.libs.json.Format
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.mvc.Result
 import repositories.SessionRepository
 
 import scala.concurrent.Future

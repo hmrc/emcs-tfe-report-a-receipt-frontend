@@ -21,18 +21,24 @@ object AddMoreInformationMessages {
   sealed trait ViewMessages { _: i18n =>
     val title: String
     val heading: String
+    val satisfactoryTitle: String
+    val satisfactoryHeading: String
     val requiredError: String
   }
 
   object English extends ViewMessages with BaseEnglish {
     override val title = title("Do you want to give any more information about this movement?")
     override val heading = "Do you want to give any more information about this movement?"
+    override val satisfactoryTitle = title("Do you want to give any information about this movement?")
+    override val satisfactoryHeading = "Do you want to give any information about this movement?"
     override val requiredError: String = "Select yes if you want to give more information about this movement"
   }
 
   object Welsh extends ViewMessages with BaseWelsh {
     override val title = title("Do you want to give any more information about this movement?")
     override val heading = "Do you want to give any more information about this movement?"
+    override val satisfactoryTitle = title("Do you want to give any information about this movement?")
+    override val satisfactoryHeading = "Do you want to give any information about this movement?"
     override val requiredError: String = "Select yes if you want to give more information about this movement"
   }
 }

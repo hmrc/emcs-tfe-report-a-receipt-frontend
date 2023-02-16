@@ -92,11 +92,11 @@ class NavigatorSpec extends SpecBase {
         s"when the user answers is Yes" - {
 
           //TODO: Future story will have this route to the MoreInformation page
-          "must go to the CheckYourAnswers page" in {
+          "must go to the MoreInformation page" in {
 
             val userAnswers = emptyUserAnswers.set(AddMoreInformationPage, true)
 
-            navigator.nextPage(AddMoreInformationPage, NormalMode, userAnswers) mustBe routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+            navigator.nextPage(AddMoreInformationPage, NormalMode, userAnswers) mustBe routes.MoreInformationController.onPageLoad(testErn, testArc, NormalMode)
           }
         }
 

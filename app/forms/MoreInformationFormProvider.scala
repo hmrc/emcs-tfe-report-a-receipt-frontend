@@ -14,9 +14,22 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import queries.{Gettable, Settable}
-import utils.JsonUtil
+import forms.mappings.Mappings
+import play.api.data.Form
+import play.api.data.Forms.optional
+import play.api.data.Forms.{text => playText}
 
-trait QuestionPage[A] extends Page with Gettable[A] with Settable[A] with JsonUtil
+import javax.inject.Inject
+
+class MoreInformationFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[Option[String]] =
+    Form(
+      "more-information" -> optional(playText
+      .verifying(maxLength(350, "moreInformation.error.length"))
+      .verifying(regexp("^(?=.*[A-Za-z0-9]).{1,}$", "moreInformation.error.character"))
+      .verifying(regexp("^(?!.*javascript)(?!.*[<>;:]).{1,}$", "moreInformation.error.invalidCharacter")))
+    )
+}

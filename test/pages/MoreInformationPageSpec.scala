@@ -16,7 +16,19 @@
 
 package pages
 
-import queries.{Gettable, Settable}
+
+import pages.behaviours.PageBehaviours
 import utils.JsonUtil
 
-trait QuestionPage[A] extends Page with Gettable[A] with Settable[A] with JsonUtil
+
+class MoreInformationPageSpec extends PageBehaviours with JsonUtil {
+
+  "MoreInformationPage" - {
+
+    beRetrievable[Option[String]](MoreInformationPage)
+
+    beSettable[Option[String]](MoreInformationPage)
+
+    beRemovable[Option[String]](MoreInformationPage)
+  }
+}

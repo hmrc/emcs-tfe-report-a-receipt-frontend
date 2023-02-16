@@ -21,7 +21,7 @@ import controllers.actions._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.checkAnswers.{AcceptMovementSummary, AddMoreInformationSummary, DateOfArrivalSummary}
+import viewmodels.checkAnswers.{AcceptMovementSummary, AddMoreInformationSummary, DateOfArrivalSummary, MoreInformationSummary}
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 
@@ -41,7 +41,8 @@ class CheckYourAnswersController @Inject()(
         rows = Seq(
           DateOfArrivalSummary.row(request.userAnswers),
           AcceptMovementSummary.row(request.userAnswers),
-          AddMoreInformationSummary.row(request.userAnswers)
+          AddMoreInformationSummary.row(request.userAnswers),
+          MoreInformationSummary.row(request.userAnswers)
         ).flatten
       )))
     }

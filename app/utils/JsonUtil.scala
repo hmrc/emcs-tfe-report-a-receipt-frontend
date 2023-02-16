@@ -14,9 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package utils
 
-import queries.{Gettable, Settable}
-import utils.JsonUtil
+import play.api.libs.json.{Format, JsNull, JsResult, JsValue, Writes}
 
-trait QuestionPage[A] extends Page with Gettable[A] with Settable[A] with JsonUtil
+trait JsonUtil {
+
+  implicit def optionFormat[T: Format]: Format[Option[T]] = new Format[Option[T]]{
+    override def reads(json: JsValue): JsResult[Option[T]] = json.validateOpt[T]
+
+    override def writes(o: Option[T]): JsValue = o match {
+      case Some(t) ⇒ implicitly[Writes[T]].writes(t)
+      case None ⇒ JsNull
+    }
+  }
+}

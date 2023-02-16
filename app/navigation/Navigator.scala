@@ -36,6 +36,11 @@ class Navigator @Inject()() extends BaseNavigator {
         case _ => routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)
       }
     case AddMoreInformationPage =>
+      (userAnswers: UserAnswers) => userAnswers.get(AddMoreInformationPage) match {
+          case Some(true) => routes.MoreInformationController.onPageLoad(userAnswers.ern, userAnswers.arc, NormalMode)
+          case _ => routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)
+        }
+    case MoreInformationPage =>
       (userAnswers: UserAnswers) => routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)
     case _ =>
       (userAnswers: UserAnswers) => routes.IndexController.onPageLoad(userAnswers.ern, userAnswers.arc)

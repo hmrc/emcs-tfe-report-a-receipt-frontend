@@ -16,7 +16,11 @@
 
 package pages
 
-import queries.{Gettable, Settable}
-import utils.JsonUtil
+import play.api.libs.json.JsPath
 
-trait QuestionPage[A] extends Page with Gettable[A] with Settable[A] with JsonUtil
+case object MoreInformationPage extends QuestionPage[Option[String]] {
+
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "moreInformation"
+}

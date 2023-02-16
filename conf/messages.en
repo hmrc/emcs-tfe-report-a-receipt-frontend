@@ -108,4 +108,4 @@ moreInformation.checkYourAnswersLabel = More information
 moreInformation.error.length = Information must be 350 characters or less
 moreInformation.error.invalidCharacter = Information must not include < and > and : and ;
 moreInformation.error.character = Information must contain letters or numbers
-moreInformation.change.hidden = MoreInformation
+moreInformation.change.hidden = information about this movement

@@ -21,8 +21,7 @@ import controllers.actions._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.checkAnswers.{AcceptMovementSummary, AddMoreInformationSummary, DateOfArrivalSummary, MoreInformationSummary}
-import viewmodels.govuk.summarylist._
+import viewmodels.checkAnswers.CheckAnswersHelper
 import views.html.CheckYourAnswersView
 
 class CheckYourAnswersController @Inject()(
@@ -32,18 +31,18 @@ class CheckYourAnswersController @Inject()(
                                             override val getData: DataRetrievalAction,
                                             override val requireData: DataRequiredAction,
                                             val controllerComponents: MessagesControllerComponents,
-                                            view: CheckYourAnswersView
+                                            view: CheckYourAnswersView,
+                                            checkAnswersHelper: CheckAnswersHelper
                                           ) extends FrontendBaseController with I18nSupport with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String): Action[AnyContent] =
-    (auth(ern) andThen withMovement(arc) andThen getData andThen requireData) { implicit request =>
-      Ok(view(SummaryListViewModel(
-        rows = Seq(
-          DateOfArrivalSummary.row(request.userAnswers),
-          AcceptMovementSummary.row(request.userAnswers),
-          AddMoreInformationSummary.row(request.userAnswers),
-          MoreInformationSummary.row(request.userAnswers)
-        ).flatten
-      )))
+    authorisedDataRequest(ern, arc) { implicit request =>
+      Ok(view(routes.CheckYourAnswersController.onSubmit(ern, arc), checkAnswersHelper.summaryList()))
+    }
+
+  def onSubmit(ern: String, arc: String): Action[AnyContent] =
+    authorisedDataRequest(ern, arc) { _ =>
+      //TODO: Will be implemented by future story to submit data and redirect to confirmation
+      NotImplemented
     }
 }

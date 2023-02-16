@@ -23,8 +23,6 @@ POST        /:ern/:arc/when-receive-movement             controllers.DateOfArriv
 GET         /:ern/:arc/when-receive-movement/change      controllers.DateOfArrivalController.onPageLoad(ern: String, arc: String, mode: Mode = CheckMode)
 POST        /:ern/:arc/when-receive-movement/change      controllers.DateOfArrivalController.onSubmit(ern: String, arc: String, mode: Mode = CheckMode)
 
-GET         /:ern/:arc/check-your-answers                controllers.CheckYourAnswersController.onPageLoad(ern: String, arc: String)
-
 GET         /:ern/:arc/choose-accept-movement            controllers.AcceptMovementController.onPageLoad(ern: String, arc: String, mode: Mode = NormalMode)
 POST        /:ern/:arc/choose-accept-movement            controllers.AcceptMovementController.onSubmit(ern: String, arc: String, mode: Mode = NormalMode)
 GET         /:ern/:arc/choose-accept-movement/change     controllers.AcceptMovementController.onPageLoad(ern: String, arc: String, mode: Mode = CheckMode)
@@ -35,7 +33,10 @@ POST        /:ern/:arc/choose-more-information-movement           controllers.Ad
 GET         /:ern/:arc/choose-more-information-movement/change    controllers.AddMoreInformationController.onPageLoad(ern: String, arc: String, mode: Mode = CheckMode)
 POST        /:ern/:arc/choose-more-information-movement/change    controllers.AddMoreInformationController.onSubmit(ern: String, arc: String, mode: Mode = CheckMode)
 
-GET        /:ern/:arc/more-information-movement                        controllers.MoreInformationController.onPageLoad(ern: String, arc: String, mode: Mode = NormalMode)
-POST       /:ern/:arc/more-information-movement                       controllers.MoreInformationController.onSubmit(ern: String, arc: String, mode: Mode = NormalMode)
-GET        /:ern/:arc/more-information-movement/change                  controllers.MoreInformationController.onPageLoad(ern: String, arc: String, mode: Mode = CheckMode)
-POST       /:ern/:arc/more-information-movement/change                  controllers.MoreInformationController.onSubmit(ern: String, arc: String, mode: Mode = CheckMode)
+GET         /:ern/:arc/more-information-movement                        controllers.MoreInformationController.onPageLoad(ern: String, arc: String, mode: Mode = NormalMode)
+POST        /:ern/:arc/more-information-movement                       controllers.MoreInformationController.onSubmit(ern: String, arc: String, mode: Mode = NormalMode)
+GET         /:ern/:arc/more-information-movement/change                  controllers.MoreInformationController.onPageLoad(ern: String, arc: String, mode: Mode = CheckMode)
+POST        /:ern/:arc/more-information-movement/change                  controllers.MoreInformationController.onSubmit(ern: String, arc: String, mode: Mode = CheckMode)
+
+GET         /:ern/:arc/check-your-answers                controllers.CheckYourAnswersController.onPageLoad(ern: String, arc: String)
+POST        /:ern/:arc/check-your-answers                controllers.CheckYourAnswersController.onSubmit(ern: String, arc: String)

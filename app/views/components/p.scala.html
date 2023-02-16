@@ -14,29 +14,11 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
-@import models.requests.DataRequest
+@this()
 
-@this(
-        govukButton: GovukButton,
-        appConfig: AppConfig
-)
+@(classes: String = "govuk-body", id: Option[String] = None)(content: Html)
 
-@(primaryKey: String = "site.saveAndContinue")(implicit messages: Messages, request: DataRequest[_])
-
-<div class="govuk-button-group">
-
-  @govukButton(
-      ButtonViewModel(messages(primaryKey))
-  )
-
-  @govukButton(
-      ButtonViewModel(messages("site.saveAndReturnToMovement"))
-              .asSecondaryButton()
-              .asLink(appConfig.emcsMovementDetailsUrl(request.ern, request.arc))
-  )
-
-</div>
+<p @id.map(value => s"id=$value") class="@classes">@content</p>
 
 @{
     //$COVERAGE-OFF$

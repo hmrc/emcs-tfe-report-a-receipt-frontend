@@ -36,6 +36,14 @@ class MoreInformationFormProviderSpec extends StringFieldBehaviours {
       result.value.flatten mustBe Some("Test 123.")
     }
 
+    "more information form accepts a value that includes a Carriage Return" in {
+      val data = Map("more-information" -> "Test\n123.")
+      val result = form.bind(data)
+
+      result.errors mustBe Seq()
+      result.value.flatten mustBe Some("Test\n123.")
+    }
+
 
     "more information form accepts a value of 350 alpha characters that are valid" in {
       val data = Map("more-information" -> "a" * maxLength)
@@ -65,7 +73,7 @@ class MoreInformationFormProviderSpec extends StringFieldBehaviours {
       val data = Map("more-information" -> "..")
       val result = form.bind(data)
 
-      result.errors must contain only FormError("more-information", "moreInformation.error.character", Seq("^(?=.*[A-Za-z0-9]).{1,}$"))
+      result.errors must contain only FormError("more-information", "moreInformation.error.character", Seq("^(?s)(?=.*[A-Za-z0-9]).{1,}$"))
     }
 
     "return an error if more than 350 characters are used" in {
@@ -80,8 +88,8 @@ class MoreInformationFormProviderSpec extends StringFieldBehaviours {
       val result = form.bind(data)
 
       result.errors must contain only (
-        FormError("more-information", "moreInformation.error.character", Seq("^(?=.*[A-Za-z0-9]).{1,}$")),
-        FormError("more-information", "moreInformation.error.invalidCharacter", Seq("^(?!.*javascript)(?!.*[<>;:]).{1,}$"))
+        FormError("more-information", "moreInformation.error.character", Seq("^(?s)(?=.*[A-Za-z0-9]).{1,}$")),
+        FormError("more-information", "moreInformation.error.invalidCharacter", Seq("^(?s)(?!.*javascript)(?!.*[<>;:]).{1,}$"))
       )
     }
   }

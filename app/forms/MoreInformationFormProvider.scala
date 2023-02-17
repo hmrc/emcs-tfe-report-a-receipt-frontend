@@ -29,7 +29,7 @@ class MoreInformationFormProvider @Inject() extends Mappings {
     Form(
       "more-information" -> optional(playText
       .verifying(maxLength(350, "moreInformation.error.length"))
-      .verifying(regexp("^(?=.*[A-Za-z0-9]).{1,}$", "moreInformation.error.character"))
-      .verifying(regexp("^(?!.*javascript)(?!.*[<>;:]).{1,}$", "moreInformation.error.invalidCharacter")))
+      .verifying(regexp("^(?s)(?=.*[A-Za-z0-9]).{1,}$", "moreInformation.error.character"))
+      .verifying(regexp("^(?s)(?!.*javascript)(?!.*[<>;:]).{1,}$", "moreInformation.error.invalidCharacter")))
     )
 }

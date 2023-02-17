@@ -24,7 +24,7 @@ import pages.MoreInformationPage
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import utils.JsonUtil
+import utils.JsonOptionFormatter
 import views.html.MoreInformationView
 
 import javax.inject.Inject
@@ -41,7 +41,7 @@ class MoreInformationController @Inject()(
                                        formProvider: MoreInformationFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
                                        view: MoreInformationView
-                                     ) extends BaseNavigationController with AuthActionHelper with JsonUtil {
+                                     ) extends BaseNavigationController with AuthActionHelper with JsonOptionFormatter {
 
   def onPageLoad(ern: String, arc: String, mode: Mode): Action[AnyContent] =
     authorisedDataRequest(ern, arc) { implicit request =>

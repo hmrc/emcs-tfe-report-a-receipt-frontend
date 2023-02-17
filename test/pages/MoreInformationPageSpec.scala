@@ -18,10 +18,10 @@ package pages
 
 
 import pages.behaviours.PageBehaviours
-import utils.JsonUtil
+import utils.JsonOptionFormatter
 
 
-class MoreInformationPageSpec extends PageBehaviours with JsonUtil {
+class MoreInformationPageSpec extends PageBehaviours with JsonOptionFormatter {
 
   "MoreInformationPage" - {
 

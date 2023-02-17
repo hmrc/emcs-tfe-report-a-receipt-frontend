@@ -18,7 +18,7 @@ package utils
 
 import play.api.libs.json.{Format, JsNull, JsResult, JsValue, Writes}
 
-trait JsonUtil {
+trait JsonOptionFormatter {
 
   implicit def optionFormat[T: Format]: Format[Option[T]] = new Format[Option[T]]{
     override def reads(json: JsValue): JsResult[Option[T]] = json.validateOpt[T]

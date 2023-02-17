@@ -22,11 +22,11 @@ import pages.MoreInformationPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import utils.JsonUtil
+import utils.JsonOptionFormatter
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object MoreInformationSummary extends JsonUtil {
+object MoreInformationSummary extends JsonOptionFormatter {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(MoreInformationPage).flatMap(_.map {

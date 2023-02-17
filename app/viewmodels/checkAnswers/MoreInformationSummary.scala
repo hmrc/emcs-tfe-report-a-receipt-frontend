@@ -22,7 +22,7 @@ import models.requests.DataRequest
 import pages.MoreInformationPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.JsonOptionFormatter
 import viewmodels.govuk.summarylist._
@@ -37,11 +37,13 @@ class MoreInformationSummary @Inject()(link: link) extends JsonOptionFormatter {
     request.userAnswers.get(MoreInformationPage) match {
       case Some(Some(answer)) if answer != "" =>
         SummaryListRowViewModel(
-          key = messages("moreInformation.checkYourAnswers.label"),
-          value = ValueViewModel(HtmlFormat.escape(answer).toString),
+          key = "moreInformation.checkYourAnswers.label",
+          value = ValueViewModel(Text(answer)),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.MoreInformationController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, CheckMode).url)
-              .withVisuallyHiddenText(messages("moreInformation.change.hidden"))
+            ActionItemViewModel(
+              "site.change",
+              routes.MoreInformationController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, CheckMode).url
+            ).withVisuallyHiddenText(messages("moreInformation.change.hidden"))
           )
         )
       case _ =>

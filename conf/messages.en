@@ -79,7 +79,7 @@ dateOfArrival.error.invalid = The date you received the movement must be a real 
 dateOfArrival.error.notBeforeDateOfDispatch = The date you received the movement must be the same as or after {0} when the movement started
 dateOfArrival.error.notInFuture = The date you received the movement must be today or in the past
 dateOfArrival.checkYourAnswers.label = Date of arrival
-dateOfArrival.checkYourAnswers.change.hidden = when the movement arrived
+dateOfArrival.checkYourAnswers.change.hidden = the date of arrival
 
 acceptMovement.title = Do you want to accept this movement?
 acceptMovement.heading = Do you want to accept this movement?
@@ -108,6 +108,7 @@ moreInformation.error.length = Information must be 350 characters or less
 moreInformation.error.invalidCharacter = Information must not include < and > and : and ;
 moreInformation.error.character = Information must contain letters or numbers
 moreInformation.change.hidden = information about this movement
+moreInformation.checkYourAnswers.addMoreInformation = Enter more information about movement (optional)
 
 checkYourAnswers.title = Check your answers before submitting your receipt
 checkYourAnswers.heading = Check your answers before submitting your receipt

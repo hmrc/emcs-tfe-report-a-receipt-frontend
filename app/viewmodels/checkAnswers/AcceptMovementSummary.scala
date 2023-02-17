@@ -17,12 +17,11 @@
 package viewmodels.checkAnswers
 
 import controllers.routes
-import models.CheckMode
+import models.NormalMode
 import models.requests.DataRequest
 import pages.AcceptMovementPage
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
@@ -32,18 +31,11 @@ class AcceptMovementSummary  {
   def row()(implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] =
     request.userAnswers.get(AcceptMovementPage).map {
       answer =>
-
-        val value = ValueViewModel(
-          HtmlContent(
-            HtmlFormat.escape(messages(s"acceptMovement.checkYourAnswers.$answer"))
-          )
-        )
-
         SummaryListRowViewModel(
           key     = "acceptMovement.checkYourAnswers.label",
-          value   = value,
+          value   = ValueViewModel(Text(messages(s"acceptMovement.checkYourAnswers.$answer"))),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.AcceptMovementController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, CheckMode).url)
+            ActionItemViewModel("site.change", routes.AcceptMovementController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, NormalMode).url)
               .withVisuallyHiddenText(messages("acceptMovement.checkYourAnswers.change.hidden"))
           )
         )

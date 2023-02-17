@@ -27,11 +27,12 @@
 <div class="govuk-button-group">
 
   @govukButton(
-      ButtonViewModel(messages(primaryKey))
+      ButtonViewModel(messages(primaryKey)).preventingDoubleClick()
   )
 
   @govukButton(
       ButtonViewModel(messages("site.saveAndReturnToMovement"))
+              .preventingDoubleClick()
               .asSecondaryButton()
               .asLink(appConfig.emcsMovementDetailsUrl(request.ern, request.arc))
   )

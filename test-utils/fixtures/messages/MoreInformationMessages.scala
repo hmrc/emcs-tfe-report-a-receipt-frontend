@@ -21,20 +21,24 @@ object MoreInformationMessages {
   sealed trait ViewMessages { _: i18n =>
     val title: String
     val heading: String
-    val checkYourAnswersLabel: String
     val validationErrorInvalidChars: String
     val validationError: String
     val lengthError: String
+    val checkYourAnswersLabel: String
+    val hiddenChangeLink: String
+    val addMoreInformation: String
   }
 
   object English extends ViewMessages with BaseEnglish {
     override val title: String = title("Give more information about this movement")
     override val heading = "Give more information about this movement"
-    override val checkYourAnswersLabel = "More information"
     override val validationErrorInvalidChars = "Information must not include < and > and : and ;"
     override val validationError = "Information must contain letters or numbers"
     override val lengthError = "Information must be 350 characters or less"
-    }
+    override val checkYourAnswersLabel = "More information"
+    override val hiddenChangeLink = "information about this movement"
+    override val addMoreInformation = "Enter more information about movement (optional)"
+  }
 
   object Welsh extends ViewMessages with BaseWelsh {
     override val title: String = title("Give more information about this movement")
@@ -43,5 +47,7 @@ object MoreInformationMessages {
     override val validationErrorInvalidChars = "Information must not include < and > and : and ;"
     override val validationError = "Information must contain letters or numbers"
     override val lengthError = "Information must be 350 characters or less"
+    override val hiddenChangeLink = "information about this movement"
+    override val addMoreInformation = "Enter more information about movement (optional)"
   }
 }

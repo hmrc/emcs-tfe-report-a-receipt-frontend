@@ -30,11 +30,12 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import utils.JsonOptionFormatter
 import views.html.MoreInformationView
 
 import scala.concurrent.Future
 
-class MoreInformationControllerSpec extends SpecBase with MockitoSugar {
+class MoreInformationControllerSpec extends SpecBase with MockitoSugar with JsonOptionFormatter {
 
   def onwardRoute: Call = Call("GET", "/foo")
 

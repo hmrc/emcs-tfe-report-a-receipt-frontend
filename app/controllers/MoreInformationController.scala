@@ -55,9 +55,9 @@ class MoreInformationController @Inject()(
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
-            updateYesNo <- save(AddMoreInformationPage, value.getOrElse("") != "")
-            savedMoreInfo <- save(MoreInformationPage, value, updateYesNo)
-          } yield Redirect(navigator.nextPage(MoreInformationPage, NormalMode, savedMoreInfo))
+            updatedYesNo <- save(AddMoreInformationPage, value.exists(_.nonEmpty))
+            saveAndRedirect <- saveAndRedirect(MoreInformationPage, value, updatedYesNo, mode)
+          } yield saveAndRedirect
       )
     }
 }

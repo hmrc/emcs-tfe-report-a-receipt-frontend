@@ -31,6 +31,12 @@ trait BaseNavigationController extends BaseController {
   val sessionRepository: SessionRepository
   val navigator: BaseNavigator
 
+  def saveAndRedirect[A](page: QuestionPage[A], answer: A, currentAnswers: UserAnswers, mode: Mode)
+                        (implicit format: Format[A]): Future[Result] =
+    save(page, answer, currentAnswers).map { updatedAnswers =>
+      Redirect(navigator.nextPage(page, mode, updatedAnswers))
+    }
+
   def saveAndRedirect[A](page: QuestionPage[A], answer: A, mode: Mode)
                         (implicit request: DataRequest[_], format: Format[A]): Future[Result] =
     save(page, answer).map { updatedAnswers =>

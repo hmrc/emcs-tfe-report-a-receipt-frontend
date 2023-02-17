@@ -20,10 +20,11 @@ import controllers.actions._
 import forms.AddMoreInformationFormProvider
 import models.Mode
 import navigation.Navigator
-import pages.AddMoreInformationPage
+import pages.{AddMoreInformationPage, MoreInformationPage}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import utils.JsonOptionFormatter
 import views.html.AddMoreInformationView
 
 import javax.inject.Inject
@@ -40,7 +41,7 @@ class AddMoreInformationController @Inject()(
                                        formProvider: AddMoreInformationFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
                                        view: AddMoreInformationView
-                                     ) extends BaseNavigationController with AuthActionHelper {
+                                     ) extends BaseNavigationController with AuthActionHelper with JsonOptionFormatter {
 
   def onPageLoad(ern: String, arc: String, mode: Mode): Action[AnyContent] =
     authorisedDataRequest(ern, arc) { implicit request =>
@@ -52,8 +53,15 @@ class AddMoreInformationController @Inject()(
       formProvider().bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
-        value =>
-          saveAndRedirect(AddMoreInformationPage, value, mode)
+        {
+          case true =>
+            saveAndRedirect(AddMoreInformationPage, true, mode)
+          case false =>
+            for {
+              removedMoreInfo <- save(MoreInformationPage, None)
+              saveAndRedirect <- saveAndRedirect(AddMoreInformationPage, false, removedMoreInfo, mode)
+            } yield saveAndRedirect
+        }
       )
     }
 }

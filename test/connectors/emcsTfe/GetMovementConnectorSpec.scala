@@ -18,7 +18,7 @@ package connectors.emcsTfe
 
 import base.SpecBase
 import config.AppConfig
-import mocks.MockHttpClient
+import mocks.connectors.MockHttpClient
 import models.response.JsonValidationError
 import models.response.emcsTfe.GetMovementResponse
 import org.scalatest.BeforeAndAfterAll

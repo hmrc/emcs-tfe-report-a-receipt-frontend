@@ -38,5 +38,5 @@ POST        /:ern/:arc/more-information-movement                       controlle
 GET         /:ern/:arc/more-information-movement/change                  controllers.MoreInformationController.onPageLoad(ern: String, arc: String, mode: Mode = CheckMode)
 POST        /:ern/:arc/more-information-movement/change                  controllers.MoreInformationController.onSubmit(ern: String, arc: String, mode: Mode = CheckMode)
 
-GET         /:ern/:arc/check-your-answers                controllers.CheckYourAnswersController.onPageLoad(ern: String, arc: String)
-POST        /:ern/:arc/check-your-answers                controllers.CheckYourAnswersController.onSubmit(ern: String, arc: String)
+GET         /:ern/:arc/check-answers                controllers.CheckYourAnswersController.onPageLoad(ern: String, arc: String)
+POST        /:ern/:arc/check-answers                controllers.CheckYourAnswersController.onSubmit(ern: String, arc: String)

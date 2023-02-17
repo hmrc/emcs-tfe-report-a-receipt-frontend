@@ -41,7 +41,7 @@ class MoreInformationFormProviderSpec extends StringFieldBehaviours {
       val result = form.bind(data)
 
       result.errors mustBe Seq()
-      result.value.flatten mustBe Some("Test\n123.")
+      result.value.flatten mustBe Some("Test 123.")
     }
 
 

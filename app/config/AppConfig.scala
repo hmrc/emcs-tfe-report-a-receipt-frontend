@@ -39,7 +39,7 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig, configuration: Configu
   val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
   val signOutUrl: String       = configuration.get[String]("urls.signOut")
 
-  private val exitSurveyBaseUrl: String = configuration.get[Service]("microservice.services.feedback-frontend").baseUrl
+  private val exitSurveyBaseUrl: String = servicesConfig.baseUrl("feedback-frontend")
   val exitSurveyUrl: String             = s"$exitSurveyBaseUrl/feedback/emcs-tfe-report-a-receipt-frontend"
 
   val languageTranslationEnabled: Boolean =

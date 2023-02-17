@@ -101,3 +101,11 @@ addMoreInformation.satisfactory.heading = Do you want to give any information ab
 addMoreInformation.checkYourAnswersLabel = Give any more information about this movement
 addMoreInformation.error.required = Select yes if you want to give more information about this movement
 addMoreInformation.change.hidden = if you want to give any more information about this movement
+
+moreInformation.title = Give more information about this movement
+moreInformation.heading = Give more information about this movement
+moreInformation.checkYourAnswersLabel = More information
+moreInformation.error.length = Information must be 350 characters or less
+moreInformation.error.invalidCharacter = Information must not include < and > and : and ;
+moreInformation.error.character = Information must contain letters or numbers
+moreInformation.change.hidden = information about this movement

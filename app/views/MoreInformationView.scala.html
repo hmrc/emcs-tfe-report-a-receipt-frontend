@@ -16,6 +16,7 @@
 
 @import models.requests.DataRequest
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.charactercount.CharacterCount
+@import viewmodels.LabelSize
 
 @this(
     layout: templates.Layout,
@@ -41,7 +42,7 @@
             id = "more-information",
             name = "more-information",
             maxLength = Some(350),
-            label = LabelViewModel(HtmlContent(heading)),
+            label = LabelViewModel(HtmlContent(heading)).asPageHeading(LabelSize.Large),
             value = form("more-information").value,
             errorMessage = form.errors("more-information") match {
                 case Nil => None
@@ -56,7 +57,8 @@
 }
 
 @heading = {
-    @h1("moreInformation.heading", Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
+<span class="govuk-caption-l">@messages("arc.subHeading", request.arc)</span>
+@messages("moreInformation.heading")
 }
 
 @{

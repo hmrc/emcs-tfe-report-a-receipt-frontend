@@ -32,18 +32,18 @@ final case class UserAnswers(internalId: String,
     Reads.optionNoError(Reads.at(page.path)).reads(data).asOpt.flatten
 
   def set[A](page: Settable[A], value: A)(implicit writes: Writes[A]): UserAnswers =
-    cleanUp(page, Some(value)) {
+    handleResult {
       data.setObject(page.path, Json.toJson(value))
     }
 
   def remove[A](page: Settable[A]): UserAnswers =
-    cleanUp(page) {
+    handleResult {
       data.removeObject(page.path)
     }
 
-  private[models] def cleanUp[A](page: Settable[A], value: Option[A] = None): JsResult[JsObject] => UserAnswers = {
+  private[models] def handleResult: JsResult[JsObject] => UserAnswers = {
     case JsSuccess(updatedAnswers, _) =>
-      page.cleanup(value, copy(data = updatedAnswers))
+      copy(data = updatedAnswers)
     case JsError(errors) =>
       throw JsResultException(errors)
   }
@@ -57,8 +57,8 @@ object UserAnswers {
 
     (
       (__ \ "internalId").read[String] and
-      (__ \ "ern").read[String] and
-      (__ \ "arc").read[String] and
+        (__ \ "ern").read[String] and
+        (__ \ "arc").read[String] and
         (__ \ "data").read[JsObject] and
         (__ \ "lastUpdated").read(MongoJavatimeFormats.instantFormat)
       ) (UserAnswers.apply _)
@@ -70,8 +70,8 @@ object UserAnswers {
 
     (
       (__ \ "internalId").write[String] and
-      (__ \ "ern").write[String] and
-      (__ \ "arc").write[String] and
+        (__ \ "ern").write[String] and
+        (__ \ "arc").write[String] and
         (__ \ "data").write[JsObject] and
         (__ \ "lastUpdated").write(MongoJavatimeFormats.instantFormat)
       ) (unlift(UserAnswers.unapply))

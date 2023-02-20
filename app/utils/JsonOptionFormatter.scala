@@ -29,3 +29,5 @@ trait JsonOptionFormatter {
     }
   }
 }
+
+object JsonOptionFormatter extends JsonOptionFormatter

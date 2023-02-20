@@ -31,25 +31,30 @@ trait BaseNavigationController extends BaseController {
   val sessionRepository: SessionRepository
   val navigator: BaseNavigator
 
+  def saveAndRedirect[A](page: QuestionPage[A], answer: A, currentAnswers: UserAnswers, mode: Mode)
+                        (implicit format: Format[A]): Future[Result] =
+    save(page, answer, currentAnswers).map { updatedAnswers =>
+      Redirect(navigator.nextPage(page, mode, updatedAnswers))
+    }
+
   def saveAndRedirect[A](page: QuestionPage[A], answer: A, mode: Mode)
                         (implicit request: DataRequest[_], format: Format[A]): Future[Result] =
     save(page, answer).map { updatedAnswers =>
       Redirect(navigator.nextPage(page, mode, updatedAnswers))
     }
 
-  def save[A](page: QuestionPage[A], answer: A)
-             (implicit request: DataRequest[_], format: Format[A]): Future[UserAnswers] = {
-
-    val previousAnswer = request.userAnswers.get[A](page)
-
-    if (previousAnswer.contains(answer)) {
-      Future.successful(request.userAnswers)
+  def save[A](page: QuestionPage[A], answer: A, currentAnswers: UserAnswers)(implicit format: Format[A]): Future[UserAnswers] =
+    if (currentAnswers.get[A](page).contains(answer)) {
+      Future.successful(currentAnswers)
     } else {
       for {
-        updatedAnswers <- Future.successful(request.userAnswers.set(page, answer))
+        updatedAnswers <- Future.successful(currentAnswers.set(page, answer))
         _ <- sessionRepository.set(updatedAnswers)
       } yield updatedAnswers
     }
-  }
+
+  def save[A](page: QuestionPage[A], answer: A)
+             (implicit request: DataRequest[_], format: Format[A]): Future[UserAnswers] =
+    save(page, answer, request.userAnswers)
 }
 

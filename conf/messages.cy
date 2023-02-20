@@ -53,9 +53,6 @@ index.title = emcs-tfe-report-a-receipt-frontend
 index.heading = emcs-tfe-report-a-receipt-frontend
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
 
-checkYourAnswers.title = Check your answers before submitting your receipt
-checkYourAnswers.heading = Check your answers before submitting your receipt
-
 journeyRecovery.continue.title = Sorry, there is a problem with the service
 journeyRecovery.continue.heading = Sorry, there is a problem with the service
 journeyRecovery.continue.guidance = [Add content to explain how to proceed.]
@@ -75,14 +72,14 @@ arc.subHeading = Report of receipt for {0}
 dateOfArrival.title = When did this movement arrive?
 dateOfArrival.heading = When did this movement arrive?
 dateOfArrival.hint = For example, 31 8 2022
-dateOfArrival.checkYourAnswersLabel = When the movement arrived
 dateOfArrival.error.required.all = Enter the date you received the movement
 dateOfArrival.error.required.two = The date you received the movement must include a {0} and {1}
 dateOfArrival.error.required = The date you received the movement must include a {0}
 dateOfArrival.error.invalid = The date you received the movement must be a real date
 dateOfArrival.error.notBeforeDateOfDispatch = The date you received the movement must be the same as or after {0} when the movement started
 dateOfArrival.error.notInFuture = The date you received the movement must be today or in the past
-dateOfArrival.change.hidden = when the movement arrived
+dateOfArrival.checkYourAnswers.label = Date of arrival
+dateOfArrival.checkYourAnswers.change.hidden = the date of arrival
 
 acceptMovement.title = Do you want to accept this movement?
 acceptMovement.heading = Do you want to accept this movement?
@@ -90,22 +87,32 @@ acceptMovement.satisfactory = Yes, it is satisfactory
 acceptMovement.unsatisfactory = Yes, but it is unsatisfactory
 acceptMovement.refused = No, I want to refuse it
 acceptMovement.partiallyRefused = No, I want to partially refuse it
-acceptMovement.checkYourAnswersLabel = Accept this movement
 acceptMovement.error.required = Select if you want to accept this movement
-acceptMovement.change.hidden = answer for whether you accept this movement
+acceptMovement.checkYourAnswers.label = Receipt status
+acceptMovement.checkYourAnswers.satisfactory = Accepted and satisfactory
+acceptMovement.checkYourAnswers.unsatisfactory = Accepted and unsatisfactory
+acceptMovement.checkYourAnswers.refused = Refused
+acceptMovement.checkYourAnswers.partiallyRefused = Partially refused
+acceptMovement.checkYourAnswers.change.hidden = the receipt status
 
 addMoreInformation.title = Do you want to give any more information about this movement?
 addMoreInformation.heading = Do you want to give any more information about this movement?
 addMoreInformation.satisfactory.title = Do you want to give any information about this movement?
 addMoreInformation.satisfactory.heading = Do you want to give any information about this movement?
-addMoreInformation.checkYourAnswersLabel = Give any more information about this movement
 addMoreInformation.error.required = Select yes if you want to give more information about this movement
-addMoreInformation.change.hidden = if you want to give any more information about this movement
 
 moreInformation.title = Give more information about this movement
 moreInformation.heading = Give more information about this movement
-moreInformation.checkYourAnswersLabel = More information
+moreInformation.checkYourAnswers.label = More information
 moreInformation.error.length = Information must be 350 characters or less
 moreInformation.error.invalidCharacter = Information must not include < and > and : and ;
 moreInformation.error.character = Information must contain letters or numbers
 moreInformation.change.hidden = information about this movement
+moreInformation.checkYourAnswers.addMoreInformation = Enter more information about movement (optional)
+
+checkYourAnswers.title = Check your answers before submitting your receipt
+checkYourAnswers.heading = Check your answers before submitting your receipt
+checkYourAnswers.movementDetails.h2 = Movement details
+checkYourAnswers.submit.h2 = Now submit your report of receipt
+checkYourAnswers.declaration = By submitting this report of receipt you are confirming that, to the best of your knowledge, the details you are providing are correct.
+checkYourAnswers.submit.button = Submit report of receipt

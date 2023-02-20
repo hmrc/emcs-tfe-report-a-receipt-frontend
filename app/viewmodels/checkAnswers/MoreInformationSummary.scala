@@ -17,27 +17,41 @@
 package viewmodels.checkAnswers
 
 import controllers.routes
-import models.{CheckMode, UserAnswers}
+import models.CheckMode
+import models.requests.DataRequest
 import pages.MoreInformationPage
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.JsonOptionFormatter
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
+import views.html.components.link
 
-object MoreInformationSummary extends JsonOptionFormatter {
+import javax.inject.Inject
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(MoreInformationPage).flatMap(_.map {
-      answer =>
+class MoreInformationSummary @Inject()(link: link) extends JsonOptionFormatter {
+
+  def row()(implicit request: DataRequest[_], messages: Messages): SummaryListRow =
+    request.userAnswers.get(MoreInformationPage) match {
+      case Some(Some(answer)) if answer != "" =>
         SummaryListRowViewModel(
-          key = "moreInformation.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlFormat.escape(answer).toString),
+          key = "moreInformation.checkYourAnswers.label",
+          value = ValueViewModel(Text(answer)),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.MoreInformationController.onPageLoad(answers.ern, answers.arc, CheckMode).url)
-              .withVisuallyHiddenText(messages("moreInformation.change.hidden"))
+            ActionItemViewModel(
+              "site.change",
+              routes.MoreInformationController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, CheckMode).url
+            ).withVisuallyHiddenText(messages("moreInformation.change.hidden"))
           )
         )
-    })
+      case _ =>
+        SummaryListRowViewModel(
+          key = "moreInformation.checkYourAnswers.label",
+          value = ValueViewModel(HtmlContent(link(
+            link = routes.MoreInformationController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, CheckMode).url,
+            messageKey = "moreInformation.checkYourAnswers.addMoreInformation"
+          )))
+        )
+    }
 }

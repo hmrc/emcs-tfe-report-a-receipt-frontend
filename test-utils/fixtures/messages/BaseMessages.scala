@@ -31,6 +31,7 @@ sealed trait BaseMessages { _: i18n =>
   val year: String
   val yes: String
   val no: String
+  val change: String
 }
 
 trait BaseEnglish extends BaseMessages with EN {
@@ -44,6 +45,7 @@ trait BaseEnglish extends BaseMessages with EN {
   override val year: String = "Year"
   override val yes: String = "Yes"
   override val no: String = "No"
+  override val change: String = "Change"
 }
 object BaseEnglish extends BaseEnglish
 
@@ -58,5 +60,6 @@ trait BaseWelsh extends BaseMessages with CY {
   override val year: String = "Year"
   override val yes: String = "Yes"
   override val no: String = "No"
+  override val change: String = "Change"
 }
 object BaseWelsh extends BaseWelsh

@@ -36,8 +36,8 @@ object DateOfArrivalMessages {
     override val title = title("When did this movement arrive?")
     override val heading = "When did this movement arrive?"
     override val hint = "For example, 31 8 2022"
-    override val checkYourAnswersLabel = "When the movement arrived"
-    override val hiddenChangeLinkText = "when the movement arrived"
+    override val checkYourAnswersLabel = "Date of arrival"
+    override val hiddenChangeLinkText = "the date of arrival"
     override val requiredError = "Enter the date you received the movement"
     override def twoRequiredError(field1: String, field2: String) = s"The date you received the movement must include a $field1 and $field2"
     override def oneRequiredError(field: String): String = s"The date you received the movement must include a $field"
@@ -50,8 +50,8 @@ object DateOfArrivalMessages {
     override val title = title("When did this movement arrive?")
     override val heading = "When did this movement arrive?"
     override val hint = "For example, 31 8 2022"
-    override val checkYourAnswersLabel = "When the movement arrived"
-    override val hiddenChangeLinkText = "when the movement arrived"
+    override val checkYourAnswersLabel = "Date of arrival"
+    override val hiddenChangeLinkText = "the date of arrival"
     override val requiredError = "Enter the date you received the movement"
     override def twoRequiredError(field1: String, field2: String) = s"The date you received the movement must include a $field1 and $field2"
     override def oneRequiredError(field: String): String = s"The date you received the movement must include a $field"

@@ -17,29 +17,38 @@
 package controllers
 
 import base.SpecBase
+import mocks.viewmodels.MockCheckAnswersHelper
+import play.api.inject
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import viewmodels.checkAnswers.CheckAnswersHelper
 import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersView
 
-class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
+class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency with MockCheckAnswersHelper {
 
   "Check Your Answers Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(inject.bind[CheckAnswersHelper].toInstance(mockCheckAnswersHelper))
+        .build()
 
       running(application) {
+
+        val list = SummaryListViewModel(Seq.empty)
+
+        MockCheckAnswersHelper.summaryList().returns(list)
+
         val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad(testErn, testArc).url)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[CheckYourAnswersView]
-        val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(list)(dataRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(routes.CheckYourAnswersController.onSubmit(testErn, testArc), list)(dataRequest(request), messages(application)).toString
       }
     }
 

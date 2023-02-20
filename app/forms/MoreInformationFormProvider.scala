@@ -28,8 +28,15 @@ class MoreInformationFormProvider @Inject() extends Mappings {
   def apply(): Form[Option[String]] =
     Form(
       "more-information" -> optional(playText
-      .verifying(maxLength(350, "moreInformation.error.length"))
-      .verifying(regexp("^(?s)(?=.*[A-Za-z0-9]).{1,}$", "moreInformation.error.character"))
-      .verifying(regexp("^(?s)(?!.*javascript)(?!.*[<>;:]).{1,}$", "moreInformation.error.invalidCharacter")))
+        .transform[String](
+          _.replace("\n", " ")
+            .replace("\r", " ")
+            .replaceAll(" +", " ")
+            .trim,
+          identity
+        )
+        .verifying(maxLength(350, "moreInformation.error.length"))
+        .verifying(regexp("^(?s)(?=.*[A-Za-z0-9]).{1,}$", "moreInformation.error.character"))
+        .verifying(regexp("^(?s)(?!.*javascript)(?!.*[<>;:]).{1,}$", "moreInformation.error.invalidCharacter")))
     )
 }

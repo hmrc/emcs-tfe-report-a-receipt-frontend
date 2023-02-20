@@ -16,30 +16,27 @@
 
 package viewmodels.checkAnswers
 
-import java.time.format.DateTimeFormatter
-
 import controllers.routes
-import models.{CheckMode, UserAnswers}
+import models.CheckMode
+import models.requests.DataRequest
 import pages.DateOfArrivalPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import utils.DateUtils
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object DateOfArrivalSummary  {
+class DateOfArrivalSummary extends DateUtils {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(DateOfArrivalPage).map {
+  def row()(implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] =
+    request.userAnswers.get(DateOfArrivalPage).map {
       answer =>
-
-        val dateFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
-
         SummaryListRowViewModel(
-          key     = "dateOfArrival.checkYourAnswersLabel",
-          value   = ValueViewModel(answer.format(dateFormatter)),
+          key     = "dateOfArrival.checkYourAnswers.label",
+          value   = ValueViewModel(answer.formatDateForUIOutput()),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.DateOfArrivalController.onPageLoad(answers.ern, answers.arc, CheckMode).url)
-              .withVisuallyHiddenText(messages("dateOfArrival.change.hidden"))
+            ActionItemViewModel("site.change", routes.DateOfArrivalController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, CheckMode).url)
+              .withVisuallyHiddenText(messages("dateOfArrival.checkYourAnswers.change.hidden"))
           )
         )
     }

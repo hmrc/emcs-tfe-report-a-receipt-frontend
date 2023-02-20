@@ -31,14 +31,6 @@ class UserAnswersSpec extends SpecBase {
   object TestPage extends QuestionPage[String] {
     override def path: JsPath = JsPath \ toString
     override def toString: String = "TestPage"
-    override def cleanup(value: Option[String], emptyUserAnswers: UserAnswers): UserAnswers = {
-      emptyUserAnswers.remove(TestPage2)
-    }
-  }
-
-  object TestPage2 extends QuestionPage[String] {
-    override def path: JsPath = JsPath \ toString
-    override def toString: String = "TestPage2"
   }
 
   "UserAnswers" - {
@@ -59,19 +51,6 @@ class UserAnswersSpec extends SpecBase {
         "must change the answer" in {
           val withData = emptyUserAnswers.copy(data = Json.obj(
             "TestPage" -> "foo"
-          ))
-          withData.set(TestPage, "bar") mustBe emptyUserAnswers.copy(data = Json.obj(
-            "TestPage" -> "bar"
-          ))
-        }
-      }
-
-      "when data exists for that page and TestPage2 exists" - {
-
-        "must change the answer AND remove TestPage2 as part of the cleanup rules" in {
-          val withData = emptyUserAnswers.copy(data = Json.obj(
-            "TestPage" -> "foo",
-            "TestPage2" -> "bar",
           ))
           withData.set(TestPage, "bar") mustBe emptyUserAnswers.copy(data = Json.obj(
             "TestPage" -> "bar"
@@ -106,9 +85,9 @@ class UserAnswersSpec extends SpecBase {
 
         "must return the emptyUserAnswers unchanged" in {
           val withData = emptyUserAnswers.copy(data = Json.obj(
-            "TestPage" -> "foo"
+            "AnotherPage" -> "foo"
           ))
-          withData.remove(TestPage2) mustBe withData
+          withData.remove(TestPage) mustBe withData
         }
       }
 
@@ -121,32 +100,21 @@ class UserAnswersSpec extends SpecBase {
           withData.remove(TestPage) mustBe emptyUserAnswers
         }
       }
-
-      "when data exists for that page and TestPage2 exists" - {
-
-        "must remove the answer AND remove TestPage2 as part of the cleanup rules" in {
-          val withData = emptyUserAnswers.copy(data = Json.obj(
-            "TestPage" -> "foo",
-            "TestPage2" -> "bar",
-          ))
-          withData.remove(TestPage) mustBe emptyUserAnswers
-        }
-      }
     }
 
-    "when calling .cleanUp(page)" - {
+    "when calling .handleResult" - {
 
       "when failed to update the UserAnswers" - {
 
         "must throw the exception" in {
-          intercept[JsResultException](emptyUserAnswers.cleanUp(TestPage2)(JsError("OhNo")))
+          intercept[JsResultException](emptyUserAnswers.handleResult(JsError("OhNo")))
         }
       }
 
       "when updated UserAnswers successfully" - {
 
         "must return the user answers" in {
-          emptyUserAnswers.cleanUp(TestPage2)(JsSuccess(emptyUserAnswers.data)) mustBe emptyUserAnswers
+          emptyUserAnswers.handleResult(JsSuccess(emptyUserAnswers.data)) mustBe emptyUserAnswers
         }
       }
     }

@@ -18,7 +18,7 @@ package controllers.actions
 
 import base.SpecBase
 import handlers.ErrorHandler
-import mocks.MockEmcsTfeConnector
+import mocks.connectors.MockEmcsTfeConnector
 import models.requests.{MovementRequest, UserRequest}
 import models.response.{ErrorResponse, JsonValidationError}
 import models.response.emcsTfe.GetMovementResponse

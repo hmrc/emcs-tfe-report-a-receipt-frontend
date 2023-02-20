@@ -17,18 +17,36 @@
 @import models.requests.DataRequest
 
 @this(
-    layout: templates.Layout,
-    govukSummaryList: GovukSummaryList,
-    h1: components.h1
+        layout: templates.Layout,
+        govukSummaryList: GovukSummaryList,
+        formHelper: FormWithCSRF,
+        h1: components.h1,
+        h2: components.h2,
+        p: components.p,
+        saveAndContinue: components.saveAndContinue
 )
 
-@(list: SummaryList)(implicit request: DataRequest[_], messages: Messages)
+@(submitAction: Call, list: SummaryList)(implicit request: DataRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("checkYourAnswers.title"))) {
 
-    @h1("checkYourAnswers.heading", Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
+    @formHelper(submitAction) {
 
-    @govukSummaryList(list)
+     @h1("checkYourAnswers.heading", Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
+
+     @h2("checkYourAnswers.movementDetails.h2")
+
+     @govukSummaryList(list)
+
+     @h2("checkYourAnswers.submit.h2")
+
+     @p() {
+         @messages("checkYourAnswers.declaration")
+     }
+
+     @saveAndContinue("checkYourAnswers.submit.button")
+
+    }
 }
 
 @{

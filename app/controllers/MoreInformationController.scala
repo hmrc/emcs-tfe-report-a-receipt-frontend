@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.MoreInformationFormProvider
 import models.Mode
 import navigation.Navigator
-import pages.MoreInformationPage
+import pages.{AddMoreInformationPage, MoreInformationPage}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -54,7 +54,10 @@ class MoreInformationController @Inject()(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
-          saveAndRedirect(MoreInformationPage, value, mode)
+          for {
+            updatedYesNo <- save(AddMoreInformationPage, value.exists(_.nonEmpty))
+            saveAndRedirect <- saveAndRedirect(MoreInformationPage, value, updatedYesNo, mode)
+          } yield saveAndRedirect
       )
     }
 }

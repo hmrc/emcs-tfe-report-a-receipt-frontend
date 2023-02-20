@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,17 +12,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package queries
+@this()
 
-import play.api.libs.json.JsPath
+@(classes: String = "govuk-body", id: Option[String] = None)(content: Html)
 
-sealed trait Query {
+<p @id.map(value => s"id=$value") class="@classes">@content</p>
 
-  def path: JsPath
+@{
+    //$COVERAGE-OFF$
 }
-
-trait Gettable[A] extends Query
-
-trait Settable[A] extends Query

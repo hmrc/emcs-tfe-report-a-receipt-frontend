@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package mocks
+package mocks.connectors
 
 import connectors.emcsTfe.GetMovementConnector
 import models.response.ErrorResponse

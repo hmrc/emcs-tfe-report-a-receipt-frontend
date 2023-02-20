@@ -26,6 +26,12 @@ object AcceptMovementMessages {
     val refused: String
     val partiallyRefused: String
     val requiredError: String
+    val checkYourAnswersLabel: String
+    val hiddenChangeLinkText: String
+    val cyaSatisfactory: String
+    val cyaUnsatisfactory: String
+    val cyaRefused: String
+    val cyaPartiallyRefused: String
   }
 
   object English extends ViewMessages with BaseEnglish {
@@ -35,7 +41,13 @@ object AcceptMovementMessages {
     override val unsatisfactory = "Yes, but it is unsatisfactory"
     override val refused = "No, I want to refuse it"
     override val partiallyRefused = "No, I want to partially refuse it"
-    override val requiredError: String = "Select if you want to accept this movement"
+    override val requiredError = "Select if you want to accept this movement"
+    override val checkYourAnswersLabel = "Receipt status"
+    override val hiddenChangeLinkText = "the receipt status"
+    override val cyaSatisfactory = "Accepted and satisfactory"
+    override val cyaUnsatisfactory = "Accepted and unsatisfactory"
+    override val cyaRefused = "Refused"
+    override val cyaPartiallyRefused = "Partially refused"
   }
 
   object Welsh extends ViewMessages with BaseWelsh {
@@ -46,5 +58,11 @@ object AcceptMovementMessages {
     override val refused = "No, I want to refuse it"
     override val partiallyRefused = "No, I want to partially refuse it"
     override val requiredError: String = "Select if you want to accept this movement"
+    override val checkYourAnswersLabel = "Receipt status"
+    override val hiddenChangeLinkText = "the receipt status"
+    override val cyaSatisfactory = "Accepted and satisfactory"
+    override val cyaUnsatisfactory = "Accepted and unsatisfactory"
+    override val cyaRefused = "Refused"
+    override val cyaPartiallyRefused = "Partially refused"
   }
 }

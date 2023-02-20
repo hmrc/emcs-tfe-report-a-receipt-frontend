@@ -18,7 +18,7 @@ package controllers
 
 import controllers.actions._
 import forms.MoreInformationFormProvider
-import models.{Mode, NormalMode}
+import models.Mode
 import navigation.Navigator
 import pages.{AddMoreInformationPage, MoreInformationPage}
 import play.api.i18n.MessagesApi

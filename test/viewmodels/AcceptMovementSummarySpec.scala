@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.routes
 import fixtures.messages.{AcceptMovementMessages, BaseMessages}
 import models.AcceptMovement.{PartiallyRefused, Refused, Satisfactory, Unsatisfactory}
-import models.{CheckMode, NormalMode}
+import models.NormalMode
 import pages.AcceptMovementPage
 import play.api.test.FakeRequest
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Text}

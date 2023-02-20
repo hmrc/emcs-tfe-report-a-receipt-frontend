@@ -15,3 +15,16 @@ document.addEventListener('DOMContentLoaded', function(event) {
     });
   }
 });
+
+document.addEventListener('DOMContentLoaded', function(event) {
+
+  // handle back click
+  var printPageLink = document.querySelector('#print-page');
+  if (printPageLink !== null) {
+    printPageLink.addEventListener('click', function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      window.print();
+    });
+  }
+});

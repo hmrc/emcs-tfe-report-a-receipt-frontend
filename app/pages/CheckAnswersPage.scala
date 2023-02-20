@@ -14,19 +14,9 @@
  * limitations under the License.
  */
 
-package fixtures
+package pages
 
-import models.UserAnswers
-import play.api.mvc.Call
+case object CheckAnswersPage extends Page {
 
-trait BaseFixtures {
-
-  val testCredId: String = "credId"
-  val testInternalId: String = "internalId"
-  val testErn: String = "ern"
-  val testArc: String = "arc"
-  val testConfirmationReference = "UYVQBLMXCYK6HAEBZI7TSWAQ6XDTXFYU"
-  val testOnwardRoute = Call("GET", "/foo")
-
-  val emptyUserAnswers: UserAnswers = UserAnswers(testInternalId, testErn, testArc)
+  override def toString: String = "checkAnswers"
 }

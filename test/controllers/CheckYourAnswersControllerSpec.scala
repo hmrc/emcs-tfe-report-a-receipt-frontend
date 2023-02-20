@@ -18,6 +18,7 @@ package controllers
 
 import base.SpecBase
 import mocks.viewmodels.MockCheckAnswersHelper
+import navigation.{FakeNavigator, Navigator}
 import play.api.inject
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -29,40 +30,66 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency wi
 
   "Check Your Answers Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    ".onPageLoad" - {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .overrides(inject.bind[CheckAnswersHelper].toInstance(mockCheckAnswersHelper))
-        .build()
+      "must return OK and the correct view for a GET" in {
 
-      running(application) {
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(inject.bind[CheckAnswersHelper].toInstance(mockCheckAnswersHelper))
+          .build()
 
-        val list = SummaryListViewModel(Seq.empty)
+        running(application) {
 
-        MockCheckAnswersHelper.summaryList().returns(list)
+          val list = SummaryListViewModel(Seq.empty)
 
-        val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad(testErn, testArc).url)
+          MockCheckAnswersHelper.summaryList().returns(list)
 
-        val result = route(application, request).value
+          val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad(testErn, testArc).url)
 
-        val view = application.injector.instanceOf[CheckYourAnswersView]
+          val result = route(application, request).value
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(routes.CheckYourAnswersController.onSubmit(testErn, testArc), list)(dataRequest(request), messages(application)).toString
+          val view = application.injector.instanceOf[CheckYourAnswersView]
+
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view(routes.CheckYourAnswersController.onSubmit(testErn, testArc), list)(dataRequest(request), messages(application)).toString
+        }
+      }
+
+      "must redirect to Journey Recovery for a GET if no existing data is found" in {
+
+        val application = applicationBuilder(userAnswers = None).build()
+
+        running(application) {
+          val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad(testErn, testArc).url)
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        }
       }
     }
 
-    "must redirect to Journey Recovery for a GET if no existing data is found" in {
+    ".onSubmit" - {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      "must redirect to the onward route" in {
 
-      running(application) {
-        val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad(testErn, testArc).url)
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(
+              inject.bind[Navigator].toInstance(new FakeNavigator(testOnwardRoute))
+            )
+            .build()
 
-        val result = route(application, request).value
+        running(application) {
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+          val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit(testErn, testArc).url)
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual testOnwardRoute.url
+        }
       }
     }
   }

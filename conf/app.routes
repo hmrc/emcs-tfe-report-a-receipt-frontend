@@ -1,42 +1,44 @@
 # microservice specific routes
 
-->          /hmrc-frontend                               hmrcfrontend.Routes
+->          /hmrc-frontend                                          hmrcfrontend.Routes
 
-GET         /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
+GET         /assets/*file                                           controllers.Assets.versioned(path="/public", file: Asset)
 
-GET         /language/:lang                              controllers.LanguageSwitchController.switchToLanguage(lang: String)
+GET         /language/:lang                                         controllers.LanguageSwitchController.switchToLanguage(lang: String)
 
-GET         /refresh-session                             controllers.KeepAliveController.keepAlive()
+GET         /refresh-session                                        controllers.KeepAliveController.keepAlive()
 
-GET         /there-is-a-problem                          controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
+GET         /there-is-a-problem                                     controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
 
-GET         /account/sign-out-survey                     controllers.auth.AuthController.signOut()
-GET         /account/sign-out                            controllers.auth.AuthController.signOutNoSurvey()
-GET         /account/signed-out                          controllers.auth.SignedOutController.onPageLoad()
+GET         /account/sign-out-survey                                controllers.auth.AuthController.signOut()
+GET         /account/sign-out                                       controllers.auth.AuthController.signOutNoSurvey()
+GET         /account/signed-out                                     controllers.auth.SignedOutController.onPageLoad()
 
-GET         /unauthorised                                controllers.UnauthorisedController.onPageLoad()
+GET         /unauthorised                                           controllers.UnauthorisedController.onPageLoad()
 
-GET         /:ern/:arc                                   controllers.IndexController.onPageLoad(ern: String, arc: String)
+GET         /:ern/:arc                                              controllers.IndexController.onPageLoad(ern: String, arc: String)
 
-GET         /:ern/:arc/when-receive-movement             controllers.DateOfArrivalController.onPageLoad(ern: String, arc: String, mode: Mode = NormalMode)
-POST        /:ern/:arc/when-receive-movement             controllers.DateOfArrivalController.onSubmit(ern: String, arc: String, mode: Mode = NormalMode)
-GET         /:ern/:arc/when-receive-movement/change      controllers.DateOfArrivalController.onPageLoad(ern: String, arc: String, mode: Mode = CheckMode)
-POST        /:ern/:arc/when-receive-movement/change      controllers.DateOfArrivalController.onSubmit(ern: String, arc: String, mode: Mode = CheckMode)
+GET         /:ern/:arc/when-receive-movement                        controllers.DateOfArrivalController.onPageLoad(ern: String, arc: String, mode: Mode = NormalMode)
+POST        /:ern/:arc/when-receive-movement                        controllers.DateOfArrivalController.onSubmit(ern: String, arc: String, mode: Mode = NormalMode)
+GET         /:ern/:arc/when-receive-movement/change                 controllers.DateOfArrivalController.onPageLoad(ern: String, arc: String, mode: Mode = CheckMode)
+POST        /:ern/:arc/when-receive-movement/change                 controllers.DateOfArrivalController.onSubmit(ern: String, arc: String, mode: Mode = CheckMode)
 
-GET         /:ern/:arc/choose-accept-movement            controllers.AcceptMovementController.onPageLoad(ern: String, arc: String, mode: Mode = NormalMode)
-POST        /:ern/:arc/choose-accept-movement            controllers.AcceptMovementController.onSubmit(ern: String, arc: String, mode: Mode = NormalMode)
-GET         /:ern/:arc/choose-accept-movement/change     controllers.AcceptMovementController.onPageLoad(ern: String, arc: String, mode: Mode = CheckMode)
-POST        /:ern/:arc/choose-accept-movement/change     controllers.AcceptMovementController.onSubmit(ern: String, arc: String, mode: Mode = CheckMode)
+GET         /:ern/:arc/choose-accept-movement                       controllers.AcceptMovementController.onPageLoad(ern: String, arc: String, mode: Mode = NormalMode)
+POST        /:ern/:arc/choose-accept-movement                       controllers.AcceptMovementController.onSubmit(ern: String, arc: String, mode: Mode = NormalMode)
+GET         /:ern/:arc/choose-accept-movement/change                controllers.AcceptMovementController.onPageLoad(ern: String, arc: String, mode: Mode = CheckMode)
+POST        /:ern/:arc/choose-accept-movement/change                controllers.AcceptMovementController.onSubmit(ern: String, arc: String, mode: Mode = CheckMode)
 
-GET         /:ern/:arc/choose-more-information-movement           controllers.AddMoreInformationController.onPageLoad(ern: String, arc: String, mode: Mode = NormalMode)
-POST        /:ern/:arc/choose-more-information-movement           controllers.AddMoreInformationController.onSubmit(ern: String, arc: String, mode: Mode = NormalMode)
-GET         /:ern/:arc/choose-more-information-movement/change    controllers.AddMoreInformationController.onPageLoad(ern: String, arc: String, mode: Mode = CheckMode)
-POST        /:ern/:arc/choose-more-information-movement/change    controllers.AddMoreInformationController.onSubmit(ern: String, arc: String, mode: Mode = CheckMode)
+GET         /:ern/:arc/choose-more-information-movement             controllers.AddMoreInformationController.onPageLoad(ern: String, arc: String, mode: Mode = NormalMode)
+POST        /:ern/:arc/choose-more-information-movement             controllers.AddMoreInformationController.onSubmit(ern: String, arc: String, mode: Mode = NormalMode)
+GET         /:ern/:arc/choose-more-information-movement/change      controllers.AddMoreInformationController.onPageLoad(ern: String, arc: String, mode: Mode = CheckMode)
+POST        /:ern/:arc/choose-more-information-movement/change      controllers.AddMoreInformationController.onSubmit(ern: String, arc: String, mode: Mode = CheckMode)
 
-GET         /:ern/:arc/more-information-movement                        controllers.MoreInformationController.onPageLoad(ern: String, arc: String, mode: Mode = NormalMode)
-POST        /:ern/:arc/more-information-movement                       controllers.MoreInformationController.onSubmit(ern: String, arc: String, mode: Mode = NormalMode)
-GET         /:ern/:arc/more-information-movement/change                  controllers.MoreInformationController.onPageLoad(ern: String, arc: String, mode: Mode = CheckMode)
-POST        /:ern/:arc/more-information-movement/change                  controllers.MoreInformationController.onSubmit(ern: String, arc: String, mode: Mode = CheckMode)
+GET         /:ern/:arc/more-information-movement                    controllers.MoreInformationController.onPageLoad(ern: String, arc: String, mode: Mode = NormalMode)
+POST        /:ern/:arc/more-information-movement                    controllers.MoreInformationController.onSubmit(ern: String, arc: String, mode: Mode = NormalMode)
+GET         /:ern/:arc/more-information-movement/change             controllers.MoreInformationController.onPageLoad(ern: String, arc: String, mode: Mode = CheckMode)
+POST        /:ern/:arc/more-information-movement/change             controllers.MoreInformationController.onSubmit(ern: String, arc: String, mode: Mode = CheckMode)
 
-GET         /:ern/:arc/check-answers                controllers.CheckYourAnswersController.onPageLoad(ern: String, arc: String)
-POST        /:ern/:arc/check-answers                controllers.CheckYourAnswersController.onSubmit(ern: String, arc: String)
+GET         /:ern/:arc/check-answers                                controllers.CheckYourAnswersController.onPageLoad(ern: String, arc: String)
+POST        /:ern/:arc/check-answers                                controllers.CheckYourAnswersController.onSubmit(ern: String, arc: String)
+
+GET         /:ern/:arc/confirmation                                 controllers.ConfirmationController.onPageLoad(ern: String, arc: String)

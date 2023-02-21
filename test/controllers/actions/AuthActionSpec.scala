@@ -211,6 +211,32 @@ class AuthActionSpec extends SpecBase with BaseFixtures with BeforeAndAfterAll {
                     status(result) mustBe OK
                   }
                 }
+
+                s"there are multiple Enrolments with ${EnrolmentKeys.ERN}'s present and ERN matches one" - {
+
+                  "allow the User through, returning a 200 (OK)" in new Harness {
+
+                    override val authConnector = new FakeSuccessAuthConnector(authResponse(enrolments = Enrolments(Set(
+                      Enrolment(
+                        key = EnrolmentKeys.EMCS_ENROLMENT,
+                        identifiers = Seq(EnrolmentIdentifier(EnrolmentKeys.ERN, "OTHER_1")),
+                        state = EnrolmentKeys.INACTIVE
+                      ),
+                      Enrolment(
+                        key = EnrolmentKeys.EMCS_ENROLMENT,
+                        identifiers = Seq(EnrolmentIdentifier(EnrolmentKeys.ERN, testErn)),
+                        state = EnrolmentKeys.ACTIVATED
+                      ),
+                      Enrolment(
+                        key = EnrolmentKeys.EMCS_ENROLMENT,
+                        identifiers = Seq(EnrolmentIdentifier(EnrolmentKeys.ERN, "OTHER_2")),
+                        state = EnrolmentKeys.ACTIVATED
+                      )
+                    ))))
+
+                    status(result) mustBe OK
+                  }
+                }
               }
             }
           }

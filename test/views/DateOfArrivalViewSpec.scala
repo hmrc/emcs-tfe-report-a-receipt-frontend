@@ -48,7 +48,8 @@ class DateOfArrivalViewSpec extends ViewSpecBase with ViewBehaviours {
 
         behave like pageWithExpectedElementsAndMessages(Seq(
           Selectors.title -> messagesForLanguage.title,
-          Selectors.h1 -> (messagesForLanguage.arcSubheading(testArc) + " " + messagesForLanguage.heading),
+          Selectors.h2(1) -> messagesForLanguage.arcSubheading(testArc),
+          Selectors.h1 -> messagesForLanguage.heading,
           Selectors.dateDay -> messagesForLanguage.day,
           Selectors.dateMonth -> messagesForLanguage.month,
           Selectors.dateYear -> messagesForLanguage.year,

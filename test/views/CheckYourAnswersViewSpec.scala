@@ -49,9 +49,10 @@ class CheckYourAnswersViewSpec extends ViewSpecBase with ViewBehaviours {
 
         behave like pageWithExpectedElementsAndMessages(Seq(
           Selectors.title -> messagesForLanguage.title,
-          Selectors.h1 -> (messagesForLanguage.arcSubheading(testArc) + " " + messagesForLanguage.heading),
-          Selectors.h2(1) -> messagesForLanguage.movementDetailsH2,
-          Selectors.h2(2) -> messagesForLanguage.submitH2,
+          Selectors.h2(1) -> messagesForLanguage.arcSubheading(testArc),
+          Selectors.h1 -> messagesForLanguage.heading,
+          Selectors.h2(2) -> messagesForLanguage.movementDetailsH2,
+          Selectors.h2(3) -> messagesForLanguage.submitH2,
           Selectors.p(1) -> messagesForLanguage.declaration,
           Selectors.button -> messagesForLanguage.submitButton,
           Selectors.secondaryButton -> messagesForLanguage.saveAndReturnToMovement

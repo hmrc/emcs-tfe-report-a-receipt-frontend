@@ -19,13 +19,14 @@
 @import viewmodels.LabelSize
 
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukCharacterCount : GovukCharacterCount,
-    govukButton: GovukButton,
-    h1: components.h1,
-    saveAndContinue: components.saveAndContinue
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukCharacterCount : GovukCharacterCount,
+        govukButton: GovukButton,
+        h1: components.h1,
+        h2: components.h2,
+        saveAndContinue: components.saveAndContinue
 )
 
 @(form: Form[_], mode: Mode)(implicit request: DataRequest[_], messages: Messages)
@@ -38,17 +39,19 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
+        @h2(messages("arc.subHeading", request.arc), "govuk-caption-l")
+
         @{govukCharacterCount(CharacterCount(
             id = "more-information",
             name = "more-information",
             maxLength = Some(350),
-            label = LabelViewModel(HtmlContent(heading)).asPageHeading(LabelSize.Large),
+            label = LabelViewModel(Text(messages("moreInformation.heading"))).asPageHeading(LabelSize.Large),
             value = form("more-information").value,
             errorMessage = form.errors("more-information") match {
                 case Nil => None
                 case errors => Some(ErrorMessage(content = HtmlContent(errors.map(err => messages(err.message)).mkString("<br>"))))
-                }
-            )
+            }
+        )
         )}
 
         @saveAndContinue()
@@ -56,11 +59,6 @@
     }
 }
 
-@heading = {
-<span class="govuk-caption-l">@messages("arc.subHeading", request.arc)</span>
-@messages("moreInformation.heading")
-}
-
 @{
-//$COVERAGE-OFF$
+    //$COVERAGE-OFF$
 }

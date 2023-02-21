@@ -39,7 +39,7 @@ object ConfirmationMessages {
     override val whatNextP2 = "This may take up to 15 minutes."
     override val whatNextP3 = "Print this screen if you want to make a record of your completed submission."
     override val returnToMovement = "Return to view your movement"
-    override val feedback = "What did you think of this service? (takes 30 seconds)"
+    override val feedback = "What did you think of this service? (opens in new tab) (takes 30 seconds)"
   }
 
   object Welsh extends ViewMessages with BaseWelsh {
@@ -51,6 +51,6 @@ object ConfirmationMessages {
     override val whatNextP2 = "This may take up to 15 minutes."
     override val whatNextP3 = "Print this screen if you want to make a record of your completed submission."
     override val returnToMovement = "Return to view your movement"
-    override val feedback = "What did you think of this service? (takes 30 seconds)"
+    override val feedback = "What did you think of this service? (yn agor tab newydd) (takes 30 seconds)"
   }
 }

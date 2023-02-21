@@ -20,14 +20,14 @@
         link: String,
         messageKey: String,
         id: Option[String] = None,
-        isExternal: Boolean = false,
+        opensInNewTab: Boolean = false,
         button: Boolean = false,
         classes: String = "govuk-link",
         hiddenContent: Option[String] = None
 )(implicit messages: Messages)
 
-<a href="@link" class="@classes"@id.map(x => s" id=$x")@if(isExternal){target="_blank" rel="noopener noreferrer"}@if(button){role="button" data-module="govuk-button"}>
-    @messages(messageKey)@if(isExternal)(" " + messages("base.opensInNewTab"))@hiddenContent.map{content=>
+<a href="@link" class="@classes"@id.map(x => s" id=$x")@if(opensInNewTab){target="_blank" rel="noopener noreferrer"}@if(button){role="button" data-module="govuk-button"}>
+    @messages(messageKey)@if(opensInNewTab)(" " + messages("site.opensInNewTab"))@hiddenContent.map{content=>
         <span class="govuk-visually-hidden"> @content</span>
     }</a>
 

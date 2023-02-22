@@ -30,17 +30,16 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig, configuration: Configu
   val appName: String = configuration.get[String]("appName")
 
   private val contactHost = configuration.get[String]("contact-frontend.host")
-  private val contactFormServiceIdentifier = "emcs-tfe-report-a-receipt-frontend"
 
-  def feedbackUrl(implicit request: RequestHeader): String =
-    s"$contactHost/contact/beta-feedback?service=$contactFormServiceIdentifier&backUrl=${SafeRedirectUrl(host + request.uri).encodedUrl}"
+  def betaBannerFeedbackUrl(implicit request: RequestHeader): String =
+    s"$contactHost/contact/beta-feedback?service=$appName&backUrl=${SafeRedirectUrl(host + request.uri).encodedUrl}"
 
   val loginUrl: String         = configuration.get[String]("urls.login")
   val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
   val signOutUrl: String       = configuration.get[String]("urls.signOut")
 
-  private val exitSurveyBaseUrl: String = servicesConfig.baseUrl("feedback-frontend")
-  val exitSurveyUrl: String             = s"$exitSurveyBaseUrl/feedback/emcs-tfe-report-a-receipt-frontend"
+  private val feedbackFrontendHost: String = configuration.get[String]("feedback-frontend.host")
+  val feedbackFrontendSurveyUrl: String    = s"$feedbackFrontendHost/feedback/$appName"
 
   val languageTranslationEnabled: Boolean =
     configuration.get[Boolean]("features.welsh-translation")

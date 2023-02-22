@@ -17,6 +17,7 @@ Contains the frontend journey for EMCS TFE to Report a Receipt of a Movement. Us
    6) `radioButtonPage`
    7) `stringPage`
    8) `yesNoPage`
+   9) `characterCountPage`
 
 
 3) The g8Scaffolding will prompt for values to properties. Such as the `className`

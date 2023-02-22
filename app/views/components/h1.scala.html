@@ -14,7 +14,9 @@
  * limitations under the License.
  *@
 
-@this()
+@this(
+        h2: components.h2
+)
 
 @(
         headingMsg: String,
@@ -22,14 +24,11 @@
         classes: String = "govuk-heading-l govuk-!-margin-bottom-2"
 )(implicit messages: Messages)
 
-@if(captionMsg.isDefined) {
- <h1 class="@classes">
-  <span class="govuk-caption-l">@captionMsg</span>
-  @messages(headingMsg)
- </h1>
-} else {
-  <h1 class="@classes">@messages(headingMsg)</h1>
+@captionMsg.map { caption =>
+  @h2(caption, "govuk-caption-l")
 }
+
+<h1 class="@classes">@messages(headingMsg)</h1>
 
 @{
     //$COVERAGE-OFF$

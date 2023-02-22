@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,21 +12,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package fixtures
+@this()
 
-import models.UserAnswers
-import play.api.mvc.Call
+@(content: Html)(implicit messages: Messages)
 
-trait BaseFixtures {
-
-  val testCredId: String = "credId"
-  val testInternalId: String = "internalId"
-  val testErn: String = "ern"
-  val testArc: String = "arc"
-  val testConfirmationReference = "UYVQBLMXCYK6HAEBZI7TSWAQ6XDTXFYU"
-  val testOnwardRoute = Call("GET", "/foo")
-
-  val emptyUserAnswers: UserAnswers = UserAnswers(testInternalId, testErn, testArc)
-}
+<span class="govuk-!-font-weight-bold">@content</span>

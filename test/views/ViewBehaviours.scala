@@ -18,20 +18,20 @@ package views
 
 import base.ViewSpecBase
 import org.jsoup.nodes.Document
+import utils.Logging
 
-import scala.util.{Failure, Success, Try}
-
-trait ViewBehaviours { _: ViewSpecBase =>
+trait ViewBehaviours extends Logging { _: ViewSpecBase =>
 
   def pageWithExpectedElementsAndMessages(checks: Seq[(String, String)])(implicit document: Document): Unit = checks foreach {
     case (selector, message) =>
       s"element with selector '$selector'" - {
         s"must have the message '$message'" in {
-          Try {
-            document.select(selector).first()
-          } match {
-            case Failure(_) => fail(s"Could not find element with CSS selector: '$selector'")
-            case Success(element) => element.text() mustBe message
+          document.select(selector) match {
+            case elements if elements.size() == 0 =>
+              fail(s"Could not find element with CSS selector: '$selector'")
+            case elements =>
+              if (elements.size() > 1) logger.warn(s"More than one element found with selector '$selector', will check first element found - count of them was: '${elements.size()}'")
+              elements.first().text() mustBe message
           }
         }
       }

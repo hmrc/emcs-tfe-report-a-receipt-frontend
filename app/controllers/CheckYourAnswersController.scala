@@ -18,9 +18,11 @@ package controllers
 
 import com.google.inject.Inject
 import controllers.actions._
-import play.api.i18n.{I18nSupport, MessagesApi}
+import models.NormalMode
+import navigation.Navigator
+import pages.CheckAnswersPage
+import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.CheckAnswersHelper
 import views.html.CheckYourAnswersView
 
@@ -31,9 +33,10 @@ class CheckYourAnswersController @Inject()(
                                             override val getData: DataRetrievalAction,
                                             override val requireData: DataRequiredAction,
                                             val controllerComponents: MessagesControllerComponents,
+                                            val navigator: Navigator,
                                             view: CheckYourAnswersView,
                                             checkAnswersHelper: CheckAnswersHelper
-                                          ) extends FrontendBaseController with I18nSupport with AuthActionHelper {
+                                          ) extends BaseController with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String): Action[AnyContent] =
     authorisedDataRequest(ern, arc) { implicit request =>
@@ -41,8 +44,7 @@ class CheckYourAnswersController @Inject()(
     }
 
   def onSubmit(ern: String, arc: String): Action[AnyContent] =
-    authorisedDataRequest(ern, arc) { _ =>
-      //TODO: Will be implemented by future story to submit data and redirect to confirmation
-      NotImplemented
+    authorisedDataRequest(ern, arc) { implicit request =>
+      Redirect(navigator.nextPage(CheckAnswersPage, NormalMode, request.userAnswers))
     }
 }

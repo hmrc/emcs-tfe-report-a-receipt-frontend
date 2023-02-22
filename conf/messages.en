@@ -12,6 +12,7 @@ site.start = Start now
 site.startAgain = Start again
 site.signIn = Sign in
 site.govuk = GOV.UK
+site.opensInNewTab = (opens in new tab)
 
 date.day = Day
 date.month = Month
@@ -116,3 +117,17 @@ checkYourAnswers.movementDetails.h2 = Movement details
 checkYourAnswers.submit.h2 = Now submit your report of receipt
 checkYourAnswers.declaration = By submitting this report of receipt you are confirming that, to the best of your knowledge, the details you are providing are correct.
 checkYourAnswers.submit.button = Submit report of receipt
+
+confirmation.title = Report of receipt submitted
+confirmation.heading = Report of receipt submitted
+confirmation.reference = Your reference is
+confirmation.next.h2 = What happens next
+confirmation.next.p1 = Your movement will be updated to confirm that this report of receipt has been submitted successfully.
+confirmation.next.p2 = This may take up to 15 minutes.
+confirmation.next.p3.link = Print this screen
+confirmation.next.p3.afterLink = if you want to make a record of your completed submission.
+confirmation.returnToMovement.link = Return to view your movement
+confirmation.feedback.link = What did you think of this service?
+confirmation.feedback.time = (takes 30 seconds)
+
+

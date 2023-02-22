@@ -29,7 +29,7 @@ class AuthController @Inject()(val controllerComponents: MessagesControllerCompo
                               ) extends FrontendBaseController with I18nSupport {
 
   def signOut(): Action[AnyContent] = Action {
-    Redirect(config.signOutUrl, Map("continue" -> Seq(config.exitSurveyUrl)))
+    Redirect(config.signOutUrl, Map("continue" -> Seq(config.feedbackFrontendSurveyUrl)))
   }
 
   def signOutNoSurvey(): Action[AnyContent] = Action {

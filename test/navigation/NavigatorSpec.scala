@@ -18,7 +18,8 @@ package navigation
 
 import base.SpecBase
 import controllers.routes
-import models.AcceptMovement.{PartiallyRefused, Refused, Satisfactory, Unsatisfactory}
+import models.AcceptMovement._
+import models.WrongWithMovement._
 import pages._
 import models._
 
@@ -36,9 +37,11 @@ class NavigatorSpec extends SpecBase {
         navigator.nextPage(UnknownPage, NormalMode, emptyUserAnswers) mustBe routes.IndexController.onPageLoad(testErn, testArc)
       }
 
-      "must go from DateOfArrival page to AcceptMovement page" in {
+      "for the DateOfArrival page" - {
 
-        navigator.nextPage(DateOfArrivalPage, NormalMode, emptyUserAnswers) mustBe routes.AcceptMovementController.onPageLoad(testErn, testArc, NormalMode)
+        "must go to AcceptMovement page" in {
+          navigator.nextPage(DateOfArrivalPage, NormalMode, emptyUserAnswers) mustBe routes.AcceptMovementController.onPageLoad(testErn, testArc, NormalMode)
+        }
       }
 
       "for the AcceptMovementPage page" - {
@@ -86,11 +89,68 @@ class NavigatorSpec extends SpecBase {
         }
       }
 
+      "for the WrongWithMovement page" - {
+
+        "when the next page is Less" - {
+
+          "must go to Less Items Add Information Yes/No page" in {
+            val selectedOptions: Set[WrongWithMovement] = Set(Less, More, Damaged, BrokenSeals, Other)
+            val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, selectedOptions)
+            navigator.nextPage(WrongWithMovementPage, NormalMode, userAnswers) mustBe
+              //TODO: Change as part of future story
+              routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+          }
+        }
+
+        "when the next page is More" - {
+
+          "must go to More Items Add Information Yes/No page" in {
+            val selectedOptions: Set[WrongWithMovement] = Set(More, Damaged, BrokenSeals, Other)
+            val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, selectedOptions)
+            navigator.nextPage(WrongWithMovementPage, NormalMode, userAnswers) mustBe
+              //TODO: Change as part of future story
+              routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+          }
+        }
+
+        "when the next page is Damaged" - {
+
+          "must go to More Items Add Information Yes/No page" in {
+            val selectedOptions: Set[WrongWithMovement] = Set(Damaged, BrokenSeals, Other)
+            val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, selectedOptions)
+            navigator.nextPage(WrongWithMovementPage, NormalMode, userAnswers) mustBe
+              //TODO: Change as part of future story
+              routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+          }
+        }
+
+        "when the next page is BrokenSeals" - {
+
+          "must go to More Items Add Information Yes/No page" in {
+            val selectedOptions: Set[WrongWithMovement] = Set(BrokenSeals, Other)
+            val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, selectedOptions)
+            navigator.nextPage(WrongWithMovementPage, NormalMode, userAnswers) mustBe
+              //TODO: Change as part of future story
+              routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+          }
+        }
+
+        "when the next page is Other" - {
+
+          "must go to More Items Add Information Yes/No page" in {
+            val selectedOptions: Set[WrongWithMovement] = Set(Other)
+            val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, selectedOptions)
+            navigator.nextPage(WrongWithMovementPage, NormalMode, userAnswers) mustBe
+              //TODO: Change as part of future story
+              routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+          }
+        }
+      }
+
       "for the AddMoreInformation page" - {
 
         s"when the user answers is Yes" - {
 
-          //TODO: Future story will have this route to the MoreInformation page
           "must go to the MoreInformation page" in {
 
             val userAnswers = emptyUserAnswers.set(AddMoreInformationPage, true)
@@ -109,6 +169,22 @@ class NavigatorSpec extends SpecBase {
           }
         }
       }
+
+      "for the MoreInformation page" - {
+
+        "must go to the CheckYourAnswers page" in {
+
+          navigator.nextPage(MoreInformationPage, NormalMode, emptyUserAnswers) mustBe routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+        }
+      }
+
+      "for the CheckYourAnswers page" - {
+
+        "must go to the Confirmation page" in {
+
+          navigator.nextPage(CheckAnswersPage, NormalMode, emptyUserAnswers) mustBe routes.ConfirmationController.onPageLoad(testErn, testArc)
+        }
+      }
     }
 
     "in Check mode" - {
@@ -117,6 +193,89 @@ class NavigatorSpec extends SpecBase {
 
         case object UnknownPage extends Page
         navigator.nextPage(UnknownPage, CheckMode, emptyUserAnswers) mustBe routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+      }
+    }
+
+    "calling the .nextWrongWithMovementOptionToAnswer method" - {
+
+      "when all options are selected" - {
+
+        val setOfOptions: Set[WrongWithMovement] = Set(Damaged, Other, Less, More, BrokenSeals)
+
+        "when user hasn't answered any reasons yet" - {
+
+          "must return the first one to answer based on the order radio items" in {
+            navigator.nextWrongWithMovementOptionToAnswer(setOfOptions) mustBe Some(Less)
+          }
+        }
+
+        "when user has answered some of the reasons" - {
+
+          "must return the next one to answer" in {
+            navigator.nextWrongWithMovementOptionToAnswer(setOfOptions, Some(Damaged)) mustBe Some(BrokenSeals)
+          }
+        }
+
+        "when user has answered the last reason" - {
+
+          "must return None" in {
+            navigator.nextWrongWithMovementOptionToAnswer(setOfOptions, Some(Other)) mustBe None
+          }
+        }
+      }
+
+      "when some of the options are selected" - {
+
+        val setOfOptions: Set[WrongWithMovement] = Set(Other, More)
+
+        "when user hasn't answered any reasons yet" - {
+
+          "must return the first one to answer based on the order radio items" in {
+            navigator.nextWrongWithMovementOptionToAnswer(setOfOptions) mustBe Some(More)
+          }
+        }
+
+        "when user has answered some of the reasons" - {
+
+          "must return the next one to answer" in {
+            navigator.nextWrongWithMovementOptionToAnswer(setOfOptions, Some(More)) mustBe Some(Other)
+          }
+        }
+
+        "when user has answered the last reason" - {
+
+          "must return None" in {
+            navigator.nextWrongWithMovementOptionToAnswer(setOfOptions, Some(Other)) mustBe None
+          }
+        }
+      }
+
+      "when one of the options are selected" - {
+
+        val setOfOptions: Set[WrongWithMovement] = Set(More)
+
+        "when user hasn't answered any reasons yet" - {
+
+          "must return the first one to answer based on the order radio items" in {
+            navigator.nextWrongWithMovementOptionToAnswer(setOfOptions) mustBe Some(More)
+          }
+        }
+
+        "when user has answered the last reason" - {
+
+          "must return None" in {
+            navigator.nextWrongWithMovementOptionToAnswer(setOfOptions, Some(More)) mustBe None
+          }
+        }
+      }
+
+      "when none the options are selected" - {
+
+        val setOfOptions: Set[WrongWithMovement] = Set()
+
+        "must return None" in {
+          navigator.nextWrongWithMovementOptionToAnswer(setOfOptions) mustBe None
+        }
       }
     }
   }

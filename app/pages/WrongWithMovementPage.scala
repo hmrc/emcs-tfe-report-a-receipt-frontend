@@ -14,25 +14,14 @@
  * limitations under the License.
  */
 
-package generators
+package pages
 
-import models._
-import org.scalacheck.{Arbitrary, Gen}
+import models.WrongWithMovement
+import play.api.libs.json.JsPath
 
-trait ModelGenerators {
+case object WrongWithMovementPage extends QuestionPage[Set[WrongWithMovement]] {
 
-  implicit lazy val arbitraryHowMuchIsWrong: Arbitrary[HowMuchIsWrong] =
-    Arbitrary {
-      Gen.oneOf(HowMuchIsWrong.values.toSeq)
-    }
+  override def path: JsPath = JsPath \ toString
 
-  implicit lazy val arbitraryWrongWithMovement: Arbitrary[WrongWithMovement] =
-    Arbitrary {
-      Gen.oneOf(WrongWithMovement.values)
-    }
-
-  implicit lazy val arbitraryAcceptMovement: Arbitrary[AcceptMovement] =
-    Arbitrary {
-      Gen.oneOf(AcceptMovement.values)
-    }
+  override def toString: String = "wrongWithMovement"
 }

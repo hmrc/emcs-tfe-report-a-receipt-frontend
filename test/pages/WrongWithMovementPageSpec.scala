@@ -14,25 +14,19 @@
  * limitations under the License.
  */
 
-package generators
+package pages
 
-import models._
-import org.scalacheck.{Arbitrary, Gen}
+import models.WrongWithMovement
+import pages.behaviours.PageBehaviours
 
-trait ModelGenerators {
+class WrongWithMovementPageSpec extends PageBehaviours {
 
-  implicit lazy val arbitraryHowMuchIsWrong: Arbitrary[HowMuchIsWrong] =
-    Arbitrary {
-      Gen.oneOf(HowMuchIsWrong.values.toSeq)
-    }
+  "WrongWithMovementPage" - {
 
-  implicit lazy val arbitraryWrongWithMovement: Arbitrary[WrongWithMovement] =
-    Arbitrary {
-      Gen.oneOf(WrongWithMovement.values)
-    }
+    beRetrievable[Set[WrongWithMovement]](WrongWithMovementPage)
 
-  implicit lazy val arbitraryAcceptMovement: Arbitrary[AcceptMovement] =
-    Arbitrary {
-      Gen.oneOf(AcceptMovement.values)
-    }
+    beSettable[Set[WrongWithMovement]](WrongWithMovementPage)
+
+    beRemovable[Set[WrongWithMovement]](WrongWithMovementPage)
+  }
 }

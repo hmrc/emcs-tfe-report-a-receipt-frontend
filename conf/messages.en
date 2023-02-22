@@ -137,3 +137,15 @@ howMuchIsWrong.individualItem = Individual item(s) in this movement
 howMuchIsWrong.checkYourAnswersLabel = Amount of the movement that is wrong
 howMuchIsWrong.error.required = Select how much of the movement is wrong
 howMuchIsWrong.change.hidden = how much of this movement is wrong
+
+wrongWithMovement.title = What is wrong with this movement?
+wrongWithMovement.heading = What is wrong with this movement?
+wrongWithMovement.hint = Select all that apply.
+wrongWithMovement.less = I was sent less items than expected
+wrongWithMovement.more = I was sent more items than expected
+wrongWithMovement.damaged = Items were damaged
+wrongWithMovement.brokenSeals = Broken seal(s)
+wrongWithMovement.other = Other
+wrongWithMovement.error.required = Select what is wrong with the movement
+wrongWithMovement.checkYourAnswer.label = What is wrong with this movement?
+wrongWithMovement.checkYourAnswer.change.hidden = what is wrong with this movement

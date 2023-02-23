@@ -50,10 +50,6 @@ error.number = Please enter a valid number
 error.required = Please enter a value
 error.summary.title = There is a problem
 
-index.title = emcs-tfe-report-a-receipt-frontend
-index.heading = emcs-tfe-report-a-receipt-frontend
-index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
-
 journeyRecovery.continue.title = Sorry, there is a problem with the service
 journeyRecovery.continue.heading = Sorry, there is a problem with the service
 journeyRecovery.continue.guidance = [Add content to explain how to proceed.]

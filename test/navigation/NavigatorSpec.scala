@@ -91,6 +91,14 @@ class NavigatorSpec extends SpecBase {
 
       "for the WrongWithMovement page" - {
 
+        "when no option has been selected (shouldn't happen)" - {
+
+          "must go back to the WrongWithMovement page" in {
+            navigator.nextPage(WrongWithMovementPage, NormalMode, emptyUserAnswers) mustBe
+              routes.WrongWithMovementController.onPageLoad(testErn, testArc, NormalMode)
+          }
+        }
+
         "when the next page is Less" - {
 
           "must go to Less Items Add Information Yes/No page" in {

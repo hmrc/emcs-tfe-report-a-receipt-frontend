@@ -20,9 +20,10 @@ import controllers.actions._
 import forms.AddMoreInformationFormProvider
 import models.Mode
 import navigation.Navigator
-import pages.{AddMoreInformationPage, MoreInformationPage}
+import pages.unsatisfactory.{AddShortageInformationPage, ShortageInformationPage}
+import pages.{AddMoreInformationPage, MoreInformationPage, QuestionPage}
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
 import utils.JsonOptionFormatter
 import views.html.AddMoreInformationView
@@ -31,37 +32,60 @@ import javax.inject.Inject
 import scala.concurrent.Future
 
 class AddMoreInformationController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       override val sessionRepository: SessionRepository,
-                                       override val navigator: Navigator,
-                                       override val auth: AuthAction,
-                                       override val withMovement: MovementAction,
-                                       override val getData: DataRetrievalAction,
-                                       override val requireData: DataRequiredAction,
-                                       formProvider: AddMoreInformationFormProvider,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       view: AddMoreInformationView
-                                     ) extends BaseNavigationController with AuthActionHelper with JsonOptionFormatter {
+                                              override val messagesApi: MessagesApi,
+                                              override val sessionRepository: SessionRepository,
+                                              override val navigator: Navigator,
+                                              override val auth: AuthAction,
+                                              override val withMovement: MovementAction,
+                                              override val getData: DataRetrievalAction,
+                                              override val requireData: DataRequiredAction,
+                                              formProvider: AddMoreInformationFormProvider,
+                                              val controllerComponents: MessagesControllerComponents,
+                                              view: AddMoreInformationView
+                                            ) extends BaseNavigationController with AuthActionHelper with JsonOptionFormatter {
 
-  def onPageLoad(ern: String, arc: String, mode: Mode): Action[AnyContent] =
+  def loadMoreInformation(ern: String, arc: String, mode: Mode): Action[AnyContent] =
+    onPageLoad(ern, arc, AddMoreInformationPage, routes.AddMoreInformationController.submitMoreInformation(ern, arc, mode))
+
+  def submitMoreInformation(ern: String, arc: String, mode: Mode): Action[AnyContent] =
+    onSubmit(ern, arc, AddMoreInformationPage, MoreInformationPage, routes.AddMoreInformationController.submitMoreInformation(ern, arc, mode), mode)
+
+  def loadShortageInformation(ern: String, arc: String, mode: Mode): Action[AnyContent] =
+    onPageLoad(ern, arc, AddShortageInformationPage, routes.AddMoreInformationController.submitShortageInformation(ern, arc, mode))
+
+  def submitShortageInformation(ern: String, arc: String, mode: Mode): Action[AnyContent] =
+    onSubmit(ern, arc, AddShortageInformationPage, ShortageInformationPage, routes.AddMoreInformationController.submitShortageInformation(ern, arc, mode), mode)
+
+
+
+  private def onPageLoad(ern: String,
+                         arc: String,
+                         yesNoPage: QuestionPage[Boolean],
+                         submitAction: Call): Action[AnyContent] =
     authorisedDataRequest(ern, arc) { implicit request =>
-      Ok(view(fillForm(AddMoreInformationPage, formProvider()), mode))
+      Ok(view(fillForm(yesNoPage, formProvider(yesNoPage)), yesNoPage, submitAction))
     }
 
-  def onSubmit(ern: String, arc: String, mode: Mode): Action[AnyContent] =
+  private def onSubmit(ern: String,
+                       arc: String,
+                       yesNoPage: QuestionPage[Boolean],
+                       infoPage: QuestionPage[Option[String]],
+                       submitAction: Call,
+                       mode: Mode): Action[AnyContent] =
     authorisedDataRequestAsync(ern, arc) { implicit request =>
-      formProvider().bindFromRequest().fold(
+      formProvider(yesNoPage).bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
+          Future.successful(BadRequest(view(formWithErrors, yesNoPage, submitAction))),
         {
           case true =>
-            saveAndRedirect(AddMoreInformationPage, true, mode)
+            saveAndRedirect(yesNoPage, true, mode)
           case false =>
             for {
-              removedMoreInfo <- save(MoreInformationPage, None)
-              saveAndRedirect <- saveAndRedirect(AddMoreInformationPage, false, removedMoreInfo, mode)
+              removedMoreInfo <- save(infoPage, None)
+              saveAndRedirect <- saveAndRedirect(yesNoPage, false, removedMoreInfo, mode)
             } yield saveAndRedirect
         }
       )
     }
+
 }

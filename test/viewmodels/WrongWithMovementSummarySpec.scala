@@ -21,7 +21,7 @@ import controllers.routes
 import fixtures.messages.WrongWithMovementMessages
 import models.WrongWithMovement.{Less, More}
 import models.{CheckMode, WrongWithMovement}
-import pages.WrongWithMovementPage
+import pages.unsatisfactory.WrongWithMovementPage
 import play.api.test.FakeRequest
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import utils.DateUtils

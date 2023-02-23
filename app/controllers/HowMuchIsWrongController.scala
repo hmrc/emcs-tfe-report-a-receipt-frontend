@@ -21,7 +21,7 @@ import forms.HowMuchIsWrongFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
-import pages.HowMuchIsWrongPage
+import pages.unsatisfactory.HowMuchIsWrongPage
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository

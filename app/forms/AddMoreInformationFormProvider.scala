@@ -17,14 +17,14 @@
 package forms
 
 import javax.inject.Inject
-
 import forms.mappings.Mappings
+import pages.QuestionPage
 import play.api.data.Form
 
 class AddMoreInformationFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Boolean] =
+  def apply(page: QuestionPage[Boolean]): Form[Boolean] =
     Form(
-      "value" -> boolean("addMoreInformation.error.required")
+      "value" -> boolean(s"${page.toString}.error.required")
     )
 }

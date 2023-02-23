@@ -18,6 +18,7 @@ package pages
 
 import models.HowMuchIsWrong
 import pages.behaviours.PageBehaviours
+import pages.unsatisfactory.HowMuchIsWrongPage
 
 class HowMuchIsWrongSpec extends PageBehaviours {
 

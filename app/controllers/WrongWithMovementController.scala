@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.WrongWithMovementFormProvider
 import models.Mode
 import navigation.Navigator
-import pages.WrongWithMovementPage
+import pages.unsatisfactory.WrongWithMovementPage
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository

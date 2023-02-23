@@ -22,6 +22,7 @@ import models.HowMuchIsWrong.TheWholeMovement
 import models.WrongWithMovement.{BrokenSeals, Damaged, Less, More, Other}
 import models._
 import pages._
+import pages.unsatisfactory.{HowMuchIsWrongPage, WrongWithMovementPage}
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
@@ -34,7 +35,7 @@ class Navigator @Inject()() extends BaseNavigator {
       (userAnswers: UserAnswers) => routes.AcceptMovementController.onPageLoad(userAnswers.ern, userAnswers.arc, NormalMode)
     case AcceptMovementPage =>
       (userAnswers: UserAnswers) => userAnswers.get(AcceptMovementPage) match {
-        case Some(Satisfactory) => routes.AddMoreInformationController.onPageLoad(userAnswers.ern, userAnswers.arc, NormalMode)
+        case Some(Satisfactory) => routes.AddMoreInformationController.loadMoreInformation(userAnswers.ern, userAnswers.arc, NormalMode)
         case Some(Unsatisfactory) => routes.HowMuchIsWrongController.onPageLoad(userAnswers.ern, userAnswers.arc, NormalMode)
         case _ => routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)
       }
@@ -109,6 +110,6 @@ class Navigator @Inject()() extends BaseNavigator {
         //TODO: Will redirect to the Other Information page
         routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)
       case None =>
-        routes.AddMoreInformationController.onPageLoad(userAnswers.ern, userAnswers.arc, NormalMode)
+        routes.AddMoreInformationController.loadMoreInformation(userAnswers.ern, userAnswers.arc, NormalMode)
     }
 }

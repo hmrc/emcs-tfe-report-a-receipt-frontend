@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.unsatisfactory
 
-import models.HowMuchIsWrong
+import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case object HowMuchIsWrongPage extends QuestionPage[HowMuchIsWrong] {
+case object AddShortageInformationPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "howMuchIsWrong"
+  override def toString: String = "addShortageInformation"
 }

@@ -14,22 +14,15 @@
  * limitations under the License.
  */
 
-package viewmodels
+package pages.unsatisfactory
 
-import models.AcceptMovement.Satisfactory
-import models.requests.DataRequest
-import pages.{AcceptMovementPage, QuestionPage}
+import models.HowMuchIsWrong
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-object AddMoreInformationHelper {
+case object HowMuchIsWrongPage extends QuestionPage[HowMuchIsWrong] {
 
-  private def infix()(implicit request: DataRequest[_]): String =
-    if(request.userAnswers.get(AcceptMovementPage).contains(Satisfactory)) ".satisfactory" else ""
+  override def path: JsPath = JsPath \ toString
 
-  def titleKey(page: QuestionPage[Boolean])(implicit request: DataRequest[_]): String =
-    s"${page.toString}${infix()}.title"
-
-  def headingKey(page: QuestionPage[Boolean])(implicit request: DataRequest[_]): String =
-    s"${page.toString}${infix()}.heading"
-
-
+  override def toString: String = "howMuchIsWrong"
 }

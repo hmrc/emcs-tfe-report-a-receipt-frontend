@@ -21,7 +21,7 @@ import controllers.routes
 import fixtures.messages.HowMuchIsWrongMessages
 import models.CheckMode
 import models.HowMuchIsWrong.TheWholeMovement
-import pages.HowMuchIsWrongPage
+import pages.unsatisfactory.HowMuchIsWrongPage
 import play.api.test.FakeRequest
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import utils.DateUtils

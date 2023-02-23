@@ -19,6 +19,7 @@ package navigation
 import base.SpecBase
 import controllers.routes
 import models.AcceptMovement._
+import models.HowMuchIsWrong.{IndividualItem, TheWholeMovement}
 import models.WrongWithMovement._
 import pages._
 import models._
@@ -85,6 +86,37 @@ class NavigatorSpec extends SpecBase {
             val userAnswers = emptyUserAnswers.set(AcceptMovementPage, PartiallyRefused)
 
             navigator.nextPage(AcceptMovementPage, NormalMode, userAnswers) mustBe routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+          }
+        }
+      }
+
+      "for the HowMuchIsWrong page" - {
+
+        s"when the user answers is $TheWholeMovement" - {
+
+          "must go to the WrongWithMovement page" in {
+
+            val userAnswers = emptyUserAnswers.set(HowMuchIsWrongPage, TheWholeMovement)
+
+            navigator.nextPage(HowMuchIsWrongPage, NormalMode, userAnswers) mustBe routes.WrongWithMovementController.onPageLoad(testErn, testArc, NormalMode)
+          }
+        }
+
+        s"when the user answers is $IndividualItem" - {
+
+          "must go to the Item Selection List page" in {
+
+            val userAnswers = emptyUserAnswers.set(HowMuchIsWrongPage, IndividualItem)
+
+            //TODO: Needs updating when page is available to route to
+            navigator.nextPage(HowMuchIsWrongPage, NormalMode, userAnswers) mustBe routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+          }
+        }
+
+        s"when there is no answer for the question" - {
+
+          "must go to back to the HowMuchIsWrong page" in {
+            navigator.nextPage(HowMuchIsWrongPage, NormalMode, emptyUserAnswers) mustBe routes.HowMuchIsWrongController.onPageLoad(testErn, testArc, NormalMode)
           }
         }
       }

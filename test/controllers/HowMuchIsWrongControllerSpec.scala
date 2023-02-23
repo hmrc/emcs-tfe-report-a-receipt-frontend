@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import forms.HowMuchIsWrongFormProvider
-import models.{NormalMode, HowMuchIsWrong, UserAnswers}
+import models.{HowMuchIsWrong, NormalMode}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

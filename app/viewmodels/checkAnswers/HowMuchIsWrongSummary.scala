@@ -41,11 +41,11 @@ class HowMuchIsWrongSummary {
         )
 
         SummaryListRowViewModel(
-          key     = "howMuchIsWrong.checkYourAnswersLabel",
+          key     = "howMuchIsWrong.checkYourAnswers.label",
           value   = value,
           actions = Seq(
             ActionItemViewModel("site.change", routes.HowMuchIsWrongController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, CheckMode).url)
-              .withVisuallyHiddenText(messages("howMuchIsWrong.change.hidden"))
+              .withVisuallyHiddenText(messages("howMuchIsWrong.checkYourAnswers.change.hidden"))
           )
         )
     }

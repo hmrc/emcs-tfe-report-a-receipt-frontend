@@ -26,7 +26,8 @@ import javax.inject.Inject
 class CheckAnswersHelper @Inject()(acceptMovementSummary: AcceptMovementSummary,
                                    dateOfArrivalSummary: DateOfArrivalSummary,
                                    howMuchIsWrongSummary: HowMuchIsWrongSummary,
-                                   moreInformationSummary: MoreInformationSummary)  {
+                                   moreInformationSummary: MoreInformationSummary,
+                                   wrongWithMovementSummary: WrongWithMovementSummary)  {
 
   def summaryList()(implicit request: DataRequest[_], messages: Messages): SummaryList =
     SummaryListViewModel(
@@ -34,6 +35,7 @@ class CheckAnswersHelper @Inject()(acceptMovementSummary: AcceptMovementSummary,
         dateOfArrivalSummary.row(),
         acceptMovementSummary.row(),
         howMuchIsWrongSummary.row(),
+        wrongWithMovementSummary.row(),
         Some(moreInformationSummary.row()),
       ).flatten
     ).withCssClass("govuk-!-margin-bottom-9")

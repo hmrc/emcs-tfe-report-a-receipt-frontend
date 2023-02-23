@@ -18,6 +18,7 @@ package navigation
 
 import controllers.routes
 import models.AcceptMovement.{Satisfactory, Unsatisfactory}
+import models.HowMuchIsWrong.TheWholeMovement
 import models.WrongWithMovement.{BrokenSeals, Damaged, Less, More, Other}
 import models._
 import pages._
@@ -38,7 +39,12 @@ class Navigator @Inject()() extends BaseNavigator {
         case _ => routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)
       }
     case HowMuchIsWrongPage =>
-      (userAnswers: UserAnswers) => routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)
+      (userAnswers: UserAnswers) =>
+        userAnswers.get(HowMuchIsWrongPage) match {
+          case Some(TheWholeMovement) => routes.WrongWithMovementController.onPageLoad(userAnswers.ern, userAnswers.arc, NormalMode)
+          case Some(_) => routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)
+          case None => routes.HowMuchIsWrongController.onPageLoad(userAnswers.ern, userAnswers.arc, NormalMode)
+        }
     case WrongWithMovementPage =>
       (userAnswers: UserAnswers) => userAnswers.get(WrongWithMovementPage) match {
         case Some(checkboxSelections) =>

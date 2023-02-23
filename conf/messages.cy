@@ -130,9 +130,9 @@ howMuchIsWrong.title = How much of this movement is wrong?
 howMuchIsWrong.heading = How much of this movement is wrong?
 howMuchIsWrong.wholeMovement = The whole movement
 howMuchIsWrong.individualItem = Individual item(s) in this movement
-howMuchIsWrong.checkYourAnswersLabel = How much of this movement is wrong?
 howMuchIsWrong.error.required = Select how much of the movement is wrong
-howMuchIsWrong.change.hidden = how much of this movement is wrong
+howMuchIsWrong.checkYourAnswers.label = Amount of the movement that is wrong
+howMuchIsWrong.checkYourAnswers.change.hidden = how much of this movement is wrong
 
 wrongWithMovement.title = What is wrong with this movement?
 wrongWithMovement.heading = What is wrong with this movement?

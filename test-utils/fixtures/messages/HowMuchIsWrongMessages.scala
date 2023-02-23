@@ -24,6 +24,7 @@ object HowMuchIsWrongMessages {
     val wholeMovement: String
     val individualItem: String
     val requiredError: String
+    val checkYourAnswersLabel: String
     val hiddenChangeLinkText: String
   }
 
@@ -33,6 +34,7 @@ object HowMuchIsWrongMessages {
     override val wholeMovement = "The whole movement"
     override val individualItem = "Individual item(s) in this movement"
     override val requiredError = "Select how much of the movement is wrong"
+    override val checkYourAnswersLabel = "Amount of the movement that is wrong"
     override val hiddenChangeLinkText = "how much of this movement is wrong"
   }
 
@@ -42,6 +44,7 @@ object HowMuchIsWrongMessages {
     override val wholeMovement = "The whole movement"
     override val individualItem = "Individual item(s) in this movement"
     override val requiredError = "Select how much of the movement is wrong"
+    override val checkYourAnswersLabel = "Amount of the movement that is wrong"
     override val hiddenChangeLinkText = "how much of this movement is wrong"
   }
 }

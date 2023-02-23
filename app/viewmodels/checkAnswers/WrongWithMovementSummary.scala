@@ -17,7 +17,8 @@
 package viewmodels.checkAnswers
 
 import controllers.routes
-import models.{CheckMode, UserAnswers}
+import models.CheckMode
+import models.requests.DataRequest
 import pages.WrongWithMovementPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -26,10 +27,10 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object WrongWithMovementSummary  {
+class WrongWithMovementSummary  {
 
-  def row(userAnswers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    userAnswers.get(WrongWithMovementPage).map {
+  def row()(implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] =
+    request.userAnswers.get(WrongWithMovementPage).map {
       answers =>
 
         val value = ValueViewModel(
@@ -45,7 +46,7 @@ object WrongWithMovementSummary  {
           key     = "wrongWithMovement.checkYourAnswer.label",
           value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", routes.WrongWithMovementController.onPageLoad(userAnswers.ern, userAnswers.arc, CheckMode).url)
+            ActionItemViewModel("site.change", routes.WrongWithMovementController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, CheckMode).url)
               .withVisuallyHiddenText(messages("wrongWithMovement.checkYourAnswer.change.hidden"))
           )
         )

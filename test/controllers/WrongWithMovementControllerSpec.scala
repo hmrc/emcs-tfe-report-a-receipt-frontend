@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import forms.WrongWithMovementFormProvider
-import models.{NormalMode, WrongWithMovement, UserAnswers}
+import models.{NormalMode, WrongWithMovement}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

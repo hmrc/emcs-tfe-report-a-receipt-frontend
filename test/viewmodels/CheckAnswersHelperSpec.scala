@@ -17,7 +17,7 @@
 package viewmodels
 
 import base.SpecBase
-import mocks.viewmodels.{MockAcceptMovementSummary, MockDateOfArrivalSummary, MockMoreInformationSummary}
+import mocks.viewmodels.{MockAcceptMovementSummary, MockDateOfArrivalSummary, MockHowMuchIsWrongSummary, MockMoreInformationSummary}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.govukfrontend.views.Aliases.{SummaryList, SummaryListRow}
 import viewmodels.govuk.summarylist._
@@ -27,11 +27,14 @@ import viewmodels.checkAnswers.CheckAnswersHelper
 class CheckAnswersHelperSpec extends SpecBase
   with MockDateOfArrivalSummary
   with MockAcceptMovementSummary
-  with MockMoreInformationSummary {
+  with MockHowMuchIsWrongSummary
+  with MockMoreInformationSummary
+{
 
   lazy val checkAnswersHelper = new CheckAnswersHelper(
     mockAcceptMovementSummary,
     mockDateOfArrivalSummary,
+    mockHowMuchIsWrongSummary,
     mockMoreInformationSummary
   )
 
@@ -51,6 +54,10 @@ class CheckAnswersHelperSpec extends SpecBase
         "AcceptMovement",
         ValueViewModel("Yes")
       )
+      val howMuchIsWrongAnswer = SummaryListRow(
+        "HowMuchIsWrong",
+        ValueViewModel("Whole Movement")
+      )
       val moreInformationAnswer = SummaryListRow(
         "MoreInfo",
         ValueViewModel("Info")
@@ -58,11 +65,13 @@ class CheckAnswersHelperSpec extends SpecBase
 
       MockDateOfArrivalSummary.row().returns(Some(dateOfArrivalAnswer))
       MockAcceptMovementSummary.row().returns(Some(acceptMovementAnswer))
+      MockHowMuchIsWrongSummary.row().returns(Some(howMuchIsWrongAnswer))
       MockMoreInformationSummary.row().returns(moreInformationAnswer)
 
       checkAnswersHelper.summaryList() mustBe SummaryList(Seq(
         dateOfArrivalAnswer,
         acceptMovementAnswer,
+        howMuchIsWrongAnswer,
         moreInformationAnswer
       )).withCssClass("govuk-!-margin-bottom-9")
     }

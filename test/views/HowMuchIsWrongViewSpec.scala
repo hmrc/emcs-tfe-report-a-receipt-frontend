@@ -43,7 +43,8 @@ class HowMuchIsWrongViewSpec extends ViewSpecBase with ViewBehaviours {
 
         behave like pageWithExpectedElementsAndMessages(Seq(
           Selectors.title -> messagesForLanguage.title,
-          Selectors.h1 -> (messagesForLanguage.arcSubheading(testArc) + " " + messagesForLanguage.heading),
+          Selectors.h2(1) -> messagesForLanguage.arcSubheading(testArc),
+          Selectors.h1 -> messagesForLanguage.heading,
           Selectors.radioButton(1) -> messagesForLanguage.wholeMovement,
           Selectors.radioButton(2) -> messagesForLanguage.individualItem,
           Selectors.button -> messagesForLanguage.saveAndContinue,

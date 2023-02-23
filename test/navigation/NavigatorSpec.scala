@@ -55,12 +55,11 @@ class NavigatorSpec extends SpecBase {
 
         s"when the user answers is $Unsatisfactory" - {
 
-          //TODO: Update this as part of future stories to go through the actual flow
-          "must go to the CheckAnswersPage page" in {
+          "must go to the How Much Is Wrong page" in {
 
             val userAnswers = emptyUserAnswers.set(AcceptMovementPage, Unsatisfactory)
 
-            navigator.nextPage(AcceptMovementPage, NormalMode, userAnswers) mustBe routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+            navigator.nextPage(AcceptMovementPage, NormalMode, userAnswers) mustBe routes.HowMuchIsWrongController.onPageLoad(testErn, testArc, NormalMode)
           }
         }
 

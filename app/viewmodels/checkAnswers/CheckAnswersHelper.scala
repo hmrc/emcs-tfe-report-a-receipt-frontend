@@ -25,6 +25,7 @@ import javax.inject.Inject
 
 class CheckAnswersHelper @Inject()(acceptMovementSummary: AcceptMovementSummary,
                                    dateOfArrivalSummary: DateOfArrivalSummary,
+                                   howMuchIsWrongSummary: HowMuchIsWrongSummary,
                                    moreInformationSummary: MoreInformationSummary)  {
 
   def summaryList()(implicit request: DataRequest[_], messages: Messages): SummaryList =
@@ -32,7 +33,8 @@ class CheckAnswersHelper @Inject()(acceptMovementSummary: AcceptMovementSummary,
       rows = Seq(
         dateOfArrivalSummary.row(),
         acceptMovementSummary.row(),
-        Some(moreInformationSummary.row())
+        howMuchIsWrongSummary.row(),
+        Some(moreInformationSummary.row()),
       ).flatten
     ).withCssClass("govuk-!-margin-bottom-9")
 }

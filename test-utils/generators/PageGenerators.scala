@@ -21,6 +21,9 @@ import pages._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryHowMuchIsWrongPage: Arbitrary[HowMuchIsWrongPage.type] =
+    Arbitrary(HowMuchIsWrongPage)
+
   implicit lazy val arbitraryMoreInformationPage: Arbitrary[MoreInformationPage.type] =
     Arbitrary(MoreInformationPage)
 

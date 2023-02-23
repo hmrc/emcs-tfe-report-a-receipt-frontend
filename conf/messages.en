@@ -130,4 +130,10 @@ confirmation.returnToMovement.link = Return to view your movement
 confirmation.feedback.link = What did you think of this service?
 confirmation.feedback.time = (takes 30 seconds)
 
-
+howMuchIsWrong.title = How much of this movement is wrong?
+howMuchIsWrong.heading = How much of this movement is wrong?
+howMuchIsWrong.wholeMovement = The whole movement
+howMuchIsWrong.individualItem = Individual item(s) in this movement
+howMuchIsWrong.checkYourAnswersLabel = Amount of the movement that is wrong
+howMuchIsWrong.error.required = Select how much of the movement is wrong
+howMuchIsWrong.change.hidden = how much of this movement is wrong

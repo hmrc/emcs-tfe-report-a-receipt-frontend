@@ -17,7 +17,7 @@
 package navigation
 
 import controllers.routes
-import models.AcceptMovement.Satisfactory
+import models.AcceptMovement.{Satisfactory, Unsatisfactory}
 import models._
 import pages._
 import play.api.mvc.Call
@@ -33,8 +33,11 @@ class Navigator @Inject()() extends BaseNavigator {
     case AcceptMovementPage =>
       (userAnswers: UserAnswers) => userAnswers.get(AcceptMovementPage) match {
         case Some(Satisfactory) => routes.AddMoreInformationController.onPageLoad(userAnswers.ern, userAnswers.arc, NormalMode)
+        case Some(Unsatisfactory) => routes.HowMuchIsWrongController.onPageLoad(userAnswers.ern, userAnswers.arc, NormalMode)
         case _ => routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)
       }
+    case HowMuchIsWrongPage =>
+      (userAnswers: UserAnswers) => routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)
     case AddMoreInformationPage =>
       (userAnswers: UserAnswers) => userAnswers.get(AddMoreInformationPage) match {
           case Some(true) => routes.MoreInformationController.onPageLoad(userAnswers.ern, userAnswers.arc, NormalMode)

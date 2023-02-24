@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package pages
+package pages.unsatisfactory
 
 import models.WrongWithMovement
+import pages.QuestionPage
 import play.api.libs.json.JsPath
 
 case object WrongWithMovementPage extends QuestionPage[Set[WrongWithMovement]] {

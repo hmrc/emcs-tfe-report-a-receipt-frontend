@@ -16,46 +16,70 @@
 
 package forms
 
-import fixtures.messages.AddMoreInformationMessages
+import fixtures.messages.{AddMoreInformationMessages, AddShortageInformationMessages}
 import forms.behaviours.BooleanFieldBehaviours
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import pages.AddMoreInformationPage
+import pages.unsatisfactory.AddShortageInformationPage
 import play.api.data.FormError
 import play.api.i18n.{Messages, MessagesApi}
 
 class AddMoreInformationFormProviderSpec extends BooleanFieldBehaviours with GuiceOneAppPerSuite {
 
-  val requiredKey = "addMoreInformation.error.required"
-  val invalidKey = "error.boolean"
+  Seq(AddMoreInformationPage, AddShortageInformationPage) foreach { page =>
 
-  val form = new AddMoreInformationFormProvider()()
+    s"loading the form for the '$page' page" - {
 
-  ".value" - {
+      ".value" - {
 
-    val fieldName = "value"
+        val fieldName = "value"
+        val form = new AddMoreInformationFormProvider()(page)
+        val requiredKey = s"${page.toString}.error.required"
+        val invalidKey = "error.boolean"
 
-    behave like booleanField(
-      form,
-      fieldName,
-      invalidError = FormError(fieldName, invalidKey)
-    )
+        behave like booleanField(
+          form,
+          fieldName,
+          invalidError = FormError(fieldName, invalidKey)
+        )
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+        behave like mandatoryField(
+          form,
+          fieldName,
+          requiredError = FormError(fieldName, requiredKey)
+        )
+      }
+    }
   }
 
   "Error Messages" - {
 
-    Seq(AddMoreInformationMessages.English, AddMoreInformationMessages.Welsh) foreach { messagesForLanguage =>
+    "for the AddMoreInformationPage" - {
 
-      implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(messagesForLanguage.lang))
+      Seq(AddMoreInformationMessages.English, AddMoreInformationMessages.Welsh) foreach { messagesForLanguage =>
 
-      s"when output for language code '${messagesForLanguage.lang.code}'" - {
+        implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(messagesForLanguage.lang))
 
-        "have the correct error message when no option is selected" in {
-          messages("addMoreInformation.error.required") mustBe messagesForLanguage.requiredError
+        s"when output for language code '${messagesForLanguage.lang.code}'" - {
+
+          "have the correct error message when no option is selected" in {
+            messages(s"${AddMoreInformationPage.toString}.error.required") mustBe messagesForLanguage.requiredError
+          }
+        }
+      }
+    }
+
+    "for the AddShortageInformationPage" - {
+
+      Seq(AddShortageInformationMessages.English, AddShortageInformationMessages.Welsh) foreach { messagesForLanguage =>
+
+        implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(messagesForLanguage.lang))
+
+        s"when output for language code '${messagesForLanguage.lang.code}'" - {
+
+          "have the correct error message when no option is selected" in {
+            messages(s"${AddShortageInformationPage.toString}.error.required") mustBe messagesForLanguage.requiredError
+          }
         }
       }
     }

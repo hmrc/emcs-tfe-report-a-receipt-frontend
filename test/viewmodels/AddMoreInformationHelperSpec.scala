@@ -19,7 +19,7 @@ package viewmodels
 import base.SpecBase
 import fixtures.messages.AddMoreInformationMessages
 import models.AcceptMovement.{Refused, Satisfactory}
-import pages.AcceptMovementPage
+import pages.{AcceptMovementPage, AddMoreInformationPage}
 import play.api.test.FakeRequest
 
 class AddMoreInformationHelperSpec extends SpecBase {
@@ -39,16 +39,16 @@ class AddMoreInformationHelperSpec extends SpecBase {
 
             implicit val request = dataRequest(FakeRequest(), emptyUserAnswers.set(AcceptMovementPage, Satisfactory))
 
-            AddMoreInformationHelper.titleKey() mustBe "addMoreInformation.satisfactory.title"
-            langMessages.satisfactoryTitle must include(msgs(AddMoreInformationHelper.titleKey()))
+            AddMoreInformationHelper.titleKey(AddMoreInformationPage) mustBe "addMoreInformation.satisfactory.title"
+            langMessages.satisfactoryTitle must include(msgs(AddMoreInformationHelper.titleKey(AddMoreInformationPage)))
           }
 
           "when Answer for AcceptMovement is anything other than Satisfacatory" in {
 
             implicit val request = dataRequest(FakeRequest(), emptyUserAnswers.set(AcceptMovementPage, Refused))
 
-            AddMoreInformationHelper.titleKey() mustBe "addMoreInformation.title"
-            langMessages.title must include(msgs(AddMoreInformationHelper.titleKey()))
+            AddMoreInformationHelper.titleKey(AddMoreInformationPage) mustBe "addMoreInformation.title"
+            langMessages.title must include(msgs(AddMoreInformationHelper.titleKey(AddMoreInformationPage)))
           }
         }
 
@@ -58,16 +58,16 @@ class AddMoreInformationHelperSpec extends SpecBase {
 
             implicit val request = dataRequest(FakeRequest(), emptyUserAnswers.set(AcceptMovementPage, Satisfactory))
 
-            AddMoreInformationHelper.headingKey() mustBe "addMoreInformation.satisfactory.heading"
-            msgs(AddMoreInformationHelper.headingKey()) mustBe langMessages.satisfactoryHeading
+            AddMoreInformationHelper.headingKey(AddMoreInformationPage) mustBe "addMoreInformation.satisfactory.heading"
+            msgs(AddMoreInformationHelper.headingKey(AddMoreInformationPage)) mustBe langMessages.satisfactoryHeading
           }
 
           "when Answer for AcceptMovement is anything other than Satisfacatory" in {
 
             implicit val request = dataRequest(FakeRequest(), emptyUserAnswers.set(AcceptMovementPage, Refused))
 
-            AddMoreInformationHelper.headingKey() mustBe "addMoreInformation.heading"
-            msgs(AddMoreInformationHelper.headingKey()) mustBe langMessages.heading
+            AddMoreInformationHelper.headingKey(AddMoreInformationPage) mustBe "addMoreInformation.heading"
+            msgs(AddMoreInformationHelper.headingKey(AddMoreInformationPage)) mustBe langMessages.heading
           }
         }
       }

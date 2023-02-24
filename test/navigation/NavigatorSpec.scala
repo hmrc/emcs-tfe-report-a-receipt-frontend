@@ -23,6 +23,7 @@ import models.HowMuchIsWrong.{IndividualItem, TheWholeMovement}
 import models.WrongWithMovement._
 import pages._
 import models._
+import pages.unsatisfactory.{HowMuchIsWrongPage, WrongWithMovementPage}
 
 class NavigatorSpec extends SpecBase {
 
@@ -53,7 +54,7 @@ class NavigatorSpec extends SpecBase {
 
             val userAnswers = emptyUserAnswers.set(AcceptMovementPage, Satisfactory)
 
-            navigator.nextPage(AcceptMovementPage, NormalMode, userAnswers) mustBe routes.AddMoreInformationController.onPageLoad(testErn, testArc, NormalMode)
+            navigator.nextPage(AcceptMovementPage, NormalMode, userAnswers) mustBe routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
           }
         }
 

@@ -18,6 +18,7 @@ package pages
 
 import models.WrongWithMovement
 import pages.behaviours.PageBehaviours
+import pages.unsatisfactory.WrongWithMovementPage
 
 class WrongWithMovementPageSpec extends PageBehaviours {
 

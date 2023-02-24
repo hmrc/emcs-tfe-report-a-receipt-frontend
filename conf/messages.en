@@ -98,6 +98,10 @@ addMoreInformation.satisfactory.title = Do you want to give any information abou
 addMoreInformation.satisfactory.heading = Do you want to give any information about this movement?
 addMoreInformation.error.required = Select yes if you want to give more information about this movement
 
+addShortageInformation.title = Do you want to give more information about being sent less items than expected?
+addShortageInformation.heading = Do you want to give more information about being sent less items than expected?
+addShortageInformation.error.required = Select yes if you want to give more information about being sent less goods than expected
+
 moreInformation.title = Give more information about this movement
 moreInformation.heading = Give more information about this movement
 moreInformation.checkYourAnswers.label = More information

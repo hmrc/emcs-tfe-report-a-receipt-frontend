@@ -19,7 +19,7 @@ package viewmodels.checkAnswers
 import controllers.routes
 import models.requests.DataRequest
 import models.CheckMode
-import pages.HowMuchIsWrongPage
+import pages.unsatisfactory.HowMuchIsWrongPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent

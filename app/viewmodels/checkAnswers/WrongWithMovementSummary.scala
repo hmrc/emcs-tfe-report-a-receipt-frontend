@@ -17,9 +17,9 @@
 package viewmodels.checkAnswers
 
 import controllers.routes
-import models.requests.DataRequest
 import models.CheckMode
-import pages.HowMuchIsWrongPage
+import models.requests.DataRequest
+import pages.WrongWithMovementPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -27,25 +27,27 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-
-class HowMuchIsWrongSummary {
+class WrongWithMovementSummary  {
 
   def row()(implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] =
-    request.userAnswers.get(HowMuchIsWrongPage).map {
-      answer =>
+    request.userAnswers.get(WrongWithMovementPage).map {
+      answers =>
 
         val value = ValueViewModel(
           HtmlContent(
-            HtmlFormat.escape(messages(s"howMuchIsWrong.$answer"))
+            answers.map {
+              answer => HtmlFormat.escape(messages(s"wrongWithMovement.$answer")).toString
+            }
+            .mkString(",<br>")
           )
         )
 
         SummaryListRowViewModel(
-          key     = "howMuchIsWrong.checkYourAnswers.label",
+          key     = "wrongWithMovement.checkYourAnswer.label",
           value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", routes.HowMuchIsWrongController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, CheckMode).url)
-              .withVisuallyHiddenText(messages("howMuchIsWrong.checkYourAnswers.change.hidden"))
+            ActionItemViewModel("site.change", routes.WrongWithMovementController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, CheckMode).url)
+              .withVisuallyHiddenText(messages("wrongWithMovement.checkYourAnswer.change.hidden"))
           )
         )
     }

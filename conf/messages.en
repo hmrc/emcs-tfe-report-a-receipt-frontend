@@ -50,10 +50,6 @@ error.number = Please enter a valid number
 error.required = Please enter a value
 error.summary.title = There is a problem
 
-index.title = emcs-tfe-report-a-receipt-frontend
-index.heading = emcs-tfe-report-a-receipt-frontend
-index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
-
 journeyRecovery.continue.title = Sorry, there is a problem with the service
 journeyRecovery.continue.heading = Sorry, there is a problem with the service
 journeyRecovery.continue.guidance = [Add content to explain how to proceed.]
@@ -134,6 +130,18 @@ howMuchIsWrong.title = How much of this movement is wrong?
 howMuchIsWrong.heading = How much of this movement is wrong?
 howMuchIsWrong.wholeMovement = The whole movement
 howMuchIsWrong.individualItem = Individual item(s) in this movement
-howMuchIsWrong.checkYourAnswersLabel = Amount of the movement that is wrong
 howMuchIsWrong.error.required = Select how much of the movement is wrong
-howMuchIsWrong.change.hidden = how much of this movement is wrong
+howMuchIsWrong.checkYourAnswers.label = Amount of the movement that is wrong
+howMuchIsWrong.checkYourAnswers.change.hidden = how much of this movement is wrong
+
+wrongWithMovement.title = What is wrong with this movement?
+wrongWithMovement.heading = What is wrong with this movement?
+wrongWithMovement.hint = Select all that apply.
+wrongWithMovement.less = I was sent less items than expected
+wrongWithMovement.more = I was sent more items than expected
+wrongWithMovement.damaged = Items were damaged
+wrongWithMovement.brokenSeals = Broken seal(s)
+wrongWithMovement.other = Other
+wrongWithMovement.error.required = Select what is wrong with the movement
+wrongWithMovement.checkYourAnswer.label = What is wrong with this movement?
+wrongWithMovement.checkYourAnswer.change.hidden = what is wrong with this movement

@@ -14,25 +14,19 @@
  * limitations under the License.
  */
 
-package generators
+package forms
 
-import models._
-import org.scalacheck.{Arbitrary, Gen}
+import javax.inject.Inject
 
-trait ModelGenerators {
+import forms.mappings.Mappings
+import play.api.data.Form
+import play.api.data.Forms.set
+import models.WrongWithMovement
 
-  implicit lazy val arbitraryHowMuchIsWrong: Arbitrary[HowMuchIsWrong] =
-    Arbitrary {
-      Gen.oneOf(HowMuchIsWrong.values.toSeq)
-    }
+class WrongWithMovementFormProvider @Inject() extends Mappings {
 
-  implicit lazy val arbitraryWrongWithMovement: Arbitrary[WrongWithMovement] =
-    Arbitrary {
-      Gen.oneOf(WrongWithMovement.values)
-    }
-
-  implicit lazy val arbitraryAcceptMovement: Arbitrary[AcceptMovement] =
-    Arbitrary {
-      Gen.oneOf(AcceptMovement.values)
-    }
+  def apply(): Form[Set[WrongWithMovement]] =
+    Form(
+      "value" -> set(enumerable[WrongWithMovement]("wrongWithMovement.error.required")).verifying(nonEmptySet("wrongWithMovement.error.required"))
+    )
 }

@@ -24,6 +24,9 @@ trait PageGenerators {
   implicit lazy val arbitraryHowMuchIsWrongPage: Arbitrary[HowMuchIsWrongPage.type] =
     Arbitrary(HowMuchIsWrongPage)
 
+  implicit lazy val arbitraryWrongWithMovementPage: Arbitrary[WrongWithMovementPage.type] =
+    Arbitrary(WrongWithMovementPage)
+
   implicit lazy val arbitraryMoreInformationPage: Arbitrary[MoreInformationPage.type] =
     Arbitrary(MoreInformationPage)
 

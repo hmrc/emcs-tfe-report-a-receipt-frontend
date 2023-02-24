@@ -17,7 +17,7 @@
 package viewmodels
 
 import base.SpecBase
-import mocks.viewmodels.{MockAcceptMovementSummary, MockDateOfArrivalSummary, MockHowMuchIsWrongSummary, MockMoreInformationSummary}
+import mocks.viewmodels.{MockAcceptMovementSummary, MockDateOfArrivalSummary, MockHowMuchIsWrongSummary, MockMoreInformationSummary, MockWrongWithMovementSummary}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.govukfrontend.views.Aliases.{SummaryList, SummaryListRow}
 import viewmodels.govuk.summarylist._
@@ -29,13 +29,15 @@ class CheckAnswersHelperSpec extends SpecBase
   with MockAcceptMovementSummary
   with MockHowMuchIsWrongSummary
   with MockMoreInformationSummary
+  with MockWrongWithMovementSummary
 {
 
   lazy val checkAnswersHelper = new CheckAnswersHelper(
     mockAcceptMovementSummary,
     mockDateOfArrivalSummary,
     mockHowMuchIsWrongSummary,
-    mockMoreInformationSummary
+    mockMoreInformationSummary,
+    mockWrongWithMovementSummary
   )
 
   lazy val app = applicationBuilder().build()
@@ -58,6 +60,10 @@ class CheckAnswersHelperSpec extends SpecBase
         "HowMuchIsWrong",
         ValueViewModel("Whole Movement")
       )
+      val wrongWithMovementAnswer = SummaryListRow(
+        "WrongWithMovement",
+        ValueViewModel("Less")
+      )
       val moreInformationAnswer = SummaryListRow(
         "MoreInfo",
         ValueViewModel("Info")
@@ -66,12 +72,14 @@ class CheckAnswersHelperSpec extends SpecBase
       MockDateOfArrivalSummary.row().returns(Some(dateOfArrivalAnswer))
       MockAcceptMovementSummary.row().returns(Some(acceptMovementAnswer))
       MockHowMuchIsWrongSummary.row().returns(Some(howMuchIsWrongAnswer))
+      MockWrongWithMovementSummary.row().returns(Some(wrongWithMovementAnswer))
       MockMoreInformationSummary.row().returns(moreInformationAnswer)
 
       checkAnswersHelper.summaryList() mustBe SummaryList(Seq(
         dateOfArrivalAnswer,
         acceptMovementAnswer,
         howMuchIsWrongAnswer,
+        wrongWithMovementAnswer,
         moreInformationAnswer
       )).withCssClass("govuk-!-margin-bottom-9")
     }

@@ -17,43 +17,43 @@
 package controllers
 
 import base.SpecBase
-import forms.HowMuchIsWrongFormProvider
-import models.{HowMuchIsWrong, NormalMode}
+import forms.WrongWithMovementFormProvider
+import models.{NormalMode, WrongWithMovement}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.HowMuchIsWrongPage
+import pages.WrongWithMovementPage
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.HowMuchIsWrongView
+import views.html.WrongWithMovementView
 
 import scala.concurrent.Future
 
-class HowMuchIsWrongControllerSpec extends SpecBase with MockitoSugar {
+class WrongWithMovementControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val howMuchIsWrongRoute = routes.HowMuchIsWrongController.onPageLoad(testErn, testArc, NormalMode).url
+  lazy val wrongWithMovementRoute = routes.WrongWithMovementController.onPageLoad(testErn, testArc, NormalMode).url
 
-  val formProvider = new HowMuchIsWrongFormProvider()
+  val formProvider = new WrongWithMovementFormProvider()
   val form = formProvider()
 
-  "HowMuchIsWrong Controller" - {
+  "WrongWithMovement Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, howMuchIsWrongRoute)
+        val request = FakeRequest(GET, wrongWithMovementRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[HowMuchIsWrongView]
+        val view = application.injector.instanceOf[WrongWithMovementView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(dataRequest(request), messages(application)).toString
@@ -62,19 +62,19 @@ class HowMuchIsWrongControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(HowMuchIsWrongPage, HowMuchIsWrong.values.head)
+      val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, WrongWithMovement.values.toSet)
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, howMuchIsWrongRoute)
+        val request = FakeRequest(GET, wrongWithMovementRoute)
 
-        val view = application.injector.instanceOf[HowMuchIsWrongView]
+        val view = application.injector.instanceOf[WrongWithMovementView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(HowMuchIsWrong.values.head), NormalMode)(dataRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(WrongWithMovement.values.toSet), NormalMode)(dataRequest(request), messages(application)).toString
       }
     }
 
@@ -94,8 +94,8 @@ class HowMuchIsWrongControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, howMuchIsWrongRoute)
-            .withFormUrlEncodedBody(("value", HowMuchIsWrong.values.head.toString))
+          FakeRequest(POST, wrongWithMovementRoute)
+            .withFormUrlEncodedBody(("value[0]", WrongWithMovement.values.head.toString))
 
         val result = route(application, request).value
 
@@ -110,12 +110,12 @@ class HowMuchIsWrongControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, howMuchIsWrongRoute)
+          FakeRequest(POST, wrongWithMovementRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
 
-        val view = application.injector.instanceOf[HowMuchIsWrongView]
+        val view = application.injector.instanceOf[WrongWithMovementView]
 
         val result = route(application, request).value
 
@@ -129,7 +129,7 @@ class HowMuchIsWrongControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, howMuchIsWrongRoute)
+        val request = FakeRequest(GET, wrongWithMovementRoute)
 
         val result = route(application, request).value
 
@@ -138,19 +138,18 @@ class HowMuchIsWrongControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "redirect to Journey Recovery for a POST if no existing data is found" in {
+    "must redirect to Journey Recovery for a POST if no existing data is found" in {
 
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
         val request =
-          FakeRequest(POST, howMuchIsWrongRoute)
-            .withFormUrlEncodedBody(("value", HowMuchIsWrong.values.head.toString))
+          FakeRequest(POST, wrongWithMovementRoute)
+            .withFormUrlEncodedBody(("value[0]", WrongWithMovement.values.head.toString))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-
         redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
       }
     }

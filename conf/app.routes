@@ -47,3 +47,8 @@ GET        /:ern/:arc/how-much-wrong-movement                       controllers.
 POST       /:ern/:arc/how-much-wrong-movement                       controllers.HowMuchIsWrongController.onSubmit(ern: String, arc: String, mode: Mode = NormalMode)
 GET        /:ern/:arc/how-much-wrong-movement/change                controllers.HowMuchIsWrongController.onPageLoad(ern: String, arc: String, mode: Mode = CheckMode)
 POST       /:ern/:arc/how-much-wrong-movement/change                controllers.HowMuchIsWrongController.onSubmit(ern: String, arc: String, mode: Mode = CheckMode)
+
+GET         /:ern/:arc/what-wrong-movement                          controllers.WrongWithMovementController.onPageLoad(ern: String, arc: String, mode: Mode = NormalMode)
+POST        /:ern/:arc/what-wrong-movement                          controllers.WrongWithMovementController.onSubmit(ern: String, arc: String, mode: Mode = NormalMode)
+GET         /:ern/:arc/what-wrong-movement/change                   controllers.WrongWithMovementController.onPageLoad(ern: String, arc: String, mode: Mode = CheckMode)
+POST        /:ern/:arc/what-wrong-movement/change                   controllers.WrongWithMovementController.onSubmit(ern: String, arc: String, mode: Mode = CheckMode)

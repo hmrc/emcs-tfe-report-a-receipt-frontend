@@ -16,7 +16,11 @@
 
 package viewmodels.checkAnswers
 
+import models.AcceptMovement.Unsatisfactory
+import models.CheckMode
 import models.requests.DataRequest
+import pages.unsatisfactory.ShortageInformationPage
+import pages.{AcceptMovementPage, MoreInformationPage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.govuk.summarylist._
@@ -29,14 +33,33 @@ class CheckAnswersHelper @Inject()(acceptMovementSummary: AcceptMovementSummary,
                                    moreInformationSummary: MoreInformationSummary,
                                    wrongWithMovementSummary: WrongWithMovementSummary)  {
 
-  def summaryList()(implicit request: DataRequest[_], messages: Messages): SummaryList =
+  def summaryList()(implicit request: DataRequest[_], messages: Messages): SummaryList = {
+
+    val commonRows = Seq(
+      dateOfArrivalSummary.row(),
+      acceptMovementSummary.row()
+    ).flatten
+
+    val unsatisfactoryRows =
+      if(request.userAnswers.get(AcceptMovementPage).contains(Unsatisfactory)) {
+        Seq(
+          howMuchIsWrongSummary.row(),
+          wrongWithMovementSummary.row(),
+          Some(moreInformationSummary.row(
+            page = ShortageInformationPage,
+            changeAction = controllers.routes.MoreInformationController.loadShortageInformation(request.ern, request.arc, CheckMode))
+          )
+        ).flatten
+      } else {
+        Seq()
+      }
+
     SummaryListViewModel(
-      rows = Seq(
-        dateOfArrivalSummary.row(),
-        acceptMovementSummary.row(),
-        howMuchIsWrongSummary.row(),
-        wrongWithMovementSummary.row(),
-        Some(moreInformationSummary.row()),
-      ).flatten
+      rows = commonRows ++ unsatisfactoryRows :+
+        moreInformationSummary.row(
+          page = MoreInformationPage,
+          changeAction = controllers.routes.MoreInformationController.loadMoreInformation(request.ern, request.arc, CheckMode)
+        )
     ).withCssClass("govuk-!-margin-bottom-9")
+  }
 }

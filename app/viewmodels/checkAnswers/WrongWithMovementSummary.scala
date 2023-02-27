@@ -17,38 +17,34 @@
 package viewmodels.checkAnswers
 
 import controllers.routes
-import models.CheckMode
 import models.requests.DataRequest
+import models.{NormalMode, WrongWithMovement}
 import pages.unsatisfactory.WrongWithMovementPage
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
+import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
+import views.html.components.list
 
-class WrongWithMovementSummary  {
+import javax.inject.Inject
+
+class WrongWithMovementSummary @Inject()(list: list) {
 
   def row()(implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] =
-    request.userAnswers.get(WrongWithMovementPage).map {
-      answers =>
-
-        val value = ValueViewModel(
-          HtmlContent(
-            answers.map {
-              answer => HtmlFormat.escape(messages(s"wrongWithMovement.$answer")).toString
-            }
-            .mkString(",<br>")
-          )
+    request.userAnswers.get(WrongWithMovementPage).map { answers =>
+      SummaryListRowViewModel(
+        key     = "wrongWithMovement.checkYourAnswers.label",
+        value   = ValueViewModel(HtmlContent(
+          list(WrongWithMovement.values.filter(answers.contains).map { answer =>
+            Html(messages(s"wrongWithMovement.checkYourAnswers.$answer"))
+          })
+        )),
+        actions = Seq(
+          ActionItemViewModel("site.change", routes.WrongWithMovementController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, NormalMode).url)
+            .withVisuallyHiddenText(messages("wrongWithMovement.checkYourAnswers.change.hidden"))
         )
-
-        SummaryListRowViewModel(
-          key     = "wrongWithMovement.checkYourAnswer.label",
-          value   = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.WrongWithMovementController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, CheckMode).url)
-              .withVisuallyHiddenText(messages("wrongWithMovement.checkYourAnswer.change.hidden"))
-          )
-        )
+      )
     }
 }

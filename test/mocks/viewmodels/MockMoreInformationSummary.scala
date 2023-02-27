@@ -17,9 +17,11 @@
 package mocks.viewmodels
 
 import models.requests.DataRequest
-import org.scalamock.handlers.CallHandler2
+import org.scalamock.handlers.CallHandler4
 import org.scalamock.scalatest.MockFactory
+import pages.QuestionPage
 import play.api.i18n.Messages
+import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.MoreInformationSummary
 
@@ -29,8 +31,9 @@ trait MockMoreInformationSummary extends MockFactory {
 
   object MockMoreInformationSummary {
 
-    def row(): CallHandler2[DataRequest[_], Messages, SummaryListRow] =
-      (mockMoreInformationSummary.row()(_: DataRequest[_], _: Messages))
-        .expects(*, *)
+    def row(page: QuestionPage[Option[String]],
+            changeAction: Call): CallHandler4[QuestionPage[Option[String]], Call, DataRequest[_], Messages, SummaryListRow] =
+      (mockMoreInformationSummary.row(_: QuestionPage[Option[String]], _: Call)(_: DataRequest[_], _: Messages))
+        .expects(page, changeAction, *, *)
   }
 }

@@ -36,7 +36,7 @@ class HowMuchIsWrongSummary {
 
         val value = ValueViewModel(
           HtmlContent(
-            HtmlFormat.escape(messages(s"howMuchIsWrong.$answer"))
+            HtmlFormat.escape(messages(s"howMuchIsWrong.checkYourAnswers.$answer"))
           )
         )
 

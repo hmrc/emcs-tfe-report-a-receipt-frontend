@@ -52,7 +52,7 @@ class HowMuchIsWrongSummarySpec extends SpecBase with DateUtils {
             wrongWithMovementSummary.row() mustBe
               Some(SummaryListRowViewModel(
                 key = langMessages.checkYourAnswersLabel,
-                value = ValueViewModel(HtmlContent(langMessages.wholeMovement)),
+                value = ValueViewModel(HtmlContent(langMessages.checkYourAnswersWholeMovement)),
                 actions = Seq(
                   ActionItemViewModel(
                     langMessages.change,

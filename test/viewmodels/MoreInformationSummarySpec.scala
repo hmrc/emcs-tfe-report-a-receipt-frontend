@@ -18,9 +18,10 @@ package viewmodels
 
 import base.SpecBase
 import controllers.routes
-import fixtures.messages.MoreInformationMessages
+import fixtures.messages.{MoreInformationMessages, ShortageInformationMessages}
 import models.CheckMode
 import pages.MoreInformationPage
+import pages.unsatisfactory.ShortageInformationPage
 import play.api.test.FakeRequest
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -31,53 +32,111 @@ import views.html.components.link
 
 class MoreInformationSummarySpec extends SpecBase {
 
+  "MoreInformationSummary" - {
 
-  "AddMoreInformationSummary" - {
+    "rendered for the MoreInformationPage" - {
 
-    Seq(MoreInformationMessages.English, MoreInformationMessages.Welsh).foreach { langMessages =>
+      Seq(MoreInformationMessages.English, MoreInformationMessages.Welsh).foreach { langMessages =>
 
-      s"when rendered for language code '${langMessages.lang.code}'" - {
+        s"when rendered for language code '${langMessages.lang.code}'" - {
 
-        implicit lazy val app = applicationBuilder().build()
-        implicit lazy val msgs = messagesApi(app).preferred(Seq(langMessages.lang))
-        lazy val link = app.injector.instanceOf[link]
-        lazy val moreMoreInformationSummary = new MoreInformationSummary(link)
+          implicit lazy val app = applicationBuilder().build()
+          implicit lazy val msgs = messagesApi(app).preferred(Seq(langMessages.lang))
+          lazy val link = app.injector.instanceOf[link]
+          lazy val moreMoreInformationSummary = new MoreInformationSummary(link)
 
-        "when an answer is set" - {
+          "when an answer is set" - {
 
-          "must render the expected SummaryListRow" in {
+            "must render the expected SummaryListRow" in {
 
-            val answers = emptyUserAnswers.set(MoreInformationPage, Some("Info"))
-            implicit val request = dataRequest(FakeRequest(), answers)
+              val answers = emptyUserAnswers.set(MoreInformationPage, Some("Info"))
+              implicit val request = dataRequest(FakeRequest(), answers)
+              lazy val changeRoute = routes.MoreInformationController.loadMoreInformation(request.userAnswers.ern, request.userAnswers.arc, CheckMode)
 
-            moreMoreInformationSummary.row() mustBe
-              SummaryListRowViewModel(
-                key = langMessages.checkYourAnswersLabel,
-                value = ValueViewModel(Text("Info")),
-                actions = Seq(
-                  ActionItemViewModel(
-                    langMessages.change,
-                    routes.MoreInformationController.loadMoreInformation(request.userAnswers.ern, request.userAnswers.arc, CheckMode).url
-                  ).withVisuallyHiddenText(langMessages.hiddenChangeLink)
+              moreMoreInformationSummary.row(MoreInformationPage, changeRoute) mustBe
+                SummaryListRowViewModel(
+                  key = langMessages.checkYourAnswersLabel,
+                  value = ValueViewModel(Text("Info")),
+                  actions = Seq(
+                    ActionItemViewModel(
+                      langMessages.change,
+                      changeRoute.url
+                    ).withVisuallyHiddenText(langMessages.hiddenChangeLink)
+                  )
                 )
-              )
+            }
+          }
+
+          "when no answer is set" - {
+
+            "must render the expected SummaryListRow" in {
+
+              implicit val request = dataRequest(FakeRequest(), emptyUserAnswers)
+              lazy val changeRoute = routes.MoreInformationController.loadMoreInformation(request.userAnswers.ern, request.userAnswers.arc, CheckMode)
+
+              moreMoreInformationSummary.row(MoreInformationPage, changeRoute) mustBe
+                SummaryListRowViewModel(
+                  key = langMessages.checkYourAnswersLabel,
+                  value = ValueViewModel(HtmlContent(link(
+                    changeRoute.url,
+                    langMessages.addMoreInformation
+                  )))
+                )
+            }
           }
         }
+      }
+    }
 
-        "when no answer is set" - {
+    "rendered for the ShortageInformationPage" - {
 
-          "must render the expected SummaryListRow" in {
+      Seq(ShortageInformationMessages.English, ShortageInformationMessages.Welsh).foreach { langMessages =>
 
-            implicit val request = dataRequest(FakeRequest(), emptyUserAnswers)
+        s"when rendered for language code '${langMessages.lang.code}'" - {
 
-            moreMoreInformationSummary.row() mustBe
-              SummaryListRowViewModel(
-                key = langMessages.checkYourAnswersLabel,
-                value = ValueViewModel(HtmlContent(link(
-                  routes.MoreInformationController.loadMoreInformation(request.userAnswers.ern, request.userAnswers.arc, CheckMode).url,
-                  langMessages.addMoreInformation
-                )))
-              )
+          implicit lazy val app = applicationBuilder().build()
+          implicit lazy val msgs = messagesApi(app).preferred(Seq(langMessages.lang))
+          lazy val link = app.injector.instanceOf[link]
+          lazy val moreMoreInformationSummary = new MoreInformationSummary(link)
+
+          "when an answer is set" - {
+
+            "must render the expected SummaryListRow" in {
+
+              val answers = emptyUserAnswers.set(ShortageInformationPage, Some("Info"))
+              implicit val request = dataRequest(FakeRequest(), answers)
+              lazy val changeRoute = routes.MoreInformationController.loadShortageInformation(request.userAnswers.ern, request.userAnswers.arc, CheckMode)
+
+              moreMoreInformationSummary.row(ShortageInformationPage, changeRoute) mustBe
+                SummaryListRowViewModel(
+                  key = langMessages.checkYourAnswersLabel,
+                  value = ValueViewModel(Text("Info")),
+                  actions = Seq(
+                    ActionItemViewModel(
+                      langMessages.change,
+                      changeRoute.url
+                    ).withVisuallyHiddenText(langMessages.hiddenChangeLink)
+                  )
+                )
+            }
+          }
+
+          "when no answer is set" - {
+
+            "must render the expected SummaryListRow" in {
+
+              implicit val request = dataRequest(FakeRequest(), emptyUserAnswers)
+              lazy val changeRoute = routes.MoreInformationController.loadShortageInformation(request.userAnswers.ern, request.userAnswers.arc, CheckMode)
+
+              moreMoreInformationSummary.row(ShortageInformationPage, changeRoute) mustBe
+                SummaryListRowViewModel(
+                  key = langMessages.checkYourAnswersLabel,
+                  value = ValueViewModel(HtmlContent(link(
+                    changeRoute.url,
+                    langMessages.addMoreInformation
+                  )))
+                )
+            }
           }
         }
       }

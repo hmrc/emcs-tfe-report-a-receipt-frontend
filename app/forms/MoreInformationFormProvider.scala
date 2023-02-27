@@ -36,8 +36,8 @@ class MoreInformationFormProvider @Inject() extends Mappings {
             .trim,
           identity
         )
-        .verifying(maxLength(350, s"${page.toString}.error.length"))
-        .verifying(regexp("^(?s)(?=.*[A-Za-z0-9]).{1,}$", s"${page.toString}.error.character"))
-        .verifying(regexp("^(?s)(?!.*javascript)(?!.*[<>;:]).{1,}$", s"${page.toString}.error.invalidCharacter")))
+        .verifying(maxLength(350, s"$page.error.length"))
+        .verifying(regexp("^(?s)(?=.*[A-Za-z0-9]).{1,}$", s"$page.error.character"))
+        .verifying(regexp("^(?s)(?!.*javascript)(?!.*[<>;:]).{1,}$", s"$page.error.invalidCharacter")))
     )
 }

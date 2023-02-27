@@ -16,7 +16,7 @@
 
 package fixtures.messages
 
-object MoreInformationMessages {
+object ShortageInformationMessages {
 
   sealed trait ViewMessages { _: i18n =>
     val title: String
@@ -31,26 +31,26 @@ object MoreInformationMessages {
   }
 
   object English extends ViewMessages with BaseEnglish {
-    override val heading = "Give more information about this movement"
+    override val heading = "Give more information about being sent less items than expected"
     override val title: String = title(heading)
     override val hint = "Give more information (optional)"
     override val validationErrorInvalidChars = "Information must not include < and > and : and ;"
     override val validationError = "Information must contain letters or numbers"
     override val lengthError = "Information must be 350 characters or less"
-    override val checkYourAnswersLabel = "More information"
-    override val hiddenChangeLink = "information about this movement"
-    override val addMoreInformation = "Enter more information about movement (optional)"
+    override val checkYourAnswersLabel = "Information about shortage"
+    override val hiddenChangeLink = "information about shortage"
+    override val addMoreInformation = "Enter more information about shortage (optional)"
   }
 
   object Welsh extends ViewMessages with BaseWelsh {
-    override val heading = "Give more information about this movement"
+    override val heading = "Give more information about being sent less items than expected"
     override val title: String = title(heading)
     override val hint = "Give more information (optional)"
-    override val checkYourAnswersLabel = "More information"
     override val validationErrorInvalidChars = "Information must not include < and > and : and ;"
     override val validationError = "Information must contain letters or numbers"
     override val lengthError = "Information must be 350 characters or less"
-    override val hiddenChangeLink = "information about this movement"
-    override val addMoreInformation = "Enter more information about movement (optional)"
+    override val checkYourAnswersLabel = "Information about shortage"
+    override val hiddenChangeLink = "information about shortage"
+    override val addMoreInformation = "Enter more information about shortage (optional)"
   }
 }

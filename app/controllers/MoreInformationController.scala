@@ -45,16 +45,16 @@ class MoreInformationController @Inject()(
                                      ) extends BaseNavigationController with AuthActionHelper with JsonOptionFormatter {
 
   def loadMoreInformation(ern: String, arc: String, mode: Mode): Action[AnyContent] =
-    onPageLoad(ern, arc, MoreInformationPage, routes.AddMoreInformationController.submitMoreInformation(ern, arc, mode))
+    onPageLoad(ern, arc, MoreInformationPage, routes.MoreInformationController.submitMoreInformation(ern, arc, mode))
 
   def submitMoreInformation(ern: String, arc: String, mode: Mode): Action[AnyContent] =
-    onSubmit(ern, arc, MoreInformationPage, AddMoreInformationPage, routes.AddMoreInformationController.submitMoreInformation(ern, arc, mode), mode)
+    onSubmit(ern, arc, MoreInformationPage, AddMoreInformationPage, routes.MoreInformationController.submitMoreInformation(ern, arc, mode), mode)
 
   def loadShortageInformation(ern: String, arc: String, mode: Mode): Action[AnyContent] =
-    onPageLoad(ern, arc, ShortageInformationPage, routes.AddMoreInformationController.submitShortageInformation(ern, arc, mode))
+    onPageLoad(ern, arc, ShortageInformationPage, routes.MoreInformationController.submitShortageInformation(ern, arc, mode))
 
   def submitShortageInformation(ern: String, arc: String, mode: Mode): Action[AnyContent] =
-    onSubmit(ern, arc, ShortageInformationPage, AddShortageInformationPage, routes.AddMoreInformationController.submitShortageInformation(ern, arc, mode), mode)
+    onSubmit(ern, arc, ShortageInformationPage, AddShortageInformationPage, routes.MoreInformationController.submitShortageInformation(ern, arc, mode), mode)
 
 
   private def onPageLoad(ern: String, arc: String, page: QuestionPage[Option[String]], action: Call): Action[AnyContent] =

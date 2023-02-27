@@ -25,6 +25,6 @@ class AddMoreInformationFormProvider @Inject() extends Mappings {
 
   def apply(page: QuestionPage[Boolean]): Form[Boolean] =
     Form(
-      "value" -> boolean(s"${page.toString}.error.required")
+      "value" -> boolean(s"$page.error.required")
     )
 }

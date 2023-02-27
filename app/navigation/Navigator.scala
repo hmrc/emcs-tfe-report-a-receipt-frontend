@@ -22,7 +22,7 @@ import models.HowMuchIsWrong.TheWholeMovement
 import models.WrongWithMovement.{BrokenSeals, Damaged, Less, More, Other}
 import models._
 import pages._
-import pages.unsatisfactory.{HowMuchIsWrongPage, WrongWithMovementPage}
+import pages.unsatisfactory.{AddShortageInformationPage, HowMuchIsWrongPage, WrongWithMovementPage}
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
@@ -54,10 +54,17 @@ class Navigator @Inject()() extends BaseNavigator {
           routes.WrongWithMovementController.onPageLoad(userAnswers.ern, userAnswers.arc, NormalMode)
       }
     case AddMoreInformationPage =>
-      (userAnswers: UserAnswers) => userAnswers.get(AddMoreInformationPage) match {
-        case Some(true) => routes.MoreInformationController.onPageLoad(userAnswers.ern, userAnswers.arc, NormalMode)
-        case _ => routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)
-      }
+      (userAnswers: UserAnswers) =>
+        userAnswers.get(AddMoreInformationPage) match {
+          case Some(true) => routes.MoreInformationController.onPageLoad(userAnswers.ern, userAnswers.arc, NormalMode)
+          case _ => routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)
+        }
+    case AddShortageInformationPage =>
+      (userAnswers: UserAnswers) =>
+        userAnswers.get(AddShortageInformationPage) match {
+          case Some(true) => routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)
+          case _ => routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)
+        }
     case MoreInformationPage =>
       (userAnswers: UserAnswers) => routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)
     case CheckAnswersPage =>
@@ -95,8 +102,7 @@ class Navigator @Inject()() extends BaseNavigator {
                                                           lastOption: Option[WrongWithMovement] = None)(implicit userAnswers: UserAnswers): Call =
     nextWrongWithMovementOptionToAnswer(selectedOptions, lastOption) match {
       case Some(Less) =>
-        //TODO: Will redirect to the Less Items More Information Yes/No
-        routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)
+        routes.AddMoreInformationController.loadShortageInformation(userAnswers.ern, userAnswers.arc, NormalMode)
       case Some(More) =>
         //TODO: Will redirect to the More Items More Information Yes/No
         routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)

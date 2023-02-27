@@ -56,7 +56,7 @@ class Navigator @Inject()() extends BaseNavigator {
     case AddMoreInformationPage =>
       (userAnswers: UserAnswers) =>
         userAnswers.get(AddMoreInformationPage) match {
-          case Some(true) => routes.MoreInformationController.onPageLoad(userAnswers.ern, userAnswers.arc, NormalMode)
+          case Some(true) => routes.MoreInformationController.loadMoreInformation(userAnswers.ern, userAnswers.arc, NormalMode)
           case _ => routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)
         }
     case AddShortageInformationPage =>

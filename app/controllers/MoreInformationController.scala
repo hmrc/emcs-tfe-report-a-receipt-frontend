@@ -20,9 +20,10 @@ import controllers.actions._
 import forms.MoreInformationFormProvider
 import models.Mode
 import navigation.Navigator
-import pages.{AddMoreInformationPage, MoreInformationPage}
+import pages.unsatisfactory.{AddShortageInformationPage, ShortageInformationPage}
+import pages.{AddMoreInformationPage, MoreInformationPage, QuestionPage}
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
 import utils.JsonOptionFormatter
 import views.html.MoreInformationView
@@ -43,20 +44,38 @@ class MoreInformationController @Inject()(
                                        view: MoreInformationView
                                      ) extends BaseNavigationController with AuthActionHelper with JsonOptionFormatter {
 
-  def onPageLoad(ern: String, arc: String, mode: Mode): Action[AnyContent] =
+  def loadMoreInformation(ern: String, arc: String, mode: Mode): Action[AnyContent] =
+    onPageLoad(ern, arc, MoreInformationPage, routes.AddMoreInformationController.submitMoreInformation(ern, arc, mode))
+
+  def submitMoreInformation(ern: String, arc: String, mode: Mode): Action[AnyContent] =
+    onSubmit(ern, arc, MoreInformationPage, AddMoreInformationPage, routes.AddMoreInformationController.submitMoreInformation(ern, arc, mode), mode)
+
+  def loadShortageInformation(ern: String, arc: String, mode: Mode): Action[AnyContent] =
+    onPageLoad(ern, arc, ShortageInformationPage, routes.AddMoreInformationController.submitShortageInformation(ern, arc, mode))
+
+  def submitShortageInformation(ern: String, arc: String, mode: Mode): Action[AnyContent] =
+    onSubmit(ern, arc, ShortageInformationPage, AddShortageInformationPage, routes.AddMoreInformationController.submitShortageInformation(ern, arc, mode), mode)
+
+
+  private def onPageLoad(ern: String, arc: String, page: QuestionPage[Option[String]], action: Call): Action[AnyContent] =
     authorisedDataRequest(ern, arc) { implicit request =>
-      Ok(view(fillForm(MoreInformationPage, formProvider()), mode))
+      Ok(view(fillForm(page, formProvider(page)), page, action))
     }
 
-  def onSubmit(ern: String, arc: String, mode: Mode): Action[AnyContent] =
+  private def onSubmit(ern: String,
+                       arc: String,
+                       page: QuestionPage[Option[String]],
+                       yesNoPage: QuestionPage[Boolean],
+                       action: Call,
+                       mode: Mode): Action[AnyContent] =
     authorisedDataRequestAsync(ern, arc) { implicit request =>
-      formProvider().bindFromRequest().fold(
+      formProvider(page).bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
+          Future.successful(BadRequest(view(formWithErrors, page, action))),
         value =>
           for {
-            updatedYesNo <- save(AddMoreInformationPage, value.exists(_.nonEmpty))
-            saveAndRedirect <- saveAndRedirect(MoreInformationPage, value, updatedYesNo, mode)
+            updatedYesNo <- save(yesNoPage, value.exists(_.nonEmpty))
+            saveAndRedirect <- saveAndRedirect(page, value, updatedYesNo, mode)
           } yield saveAndRedirect
       )
     }

@@ -17,6 +17,7 @@
 package forms
 
 import forms.mappings.Mappings
+import pages.QuestionPage
 import play.api.data.Form
 import play.api.data.Forms.optional
 import play.api.data.Forms.{text => playText}
@@ -25,7 +26,7 @@ import javax.inject.Inject
 
 class MoreInformationFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Option[String]] =
+  def apply(page: QuestionPage[Option[String]]): Form[Option[String]] =
     Form(
       "more-information" -> optional(playText
         .transform[String](
@@ -35,8 +36,8 @@ class MoreInformationFormProvider @Inject() extends Mappings {
             .trim,
           identity
         )
-        .verifying(maxLength(350, "moreInformation.error.length"))
-        .verifying(regexp("^(?s)(?=.*[A-Za-z0-9]).{1,}$", "moreInformation.error.character"))
-        .verifying(regexp("^(?s)(?!.*javascript)(?!.*[<>;:]).{1,}$", "moreInformation.error.invalidCharacter")))
+        .verifying(maxLength(350, s"${page.toString}.error.length"))
+        .verifying(regexp("^(?s)(?=.*[A-Za-z0-9]).{1,}$", s"${page.toString}.error.character"))
+        .verifying(regexp("^(?s)(?!.*javascript)(?!.*[<>;:]).{1,}$", s"${page.toString}.error.invalidCharacter")))
     )
 }

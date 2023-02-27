@@ -102,6 +102,10 @@ addShortageInformation.title = Do you want to give more information about being 
 addShortageInformation.heading = Do you want to give more information about being sent less items than expected?
 addShortageInformation.error.required = Select yes if you want to give more information about being sent less goods than expected
 
+addExcessInformation.title = Do you want to give more information about being sent more items than expected?
+addExcessInformation.heading = Do you want to give more information about being sent more items than expected?
+addExcessInformation.error.required = Select yes if you want to give more information about being sent more items than expected
+
 moreInformation.title = Give more information about this movement
 moreInformation.heading = Give more information about this movement
 moreInformation.hint = Give more information (optional)

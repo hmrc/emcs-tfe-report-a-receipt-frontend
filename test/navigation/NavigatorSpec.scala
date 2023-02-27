@@ -23,7 +23,7 @@ import models.HowMuchIsWrong.{IndividualItem, TheWholeMovement}
 import models.WrongWithMovement._
 import pages._
 import models._
-import pages.unsatisfactory.{AddShortageInformationPage, HowMuchIsWrongPage, ShortageInformationPage, WrongWithMovementPage}
+import pages.unsatisfactory.{AddExcessInformationPage, AddShortageInformationPage, HowMuchIsWrongPage, ShortageInformationPage, WrongWithMovementPage}
 
 class NavigatorSpec extends SpecBase {
 
@@ -148,8 +148,7 @@ class NavigatorSpec extends SpecBase {
             val selectedOptions: Set[WrongWithMovement] = Set(More, Damaged, BrokenSeals, Other)
             val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, selectedOptions)
             navigator.nextPage(WrongWithMovementPage, NormalMode, userAnswers) mustBe
-              //TODO: Change as part of future story
-              routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+              routes.AddMoreInformationController.loadExcessInformation(testErn, testArc, NormalMode)
           }
         }
 
@@ -249,6 +248,39 @@ class NavigatorSpec extends SpecBase {
           val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, Set[WrongWithMovement](Less))
 
           navigator.nextPage(ShortageInformationPage, NormalMode, userAnswers) mustBe routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
+        }
+      }
+
+      "for the AddExcessInformation page" - {
+
+        s"when the user answers is Yes" - {
+
+          //TODO: Update as part of future story
+          "must go to the ExcessInformation page" in {
+
+            val userAnswers = emptyUserAnswers.set(AddExcessInformationPage, true)
+
+            navigator.nextPage(AddExcessInformationPage, NormalMode, userAnswers) mustBe routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+          }
+        }
+
+        s"when the user answers is No" - {
+
+          "must go to the next WhatWrongWith page to answer" in {
+
+            val userAnswers = emptyUserAnswers
+              .set(WrongWithMovementPage, Set[WrongWithMovement](Less, More))
+              .set(AddExcessInformationPage, false)
+
+            navigator.nextPage(AddExcessInformationPage, NormalMode, userAnswers) mustBe routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
+          }
+        }
+
+        s"when the user answers is None (shouldn't be possible)" - {
+
+          "must go back to itself" in {
+            navigator.nextPage(AddExcessInformationPage, NormalMode, emptyUserAnswers) mustBe routes.AddMoreInformationController.loadExcessInformation(testErn, testArc, NormalMode)
+          }
         }
       }
 

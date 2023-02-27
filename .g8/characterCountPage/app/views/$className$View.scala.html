@@ -15,7 +15,7 @@
 
 @(form: Form[_], mode: Mode)(implicit request: DataRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("$className;format=\"decap\"$.title"))) {
+@layout(pageTitle = title(form, messages("$className;format="decap"$.title"))) {
 
     @formHelper(action = routes.$className$Controller.onSubmit(request.ern, request.arc, mode)) {
 
@@ -29,7 +29,7 @@
             id = "value",
             name = "value",
             maxLength = Some($maxLength$),
-            label = LabelViewModel(Text(messages("$className;format=\"decap\"$.heading"))).asPageHeading(LabelSize.Large),
+            label = LabelViewModel(Text(messages("$className;format="decap"$.heading"))).asPageHeading(LabelSize.Large),
             value = form("value").value,
             errorMessage = form.errors("value") match {
                 case Nil => None
@@ -40,8 +40,4 @@
         @saveAndContinue()
 
     }
-}
-
-@{
-    //$COVERAGE-OFF$
 }

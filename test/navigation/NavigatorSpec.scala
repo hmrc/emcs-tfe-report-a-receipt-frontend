@@ -23,7 +23,7 @@ import models.HowMuchIsWrong.{IndividualItem, TheWholeMovement}
 import models.WrongWithMovement._
 import pages._
 import models._
-import pages.unsatisfactory.{HowMuchIsWrongPage, WrongWithMovementPage}
+import pages.unsatisfactory.{AddShortageInformationPage, HowMuchIsWrongPage, WrongWithMovementPage}
 
 class NavigatorSpec extends SpecBase {
 
@@ -138,8 +138,7 @@ class NavigatorSpec extends SpecBase {
             val selectedOptions: Set[WrongWithMovement] = Set(Less, More, Damaged, BrokenSeals, Other)
             val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, selectedOptions)
             navigator.nextPage(WrongWithMovementPage, NormalMode, userAnswers) mustBe
-              //TODO: Change as part of future story
-              routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+              routes.AddMoreInformationController.loadShortageInformation(testErn, testArc, NormalMode)
           }
         }
 
@@ -207,6 +206,29 @@ class NavigatorSpec extends SpecBase {
             val userAnswers = emptyUserAnswers.set(AddMoreInformationPage, false)
 
             navigator.nextPage(AddMoreInformationPage, NormalMode, userAnswers) mustBe routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+          }
+        }
+      }
+
+      "for the AddShortageInformation page" - {
+
+        s"when the user answers is Yes" - {
+          //TODO: Change as part of future story
+          "must go to the ShortageMoreInformation page" in {
+
+            val userAnswers = emptyUserAnswers.set(AddShortageInformationPage, true)
+
+            navigator.nextPage(AddShortageInformationPage, NormalMode, userAnswers) mustBe routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+          }
+        }
+
+        s"when the user answers is No" - {
+
+          "must go to the CheckYourAnswers page" in {
+
+            val userAnswers = emptyUserAnswers.set(AddShortageInformationPage, false)
+
+            navigator.nextPage(AddShortageInformationPage, NormalMode, userAnswers) mustBe routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
           }
         }
       }

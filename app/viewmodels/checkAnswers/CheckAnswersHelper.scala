@@ -19,7 +19,7 @@ package viewmodels.checkAnswers
 import models.AcceptMovement.Unsatisfactory
 import models.CheckMode
 import models.requests.DataRequest
-import pages.unsatisfactory.ShortageInformationPage
+import pages.unsatisfactory.{ExcessInformationPage, ShortageInformationPage}
 import pages.{AcceptMovementPage, MoreInformationPage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
@@ -48,6 +48,10 @@ class CheckAnswersHelper @Inject()(acceptMovementSummary: AcceptMovementSummary,
           Some(moreInformationSummary.row(
             page = ShortageInformationPage,
             changeAction = controllers.routes.MoreInformationController.loadShortageInformation(request.ern, request.arc, CheckMode))
+          ),
+          Some(moreInformationSummary.row(
+            page = ExcessInformationPage,
+            changeAction = controllers.routes.MoreInformationController.loadExcessInformation(request.ern, request.arc, CheckMode))
           )
         ).flatten
       } else {

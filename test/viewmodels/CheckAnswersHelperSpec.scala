@@ -20,7 +20,7 @@ import base.SpecBase
 import mocks.viewmodels._
 import models.AcceptMovement.{Satisfactory, Unsatisfactory}
 import models.CheckMode
-import pages.unsatisfactory.ShortageInformationPage
+import pages.unsatisfactory.{ExcessInformationPage, ShortageInformationPage}
 import pages.{AcceptMovementPage, MoreInformationPage}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.govukfrontend.views.Aliases.{SummaryList, SummaryListRow}
@@ -109,6 +109,10 @@ class CheckAnswersHelperSpec extends SpecBase
           "ShortageInfo",
           ValueViewModel("Info")
         )
+        val excessInformationAnswer = SummaryListRow(
+          "ExcessInfo",
+          ValueViewModel("Info")
+        )
         val moreInformationAnswer = SummaryListRow(
           "MoreInfo",
           ValueViewModel("Info")
@@ -123,6 +127,10 @@ class CheckAnswersHelperSpec extends SpecBase
           controllers.routes.MoreInformationController.loadShortageInformation(testErn, testArc, CheckMode)
         ).returns(shortageInformationAnswer)
         MockMoreInformationSummary.row(
+          ExcessInformationPage,
+          controllers.routes.MoreInformationController.loadExcessInformation(testErn, testArc, CheckMode)
+        ).returns(excessInformationAnswer)
+        MockMoreInformationSummary.row(
           MoreInformationPage,
           controllers.routes.MoreInformationController.loadMoreInformation(testErn, testArc, CheckMode)
         ).returns(moreInformationAnswer)
@@ -133,6 +141,7 @@ class CheckAnswersHelperSpec extends SpecBase
           howMuchIsWrongAnswer,
           wrongWithMovementAnswer,
           shortageInformationAnswer,
+          excessInformationAnswer,
           moreInformationAnswer
         )).withCssClass("govuk-!-margin-bottom-9")
       }

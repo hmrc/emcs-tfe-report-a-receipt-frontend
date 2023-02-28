@@ -18,79 +18,88 @@ package forms
 
 
 import forms.behaviours.StringFieldBehaviours
+import pages.MoreInformationPage
+import pages.unsatisfactory.ShortageInformationPage
 import play.api.data.FormError
 
 class MoreInformationFormProviderSpec extends StringFieldBehaviours {
 
   val maxLength = 350
   val aboveMaxLength = 351
-  val form = new MoreInformationFormProvider()()
 
-  ".value" - {
+  Seq(MoreInformationPage, ShortageInformationPage) foreach { page =>
 
-    "more information form accepts a value that is valid" in {
-      val data = Map("more-information" -> "Test 123.")
-      val result = form.bind(data)
+    s"loading the form for the '$page' page" - {
 
-      result.errors mustBe Seq()
-      result.value.flatten mustBe Some("Test 123.")
-    }
+      val form = new MoreInformationFormProvider()(page)
 
-    "more information form accepts a value that includes a Carriage Return" in {
-      val data = Map("more-information" -> "Test\n123.")
-      val result = form.bind(data)
+      ".value" - {
 
-      result.errors mustBe Seq()
-      result.value.flatten mustBe Some("Test 123.")
-    }
+        "more information form accepts a value that is valid" in {
+          val data = Map("more-information" -> "Test 123.")
+          val result = form.bind(data)
+
+          result.errors mustBe Seq()
+          result.value.flatten mustBe Some("Test 123.")
+        }
+
+        "more information form accepts a value that includes a Carriage Return" in {
+          val data = Map("more-information" -> "Test\n123.")
+          val result = form.bind(data)
+
+          result.errors mustBe Seq()
+          result.value.flatten mustBe Some("Test 123.")
+        }
 
 
-    "more information form accepts a value of 350 alpha characters that are valid" in {
-      val data = Map("more-information" -> "a" * maxLength)
-      val result = form.bind(data)
+        "more information form accepts a value of 350 alpha characters that are valid" in {
+          val data = Map("more-information" -> "a" * maxLength)
+          val result = form.bind(data)
 
-      result.errors mustBe Seq()
-      result.value.flatten mustBe Some("a" * maxLength)
-    }
+          result.errors mustBe Seq()
+          result.value.flatten mustBe Some("a" * maxLength)
+        }
 
-    "more information form accepts a value that begins with a valid special character" in {
-      val data = Map("more-information" -> ".A")
-      val result = form.bind(data)
+        "more information form accepts a value that begins with a valid special character" in {
+          val data = Map("more-information" -> ".A")
+          val result = form.bind(data)
 
-      result.errors mustBe Seq()
-      result.value.flatten mustBe Some(".A")
-    }
+          result.errors mustBe Seq()
+          result.value.flatten mustBe Some(".A")
+        }
 
-    "more information form accepts just numbers" in {
-      val data = Map("more-information" -> "123")
-      val result = form.bind(data)
+        "more information form accepts just numbers" in {
+          val data = Map("more-information" -> "123")
+          val result = form.bind(data)
 
-      result.errors mustBe Seq()
-      result.value.flatten mustBe Some("123")
-    }
+          result.errors mustBe Seq()
+          result.value.flatten mustBe Some("123")
+        }
 
-    "return an error if alpha numeric data isn't used" in {
-      val data = Map("more-information" -> "..")
-      val result = form.bind(data)
+        "return an error if alpha numeric data isn't used" in {
+          val data = Map("more-information" -> "..")
+          val result = form.bind(data)
 
-      result.errors must contain only FormError("more-information", "moreInformation.error.character", Seq("^(?s)(?=.*[A-Za-z0-9]).{1,}$"))
-    }
+          result.errors must contain only FormError("more-information", s"$page.error.character", Seq("^(?s)(?=.*[A-Za-z0-9]).{1,}$"))
+        }
 
-    "return an error if more than 350 characters are used" in {
-      val data = Map("more-information" -> "a" * aboveMaxLength)
-      val result = form.bind(data)
+        "return an error if more than 350 characters are used" in {
+          val data = Map("more-information" -> "a" * aboveMaxLength)
+          val result = form.bind(data)
 
-      result.errors must contain only FormError("more-information", "moreInformation.error.length", Seq(maxLength))
-    }
+          result.errors must contain only FormError("more-information", s"$page.error.length", Seq(maxLength))
+        }
 
-    "return errors if invalid characters are used" in {
-      val data = Map("more-information" -> "<>")
-      val result = form.bind(data)
+        "return errors if invalid characters are used" in {
+          val data = Map("more-information" -> "<>")
+          val result = form.bind(data)
 
-      result.errors must contain only (
-        FormError("more-information", "moreInformation.error.character", Seq("^(?s)(?=.*[A-Za-z0-9]).{1,}$")),
-        FormError("more-information", "moreInformation.error.invalidCharacter", Seq("^(?s)(?!.*javascript)(?!.*[<>;:]).{1,}$"))
-      )
+          result.errors must contain only(
+            FormError("more-information", s"$page.error.character", Seq("^(?s)(?=.*[A-Za-z0-9]).{1,}$")),
+            FormError("more-information", s"$page.error.invalidCharacter", Seq("^(?s)(?!.*javascript)(?!.*[<>;:]).{1,}$"))
+          )
+        }
+      }
     }
   }
 }

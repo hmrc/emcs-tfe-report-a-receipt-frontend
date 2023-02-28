@@ -57,7 +57,7 @@ class MoreInformationSummarySpec extends SpecBase {
                 actions = Seq(
                   ActionItemViewModel(
                     langMessages.change,
-                    routes.MoreInformationController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, CheckMode).url
+                    routes.MoreInformationController.loadMoreInformation(request.userAnswers.ern, request.userAnswers.arc, CheckMode).url
                   ).withVisuallyHiddenText(langMessages.hiddenChangeLink)
                 )
               )
@@ -74,7 +74,7 @@ class MoreInformationSummarySpec extends SpecBase {
               SummaryListRowViewModel(
                 key = langMessages.checkYourAnswersLabel,
                 value = ValueViewModel(HtmlContent(link(
-                  routes.MoreInformationController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, CheckMode).url,
+                  routes.MoreInformationController.loadMoreInformation(request.userAnswers.ern, request.userAnswers.arc, CheckMode).url,
                   langMessages.addMoreInformation
                 )))
               )

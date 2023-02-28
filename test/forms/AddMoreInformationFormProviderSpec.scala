@@ -34,7 +34,7 @@ class AddMoreInformationFormProviderSpec extends BooleanFieldBehaviours with Gui
 
         val fieldName = "value"
         val form = new AddMoreInformationFormProvider()(page)
-        val requiredKey = s"${page.toString}.error.required"
+        val requiredKey = s"$page.error.required"
         val invalidKey = "error.boolean"
 
         behave like booleanField(

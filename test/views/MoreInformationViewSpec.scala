@@ -17,12 +17,13 @@
 package views
 
 import base.ViewSpecBase
-import fixtures.messages.MoreInformationMessages
+import fixtures.messages.{MoreInformationMessages, ShortageInformationMessages}
 import forms.MoreInformationFormProvider
-import models.NormalMode
 import models.requests.DataRequest
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import pages.MoreInformationPage
+import pages.unsatisfactory.ShortageInformationPage
 import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
@@ -32,7 +33,7 @@ class MoreInformationViewSpec extends ViewSpecBase with ViewBehaviours {
 
   object Selectors extends BaseSelectors
 
-  "MoreInformation view" - {
+  "MoreInformation variant of view" - {
 
     Seq(MoreInformationMessages.English, MoreInformationMessages.Welsh).foreach { messagesForLanguage =>
 
@@ -41,15 +42,42 @@ class MoreInformationViewSpec extends ViewSpecBase with ViewBehaviours {
         implicit val msgs: Messages = messages(app, messagesForLanguage.lang)
         implicit val request: DataRequest[AnyContentAsEmpty.type] = dataRequest(FakeRequest(), emptyUserAnswers)
 
-        val form = app.injector.instanceOf[MoreInformationFormProvider].apply()
+        val form = app.injector.instanceOf[MoreInformationFormProvider].apply(MoreInformationPage)
         val view = app.injector.instanceOf[MoreInformationView]
 
-        implicit val doc: Document = Jsoup.parse(view(form, NormalMode).toString())
+        implicit val doc: Document = Jsoup.parse(view(form, MoreInformationPage, testOnwardRoute).toString())
 
         behave like pageWithExpectedElementsAndMessages(Seq(
           Selectors.title -> messagesForLanguage.title,
           Selectors.h2(1) -> messagesForLanguage.arcSubheading(testArc),
           Selectors.h1 -> messagesForLanguage.heading,
+          Selectors.hint -> messagesForLanguage.hint,
+          Selectors.button -> messagesForLanguage.saveAndContinue,
+          Selectors.secondaryButton -> messagesForLanguage.saveAndReturnToMovement
+        ))
+      }
+    }
+  }
+
+  "ShortageInformation variant of view" - {
+
+    Seq(ShortageInformationMessages.English, ShortageInformationMessages.Welsh).foreach { messagesForLanguage =>
+
+      s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
+
+        implicit val msgs: Messages = messages(app, messagesForLanguage.lang)
+        implicit val request: DataRequest[AnyContentAsEmpty.type] = dataRequest(FakeRequest(), emptyUserAnswers)
+
+        val form = app.injector.instanceOf[MoreInformationFormProvider].apply(ShortageInformationPage)
+        val view = app.injector.instanceOf[MoreInformationView]
+
+        implicit val doc: Document = Jsoup.parse(view(form, ShortageInformationPage, testOnwardRoute).toString())
+
+        behave like pageWithExpectedElementsAndMessages(Seq(
+          Selectors.title -> messagesForLanguage.title,
+          Selectors.h2(1) -> messagesForLanguage.arcSubheading(testArc),
+          Selectors.h1 -> messagesForLanguage.heading,
+          Selectors.hint -> messagesForLanguage.hint,
           Selectors.button -> messagesForLanguage.saveAndContinue,
           Selectors.secondaryButton -> messagesForLanguage.saveAndReturnToMovement
         ))

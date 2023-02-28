@@ -26,10 +26,10 @@ object AddMoreInformationHelper {
     if(request.userAnswers.get(AcceptMovementPage).contains(Satisfactory)) ".satisfactory" else ""
 
   def titleKey(page: QuestionPage[Boolean])(implicit request: DataRequest[_]): String =
-    s"${page.toString}${infix()}.title"
+    s"$page${infix()}.title"
 
   def headingKey(page: QuestionPage[Boolean])(implicit request: DataRequest[_]): String =
-    s"${page.toString}${infix()}.heading"
+    s"$page${infix()}.heading"
 
 
 }

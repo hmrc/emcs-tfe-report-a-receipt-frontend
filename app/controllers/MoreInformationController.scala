@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.MoreInformationFormProvider
 import models.Mode
 import navigation.Navigator
-import pages.unsatisfactory.{AddShortageInformationPage, ShortageInformationPage}
+import pages.unsatisfactory.{AddExcessInformationPage, AddShortageInformationPage, ExcessInformationPage, ShortageInformationPage}
 import pages.{AddMoreInformationPage, MoreInformationPage, QuestionPage}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -55,6 +55,12 @@ class MoreInformationController @Inject()(
 
   def submitShortageInformation(ern: String, arc: String, mode: Mode): Action[AnyContent] =
     onSubmit(ern, arc, ShortageInformationPage, AddShortageInformationPage, routes.MoreInformationController.submitShortageInformation(ern, arc, mode), mode)
+
+  def loadExcessInformation(ern: String, arc: String, mode: Mode): Action[AnyContent] =
+    onPageLoad(ern, arc, ExcessInformationPage, routes.MoreInformationController.submitExcessInformation(ern, arc, mode))
+
+  def submitExcessInformation(ern: String, arc: String, mode: Mode): Action[AnyContent] =
+    onSubmit(ern, arc, ExcessInformationPage, AddExcessInformationPage, routes.MoreInformationController.submitExcessInformation(ern, arc, mode), mode)
 
 
   private def onPageLoad(ern: String, arc: String, page: QuestionPage[Option[String]], action: Call): Action[AnyContent] =

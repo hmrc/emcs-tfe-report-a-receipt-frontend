@@ -38,7 +38,7 @@ class MoreInformationSummary @Inject()(link: link) extends JsonOptionFormatter {
           key = s"$page.checkYourAnswers.label",
           value = ValueViewModel(Text(answer)),
           actions = Seq(
-            ActionItemViewModel("site.change", changeAction.url).withVisuallyHiddenText(messages(s"$page.change.hidden"))
+            ActionItemViewModel("site.change", changeAction.url).withVisuallyHiddenText(messages(s"$page.checkYourAnswers.change.hidden"))
           )
         )
       case _ =>

@@ -17,12 +17,16 @@
 package viewmodels
 
 import base.SpecBase
-import mocks.viewmodels.{MockAcceptMovementSummary, MockDateOfArrivalSummary, MockHowMuchIsWrongSummary, MockMoreInformationSummary, MockWrongWithMovementSummary}
+import mocks.viewmodels._
+import models.AcceptMovement.{Satisfactory, Unsatisfactory}
+import models.CheckMode
+import pages.unsatisfactory.ShortageInformationPage
+import pages.{AcceptMovementPage, MoreInformationPage}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.govukfrontend.views.Aliases.{SummaryList, SummaryListRow}
+import viewmodels.checkAnswers.CheckAnswersHelper
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
-import viewmodels.checkAnswers.CheckAnswersHelper
 
 class CheckAnswersHelperSpec extends SpecBase
   with MockDateOfArrivalSummary
@@ -41,47 +45,97 @@ class CheckAnswersHelperSpec extends SpecBase
   )
 
   lazy val app = applicationBuilder().build()
-  implicit lazy val request = dataRequest(FakeRequest(), emptyUserAnswers)
   implicit lazy val msgs = messages(app)
 
   "CheckAnswersHelperHelper" - {
 
-    s"must return the expected SummaryList" in {
+    "being rendered for the Satisfactory flow" - {
 
-      val dateOfArrivalAnswer = SummaryListRow(
-        "DateOfArrival",
-        ValueViewModel("today")
-      )
-      val acceptMovementAnswer = SummaryListRow(
-        "AcceptMovement",
-        ValueViewModel("Yes")
-      )
-      val howMuchIsWrongAnswer = SummaryListRow(
-        "HowMuchIsWrong",
-        ValueViewModel("Whole Movement")
-      )
-      val wrongWithMovementAnswer = SummaryListRow(
-        "WrongWithMovement",
-        ValueViewModel("Less")
-      )
-      val moreInformationAnswer = SummaryListRow(
-        "MoreInfo",
-        ValueViewModel("Info")
-      )
+      implicit lazy val request = dataRequest(FakeRequest(), emptyUserAnswers.set(AcceptMovementPage, Satisfactory))
 
-      MockDateOfArrivalSummary.row().returns(Some(dateOfArrivalAnswer))
-      MockAcceptMovementSummary.row().returns(Some(acceptMovementAnswer))
-      MockHowMuchIsWrongSummary.row().returns(Some(howMuchIsWrongAnswer))
-      MockWrongWithMovementSummary.row().returns(Some(wrongWithMovementAnswer))
-      MockMoreInformationSummary.row().returns(moreInformationAnswer)
+      s"must return the expected SummaryList" in {
 
-      checkAnswersHelper.summaryList() mustBe SummaryList(Seq(
-        dateOfArrivalAnswer,
-        acceptMovementAnswer,
-        howMuchIsWrongAnswer,
-        wrongWithMovementAnswer,
-        moreInformationAnswer
-      )).withCssClass("govuk-!-margin-bottom-9")
+        val dateOfArrivalAnswer = SummaryListRow(
+          "DateOfArrival",
+          ValueViewModel("today")
+        )
+        val acceptMovementAnswer = SummaryListRow(
+          "AcceptMovement",
+          ValueViewModel("Yes")
+        )
+        val moreInformationAnswer = SummaryListRow(
+          "MoreInfo",
+          ValueViewModel("Info")
+        )
+
+        MockDateOfArrivalSummary.row().returns(Some(dateOfArrivalAnswer))
+        MockAcceptMovementSummary.row().returns(Some(acceptMovementAnswer))
+        MockMoreInformationSummary.row(
+          MoreInformationPage,
+          controllers.routes.MoreInformationController.loadMoreInformation(testErn, testArc, CheckMode)
+        ).returns(moreInformationAnswer)
+
+        checkAnswersHelper.summaryList() mustBe SummaryList(Seq(
+          dateOfArrivalAnswer,
+          acceptMovementAnswer,
+          moreInformationAnswer
+        )).withCssClass("govuk-!-margin-bottom-9")
+      }
+    }
+
+    "being rendered for the Unsatisfactory flow" - {
+
+      implicit lazy val request = dataRequest(FakeRequest(), emptyUserAnswers.set(AcceptMovementPage, Unsatisfactory))
+
+      s"must return the expected SummaryList" in {
+
+        val dateOfArrivalAnswer = SummaryListRow(
+          "DateOfArrival",
+          ValueViewModel("today")
+        )
+        val acceptMovementAnswer = SummaryListRow(
+          "AcceptMovement",
+          ValueViewModel("Yes")
+        )
+        val howMuchIsWrongAnswer = SummaryListRow(
+          "HowMuchIsWrong",
+          ValueViewModel("Whole Movement")
+        )
+        val wrongWithMovementAnswer = SummaryListRow(
+          "WrongWithMovement",
+          ValueViewModel("Less")
+        )
+        val shortageInformationAnswer = SummaryListRow(
+          "ShortageInfo",
+          ValueViewModel("Info")
+        )
+        val moreInformationAnswer = SummaryListRow(
+          "MoreInfo",
+          ValueViewModel("Info")
+        )
+
+        MockDateOfArrivalSummary.row().returns(Some(dateOfArrivalAnswer))
+        MockAcceptMovementSummary.row().returns(Some(acceptMovementAnswer))
+        MockHowMuchIsWrongSummary.row().returns(Some(howMuchIsWrongAnswer))
+        MockWrongWithMovementSummary.row().returns(Some(wrongWithMovementAnswer))
+        MockMoreInformationSummary.row(
+          ShortageInformationPage,
+          controllers.routes.MoreInformationController.loadShortageInformation(testErn, testArc, CheckMode)
+        ).returns(shortageInformationAnswer)
+        MockMoreInformationSummary.row(
+          MoreInformationPage,
+          controllers.routes.MoreInformationController.loadMoreInformation(testErn, testArc, CheckMode)
+        ).returns(moreInformationAnswer)
+
+        checkAnswersHelper.summaryList() mustBe SummaryList(Seq(
+          dateOfArrivalAnswer,
+          acceptMovementAnswer,
+          howMuchIsWrongAnswer,
+          wrongWithMovementAnswer,
+          shortageInformationAnswer,
+          moreInformationAnswer
+        )).withCssClass("govuk-!-margin-bottom-9")
+      }
     }
   }
 }

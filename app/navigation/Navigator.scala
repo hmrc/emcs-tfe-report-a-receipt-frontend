@@ -22,7 +22,7 @@ import models.HowMuchIsWrong.TheWholeMovement
 import models.WrongWithMovement.{BrokenSeals, Damaged, Less, More, Other}
 import models._
 import pages._
-import pages.unsatisfactory.{AddShortageInformationPage, HowMuchIsWrongPage, ShortageInformationPage, WrongWithMovementPage}
+import pages.unsatisfactory.{AddExcessInformationPage, AddShortageInformationPage, HowMuchIsWrongPage, ShortageInformationPage, WrongWithMovementPage}
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
@@ -57,6 +57,14 @@ class Navigator @Inject()() extends BaseNavigator {
         }
     case ShortageInformationPage =>
       (userAnswers: UserAnswers) => redirectToNextWrongMovementPage(Some(Less))(userAnswers)
+    case AddExcessInformationPage =>
+      (userAnswers: UserAnswers) =>
+        userAnswers.get(AddExcessInformationPage) match {
+          //TODO: Update as part of future story to go to the ExcessInformationPage
+          case Some(true) => routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)
+          case Some(false) => redirectToNextWrongMovementPage(Some(More))(userAnswers)
+          case _ => routes.AddMoreInformationController.loadExcessInformation(userAnswers.ern, userAnswers.arc, NormalMode)
+        }
     case AddMoreInformationPage =>
       (userAnswers: UserAnswers) =>
         userAnswers.get(AddMoreInformationPage) match {
@@ -85,7 +93,7 @@ class Navigator @Inject()() extends BaseNavigator {
 
   private[navigation] def nextWrongWithMovementOptionToAnswer(selectedOptions: Set[WrongWithMovement],
                                                               lastOption: Option[WrongWithMovement] = None): Option[WrongWithMovement] = {
-    val orderedSetOfOptions = WrongWithMovement.values.filter { option => selectedOptions.contains(option) }
+    val orderedSetOfOptions = WrongWithMovement.values.filter(selectedOptions.contains)
     lastOption match {
       case Some(value) if orderedSetOfOptions.lastOption.contains(value) =>
         None
@@ -103,8 +111,7 @@ class Navigator @Inject()() extends BaseNavigator {
           case Some(Less) =>
             routes.AddMoreInformationController.loadShortageInformation(userAnswers.ern, userAnswers.arc, NormalMode)
           case Some(More) =>
-            //TODO: Will redirect to the More Items More Information Yes/No
-            routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)
+            routes.AddMoreInformationController.loadExcessInformation(userAnswers.ern, userAnswers.arc, NormalMode)
           case Some(Damaged) =>
             //TODO: Will redirect to the Damaged Items More Information Yes/No
             routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)

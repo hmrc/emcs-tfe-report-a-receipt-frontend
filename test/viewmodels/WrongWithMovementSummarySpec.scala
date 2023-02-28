@@ -19,15 +19,17 @@ package viewmodels
 import base.SpecBase
 import controllers.routes
 import fixtures.messages.WrongWithMovementMessages
-import models.WrongWithMovement.{Less, More}
-import models.{CheckMode, WrongWithMovement}
+import models.WrongWithMovement.{BrokenSeals, Damaged, Less, More, Other}
+import models.{NormalMode, WrongWithMovement}
 import pages.unsatisfactory.WrongWithMovementPage
 import play.api.test.FakeRequest
+import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import utils.DateUtils
 import viewmodels.checkAnswers.WrongWithMovementSummary
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
+import views.html.components.list
 
 class WrongWithMovementSummarySpec extends SpecBase with DateUtils {
 
@@ -40,23 +42,32 @@ class WrongWithMovementSummarySpec extends SpecBase with DateUtils {
 
         implicit lazy val app = applicationBuilder().build()
         implicit lazy val msgs = messagesApi(app).preferred(Seq(langMessages.lang))
-        lazy val wrongWithMovementSummary = new WrongWithMovementSummary
+        lazy val list = app.injector.instanceOf[list]
+        lazy val wrongWithMovementSummary = new WrongWithMovementSummary(list)
 
         "when an answer is set" - {
 
           "must render the expected SummaryListRow" in {
 
-            val answers = emptyUserAnswers.set(WrongWithMovementPage, Set[WrongWithMovement](Less, More))
+            val answers = emptyUserAnswers.set(WrongWithMovementPage, Set[WrongWithMovement](Less, Damaged, Other, BrokenSeals, More))
             implicit val request = dataRequest(FakeRequest(), answers)
 
             wrongWithMovementSummary.row() mustBe
               Some(SummaryListRowViewModel(
                 key = langMessages.checkYourAnswersLabel,
-                value = ValueViewModel(HtmlContent(langMessages.lessThanExpected + ",<br>" + langMessages.moreThanExpected)),
+                value = ValueViewModel(
+                  HtmlContent(list(Seq(
+                    Html(langMessages.checkYourAnswersLess),
+                    Html(langMessages.checkYourAnswersMore),
+                    Html(langMessages.checkYourAnswersDamaged),
+                    Html(langMessages.checkYourAnswersBrokenSeals),
+                    Html(langMessages.checkYourAnswersOther)
+                  )))
+                ),
                 actions = Seq(
                   ActionItemViewModel(
                     langMessages.change,
-                    routes.WrongWithMovementController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, CheckMode).url
+                    routes.WrongWithMovementController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, NormalMode).url
                   ).withVisuallyHiddenText(langMessages.hiddenChangeLinkText)
                 )
               ))

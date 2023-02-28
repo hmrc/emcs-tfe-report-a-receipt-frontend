@@ -102,6 +102,10 @@ addShortageInformation.title = Do you want to give more information about being 
 addShortageInformation.heading = Do you want to give more information about being sent less items than expected?
 addShortageInformation.error.required = Select yes if you want to give more information about being sent less goods than expected
 
+addExcessInformation.title = Do you want to give more information about being sent more items than expected?
+addExcessInformation.heading = Do you want to give more information about being sent more items than expected?
+addExcessInformation.error.required = Select yes if you want to give more information about being sent more items than expected
+
 moreInformation.title = Give more information about this movement
 moreInformation.heading = Give more information about this movement
 moreInformation.hint = Give more information (optional)
@@ -147,6 +151,8 @@ howMuchIsWrong.wholeMovement = The whole movement
 howMuchIsWrong.individualItem = Individual item(s) in this movement
 howMuchIsWrong.error.required = Select how much of the movement is wrong
 howMuchIsWrong.checkYourAnswers.label = Amount of the movement that is wrong
+howMuchIsWrong.checkYourAnswers.wholeMovement = Whole movement
+howMuchIsWrong.checkYourAnswers.individualItem = Individual items
 howMuchIsWrong.checkYourAnswers.change.hidden = how much of this movement is wrong
 
 wrongWithMovement.title = What is wrong with this movement?
@@ -158,5 +164,10 @@ wrongWithMovement.damaged = Items were damaged
 wrongWithMovement.brokenSeals = Broken seal(s)
 wrongWithMovement.other = Other
 wrongWithMovement.error.required = Select what is wrong with the movement
-wrongWithMovement.checkYourAnswer.label = What is wrong with this movement?
-wrongWithMovement.checkYourAnswer.change.hidden = what is wrong with this movement
+wrongWithMovement.checkYourAnswers.label = What was wrong
+wrongWithMovement.checkYourAnswers.less = Shortage
+wrongWithMovement.checkYourAnswers.more = Excess
+wrongWithMovement.checkYourAnswers.damaged = Damaged items
+wrongWithMovement.checkYourAnswers.brokenSeals = Broken seal(s)
+wrongWithMovement.checkYourAnswers.other = Other
+wrongWithMovement.checkYourAnswers.change.hidden = what was wrong

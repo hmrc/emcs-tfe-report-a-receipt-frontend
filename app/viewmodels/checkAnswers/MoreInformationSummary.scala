@@ -16,11 +16,10 @@
 
 package viewmodels.checkAnswers
 
-import controllers.routes
-import models.CheckMode
 import models.requests.DataRequest
-import pages.MoreInformationPage
+import pages.QuestionPage
 import play.api.i18n.Messages
+import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.JsonOptionFormatter
@@ -32,25 +31,22 @@ import javax.inject.Inject
 
 class MoreInformationSummary @Inject()(link: link) extends JsonOptionFormatter {
 
-  def row()(implicit request: DataRequest[_], messages: Messages): SummaryListRow =
-    request.userAnswers.get(MoreInformationPage) match {
+  def row(page: QuestionPage[Option[String]], changeAction: Call)(implicit request: DataRequest[_], messages: Messages): SummaryListRow =
+    request.userAnswers.get(page) match {
       case Some(Some(answer)) if answer != "" =>
         SummaryListRowViewModel(
-          key = "moreInformation.checkYourAnswers.label",
+          key = s"$page.checkYourAnswers.label",
           value = ValueViewModel(Text(answer)),
           actions = Seq(
-            ActionItemViewModel(
-              "site.change",
-              routes.MoreInformationController.loadMoreInformation(request.userAnswers.ern, request.userAnswers.arc, CheckMode).url
-            ).withVisuallyHiddenText(messages("moreInformation.change.hidden"))
+            ActionItemViewModel("site.change", changeAction.url).withVisuallyHiddenText(messages(s"$page.change.hidden"))
           )
         )
       case _ =>
         SummaryListRowViewModel(
-          key = "moreInformation.checkYourAnswers.label",
+          key = s"$page.checkYourAnswers.label",
           value = ValueViewModel(HtmlContent(link(
-            link = routes.MoreInformationController.loadMoreInformation(request.userAnswers.ern, request.userAnswers.arc, CheckMode).url,
-            messageKey = "moreInformation.checkYourAnswers.addMoreInformation"
+            link = changeAction.url,
+            messageKey = s"$page.checkYourAnswers.addMoreInformation"
           )))
         )
     }

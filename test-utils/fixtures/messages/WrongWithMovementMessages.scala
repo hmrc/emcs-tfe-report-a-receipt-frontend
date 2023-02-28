@@ -29,6 +29,11 @@ object WrongWithMovementMessages {
     val other: String
     val requiredError: String
     val checkYourAnswersLabel: String
+    val checkYourAnswersLess: String
+    val checkYourAnswersMore: String
+    val checkYourAnswersDamaged: String
+    val checkYourAnswersBrokenSeals: String
+    val checkYourAnswersOther: String
     val hiddenChangeLinkText: String
   }
   object English extends ViewMessages with BaseEnglish {
@@ -41,8 +46,13 @@ object WrongWithMovementMessages {
     override val brokenSeals: String = "Broken seal(s)"
     override val other: String = "Other"
     override val requiredError: String = "Select what is wrong with the movement"
-    override val checkYourAnswersLabel: String = "What is wrong with this movement?"
-    override val hiddenChangeLinkText: String = "what is wrong with this movement"
+    override val checkYourAnswersLabel: String = "What was wrong"
+    override val checkYourAnswersLess: String = "Shortage"
+    override val checkYourAnswersMore: String = "Excess"
+    override val checkYourAnswersDamaged: String = "Damaged items"
+    override val checkYourAnswersBrokenSeals: String = "Broken seal(s)"
+    override val checkYourAnswersOther: String = "Other"
+    override val hiddenChangeLinkText: String = "what was wrong"
   }
 
   object Welsh extends ViewMessages with BaseWelsh {
@@ -55,7 +65,12 @@ object WrongWithMovementMessages {
     override val brokenSeals: String = "Broken seal(s)"
     override val other: String = "Other"
     override val requiredError: String = "Select what is wrong with the movement"
-    override val checkYourAnswersLabel: String = "What is wrong with this movement?"
-    override val hiddenChangeLinkText: String = "what is wrong with this movement"
+    override val checkYourAnswersLabel: String = "What was wrong"
+    override val checkYourAnswersLess: String = "Shortage"
+    override val checkYourAnswersMore: String = "Excess"
+    override val checkYourAnswersDamaged: String = "Damaged items"
+    override val checkYourAnswersBrokenSeals: String = "Broken seal(s)"
+    override val checkYourAnswersOther: String = "Other"
+    override val hiddenChangeLinkText: String = "what was wrong"
   }
 }

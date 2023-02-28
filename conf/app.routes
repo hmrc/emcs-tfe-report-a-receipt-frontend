@@ -38,6 +38,11 @@ POST        /:ern/:arc/choose-give-reason-movement-shortage         controllers.
 GET         /:ern/:arc/choose-give-reason-movement-shortage/change  controllers.AddMoreInformationController.loadShortageInformation(ern: String, arc: String, mode: Mode = CheckMode)
 POST        /:ern/:arc/choose-give-reason-movement-shortage/change  controllers.AddMoreInformationController.submitShortageInformation(ern: String, arc: String, mode: Mode = CheckMode)
 
+GET         /:ern/:arc/choose-give-reason-movement-excess           controllers.AddMoreInformationController.loadExcessInformation(ern: String, arc: String, mode: Mode = NormalMode)
+POST        /:ern/:arc/choose-give-reason-movement-excess           controllers.AddMoreInformationController.submitExcessInformation(ern: String, arc: String, mode: Mode = NormalMode)
+GET         /:ern/:arc/choose-give-reason-movement-excess/change    controllers.AddMoreInformationController.loadExcessInformation(ern: String, arc: String, mode: Mode = CheckMode)
+POST        /:ern/:arc/choose-give-reason-movement-excess/change    controllers.AddMoreInformationController.submitExcessInformation(ern: String, arc: String, mode: Mode = CheckMode)
+
 GET         /:ern/:arc/more-information-movement                    controllers.MoreInformationController.loadMoreInformation(ern: String, arc: String, mode: Mode = NormalMode)
 POST        /:ern/:arc/more-information-movement                    controllers.MoreInformationController.submitMoreInformation(ern: String, arc: String, mode: Mode = NormalMode)
 GET         /:ern/:arc/more-information-movement/change             controllers.MoreInformationController.loadMoreInformation(ern: String, arc: String, mode: Mode = CheckMode)

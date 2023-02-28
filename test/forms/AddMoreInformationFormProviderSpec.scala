@@ -16,17 +16,17 @@
 
 package forms
 
-import fixtures.messages.{AddMoreInformationMessages, AddShortageInformationMessages}
+import fixtures.messages.{AddExcessInformationMessages, AddMoreInformationMessages, AddShortageInformationMessages}
 import forms.behaviours.BooleanFieldBehaviours
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import pages.AddMoreInformationPage
-import pages.unsatisfactory.AddShortageInformationPage
+import pages.unsatisfactory.{AddExcessInformationPage, AddShortageInformationPage}
 import play.api.data.FormError
 import play.api.i18n.{Messages, MessagesApi}
 
 class AddMoreInformationFormProviderSpec extends BooleanFieldBehaviours with GuiceOneAppPerSuite {
 
-  Seq(AddMoreInformationPage, AddShortageInformationPage) foreach { page =>
+  Seq(AddMoreInformationPage, AddShortageInformationPage, AddExcessInformationPage) foreach { page =>
 
     s"loading the form for the '$page' page" - {
 
@@ -63,7 +63,7 @@ class AddMoreInformationFormProviderSpec extends BooleanFieldBehaviours with Gui
         s"when output for language code '${messagesForLanguage.lang.code}'" - {
 
           "have the correct error message when no option is selected" in {
-            messages(s"${AddMoreInformationPage.toString}.error.required") mustBe messagesForLanguage.requiredError
+            messages(s"$AddMoreInformationPage.error.required") mustBe messagesForLanguage.requiredError
           }
         }
       }
@@ -78,7 +78,22 @@ class AddMoreInformationFormProviderSpec extends BooleanFieldBehaviours with Gui
         s"when output for language code '${messagesForLanguage.lang.code}'" - {
 
           "have the correct error message when no option is selected" in {
-            messages(s"${AddShortageInformationPage.toString}.error.required") mustBe messagesForLanguage.requiredError
+            messages(s"$AddShortageInformationPage.error.required") mustBe messagesForLanguage.requiredError
+          }
+        }
+      }
+    }
+
+    "for the AddExcessInformationPage" - {
+
+      Seq(AddExcessInformationMessages.English, AddExcessInformationMessages.Welsh) foreach { messagesForLanguage =>
+
+        implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(messagesForLanguage.lang))
+
+        s"when output for language code '${messagesForLanguage.lang.code}'" - {
+
+          "have the correct error message when no option is selected" in {
+            messages(s"$AddExcessInformationPage.error.required") mustBe messagesForLanguage.requiredError
           }
         }
       }

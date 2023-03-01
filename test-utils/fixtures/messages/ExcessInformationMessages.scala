@@ -16,6 +16,8 @@
 
 package fixtures.messages
 
+import fixtures.messages.ExcessInformationMessages.English.title
+
 object ExcessInformationMessages {
 
   sealed trait ViewMessages { _: i18n =>
@@ -49,8 +51,8 @@ object ExcessInformationMessages {
     override val validationErrorInvalidChars = "Information must not include < and > and : and ;"
     override val validationError = "Information must contain letters or numbers"
     override val lengthError = "Information must be 350 characters or less"
-    override val checkYourAnswersLabel = "Information about shortage"
-    override val hiddenChangeLink = "information about shortage"
+    override val checkYourAnswersLabel = "Information about excess"
+    override val hiddenChangeLink = "information about excess"
     override val addMoreInformation = "Enter more information about excess (optional)"
   }
 }

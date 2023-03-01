@@ -22,7 +22,7 @@ import models.HowMuchIsWrong.TheWholeMovement
 import models.WrongWithMovement.{BrokenSeals, Damaged, Less, More, Other}
 import models._
 import pages._
-import pages.unsatisfactory.{AddExcessInformationPage, AddShortageInformationPage, ExcessInformationPage, HowMuchIsWrongPage, ShortageInformationPage, WrongWithMovementPage}
+import pages.unsatisfactory.{AddDamageInformationPage, AddExcessInformationPage, AddSealsInformationPage, AddShortageInformationPage, DamageInformationPage, ExcessInformationPage, HowMuchIsWrongPage, SealsInformationPage, ShortageInformationPage, WrongWithMovementPage}
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
@@ -66,6 +66,24 @@ class Navigator @Inject()() extends BaseNavigator {
         }
     case ExcessInformationPage =>
       (userAnswers: UserAnswers) => redirectToNextWrongMovementPage(Some(More))(userAnswers)
+    case AddDamageInformationPage =>
+      (userAnswers: UserAnswers) =>
+        userAnswers.get(AddDamageInformationPage) match {
+          case Some(true) => routes.MoreInformationController.loadDamageInformation(userAnswers.ern, userAnswers.arc, NormalMode)
+          case Some(false) => redirectToNextWrongMovementPage(Some(Damaged))(userAnswers)
+          case _ => routes.AddMoreInformationController.loadDamageInformation(userAnswers.ern, userAnswers.arc, NormalMode)
+        }
+    case DamageInformationPage =>
+      (userAnswers: UserAnswers) => redirectToNextWrongMovementPage(Some(Damaged))(userAnswers)
+    case AddSealsInformationPage =>
+      (userAnswers: UserAnswers) =>
+        userAnswers.get(AddSealsInformationPage) match {
+          case Some(true) => routes.MoreInformationController.loadSealsInformation(userAnswers.ern, userAnswers.arc, NormalMode)
+          case Some(false) => redirectToNextWrongMovementPage(Some(BrokenSeals))(userAnswers)
+          case _ => routes.AddMoreInformationController.loadSealsInformation(userAnswers.ern, userAnswers.arc, NormalMode)
+        }
+    case SealsInformationPage =>
+      (userAnswers: UserAnswers) => redirectToNextWrongMovementPage(Some(BrokenSeals))(userAnswers)
     case AddMoreInformationPage =>
       (userAnswers: UserAnswers) =>
         userAnswers.get(AddMoreInformationPage) match {
@@ -114,11 +132,9 @@ class Navigator @Inject()() extends BaseNavigator {
           case Some(More) =>
             routes.AddMoreInformationController.loadExcessInformation(userAnswers.ern, userAnswers.arc, NormalMode)
           case Some(Damaged) =>
-            //TODO: Will redirect to the Damaged Items More Information Yes/No
-            routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)
+            routes.AddMoreInformationController.loadDamageInformation(userAnswers.ern, userAnswers.arc, NormalMode)
           case Some(BrokenSeals) =>
-            //TODO: Will redirect to the Broken Seals More Information Yes/No
-            routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)
+            routes.AddMoreInformationController.loadSealsInformation(userAnswers.ern, userAnswers.arc, NormalMode)
           case Some(Other) =>
             //TODO: Will redirect to the Other Information page
             routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)

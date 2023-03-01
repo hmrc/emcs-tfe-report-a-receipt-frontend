@@ -19,8 +19,9 @@ package viewmodels
 import base.SpecBase
 import mocks.viewmodels._
 import models.AcceptMovement.{Satisfactory, Unsatisfactory}
-import models.CheckMode
-import pages.unsatisfactory.{ExcessInformationPage, ShortageInformationPage}
+import models.WrongWithMovement.{BrokenSeals, Damaged, Less, More, Other}
+import models.{CheckMode, WrongWithMovement}
+import pages.unsatisfactory.{DamageInformationPage, ExcessInformationPage, SealsInformationPage, ShortageInformationPage, WrongWithMovementPage}
 import pages.{AcceptMovementPage, MoreInformationPage}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.govukfrontend.views.Aliases.{SummaryList, SummaryListRow}
@@ -85,38 +86,24 @@ class CheckAnswersHelperSpec extends SpecBase
 
     "being rendered for the Unsatisfactory flow" - {
 
-      implicit lazy val request = dataRequest(FakeRequest(), emptyUserAnswers.set(AcceptMovementPage, Unsatisfactory))
+      implicit lazy val request = dataRequest(
+        FakeRequest(),
+        emptyUserAnswers
+          .set(AcceptMovementPage, Unsatisfactory)
+          .set(WrongWithMovementPage, Set[WrongWithMovement](Less, More, Damaged, BrokenSeals, Other))
+      )
 
       s"must return the expected SummaryList" in {
 
-        val dateOfArrivalAnswer = SummaryListRow(
-          "DateOfArrival",
-          ValueViewModel("today")
-        )
-        val acceptMovementAnswer = SummaryListRow(
-          "AcceptMovement",
-          ValueViewModel("Yes")
-        )
-        val howMuchIsWrongAnswer = SummaryListRow(
-          "HowMuchIsWrong",
-          ValueViewModel("Whole Movement")
-        )
-        val wrongWithMovementAnswer = SummaryListRow(
-          "WrongWithMovement",
-          ValueViewModel("Less")
-        )
-        val shortageInformationAnswer = SummaryListRow(
-          "ShortageInfo",
-          ValueViewModel("Info")
-        )
-        val excessInformationAnswer = SummaryListRow(
-          "ExcessInfo",
-          ValueViewModel("Info")
-        )
-        val moreInformationAnswer = SummaryListRow(
-          "MoreInfo",
-          ValueViewModel("Info")
-        )
+        val dateOfArrivalAnswer = SummaryListRow("DateOfArrival", ValueViewModel("today"))
+        val acceptMovementAnswer = SummaryListRow("AcceptMovement", ValueViewModel("Yes"))
+        val howMuchIsWrongAnswer = SummaryListRow("HowMuchIsWrong", ValueViewModel("Whole Movement"))
+        val wrongWithMovementAnswer = SummaryListRow("WrongWithMovement", ValueViewModel("Less"))
+        val shortageInformationAnswer = SummaryListRow("ShortageInfo", ValueViewModel("Info"))
+        val excessInformationAnswer = SummaryListRow("ExcessInfo", ValueViewModel("Info"))
+        val damagedInformationAnswer = SummaryListRow("DamageInfo", ValueViewModel("Info"))
+        val sealsInformationAnswer = SummaryListRow("SealsInfo", ValueViewModel("Info"))
+        val moreInformationAnswer = SummaryListRow("MoreInfo", ValueViewModel("Info"))
 
         MockDateOfArrivalSummary.row().returns(Some(dateOfArrivalAnswer))
         MockAcceptMovementSummary.row().returns(Some(acceptMovementAnswer))
@@ -131,6 +118,14 @@ class CheckAnswersHelperSpec extends SpecBase
           controllers.routes.MoreInformationController.loadExcessInformation(testErn, testArc, CheckMode)
         ).returns(excessInformationAnswer)
         MockMoreInformationSummary.row(
+          DamageInformationPage,
+          controllers.routes.MoreInformationController.loadDamageInformation(testErn, testArc, CheckMode)
+        ).returns(damagedInformationAnswer)
+        MockMoreInformationSummary.row(
+          SealsInformationPage,
+          controllers.routes.MoreInformationController.loadSealsInformation(testErn, testArc, CheckMode)
+        ).returns(sealsInformationAnswer)
+        MockMoreInformationSummary.row(
           MoreInformationPage,
           controllers.routes.MoreInformationController.loadMoreInformation(testErn, testArc, CheckMode)
         ).returns(moreInformationAnswer)
@@ -142,6 +137,8 @@ class CheckAnswersHelperSpec extends SpecBase
           wrongWithMovementAnswer,
           shortageInformationAnswer,
           excessInformationAnswer,
+          damagedInformationAnswer,
+          sealsInformationAnswer,
           moreInformationAnswer
         )).withCssClass("govuk-!-margin-bottom-9")
       }

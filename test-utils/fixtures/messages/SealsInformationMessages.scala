@@ -16,7 +16,7 @@
 
 package fixtures.messages
 
-object ExcessInformationMessages {
+object SealsInformationMessages {
 
   sealed trait ViewMessages { _: i18n =>
     val title: String
@@ -31,26 +31,26 @@ object ExcessInformationMessages {
   }
 
   object English extends ViewMessages with BaseEnglish {
-    override val heading = "Give more information about being sent more items than expected"
+    override val heading = "Give more information about being sent items with broken seal(s)"
     override val title: String = title(heading)
     override val hint = "Give more information (optional)"
     override val validationErrorInvalidChars = "Information must not include < and > and : and ;"
     override val validationError = "Information must contain letters or numbers"
     override val lengthError = "Information must be 350 characters or less"
-    override val checkYourAnswersLabel = "Information about excess"
-    override val hiddenChangeLink = "information about excess"
-    override val addMoreInformation = "Enter more information about excess (optional)"
+    override val checkYourAnswersLabel = "Information about broken seal(s)"
+    override val hiddenChangeLink = "information about broken seal(s)"
+    override val addMoreInformation = "Enter more information about broken seal(s) (optional)"
   }
 
   object Welsh extends ViewMessages with BaseWelsh {
-    override val heading = "Give more information about being sent more items than expected"
+    override val heading = "Give more information about being sent items with broken seal(s)"
     override val title: String = title(heading)
     override val hint = "Give more information (optional)"
     override val validationErrorInvalidChars = "Information must not include < and > and : and ;"
     override val validationError = "Information must contain letters or numbers"
     override val lengthError = "Information must be 350 characters or less"
-    override val checkYourAnswersLabel = "Information about excess"
-    override val hiddenChangeLink = "information about excess"
-    override val addMoreInformation = "Enter more information about excess (optional)"
+    override val checkYourAnswersLabel = "Information about broken seal(s)"
+    override val hiddenChangeLink = "information about broken seal(s)"
+    override val addMoreInformation = "Enter more information about broken seal(s) (optional)"
   }
 }

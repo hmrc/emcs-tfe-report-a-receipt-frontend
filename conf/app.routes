@@ -43,6 +43,16 @@ POST        /:ern/:arc/choose-give-reason-movement-excess           controllers.
 GET         /:ern/:arc/choose-give-reason-movement-excess/change    controllers.AddMoreInformationController.loadExcessInformation(ern: String, arc: String, mode: Mode = CheckMode)
 POST        /:ern/:arc/choose-give-reason-movement-excess/change    controllers.AddMoreInformationController.submitExcessInformation(ern: String, arc: String, mode: Mode = CheckMode)
 
+GET         /:ern/:arc/choose-give-reason-movement-damage           controllers.AddMoreInformationController.loadDamageInformation(ern: String, arc: String, mode: Mode = NormalMode)
+POST        /:ern/:arc/choose-give-reason-movement-damage           controllers.AddMoreInformationController.submitDamageInformation(ern: String, arc: String, mode: Mode = NormalMode)
+GET         /:ern/:arc/choose-give-reason-movement-damage/change    controllers.AddMoreInformationController.loadDamageInformation(ern: String, arc: String, mode: Mode = CheckMode)
+POST        /:ern/:arc/choose-give-reason-movement-damage/change    controllers.AddMoreInformationController.submitDamageInformation(ern: String, arc: String, mode: Mode = CheckMode)
+
+GET         /:ern/:arc/choose-give-reason-movement-seals            controllers.AddMoreInformationController.loadSealsInformation(ern: String, arc: String, mode: Mode = NormalMode)
+POST        /:ern/:arc/choose-give-reason-movement-seals            controllers.AddMoreInformationController.submitSealsInformation(ern: String, arc: String, mode: Mode = NormalMode)
+GET         /:ern/:arc/choose-give-reason-movement-seals/change     controllers.AddMoreInformationController.loadSealsInformation(ern: String, arc: String, mode: Mode = CheckMode)
+POST        /:ern/:arc/choose-give-reason-movement-seals/change     controllers.AddMoreInformationController.submitSealsInformation(ern: String, arc: String, mode: Mode = CheckMode)
+
 GET         /:ern/:arc/more-information-movement                    controllers.MoreInformationController.loadMoreInformation(ern: String, arc: String, mode: Mode = NormalMode)
 POST        /:ern/:arc/more-information-movement                    controllers.MoreInformationController.submitMoreInformation(ern: String, arc: String, mode: Mode = NormalMode)
 GET         /:ern/:arc/more-information-movement/change             controllers.MoreInformationController.loadMoreInformation(ern: String, arc: String, mode: Mode = CheckMode)
@@ -57,6 +67,16 @@ GET         /:ern/:arc/give-reason-movement-excess                  controllers.
 POST        /:ern/:arc/give-reason-movement-excess                  controllers.MoreInformationController.submitExcessInformation(ern: String, arc: String, mode: Mode = NormalMode)
 GET         /:ern/:arc/give-reason-movement-excess/change           controllers.MoreInformationController.loadExcessInformation(ern: String, arc: String, mode: Mode = CheckMode)
 POST        /:ern/:arc/give-reason-movement-excess/change           controllers.MoreInformationController.submitExcessInformation(ern: String, arc: String, mode: Mode = CheckMode)
+
+GET         /:ern/:arc/give-reason-movement-damage                  controllers.MoreInformationController.loadDamageInformation(ern: String, arc: String, mode: Mode = NormalMode)
+POST        /:ern/:arc/give-reason-movement-damage                  controllers.MoreInformationController.submitDamageInformation(ern: String, arc: String, mode: Mode = NormalMode)
+GET         /:ern/:arc/give-reason-movement-damage/change           controllers.MoreInformationController.loadDamageInformation(ern: String, arc: String, mode: Mode = CheckMode)
+POST        /:ern/:arc/give-reason-movement-damage/change           controllers.MoreInformationController.submitDamageInformation(ern: String, arc: String, mode: Mode = CheckMode)
+
+GET         /:ern/:arc/give-reason-movement-seals                   controllers.MoreInformationController.loadSealsInformation(ern: String, arc: String, mode: Mode = NormalMode)
+POST        /:ern/:arc/give-reason-movement-seals                   controllers.MoreInformationController.submitSealsInformation(ern: String, arc: String, mode: Mode = NormalMode)
+GET         /:ern/:arc/give-reason-movement-seals/change            controllers.MoreInformationController.loadSealsInformation(ern: String, arc: String, mode: Mode = CheckMode)
+POST        /:ern/:arc/give-reason-movement-seals/change            controllers.MoreInformationController.submitSealsInformation(ern: String, arc: String, mode: Mode = CheckMode)
 
 GET         /:ern/:arc/check-answers                                controllers.CheckYourAnswersController.onPageLoad(ern: String, arc: String)
 POST        /:ern/:arc/check-answers                                controllers.CheckYourAnswersController.onSubmit(ern: String, arc: String)

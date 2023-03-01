@@ -18,11 +18,12 @@ package viewmodels.checkAnswers
 
 import models.AcceptMovement.Unsatisfactory
 import models.CheckMode
+import models.WrongWithMovement.{BrokenSeals, Damaged, Less, More}
 import models.requests.DataRequest
-import pages.unsatisfactory.{ExcessInformationPage, ShortageInformationPage}
+import pages.unsatisfactory._
 import pages.{AcceptMovementPage, MoreInformationPage}
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, SummaryListRow}
 import viewmodels.govuk.summarylist._
 
 import javax.inject.Inject
@@ -45,14 +46,10 @@ class CheckAnswersHelper @Inject()(acceptMovementSummary: AcceptMovementSummary,
         Seq(
           howMuchIsWrongSummary.row(),
           wrongWithMovementSummary.row(),
-          Some(moreInformationSummary.row(
-            page = ShortageInformationPage,
-            changeAction = controllers.routes.MoreInformationController.loadShortageInformation(request.ern, request.arc, CheckMode))
-          ),
-          Some(moreInformationSummary.row(
-            page = ExcessInformationPage,
-            changeAction = controllers.routes.MoreInformationController.loadExcessInformation(request.ern, request.arc, CheckMode))
-          )
+          shortageInformation(),
+          excessInformation(),
+          damageInformation(),
+          sealsInformation()
         ).flatten
       } else {
         Seq()
@@ -66,4 +63,44 @@ class CheckAnswersHelper @Inject()(acceptMovementSummary: AcceptMovementSummary,
         )
     ).withCssClass("govuk-!-margin-bottom-9")
   }
+
+  private def shortageInformation()(implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] =
+    if (request.userAnswers.get(WrongWithMovementPage).exists(_.contains(Less))) {
+      Some(moreInformationSummary.row(
+        page = ShortageInformationPage,
+        changeAction = controllers.routes.MoreInformationController.loadShortageInformation(request.ern, request.arc, CheckMode))
+      )
+    } else {
+      None
+    }
+
+  private def excessInformation()(implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] =
+    if (request.userAnswers.get(WrongWithMovementPage).exists(_.contains(More))) {
+      Some(moreInformationSummary.row(
+        page = ExcessInformationPage,
+        changeAction = controllers.routes.MoreInformationController.loadExcessInformation(request.ern, request.arc, CheckMode))
+      )
+    } else {
+      None
+    }
+
+  private def damageInformation()(implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] =
+    if (request.userAnswers.get(WrongWithMovementPage).exists(_.contains(Damaged))) {
+      Some(moreInformationSummary.row(
+        page = DamageInformationPage,
+        changeAction = controllers.routes.MoreInformationController.loadDamageInformation(request.ern, request.arc, CheckMode))
+      )
+    } else {
+      None
+    }
+
+  private def sealsInformation()(implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] =
+    if (request.userAnswers.get(WrongWithMovementPage).exists(_.contains(BrokenSeals))) {
+      Some(moreInformationSummary.row(
+        page = SealsInformationPage,
+        changeAction = controllers.routes.MoreInformationController.loadSealsInformation(request.ern, request.arc, CheckMode))
+      )
+    } else {
+      None
+    }
 }

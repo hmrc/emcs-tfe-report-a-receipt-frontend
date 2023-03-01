@@ -24,7 +24,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.MoreInformationPage
-import pages.unsatisfactory.{ExcessInformationPage, ShortageInformationPage}
+import pages.unsatisfactory.{DamageInformationPage, ExcessInformationPage, SealsInformationPage, ShortageInformationPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -50,12 +50,20 @@ class MoreInformationControllerSpec extends SpecBase with MockitoSugar with Json
   lazy val excessInformationRoute = routes.MoreInformationController.loadExcessInformation(testErn, testArc, NormalMode).url
   lazy val excessInformationSubmitAction = routes.MoreInformationController.submitExcessInformation(testErn, testArc, NormalMode)
 
+  lazy val damageInformationRoute = routes.MoreInformationController.loadDamageInformation(testErn, testArc, NormalMode).url
+  lazy val damageInformationSubmitAction = routes.MoreInformationController.submitDamageInformation(testErn, testArc, NormalMode)
+
+  lazy val sealsInformationRoute = routes.MoreInformationController.loadSealsInformation(testErn, testArc, NormalMode).url
+  lazy val sealsInformationSubmitAction = routes.MoreInformationController.submitSealsInformation(testErn, testArc, NormalMode)
+
   "MoreInformation Controller" - {
 
     Seq(
       (MoreInformationPage, moreInformationRoute, moreInformationSubmitAction),
       (ShortageInformationPage, shortageInformationRoute, shortageInformationSubmitAction),
-      (ExcessInformationPage, excessInformationRoute, excessInformationSubmitAction)
+      (ExcessInformationPage, excessInformationRoute, excessInformationSubmitAction),
+      (DamageInformationPage, damageInformationRoute, damageInformationSubmitAction),
+      (SealsInformationPage, sealsInformationRoute, sealsInformationSubmitAction)
     ) foreach { case (page, url, submitAction) =>
 
       s"for the '$page' page" - {

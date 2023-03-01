@@ -24,7 +24,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.AddMoreInformationPage
-import pages.unsatisfactory.{AddExcessInformationPage, AddShortageInformationPage}
+import pages.unsatisfactory.{AddDamageInformationPage, AddExcessInformationPage, AddSealsInformationPage, AddShortageInformationPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -49,10 +49,18 @@ class AddMoreInformationControllerSpec extends SpecBase with MockitoSugar {
   lazy val addExcessInformationRoute = routes.AddMoreInformationController.loadExcessInformation(testErn, testArc, NormalMode).url
   lazy val addExcessInformationSubmitAction = routes.AddMoreInformationController.submitExcessInformation(testErn, testArc, NormalMode)
 
+  lazy val addDamageInformationRoute = routes.AddMoreInformationController.loadDamageInformation(testErn, testArc, NormalMode).url
+  lazy val addDamageInformationSubmitAction = routes.AddMoreInformationController.submitDamageInformation(testErn, testArc, NormalMode)
+
+  lazy val addSealsInformationRoute = routes.AddMoreInformationController.loadSealsInformation(testErn, testArc, NormalMode).url
+  lazy val addSealsInformationSubmitAction = routes.AddMoreInformationController.submitSealsInformation(testErn, testArc, NormalMode)
+
   Seq(
     (AddMoreInformationPage, addMoreInformationRoute, addMoreInformationSubmitAction),
     (AddShortageInformationPage, addShortageInformationRoute, addShortageInformationSubmitAction),
-    (AddExcessInformationPage, addExcessInformationRoute, addExcessInformationSubmitAction)
+    (AddExcessInformationPage, addExcessInformationRoute, addExcessInformationSubmitAction),
+    (AddDamageInformationPage, addDamageInformationRoute, addDamageInformationSubmitAction),
+    (AddSealsInformationPage, addSealsInformationRoute, addSealsInformationSubmitAction)
   ) foreach { case (page, url, submitAction) =>
 
     s"for the '$page' page" - {

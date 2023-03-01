@@ -16,17 +16,23 @@
 
 package forms
 
-import fixtures.messages.{AddExcessInformationMessages, AddMoreInformationMessages, AddShortageInformationMessages}
+import fixtures.messages.{AddDamageInformationMessages, AddExcessInformationMessages, AddMoreInformationMessages, AddSealsInformationMessages, AddShortageInformationMessages}
 import forms.behaviours.BooleanFieldBehaviours
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import pages.AddMoreInformationPage
-import pages.unsatisfactory.{AddExcessInformationPage, AddShortageInformationPage}
+import pages.unsatisfactory.{AddDamageInformationPage, AddExcessInformationPage, AddSealsInformationPage, AddShortageInformationPage}
 import play.api.data.FormError
 import play.api.i18n.{Messages, MessagesApi}
 
 class AddMoreInformationFormProviderSpec extends BooleanFieldBehaviours with GuiceOneAppPerSuite {
 
-  Seq(AddMoreInformationPage, AddShortageInformationPage, AddExcessInformationPage) foreach { page =>
+  Seq(
+    AddMoreInformationPage,
+    AddShortageInformationPage,
+    AddExcessInformationPage,
+    AddDamageInformationPage,
+    AddSealsInformationPage
+  ) foreach { page =>
 
     s"loading the form for the '$page' page" - {
 
@@ -94,6 +100,36 @@ class AddMoreInformationFormProviderSpec extends BooleanFieldBehaviours with Gui
 
           "have the correct error message when no option is selected" in {
             messages(s"$AddExcessInformationPage.error.required") mustBe messagesForLanguage.requiredError
+          }
+        }
+      }
+    }
+
+    "for the AddDamageInformationPage" - {
+
+      Seq(AddDamageInformationMessages.English, AddDamageInformationMessages.Welsh) foreach { messagesForLanguage =>
+
+        implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(messagesForLanguage.lang))
+
+        s"when output for language code '${messagesForLanguage.lang.code}'" - {
+
+          "have the correct error message when no option is selected" in {
+            messages(s"$AddDamageInformationPage.error.required") mustBe messagesForLanguage.requiredError
+          }
+        }
+      }
+    }
+
+    "for the AddSealsInformationPage" - {
+
+      Seq(AddSealsInformationMessages.English, AddSealsInformationMessages.Welsh) foreach { messagesForLanguage =>
+
+        implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(messagesForLanguage.lang))
+
+        s"when output for language code '${messagesForLanguage.lang.code}'" - {
+
+          "have the correct error message when no option is selected" in {
+            messages(s"$AddSealsInformationPage.error.required") mustBe messagesForLanguage.requiredError
           }
         }
       }

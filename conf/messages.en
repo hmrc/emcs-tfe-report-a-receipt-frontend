@@ -109,22 +109,32 @@ addExcessInformation.error.required = Select yes if you want to give more inform
 moreInformation.title = Give more information about this movement
 moreInformation.heading = Give more information about this movement
 moreInformation.hint = Give more information (optional)
-moreInformation.checkYourAnswers.label = More information
 moreInformation.error.length = Information must be 350 characters or less
 moreInformation.error.invalidCharacter = Information must not include < and > and : and ;
 moreInformation.error.character = Information must contain letters or numbers
-moreInformation.change.hidden = information about this movement
+moreInformation.checkYourAnswers.label = More information
+moreInformation.checkYourAnswers.change.hidden = information about this movement
 moreInformation.checkYourAnswers.addMoreInformation = Enter more information about movement (optional)
 
 shortageInformation.title = Give more information about being sent less items than expected
 shortageInformation.heading = Give more information about being sent less items than expected
 shortageInformation.hint = Give more information (optional)
-shortageInformation.checkYourAnswers.label = Information about shortage
 shortageInformation.error.length = Information must be 350 characters or less
 shortageInformation.error.invalidCharacter = Information must not include < and > and : and ;
 shortageInformation.error.character = Information must contain letters or numbers
-shortageInformation.change.hidden = information about shortage
+shortageInformation.checkYourAnswers.label = Information about shortage
+shortageInformation.checkYourAnswers.change.hidden = information about shortage
 shortageInformation.checkYourAnswers.addMoreInformation = Enter more information about shortage (optional)
+
+excessInformation.title = Give more information about being sent more items than expected
+excessInformation.heading = Give more information about being sent more items than expected
+excessInformation.hint = Give more information (optional)
+excessInformation.error.length = Information must be 350 characters or less
+excessInformation.error.invalidCharacter = Information must not include < and > and : and ;
+excessInformation.error.character = Information must contain letters or numbers
+excessInformation.checkYourAnswers.label = Information about excess
+excessInformation.checkYourAnswers.change.hidden = information about excess
+excessInformation.checkYourAnswers.addMoreInformation = Enter more information about excess (optional)
 
 checkYourAnswers.title = Check your answers before submitting your receipt
 checkYourAnswers.heading = Check your answers before submitting your receipt

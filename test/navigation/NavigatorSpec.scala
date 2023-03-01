@@ -23,7 +23,7 @@ import models.HowMuchIsWrong.{IndividualItem, TheWholeMovement}
 import models.WrongWithMovement._
 import pages._
 import models._
-import pages.unsatisfactory.{AddExcessInformationPage, AddShortageInformationPage, HowMuchIsWrongPage, ShortageInformationPage, WrongWithMovementPage}
+import pages.unsatisfactory.{AddExcessInformationPage, AddShortageInformationPage, ExcessInformationPage, HowMuchIsWrongPage, ShortageInformationPage, WrongWithMovementPage}
 
 class NavigatorSpec extends SpecBase {
 
@@ -255,12 +255,11 @@ class NavigatorSpec extends SpecBase {
 
         s"when the user answers is Yes" - {
 
-          //TODO: Update as part of future story
           "must go to the ExcessInformation page" in {
 
             val userAnswers = emptyUserAnswers.set(AddExcessInformationPage, true)
 
-            navigator.nextPage(AddExcessInformationPage, NormalMode, userAnswers) mustBe routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+            navigator.nextPage(AddExcessInformationPage, NormalMode, userAnswers) mustBe routes.MoreInformationController.loadExcessInformation(testErn, testArc, NormalMode)
           }
         }
 
@@ -281,6 +280,16 @@ class NavigatorSpec extends SpecBase {
           "must go back to itself" in {
             navigator.nextPage(AddExcessInformationPage, NormalMode, emptyUserAnswers) mustBe routes.AddMoreInformationController.loadExcessInformation(testErn, testArc, NormalMode)
           }
+        }
+      }
+
+      "for the ExcessInformation page" - {
+
+        "must go to the next WhatWrongWith page to answer" in {
+
+          val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, Set[WrongWithMovement](Less, More))
+
+          navigator.nextPage(ExcessInformationPage, NormalMode, userAnswers) mustBe routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
         }
       }
 

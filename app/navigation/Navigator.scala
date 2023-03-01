@@ -22,7 +22,7 @@ import models.HowMuchIsWrong.TheWholeMovement
 import models.WrongWithMovement.{BrokenSeals, Damaged, Less, More, Other}
 import models._
 import pages._
-import pages.unsatisfactory.{AddExcessInformationPage, AddShortageInformationPage, HowMuchIsWrongPage, ShortageInformationPage, WrongWithMovementPage}
+import pages.unsatisfactory.{AddExcessInformationPage, AddShortageInformationPage, ExcessInformationPage, HowMuchIsWrongPage, ShortageInformationPage, WrongWithMovementPage}
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
@@ -60,11 +60,12 @@ class Navigator @Inject()() extends BaseNavigator {
     case AddExcessInformationPage =>
       (userAnswers: UserAnswers) =>
         userAnswers.get(AddExcessInformationPage) match {
-          //TODO: Update as part of future story to go to the ExcessInformationPage
-          case Some(true) => routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)
+          case Some(true) => routes.MoreInformationController.loadExcessInformation(userAnswers.ern, userAnswers.arc, NormalMode)
           case Some(false) => redirectToNextWrongMovementPage(Some(More))(userAnswers)
           case _ => routes.AddMoreInformationController.loadExcessInformation(userAnswers.ern, userAnswers.arc, NormalMode)
         }
+    case ExcessInformationPage =>
+      (userAnswers: UserAnswers) => redirectToNextWrongMovementPage(Some(More))(userAnswers)
     case AddMoreInformationPage =>
       (userAnswers: UserAnswers) =>
         userAnswers.get(AddMoreInformationPage) match {

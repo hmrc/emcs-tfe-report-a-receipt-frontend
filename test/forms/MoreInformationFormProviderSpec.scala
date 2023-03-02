@@ -19,7 +19,7 @@ package forms
 
 import forms.behaviours.StringFieldBehaviours
 import pages.MoreInformationPage
-import pages.unsatisfactory.{ExcessInformationPage, ShortageInformationPage}
+import pages.unsatisfactory.{DamageInformationPage, ExcessInformationPage, SealsInformationPage, ShortageInformationPage}
 import play.api.data.FormError
 
 class MoreInformationFormProviderSpec extends StringFieldBehaviours {
@@ -27,7 +27,13 @@ class MoreInformationFormProviderSpec extends StringFieldBehaviours {
   val maxLength = 350
   val aboveMaxLength = 351
 
-  Seq(MoreInformationPage, ShortageInformationPage, ExcessInformationPage) foreach { page =>
+  Seq(
+    MoreInformationPage,
+    ShortageInformationPage,
+    ExcessInformationPage,
+    DamageInformationPage,
+    SealsInformationPage
+  ) foreach { page =>
 
     s"loading the form for the '$page' page" - {
 

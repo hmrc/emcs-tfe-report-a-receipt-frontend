@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.MoreInformationFormProvider
 import models.Mode
 import navigation.Navigator
-import pages.unsatisfactory.{AddExcessInformationPage, AddShortageInformationPage, ExcessInformationPage, ShortageInformationPage}
+import pages.unsatisfactory.{AddDamageInformationPage, AddExcessInformationPage, AddSealsInformationPage, AddShortageInformationPage, DamageInformationPage, ExcessInformationPage, SealsInformationPage, ShortageInformationPage}
 import pages.{AddMoreInformationPage, MoreInformationPage, QuestionPage}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -61,6 +61,18 @@ class MoreInformationController @Inject()(
 
   def submitExcessInformation(ern: String, arc: String, mode: Mode): Action[AnyContent] =
     onSubmit(ern, arc, ExcessInformationPage, AddExcessInformationPage, routes.MoreInformationController.submitExcessInformation(ern, arc, mode), mode)
+
+  def loadDamageInformation(ern: String, arc: String, mode: Mode): Action[AnyContent] =
+    onPageLoad(ern, arc, DamageInformationPage, routes.MoreInformationController.submitDamageInformation(ern, arc, mode))
+
+  def submitDamageInformation(ern: String, arc: String, mode: Mode): Action[AnyContent] =
+    onSubmit(ern, arc, DamageInformationPage, AddDamageInformationPage, routes.MoreInformationController.submitDamageInformation(ern, arc, mode), mode)
+
+  def loadSealsInformation(ern: String, arc: String, mode: Mode): Action[AnyContent] =
+    onPageLoad(ern, arc, SealsInformationPage, routes.MoreInformationController.submitSealsInformation(ern, arc, mode))
+
+  def submitSealsInformation(ern: String, arc: String, mode: Mode): Action[AnyContent] =
+    onSubmit(ern, arc, SealsInformationPage, AddSealsInformationPage, routes.MoreInformationController.submitSealsInformation(ern, arc, mode), mode)
 
 
   private def onPageLoad(ern: String, arc: String, page: QuestionPage[Option[String]], action: Call): Action[AnyContent] =

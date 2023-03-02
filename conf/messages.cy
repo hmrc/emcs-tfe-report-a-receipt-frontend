@@ -106,6 +106,14 @@ addExcessInformation.title = Do you want to give more information about being se
 addExcessInformation.heading = Do you want to give more information about being sent more items than expected?
 addExcessInformation.error.required = Select yes if you want to give more information about being sent more items than expected
 
+addDamageInformation.title = Do you want to give more information about being sent damaged item(s)?
+addDamageInformation.heading = Do you want to give more information about being sent damaged item(s)?
+addDamageInformation.error.required = Select yes if you want to give more information about being sent damaged item(s)
+
+addSealsInformation.title = Do you want to give more information about being sent item(s) with broken seal(s)?
+addSealsInformation.heading = Do you want to give more information about being sent item(s) with broken seal(s)?
+addSealsInformation.error.required = Select yes if you want to give more information about being sent item(s) with broken seal(s)
+
 moreInformation.title = Give more information about this movement
 moreInformation.heading = Give more information about this movement
 moreInformation.hint = Give more information (optional)
@@ -135,6 +143,26 @@ excessInformation.error.character = Information must contain letters or numbers
 excessInformation.checkYourAnswers.label = Information about excess
 excessInformation.checkYourAnswers.change.hidden = information about excess
 excessInformation.checkYourAnswers.addMoreInformation = Enter more information about excess (optional)
+
+damageInformation.title = Give more information about being sent damaged items
+damageInformation.heading = Give more information about being sent damaged items
+damageInformation.hint = Give more information (optional)
+damageInformation.error.length = Information must be 350 characters or less
+damageInformation.error.invalidCharacter = Information must not include < and > and : and ;
+damageInformation.error.character = Information must contain letters or numbers
+damageInformation.checkYourAnswers.label = Information about damaged items
+damageInformation.checkYourAnswers.change.hidden = information about damaged items
+damageInformation.checkYourAnswers.addMoreInformation = Enter more information about damaged items (optional)
+
+sealsInformation.title = Give more information about being sent items with broken seal(s)
+sealsInformation.heading = Give more information about being sent items with broken seal(s)
+sealsInformation.hint = Give more information (optional)
+sealsInformation.error.length = Information must be 350 characters or less
+sealsInformation.error.invalidCharacter = Information must not include < and > and : and ;
+sealsInformation.error.character = Information must contain letters or numbers
+sealsInformation.checkYourAnswers.label = Information about broken seal(s)
+sealsInformation.checkYourAnswers.change.hidden = information about broken seal(s)
+sealsInformation.checkYourAnswers.addMoreInformation = Enter more information about broken seal(s) (optional)
 
 checkYourAnswers.title = Check your answers before submitting your receipt
 checkYourAnswers.heading = Check your answers before submitting your receipt

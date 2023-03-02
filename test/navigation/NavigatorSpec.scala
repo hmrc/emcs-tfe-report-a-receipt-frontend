@@ -21,9 +21,9 @@ import controllers.routes
 import models.AcceptMovement._
 import models.HowMuchIsWrong.{IndividualItem, TheWholeMovement}
 import models.WrongWithMovement._
-import pages._
 import models._
-import pages.unsatisfactory.{AddExcessInformationPage, AddShortageInformationPage, ExcessInformationPage, HowMuchIsWrongPage, ShortageInformationPage, WrongWithMovementPage}
+import pages._
+import pages.unsatisfactory._
 
 class NavigatorSpec extends SpecBase {
 
@@ -134,7 +134,7 @@ class NavigatorSpec extends SpecBase {
 
         "when the next page is Less" - {
 
-          "must go to Less Items Add Information Yes/No page" in {
+          "must go to ShortageInformation Yes/No page" in {
             val selectedOptions: Set[WrongWithMovement] = Set(Less, More, Damaged, BrokenSeals, Other)
             val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, selectedOptions)
             navigator.nextPage(WrongWithMovementPage, NormalMode, userAnswers) mustBe
@@ -144,7 +144,7 @@ class NavigatorSpec extends SpecBase {
 
         "when the next page is More" - {
 
-          "must go to More Items Add Information Yes/No page" in {
+          "must go to ExcessInformation Yes/No page" in {
             val selectedOptions: Set[WrongWithMovement] = Set(More, Damaged, BrokenSeals, Other)
             val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, selectedOptions)
             navigator.nextPage(WrongWithMovementPage, NormalMode, userAnswers) mustBe
@@ -154,57 +154,32 @@ class NavigatorSpec extends SpecBase {
 
         "when the next page is Damaged" - {
 
-          "must go to More Items Add Information Yes/No page" in {
+          "must go to DamagedInformation Yes/No page" in {
             val selectedOptions: Set[WrongWithMovement] = Set(Damaged, BrokenSeals, Other)
             val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, selectedOptions)
             navigator.nextPage(WrongWithMovementPage, NormalMode, userAnswers) mustBe
-              //TODO: Change as part of future story
-              routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+              routes.AddMoreInformationController.loadDamageInformation(testErn, testArc, NormalMode)
           }
         }
 
         "when the next page is BrokenSeals" - {
 
-          "must go to More Items Add Information Yes/No page" in {
+          "must go to BrokenSealsInformation Yes/No page" in {
             val selectedOptions: Set[WrongWithMovement] = Set(BrokenSeals, Other)
             val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, selectedOptions)
             navigator.nextPage(WrongWithMovementPage, NormalMode, userAnswers) mustBe
-              //TODO: Change as part of future story
-              routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+              routes.AddMoreInformationController.loadSealsInformation(testErn, testArc, NormalMode)
           }
         }
 
         "when the next page is Other" - {
 
-          "must go to More Items Add Information Yes/No page" in {
+          "must go to Other information page" in {
             val selectedOptions: Set[WrongWithMovement] = Set(Other)
             val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, selectedOptions)
             navigator.nextPage(WrongWithMovementPage, NormalMode, userAnswers) mustBe
               //TODO: Change as part of future story
               routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
-          }
-        }
-      }
-
-      "for the AddMoreInformation page" - {
-
-        s"when the user answers is Yes" - {
-
-          "must go to the MoreInformation page" in {
-
-            val userAnswers = emptyUserAnswers.set(AddMoreInformationPage, true)
-
-            navigator.nextPage(AddMoreInformationPage, NormalMode, userAnswers) mustBe routes.MoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
-          }
-        }
-
-        s"when the user answers is No" - {
-
-          "must go to the CheckYourAnswers page" in {
-
-            val userAnswers = emptyUserAnswers.set(AddMoreInformationPage, false)
-
-            navigator.nextPage(AddMoreInformationPage, NormalMode, userAnswers) mustBe routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
           }
         }
       }
@@ -290,6 +265,113 @@ class NavigatorSpec extends SpecBase {
           val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, Set[WrongWithMovement](Less, More))
 
           navigator.nextPage(ExcessInformationPage, NormalMode, userAnswers) mustBe routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
+        }
+      }
+
+      "for the AddDamageInformation page" - {
+
+        s"when the user answers is Yes" - {
+
+          "must go to the DamageInformation page" in {
+
+            val userAnswers = emptyUserAnswers.set(AddDamageInformationPage, true)
+
+            navigator.nextPage(AddDamageInformationPage, NormalMode, userAnswers) mustBe routes.MoreInformationController.loadDamageInformation(testErn, testArc, NormalMode)
+          }
+        }
+
+        s"when the user answers is No" - {
+
+          "must go to the next WhatWrongWith page to answer" in {
+
+            val userAnswers = emptyUserAnswers
+              .set(WrongWithMovementPage, Set[WrongWithMovement](Damaged, BrokenSeals))
+              .set(AddDamageInformationPage, false)
+
+            navigator.nextPage(AddDamageInformationPage, NormalMode, userAnswers) mustBe routes.AddMoreInformationController.loadSealsInformation(testErn, testArc, NormalMode)
+          }
+        }
+
+        s"when the user answers is None (shouldn't be possible)" - {
+
+          "must go back to itself" in {
+            navigator.nextPage(AddDamageInformationPage, NormalMode, emptyUserAnswers) mustBe routes.AddMoreInformationController.loadDamageInformation(testErn, testArc, NormalMode)
+          }
+        }
+      }
+
+      "for the DamageInformationPage page" - {
+
+        "must go to the next WhatWrongWith page to answer" in {
+
+          val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, Set[WrongWithMovement](Damaged, BrokenSeals))
+
+          navigator.nextPage(DamageInformationPage, NormalMode, userAnswers) mustBe routes.AddMoreInformationController.loadSealsInformation(testErn, testArc, NormalMode)
+        }
+      }
+
+      "for the AddSealsInformationPage page" - {
+
+        s"when the user answers is Yes" - {
+
+          "must go to the DamageInformation page" in {
+
+            val userAnswers = emptyUserAnswers.set(AddSealsInformationPage, true)
+
+            navigator.nextPage(AddSealsInformationPage, NormalMode, userAnswers) mustBe routes.MoreInformationController.loadSealsInformation(testErn, testArc, NormalMode)
+          }
+        }
+
+        s"when the user answers is No" - {
+
+          "must go to the next WhatWrongWith page to answer" in {
+
+            val userAnswers = emptyUserAnswers
+              .set(WrongWithMovementPage, Set[WrongWithMovement](Less, More, BrokenSeals))
+              .set(AddSealsInformationPage, false)
+
+            navigator.nextPage(AddSealsInformationPage, NormalMode, userAnswers) mustBe routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
+          }
+        }
+
+        s"when the user answers is None (shouldn't be possible)" - {
+
+          "must go back to itself" in {
+            navigator.nextPage(AddSealsInformationPage, NormalMode, emptyUserAnswers) mustBe routes.AddMoreInformationController.loadSealsInformation(testErn, testArc, NormalMode)
+          }
+        }
+      }
+
+      "for the SealsInformationPage page" - {
+
+        "must go to the next WhatWrongWith page to answer" in {
+
+          val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, Set[WrongWithMovement](Less, More, BrokenSeals))
+
+          navigator.nextPage(SealsInformationPage, NormalMode, userAnswers) mustBe routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
+        }
+      }
+
+      "for the AddMoreInformation page" - {
+
+        s"when the user answers is Yes" - {
+
+          "must go to the MoreInformation page" in {
+
+            val userAnswers = emptyUserAnswers.set(AddMoreInformationPage, true)
+
+            navigator.nextPage(AddMoreInformationPage, NormalMode, userAnswers) mustBe routes.MoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
+          }
+        }
+
+        s"when the user answers is No" - {
+
+          "must go to the CheckYourAnswers page" in {
+
+            val userAnswers = emptyUserAnswers.set(AddMoreInformationPage, false)
+
+            navigator.nextPage(AddMoreInformationPage, NormalMode, userAnswers) mustBe routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+          }
         }
       }
 

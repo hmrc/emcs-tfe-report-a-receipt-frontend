@@ -18,7 +18,7 @@ package viewmodels.checkAnswers
 
 import models.AcceptMovement.Unsatisfactory
 import models.CheckMode
-import models.WrongWithMovement.{BrokenSeals, Damaged, Less, More}
+import models.WrongWithMovement.{BrokenSeals, Damaged, Less, More, Other}
 import models.requests.DataRequest
 import pages.unsatisfactory._
 import pages.{AcceptMovementPage, MoreInformationPage}
@@ -49,7 +49,8 @@ class CheckAnswersHelper @Inject()(acceptMovementSummary: AcceptMovementSummary,
           shortageInformation(),
           excessInformation(),
           damageInformation(),
-          sealsInformation()
+          sealsInformation(),
+          otherInformation()
         ).flatten
       } else {
         Seq()
@@ -99,6 +100,16 @@ class CheckAnswersHelper @Inject()(acceptMovementSummary: AcceptMovementSummary,
       Some(moreInformationSummary.row(
         page = SealsInformationPage,
         changeAction = controllers.routes.MoreInformationController.loadSealsInformation(request.ern, request.arc, CheckMode))
+      )
+    } else {
+      None
+    }
+
+  private def otherInformation()(implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] =
+    if (request.userAnswers.get(WrongWithMovementPage).exists(_.contains(Other))) {
+      Some(moreInformationSummary.row(
+        page = OtherInformationPage,
+        changeAction = controllers.routes.MoreInformationController.loadOtherInformation(request.ern, request.arc, CheckMode))
       )
     } else {
       None

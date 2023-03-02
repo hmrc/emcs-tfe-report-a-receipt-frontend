@@ -19,7 +19,7 @@ package forms
 
 import forms.behaviours.StringFieldBehaviours
 import pages.MoreInformationPage
-import pages.unsatisfactory.{DamageInformationPage, ExcessInformationPage, SealsInformationPage, ShortageInformationPage}
+import pages.unsatisfactory._
 import play.api.data.FormError
 
 class MoreInformationFormProviderSpec extends StringFieldBehaviours {
@@ -32,7 +32,8 @@ class MoreInformationFormProviderSpec extends StringFieldBehaviours {
     ShortageInformationPage,
     ExcessInformationPage,
     DamageInformationPage,
-    SealsInformationPage
+    SealsInformationPage,
+    OtherInformationPage
   ) foreach { page =>
 
     s"loading the form for the '$page' page" - {
@@ -104,6 +105,23 @@ class MoreInformationFormProviderSpec extends StringFieldBehaviours {
             FormError("more-information", s"$page.error.character", Seq("^(?s)(?=.*[A-Za-z0-9]).{1,}$")),
             FormError("more-information", s"$page.error.invalidCharacter", Seq("^(?s)(?!.*javascript)(?!.*[<>;:]).{1,}$"))
           )
+        }
+
+        if(page == OtherInformationPage) {
+          s"return errors if the page is ${OtherInformationPage.toString}" - {
+            "the required field is empty" in {
+              val data = Map("more-information" -> "")
+              val result = form.bind(data)
+
+              result.errors must contain only FormError("more-information", s"$page.error.required")
+            }
+            "the required field is not present" in {
+              val data = Map("something" -> "")
+              val result = form.bind(data)
+
+              result.errors must contain only FormError("more-information", s"$page.error.required")
+            }
+          }
         }
       }
     }

@@ -164,6 +164,17 @@ sealsInformation.checkYourAnswers.label = Information about broken seal(s)
 sealsInformation.checkYourAnswers.change.hidden = information about broken seal(s)
 sealsInformation.checkYourAnswers.addMoreInformation = Enter more information about broken seal(s) (optional)
 
+otherInformation.title = Give more information about other reason(s) you are unsatisfied with this movement
+otherInformation.heading = Give more information about other reason(s) you are unsatisfied with this movement
+otherInformation.hint = Give more information
+otherInformation.error.length = Information must be 350 characters or less
+otherInformation.error.required = Enter more information
+otherInformation.error.invalidCharacter = Information must not include < and > and : and ;
+otherInformation.error.character = Information must contain letters or numbers
+otherInformation.checkYourAnswers.label = Information about other reason(s) you are unsatisfied with this movement
+otherInformation.checkYourAnswers.change.hidden = information about other reason(s) you are unsatisfied with this movement
+otherInformation.checkYourAnswers.addMoreInformation = Enter more information about other reason(s) you are unsatisfied with this movement
+
 checkYourAnswers.title = Check your answers before submitting your receipt
 checkYourAnswers.heading = Check your answers before submitting your receipt
 checkYourAnswers.movementDetails.h2 = Movement details

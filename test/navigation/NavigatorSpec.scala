@@ -178,8 +178,7 @@ class NavigatorSpec extends SpecBase {
             val selectedOptions: Set[WrongWithMovement] = Set(Other)
             val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, selectedOptions)
             navigator.nextPage(WrongWithMovementPage, NormalMode, userAnswers) mustBe
-              //TODO: Change as part of future story
-              routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+              routes.MoreInformationController.loadOtherInformation(testErn, testArc, NormalMode)
           }
         }
       }
@@ -349,6 +348,16 @@ class NavigatorSpec extends SpecBase {
           val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, Set[WrongWithMovement](Less, More, BrokenSeals))
 
           navigator.nextPage(SealsInformationPage, NormalMode, userAnswers) mustBe routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
+        }
+      }
+
+      "for the OtherInformationPage page" - {
+
+        "must go to the next WhatWrongWith page to answer" in {
+
+          val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, Set[WrongWithMovement](Less, More, Other))
+
+          navigator.nextPage(OtherInformationPage, NormalMode, userAnswers) mustBe routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
         }
       }
 

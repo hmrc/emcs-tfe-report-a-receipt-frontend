@@ -24,7 +24,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.MoreInformationPage
-import pages.unsatisfactory.{DamageInformationPage, ExcessInformationPage, SealsInformationPage, ShortageInformationPage}
+import pages.unsatisfactory._
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -56,6 +56,9 @@ class MoreInformationControllerSpec extends SpecBase with MockitoSugar with Json
   lazy val sealsInformationRoute = routes.MoreInformationController.loadSealsInformation(testErn, testArc, NormalMode).url
   lazy val sealsInformationSubmitAction = routes.MoreInformationController.submitSealsInformation(testErn, testArc, NormalMode)
 
+  lazy val otherInformationRoute = routes.MoreInformationController.loadOtherInformation(testErn, testArc, NormalMode).url
+  lazy val otherInformationSubmitAction = routes.MoreInformationController.submitOtherInformation(testErn, testArc, NormalMode)
+
   "MoreInformation Controller" - {
 
     Seq(
@@ -63,7 +66,8 @@ class MoreInformationControllerSpec extends SpecBase with MockitoSugar with Json
       (ShortageInformationPage, shortageInformationRoute, shortageInformationSubmitAction),
       (ExcessInformationPage, excessInformationRoute, excessInformationSubmitAction),
       (DamageInformationPage, damageInformationRoute, damageInformationSubmitAction),
-      (SealsInformationPage, sealsInformationRoute, sealsInformationSubmitAction)
+      (SealsInformationPage, sealsInformationRoute, sealsInformationSubmitAction),
+      (OtherInformationPage, otherInformationRoute, otherInformationSubmitAction)
     ) foreach { case (page, url, submitAction) =>
 
       s"for the '$page' page" - {
@@ -130,29 +134,61 @@ class MoreInformationControllerSpec extends SpecBase with MockitoSugar with Json
           }
         }
 
-        "must redirect to the next page when NO data is submitted" in {
+        if(page == OtherInformationPage) {
+          "must return a Bad Request and errors when NO data is submitted" in {
 
-          val mockSessionRepository = mock[SessionRepository]
+            val mockSessionRepository = mock[SessionRepository]
 
-          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+            when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-          val application =
-            applicationBuilder(userAnswers = Some(emptyUserAnswers))
-              .overrides(
-                bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-                bind[SessionRepository].toInstance(mockSessionRepository)
-              )
-              .build()
+            val application =
+              applicationBuilder(userAnswers = Some(emptyUserAnswers))
+                .overrides(
+                  bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+                  bind[SessionRepository].toInstance(mockSessionRepository)
+                )
+                .build()
 
-          running(application) {
-            val request =
-              FakeRequest(POST, url)
-                .withFormUrlEncodedBody(("more-information", ""))
+            running(application) {
+              val request =
+                FakeRequest(POST, url)
+                  .withFormUrlEncodedBody(("more-information", ""))
 
-            val result = route(application, request).value
+              val boundForm = form.bind(Map("more-information" -> ""))
 
-            status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustEqual onwardRoute.url
+              val view = application.injector.instanceOf[MoreInformationView]
+
+              val result = route(application, request).value
+
+              status(result) mustEqual BAD_REQUEST
+              contentAsString(result) mustEqual view(boundForm, page, submitAction)(dataRequest(request), messages(application)).toString
+            }
+          }
+        } else {
+          "must redirect to the next page when NO data is submitted" in {
+
+            val mockSessionRepository = mock[SessionRepository]
+
+            when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+            val application =
+              applicationBuilder(userAnswers = Some(emptyUserAnswers))
+                .overrides(
+                  bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+                  bind[SessionRepository].toInstance(mockSessionRepository)
+                )
+                .build()
+
+            running(application) {
+              val request =
+                FakeRequest(POST, url)
+                  .withFormUrlEncodedBody(("more-information", ""))
+
+              val result = route(application, request).value
+
+              status(result) mustEqual SEE_OTHER
+              redirectLocation(result).value mustEqual onwardRoute.url
+            }
           }
         }
 

@@ -18,7 +18,8 @@ package forms
 
 import forms.mappings.Mappings
 import pages.QuestionPage
-import play.api.data.Form
+import pages.unsatisfactory.OtherInformationPage
+import play.api.data.{Form, Mapping}
 import play.api.data.Forms.optional
 import play.api.data.Forms.{text => playText}
 
@@ -26,18 +27,26 @@ import javax.inject.Inject
 
 class MoreInformationFormProvider @Inject() extends Mappings {
 
+  private def validation(page: QuestionPage[Option[String]], isRequired: Boolean): Mapping[Option[String]] = optional(playText
+    .transform[String](
+      _.replace("\n", " ")
+        .replace("\r", " ")
+        .replaceAll(" +", " ")
+        .trim,
+      identity
+    )
+    .verifying(maxLength(350, s"$page.error.length"))
+    .verifying(regexp("^(?s)(?=.*[A-Za-z0-9]).{1,}$", s"$page.error.character"))
+    .verifying(regexp("^(?s)(?!.*javascript)(?!.*[<>;:]).{1,}$", s"$page.error.invalidCharacter"))
+  ).verifying(required(isRequired, s"$page.error.required"))
+
   def apply(page: QuestionPage[Option[String]]): Form[Option[String]] =
     Form(
-      "more-information" -> optional(playText
-        .transform[String](
-          _.replace("\n", " ")
-            .replace("\r", " ")
-            .replaceAll(" +", " ")
-            .trim,
-          identity
-        )
-        .verifying(maxLength(350, s"$page.error.length"))
-        .verifying(regexp("^(?s)(?=.*[A-Za-z0-9]).{1,}$", s"$page.error.character"))
-        .verifying(regexp("^(?s)(?!.*javascript)(?!.*[<>;:]).{1,}$", s"$page.error.invalidCharacter")))
+      "more-information" -> {
+        page match {
+          case OtherInformationPage => validation(page, isRequired = true)
+          case _ => validation(page, isRequired = false)
+        }
+      }
     )
 }

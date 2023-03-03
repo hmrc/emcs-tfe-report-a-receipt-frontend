@@ -17,27 +17,30 @@
 package forms
 
 import forms.mappings.Mappings
-import pages.QuestionPage
+import pages.unsatisfactory.OtherInformationPage
 import play.api.data.Form
 import play.api.data.Forms.{optional, text => playText}
 
 import javax.inject.Inject
 
-class MoreInformationFormProvider @Inject() extends Mappings {
+class OtherInformationFormProvider @Inject() extends Mappings {
+  val maxLength = 350
 
-  def apply(page: QuestionPage[Option[String]]): Form[Option[String]] =
+  def apply(): Form[Option[String]] =
     Form(
       "more-information" -> optional(playText
         .transform[String](
-          _.replace("\n", " ")
-            .replace("\r", " ")
+          _.replaceAll("\n", " ")
+            .replaceAll("\r", " ")
             .replaceAll(" +", " ")
             .trim,
           identity
         )
-        .verifying(maxLength(350, s"$page.error.length"))
-        .verifying(regexp("^(?s)(?=.*[A-Za-z0-9]).{1,}$", s"$page.error.character"))
-        .verifying(regexp("^(?s)(?!.*javascript)(?!.*[<>;:]).{1,}$", s"$page.error.invalidCharacter"))
-      )
+        .verifying(
+          maxLength(maxLength, s"$OtherInformationPage.error.length"),
+          regexp("^(?s)(?=.*[A-Za-z0-9]).{1,}$", s"$OtherInformationPage.error.character"),
+          regexp("^(?s)(?!.*javascript)(?!.*[<>;:]).{1,}$", s"$OtherInformationPage.error.invalidCharacter")
+        )
+      ).verifying(required(errorKey = s"$OtherInformationPage.error.required"))
     )
 }

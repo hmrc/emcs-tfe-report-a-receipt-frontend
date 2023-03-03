@@ -16,16 +16,16 @@
 
 package forms.mappings
 
-import java.time.LocalDate
-
 import generators.Generators
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.data.validation.{Invalid, Valid}
 
-class ConstraintsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with Generators  with Constraints {
+import java.time.LocalDate
+
+class ConstraintsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with Generators with Constraints {
 
 
   "firstError" - {
@@ -126,27 +126,24 @@ class ConstraintsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
   "required" - {
 
     Seq(
-      (false, None),
-      (false, Some("")),
-      (false, Some("something")),
-      (true, Some("something"))
+      Some("something")
     ).foreach {
-      case (isRequired, input) =>
-        s"must return Valid when isRequired is [$isRequired] and input is [$input]" in {
-          val result = required(isRequired = isRequired, "some.key")(input)
+      input =>
+        s"must return Valid input is [$input]" in {
+          val result = required("some.key")(input)
           result mustEqual Valid
         }
     }
 
     Seq(
-      (true, None),
-      (true, Some("")),
-      (true, Some("     ")),
-      (true, Some("\n\n")),
+      None,
+      Some(""),
+      Some("     "),
+      Some("\n\n"),
     ).foreach {
-      case (isRequired, input) =>
-        s"must return Invalid when isRequired is [$isRequired] and input is [$input]" in {
-          val result = required(isRequired = isRequired, "some.key")(input)
+      input =>
+        s"must return Invalid when input is [$input]" in {
+          val result = required("some.key")(input)
           result mustEqual Invalid("some.key")
         }
     }
@@ -157,7 +154,7 @@ class ConstraintsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
     "must return Valid for a date before or equal to the maximum" in {
 
       val gen: Gen[(LocalDate, LocalDate)] = for {
-        max  <- datesBetween(LocalDate.of(2000, 1, 1), LocalDate.of(3000, 1, 1))
+        max <- datesBetween(LocalDate.of(2000, 1, 1), LocalDate.of(3000, 1, 1))
         date <- datesBetween(LocalDate.of(2000, 1, 1), max)
       } yield (max, date)
 
@@ -172,7 +169,7 @@ class ConstraintsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
     "must return Invalid for a date after the maximum" in {
 
       val gen: Gen[(LocalDate, LocalDate)] = for {
-        max  <- datesBetween(LocalDate.of(2000, 1, 1), LocalDate.of(3000, 1, 1))
+        max <- datesBetween(LocalDate.of(2000, 1, 1), LocalDate.of(3000, 1, 1))
         date <- datesBetween(max.plusDays(1), LocalDate.of(3000, 1, 2))
       } yield (max, date)
 
@@ -190,7 +187,7 @@ class ConstraintsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
     "must return Valid for a date after or equal to the minimum" in {
 
       val gen: Gen[(LocalDate, LocalDate)] = for {
-        min  <- datesBetween(LocalDate.of(2000, 1, 1), LocalDate.of(3000, 1, 1))
+        min <- datesBetween(LocalDate.of(2000, 1, 1), LocalDate.of(3000, 1, 1))
         date <- datesBetween(min, LocalDate.of(3000, 1, 1))
       } yield (min, date)
 
@@ -205,7 +202,7 @@ class ConstraintsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
     "must return Invalid for a date before the minimum" in {
 
       val gen: Gen[(LocalDate, LocalDate)] = for {
-        min  <- datesBetween(LocalDate.of(2000, 1, 2), LocalDate.of(3000, 1, 1))
+        min <- datesBetween(LocalDate.of(2000, 1, 2), LocalDate.of(3000, 1, 1))
         date <- datesBetween(LocalDate.of(2000, 1, 1), min.minusDays(1))
       } yield (min, date)
 

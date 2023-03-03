@@ -78,10 +78,10 @@ POST        /:ern/:arc/give-reason-movement-seals                   controllers.
 GET         /:ern/:arc/give-reason-movement-seals/change            controllers.MoreInformationController.loadSealsInformation(ern: String, arc: String, mode: Mode = CheckMode)
 POST        /:ern/:arc/give-reason-movement-seals/change            controllers.MoreInformationController.submitSealsInformation(ern: String, arc: String, mode: Mode = CheckMode)
 
-GET         /:ern/:arc/give-reason-movement-other                   controllers.MoreInformationController.loadOtherInformation(ern: String, arc: String, mode: Mode = NormalMode)
-POST        /:ern/:arc/give-reason-movement-other                   controllers.MoreInformationController.submitOtherInformation(ern: String, arc: String, mode: Mode = NormalMode)
-GET         /:ern/:arc/give-reason-movement-other/change            controllers.MoreInformationController.loadOtherInformation(ern: String, arc: String, mode: Mode = CheckMode)
-POST        /:ern/:arc/give-reason-movement-other/change            controllers.MoreInformationController.submitOtherInformation(ern: String, arc: String, mode: Mode = CheckMode)
+GET         /:ern/:arc/give-reason-movement-other                   controllers.OtherInformationController.onPageLoad(ern: String, arc: String, mode: Mode = NormalMode)
+POST        /:ern/:arc/give-reason-movement-other                   controllers.OtherInformationController.onSubmit(ern: String, arc: String, mode: Mode = NormalMode)
+GET         /:ern/:arc/give-reason-movement-other/change            controllers.OtherInformationController.onPageLoad(ern: String, arc: String, mode: Mode = CheckMode)
+POST        /:ern/:arc/give-reason-movement-other/change            controllers.OtherInformationController.onSubmit(ern: String, arc: String, mode: Mode = CheckMode)
 
 GET         /:ern/:arc/check-answers                                controllers.CheckYourAnswersController.onPageLoad(ern: String, arc: String)
 POST        /:ern/:arc/check-answers                                controllers.CheckYourAnswersController.onSubmit(ern: String, arc: String)

@@ -178,7 +178,7 @@ class NavigatorSpec extends SpecBase {
             val selectedOptions: Set[WrongWithMovement] = Set(Other)
             val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, selectedOptions)
             navigator.nextPage(WrongWithMovementPage, NormalMode, userAnswers) mustBe
-              routes.MoreInformationController.loadOtherInformation(testErn, testArc, NormalMode)
+              routes.OtherInformationController.onPageLoad(testErn, testArc, NormalMode)
           }
         }
       }

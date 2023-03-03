@@ -34,6 +34,7 @@ class CheckAnswersHelperSpec extends SpecBase
   with MockAcceptMovementSummary
   with MockHowMuchIsWrongSummary
   with MockMoreInformationSummary
+  with MockOtherInformationSummary
   with MockWrongWithMovementSummary
 {
 
@@ -42,6 +43,7 @@ class CheckAnswersHelperSpec extends SpecBase
     mockDateOfArrivalSummary,
     mockHowMuchIsWrongSummary,
     mockMoreInformationSummary,
+    mockOtherInformationSummary,
     mockWrongWithMovementSummary
   )
 
@@ -126,10 +128,7 @@ class CheckAnswersHelperSpec extends SpecBase
           SealsInformationPage,
           controllers.routes.MoreInformationController.loadSealsInformation(testErn, testArc, CheckMode)
         ).returns(sealsInformationAnswer)
-        MockMoreInformationSummary.row(
-          OtherInformationPage,
-          controllers.routes.MoreInformationController.loadOtherInformation(testErn, testArc, CheckMode)
-        ).returns(otherInformationAnswer)
+        MockOtherInformationSummary.row().returns(otherInformationAnswer)
         MockMoreInformationSummary.row(
           MoreInformationPage,
           controllers.routes.MoreInformationController.loadMoreInformation(testErn, testArc, CheckMode)

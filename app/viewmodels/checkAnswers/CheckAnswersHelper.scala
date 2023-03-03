@@ -32,7 +32,8 @@ class CheckAnswersHelper @Inject()(acceptMovementSummary: AcceptMovementSummary,
                                    dateOfArrivalSummary: DateOfArrivalSummary,
                                    howMuchIsWrongSummary: HowMuchIsWrongSummary,
                                    moreInformationSummary: MoreInformationSummary,
-                                   wrongWithMovementSummary: WrongWithMovementSummary)  {
+                                   otherInformationSummary: OtherInformationSummary,
+                                   wrongWithMovementSummary: WrongWithMovementSummary) {
 
   def summaryList()(implicit request: DataRequest[_], messages: Messages): SummaryList = {
 
@@ -42,7 +43,7 @@ class CheckAnswersHelper @Inject()(acceptMovementSummary: AcceptMovementSummary,
     ).flatten
 
     val unsatisfactoryRows =
-      if(request.userAnswers.get(AcceptMovementPage).contains(Unsatisfactory)) {
+      if (request.userAnswers.get(AcceptMovementPage).contains(Unsatisfactory)) {
         Seq(
           howMuchIsWrongSummary.row(),
           wrongWithMovementSummary.row(),
@@ -107,10 +108,7 @@ class CheckAnswersHelper @Inject()(acceptMovementSummary: AcceptMovementSummary,
 
   private def otherInformation()(implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] =
     if (request.userAnswers.get(WrongWithMovementPage).exists(_.contains(Other))) {
-      Some(moreInformationSummary.row(
-        page = OtherInformationPage,
-        changeAction = controllers.routes.MoreInformationController.loadOtherInformation(request.ern, request.arc, CheckMode))
-      )
+      Some(otherInformationSummary.row())
     } else {
       None
     }

@@ -74,12 +74,6 @@ class MoreInformationController @Inject()(
   def submitSealsInformation(ern: String, arc: String, mode: Mode): Action[AnyContent] =
     onSubmit(ern, arc, SealsInformationPage, AddSealsInformationPage, routes.MoreInformationController.submitSealsInformation(ern, arc, mode), mode)
 
-  def loadOtherInformation(ern: String, arc: String, mode: Mode): Action[AnyContent] =
-    onPageLoad(ern, arc, OtherInformationPage, routes.MoreInformationController.submitOtherInformation(ern, arc, mode))
-
-  def submitOtherInformation(ern: String, arc: String, mode: Mode): Action[AnyContent] =
-    onSubmit(ern, arc, OtherInformationPage, AddOtherInformationPage, routes.MoreInformationController.submitOtherInformation(ern, arc, mode), mode)
-
 
   private def onPageLoad(ern: String, arc: String, page: QuestionPage[Option[String]], action: Call): Action[AnyContent] =
     authorisedDataRequest(ern, arc) { implicit request =>

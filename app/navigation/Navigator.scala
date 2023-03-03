@@ -139,7 +139,7 @@ class Navigator @Inject()() extends BaseNavigator {
           case Some(BrokenSeals) =>
             routes.AddMoreInformationController.loadSealsInformation(userAnswers.ern, userAnswers.arc, NormalMode)
           case Some(Other) =>
-            routes.MoreInformationController.loadOtherInformation(userAnswers.ern, userAnswers.arc, NormalMode)
+            routes.OtherInformationController.onPageLoad(userAnswers.ern, userAnswers.arc, NormalMode)
           case None =>
             routes.AddMoreInformationController.loadMoreInformation(userAnswers.ern, userAnswers.arc, NormalMode)
         }

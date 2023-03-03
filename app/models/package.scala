@@ -16,6 +16,8 @@
 
 import play.api.libs.json._
 
+import scala.util.Try
+
 package object models {
 
   implicit class RichJsObject(jsObject: JsObject) {
@@ -109,12 +111,12 @@ package object models {
       }
     }
 
-    def remove(path: JsPath): JsResult[JsValue] = {
-
+    def remove(path: JsPath): JsResult[JsValue] =
       (path.path, jsValue) match {
         case (Nil, _) => JsError("path cannot be empty")
         case ((n: KeyPathNode) :: Nil, value: JsObject) if value.keys.contains(n.key) => JsSuccess(value - n.key)
         case ((n: KeyPathNode) :: Nil, value: JsObject) if !value.keys.contains(n.key) => JsSuccess(value)
+        case ((idx: IdxPathNode) :: (pageKey: KeyPathNode) :: Nil, array: JsArray) => removeAtSubPathArray(array, idx, pageKey.key)
         case ((n: IdxPathNode) :: Nil, value: JsArray) => removeIndexNode(n, value)
         case ((_: KeyPathNode) :: Nil, _) => JsError(s"cannot remove a key on $jsValue")
         case (first :: second :: rest, oldValue) =>
@@ -140,6 +142,20 @@ package object models {
               }
           }
       }
-    }
+
+    private def removeAtSubPathArray(array: JsArray, idx: IdxPathNode, pageKey: String): JsResult[JsValue] =
+      Try(array.value(idx.idx)).toOption match {
+        case Some(obj) =>
+          val jsObj = obj.as[JsObject]
+          if (jsObj.keys.size == 1) {
+            removeIndexNode(idx, array)
+          } else {
+            JsSuccess(JsArray(
+              array.value.slice(0, idx.idx) ++ Seq((jsObj - pageKey).as[JsValue]) ++ array.value.slice(idx.idx + 1, array.value.size)
+            ))
+          }
+        case None =>
+          JsSuccess(array)
+      }
   }
 }

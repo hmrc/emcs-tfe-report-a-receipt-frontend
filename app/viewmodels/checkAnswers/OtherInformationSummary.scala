@@ -34,7 +34,7 @@ class OtherInformationSummary @Inject()(link: link) extends JsonOptionFormatter 
 
   def row()(implicit request: DataRequest[_], messages: Messages): SummaryListRow =
     request.userAnswers.get(OtherInformationPage) match {
-      case Some(Some(answer)) if answer != "" =>
+      case Some(answer) if answer != "" =>
         SummaryListRowViewModel(
           key = s"$OtherInformationPage.checkYourAnswers.label",
           value = ValueViewModel(Text(answer)),

@@ -35,7 +35,7 @@ class MoreInformationFormProvider @Inject() extends Mappings {
             .trim,
           identity
         )
-        .verifying(maxLength(350, s"$page.error.length"))
+        .verifying(maxLength(TEXTAREA_MAX_LENGTH, s"$page.error.length"))
         .verifying(regexp("^(?s)(?=.*[A-Za-z0-9]).{1,}$", s"$page.error.character"))
         .verifying(regexp("^(?s)(?!.*javascript)(?!.*[<>;:]).{1,}$", s"$page.error.invalidCharacter"))
       )

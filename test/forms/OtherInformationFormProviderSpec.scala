@@ -36,7 +36,7 @@ class OtherInformationFormProviderSpec extends StringFieldBehaviours {
         val result = form.bind(data)
 
         result.errors mustBe Seq()
-        result.value.flatten mustBe Some("Test 123.")
+        result.value mustBe Some("Test 123.")
       }
 
       "more information form accepts a value that includes a Carriage Return" in {
@@ -44,7 +44,7 @@ class OtherInformationFormProviderSpec extends StringFieldBehaviours {
         val result = form.bind(data)
 
         result.errors mustBe Seq()
-        result.value.flatten mustBe Some("Test 123.")
+        result.value mustBe Some("Test 123.")
       }
 
 
@@ -53,7 +53,7 @@ class OtherInformationFormProviderSpec extends StringFieldBehaviours {
         val result = form.bind(data)
 
         result.errors mustBe Seq()
-        result.value.flatten mustBe Some("a" * maxLength)
+        result.value mustBe Some("a" * maxLength)
       }
 
       "more information form accepts a value that begins with a valid special character" in {
@@ -61,7 +61,7 @@ class OtherInformationFormProviderSpec extends StringFieldBehaviours {
         val result = form.bind(data)
 
         result.errors mustBe Seq()
-        result.value.flatten mustBe Some(".A")
+        result.value mustBe Some(".A")
       }
 
       "more information form accepts just numbers" in {
@@ -69,7 +69,7 @@ class OtherInformationFormProviderSpec extends StringFieldBehaviours {
         val result = form.bind(data)
 
         result.errors mustBe Seq()
-        result.value.flatten mustBe Some("123")
+        result.value mustBe Some("123")
       }
 
       "return an error if alpha numeric data isn't used" in {

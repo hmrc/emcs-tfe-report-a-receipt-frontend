@@ -24,7 +24,6 @@ import pages.unsatisfactory._
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import utils.JsonOptionFormatter
 import views.html.OtherInformationView
 
 import javax.inject.Inject
@@ -41,7 +40,7 @@ class OtherInformationController @Inject()(
                                             formProvider: OtherInformationFormProvider,
                                             val controllerComponents: MessagesControllerComponents,
                                             view: OtherInformationView
-                                          ) extends BaseNavigationController with AuthActionHelper with JsonOptionFormatter {
+                                          ) extends BaseNavigationController with AuthActionHelper {
 
 
   def onPageLoad(ern: String, arc: String, mode: Mode): Action[AnyContent] =

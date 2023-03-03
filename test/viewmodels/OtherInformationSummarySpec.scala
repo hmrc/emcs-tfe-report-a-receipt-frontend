@@ -48,7 +48,7 @@ class OtherInformationSummarySpec extends SpecBase {
 
             "must render the expected SummaryListRow" in {
 
-              val answers = emptyUserAnswers.set(OtherInformationPage, Some("Info"))
+              val answers = emptyUserAnswers.set(OtherInformationPage, "Info")
               implicit val request = dataRequest(FakeRequest(), answers)
               lazy val changeRoute = routes.OtherInformationController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, CheckMode)
 

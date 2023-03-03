@@ -123,32 +123,6 @@ class ConstraintsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
     }
   }
 
-  "required" - {
-
-    Seq(
-      Some("something")
-    ).foreach {
-      input =>
-        s"must return Valid input is [$input]" in {
-          val result = required("some.key")(input)
-          result mustEqual Valid
-        }
-    }
-
-    Seq(
-      None,
-      Some(""),
-      Some("     "),
-      Some("\n\n"),
-    ).foreach {
-      input =>
-        s"must return Invalid when input is [$input]" in {
-          val result = required("some.key")(input)
-          result mustEqual Invalid("some.key")
-        }
-    }
-  }
-
   "maxDate" - {
 
     "must return Valid for a date before or equal to the maximum" in {

@@ -14,14 +14,6 @@
  * limitations under the License.
  */
 
-package pages.unsatisfactory
-
-import pages.QuestionPage
-import play.api.libs.json.JsPath
-
-case object OtherInformationPage extends QuestionPage[String] {
-
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "otherInformation"
+package object forms {
+  private[forms] val TEXTAREA_MAX_LENGTH = 350
 }

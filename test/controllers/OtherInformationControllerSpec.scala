@@ -65,7 +65,7 @@ class OtherInformationControllerSpec extends SpecBase with MockitoSugar with Jso
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(OtherInformationPage, Some("answer"))
+      val userAnswers = emptyUserAnswers.set(OtherInformationPage, "answer")
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -77,7 +77,7 @@ class OtherInformationControllerSpec extends SpecBase with MockitoSugar with Jso
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(Some("answer")), submitAction)(dataRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("answer"), submitAction)(dataRequest(request), messages(application)).toString
       }
     }
 

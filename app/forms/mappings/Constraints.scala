@@ -86,22 +86,6 @@ trait Constraints {
         Invalid(errorKey, maximum)
     }
 
-  protected def required(errorKey: String): Constraint[Option[String]] =
-    Constraint {
-      case Some(str) => {
-        val trimmedStr = str.replace("\n", " ")
-          .replace("\r", " ")
-          .replaceAll(" +", " ")
-          .trim
-        if (trimmedStr.nonEmpty) {
-          Valid
-        } else {
-          Invalid(errorKey)
-        }
-      }
-      case None => Invalid(errorKey)
-    }
-
   protected def maxDate(maximum: LocalDate, errorKey: String, args: Any*): Constraint[LocalDate] =
     Constraint {
       case date if date.isAfter(maximum) =>

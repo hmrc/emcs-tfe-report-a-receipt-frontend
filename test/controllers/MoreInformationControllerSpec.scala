@@ -24,7 +24,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.MoreInformationPage
-import pages.unsatisfactory.{DamageInformationPage, ExcessInformationPage, SealsInformationPage, ShortageInformationPage}
+import pages.unsatisfactory._
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest

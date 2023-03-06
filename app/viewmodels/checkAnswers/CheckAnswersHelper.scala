@@ -18,7 +18,7 @@ package viewmodels.checkAnswers
 
 import models.AcceptMovement.Unsatisfactory
 import models.CheckMode
-import models.WrongWithMovement.{BrokenSeals, Damaged, Less, More}
+import models.WrongWithMovement.{BrokenSeals, Damaged, Less, More, Other}
 import models.requests.DataRequest
 import pages.unsatisfactory._
 import pages.{AcceptMovementPage, MoreInformationPage}
@@ -32,7 +32,8 @@ class CheckAnswersHelper @Inject()(acceptMovementSummary: AcceptMovementSummary,
                                    dateOfArrivalSummary: DateOfArrivalSummary,
                                    howMuchIsWrongSummary: HowMuchIsWrongSummary,
                                    moreInformationSummary: MoreInformationSummary,
-                                   wrongWithMovementSummary: WrongWithMovementSummary)  {
+                                   otherInformationSummary: OtherInformationSummary,
+                                   wrongWithMovementSummary: WrongWithMovementSummary) {
 
   def summaryList()(implicit request: DataRequest[_], messages: Messages): SummaryList = {
 
@@ -42,14 +43,15 @@ class CheckAnswersHelper @Inject()(acceptMovementSummary: AcceptMovementSummary,
     ).flatten
 
     val unsatisfactoryRows =
-      if(request.userAnswers.get(AcceptMovementPage).contains(Unsatisfactory)) {
+      if (request.userAnswers.get(AcceptMovementPage).contains(Unsatisfactory)) {
         Seq(
           howMuchIsWrongSummary.row(),
           wrongWithMovementSummary.row(),
           shortageInformation(),
           excessInformation(),
           damageInformation(),
-          sealsInformation()
+          sealsInformation(),
+          otherInformation()
         ).flatten
       } else {
         Seq()
@@ -100,6 +102,13 @@ class CheckAnswersHelper @Inject()(acceptMovementSummary: AcceptMovementSummary,
         page = SealsInformationPage,
         changeAction = controllers.routes.MoreInformationController.loadSealsInformation(request.ern, request.arc, CheckMode))
       )
+    } else {
+      None
+    }
+
+  private def otherInformation()(implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] =
+    if (request.userAnswers.get(WrongWithMovementPage).exists(_.contains(Other))) {
+      Some(otherInformationSummary.row())
     } else {
       None
     }

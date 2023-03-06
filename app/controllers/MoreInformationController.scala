@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.MoreInformationFormProvider
 import models.Mode
 import navigation.Navigator
-import pages.unsatisfactory.{AddDamageInformationPage, AddExcessInformationPage, AddSealsInformationPage, AddShortageInformationPage, DamageInformationPage, ExcessInformationPage, SealsInformationPage, ShortageInformationPage}
+import pages.unsatisfactory._
 import pages.{AddMoreInformationPage, MoreInformationPage, QuestionPage}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}

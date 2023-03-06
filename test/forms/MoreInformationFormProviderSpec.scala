@@ -19,7 +19,7 @@ package forms
 
 import forms.behaviours.StringFieldBehaviours
 import pages.MoreInformationPage
-import pages.unsatisfactory.{DamageInformationPage, ExcessInformationPage, SealsInformationPage, ShortageInformationPage}
+import pages.unsatisfactory._
 import play.api.data.FormError
 
 class MoreInformationFormProviderSpec extends StringFieldBehaviours {

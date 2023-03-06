@@ -21,7 +21,7 @@ import mocks.viewmodels._
 import models.AcceptMovement.{Satisfactory, Unsatisfactory}
 import models.WrongWithMovement.{BrokenSeals, Damaged, Less, More, Other}
 import models.{CheckMode, WrongWithMovement}
-import pages.unsatisfactory.{DamageInformationPage, ExcessInformationPage, SealsInformationPage, ShortageInformationPage, WrongWithMovementPage}
+import pages.unsatisfactory._
 import pages.{AcceptMovementPage, MoreInformationPage}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.govukfrontend.views.Aliases.{SummaryList, SummaryListRow}
@@ -34,6 +34,7 @@ class CheckAnswersHelperSpec extends SpecBase
   with MockAcceptMovementSummary
   with MockHowMuchIsWrongSummary
   with MockMoreInformationSummary
+  with MockOtherInformationSummary
   with MockWrongWithMovementSummary
 {
 
@@ -42,6 +43,7 @@ class CheckAnswersHelperSpec extends SpecBase
     mockDateOfArrivalSummary,
     mockHowMuchIsWrongSummary,
     mockMoreInformationSummary,
+    mockOtherInformationSummary,
     mockWrongWithMovementSummary
   )
 
@@ -103,6 +105,7 @@ class CheckAnswersHelperSpec extends SpecBase
         val excessInformationAnswer = SummaryListRow("ExcessInfo", ValueViewModel("Info"))
         val damagedInformationAnswer = SummaryListRow("DamageInfo", ValueViewModel("Info"))
         val sealsInformationAnswer = SummaryListRow("SealsInfo", ValueViewModel("Info"))
+        val otherInformationAnswer = SummaryListRow("OtherInfo", ValueViewModel("Info"))
         val moreInformationAnswer = SummaryListRow("MoreInfo", ValueViewModel("Info"))
 
         MockDateOfArrivalSummary.row().returns(Some(dateOfArrivalAnswer))
@@ -125,6 +128,7 @@ class CheckAnswersHelperSpec extends SpecBase
           SealsInformationPage,
           controllers.routes.MoreInformationController.loadSealsInformation(testErn, testArc, CheckMode)
         ).returns(sealsInformationAnswer)
+        MockOtherInformationSummary.row().returns(otherInformationAnswer)
         MockMoreInformationSummary.row(
           MoreInformationPage,
           controllers.routes.MoreInformationController.loadMoreInformation(testErn, testArc, CheckMode)
@@ -139,6 +143,7 @@ class CheckAnswersHelperSpec extends SpecBase
           excessInformationAnswer,
           damagedInformationAnswer,
           sealsInformationAnswer,
+          otherInformationAnswer,
           moreInformationAnswer
         )).withCssClass("govuk-!-margin-bottom-9")
       }

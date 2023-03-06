@@ -60,7 +60,8 @@ class MoreInformationSummarySpec extends SpecBase {
                   actions = Seq(
                     ActionItemViewModel(
                       langMessages.change,
-                      changeRoute.url
+                      changeRoute.url,
+                      id = MoreInformationPage
                     ).withVisuallyHiddenText(langMessages.hiddenChangeLink)
                   )
                 )
@@ -114,7 +115,8 @@ class MoreInformationSummarySpec extends SpecBase {
                   actions = Seq(
                     ActionItemViewModel(
                       langMessages.change,
-                      changeRoute.url
+                      changeRoute.url,
+                      id = ShortageInformationPage
                     ).withVisuallyHiddenText(langMessages.hiddenChangeLink)
                   )
                 )
@@ -168,7 +170,8 @@ class MoreInformationSummarySpec extends SpecBase {
                   actions = Seq(
                     ActionItemViewModel(
                       langMessages.change,
-                      changeRoute.url
+                      changeRoute.url,
+                      id = ExcessInformationPage
                     ).withVisuallyHiddenText(langMessages.hiddenChangeLink)
                   )
                 )
@@ -222,7 +225,8 @@ class MoreInformationSummarySpec extends SpecBase {
                   actions = Seq(
                     ActionItemViewModel(
                       langMessages.change,
-                      changeRoute.url
+                      changeRoute.url,
+                      id = DamageInformationPage
                     ).withVisuallyHiddenText(langMessages.hiddenChangeLink)
                   )
                 )
@@ -276,7 +280,8 @@ class MoreInformationSummarySpec extends SpecBase {
                   actions = Seq(
                     ActionItemViewModel(
                       langMessages.change,
-                      changeRoute.url
+                      changeRoute.url,
+                      id = SealsInformationPage
                     ).withVisuallyHiddenText(langMessages.hiddenChangeLink)
                   )
                 )

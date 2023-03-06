@@ -36,16 +36,19 @@ class HowMuchIsWrongSummary {
 
         val value = ValueViewModel(
           HtmlContent(
-            HtmlFormat.escape(messages(s"howMuchIsWrong.checkYourAnswers.$answer"))
+            HtmlFormat.escape(messages(s"$HowMuchIsWrongPage.checkYourAnswers.$answer"))
           )
         )
 
         SummaryListRowViewModel(
-          key     = "howMuchIsWrong.checkYourAnswers.label",
+          key     = s"$HowMuchIsWrongPage.checkYourAnswers.label",
           value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", routes.HowMuchIsWrongController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, CheckMode).url)
-              .withVisuallyHiddenText(messages("howMuchIsWrong.checkYourAnswers.change.hidden"))
+            ActionItemViewModel(
+              "site.change",
+              routes.HowMuchIsWrongController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, CheckMode).url,
+              id = HowMuchIsWrongPage
+            ).withVisuallyHiddenText(messages(s"$HowMuchIsWrongPage.checkYourAnswers.change.hidden"))
           )
         )
     }

@@ -74,11 +74,13 @@ trait SummaryListFluency {
 
     def apply(
                content: Content,
-               href: String
+               href: String,
+               id: String
              ): ActionItem =
       ActionItem(
         content = content,
-        href    = href
+        href    = href,
+        attributes = Map("id" -> id)
       )
   }
 

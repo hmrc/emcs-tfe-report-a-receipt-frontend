@@ -103,7 +103,8 @@ class AcceptMovementSummarySpec extends SpecBase {
       actions = Seq(
         ActionItemViewModel(
           Text(langMessages.change),
-          routes.AcceptMovementController.onPageLoad(testErn, testArc, NormalMode).url
+          routes.AcceptMovementController.onPageLoad(testErn, testArc, NormalMode).url,
+          id = AcceptMovementPage
         ).withVisuallyHiddenText(langMessages.hiddenChangeLinkText)
       )
     ))

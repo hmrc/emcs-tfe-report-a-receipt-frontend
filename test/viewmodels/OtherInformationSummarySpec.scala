@@ -59,7 +59,8 @@ class OtherInformationSummarySpec extends SpecBase {
                   actions = Seq(
                     ActionItemViewModel(
                       langMessages.change,
-                      changeRoute.url
+                      changeRoute.url,
+                      id = OtherInformationPage
                     ).withVisuallyHiddenText(langMessages.hiddenChangeLink)
                   )
                 )

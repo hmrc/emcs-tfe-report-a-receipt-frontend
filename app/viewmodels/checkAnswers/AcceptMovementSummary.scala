@@ -32,11 +32,14 @@ class AcceptMovementSummary  {
     request.userAnswers.get(AcceptMovementPage).map {
       answer =>
         SummaryListRowViewModel(
-          key     = "acceptMovement.checkYourAnswers.label",
-          value   = ValueViewModel(Text(messages(s"acceptMovement.checkYourAnswers.$answer"))),
+          key     = s"$AcceptMovementPage.checkYourAnswers.label",
+          value   = ValueViewModel(Text(messages(s"$AcceptMovementPage.checkYourAnswers.$answer"))),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.AcceptMovementController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, NormalMode).url)
-              .withVisuallyHiddenText(messages("acceptMovement.checkYourAnswers.change.hidden"))
+            ActionItemViewModel(
+              "site.change",
+              routes.AcceptMovementController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, NormalMode).url,
+              id = AcceptMovementPage
+            ).withVisuallyHiddenText(messages(s"$AcceptMovementPage.checkYourAnswers.change.hidden"))
           )
         )
     }

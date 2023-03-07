@@ -41,7 +41,8 @@ class OtherInformationSummary @Inject()(link: link) extends JsonOptionFormatter 
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              routes.OtherInformationController.onSubmit(request.userAnswers.ern, request.userAnswers.arc, CheckMode).url
+              routes.OtherInformationController.onSubmit(request.userAnswers.ern, request.userAnswers.arc, CheckMode).url,
+              id = OtherInformationPage
             ).withVisuallyHiddenText(messages(s"$OtherInformationPage.checkYourAnswers.change.hidden"))
           )
         )

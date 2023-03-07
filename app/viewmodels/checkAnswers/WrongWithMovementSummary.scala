@@ -35,15 +35,19 @@ class WrongWithMovementSummary @Inject()(list: list) {
   def row()(implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] =
     request.userAnswers.get(WrongWithMovementPage).map { answers =>
       SummaryListRowViewModel(
-        key     = "wrongWithMovement.checkYourAnswers.label",
+        key     = s"$WrongWithMovementPage.checkYourAnswers.label",
         value   = ValueViewModel(HtmlContent(
           list(WrongWithMovement.values.filter(answers.contains).map { answer =>
-            Html(messages(s"wrongWithMovement.checkYourAnswers.$answer"))
+            Html(messages(s"$WrongWithMovementPage.checkYourAnswers.$answer"))
           })
         )),
         actions = Seq(
-          ActionItemViewModel("site.change", routes.WrongWithMovementController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, NormalMode).url)
-            .withVisuallyHiddenText(messages("wrongWithMovement.checkYourAnswers.change.hidden"))
+          ActionItemViewModel(
+            "site.change",
+            routes.WrongWithMovementController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, NormalMode).url,
+            id = WrongWithMovementPage
+          )
+            .withVisuallyHiddenText(messages(s"$WrongWithMovementPage.checkYourAnswers.change.hidden"))
         )
       )
     }

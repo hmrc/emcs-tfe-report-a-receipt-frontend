@@ -58,7 +58,8 @@ class DateOfArrivalSummarySpec extends SpecBase with DateUtils {
                 actions = Seq(
                   ActionItemViewModel(
                     langMessages.change,
-                    routes.DateOfArrivalController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, CheckMode).url
+                    routes.DateOfArrivalController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, CheckMode).url,
+                    id = DateOfArrivalPage
                   ).withVisuallyHiddenText(langMessages.hiddenChangeLinkText)
                 )
               ))

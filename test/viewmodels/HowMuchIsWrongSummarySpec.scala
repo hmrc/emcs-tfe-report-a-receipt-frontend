@@ -56,7 +56,8 @@ class HowMuchIsWrongSummarySpec extends SpecBase with DateUtils {
                 actions = Seq(
                   ActionItemViewModel(
                     langMessages.change,
-                    routes.HowMuchIsWrongController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, CheckMode).url
+                    routes.HowMuchIsWrongController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, CheckMode).url,
+                    id = HowMuchIsWrongPage
                   ).withVisuallyHiddenText(langMessages.hiddenChangeLinkText)
                 )
               ))

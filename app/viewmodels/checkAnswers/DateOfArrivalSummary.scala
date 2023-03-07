@@ -32,11 +32,14 @@ class DateOfArrivalSummary extends DateUtils {
     request.userAnswers.get(DateOfArrivalPage).map {
       answer =>
         SummaryListRowViewModel(
-          key     = "dateOfArrival.checkYourAnswers.label",
-          value   = ValueViewModel(answer.formatDateForUIOutput()),
+          key = s"$DateOfArrivalPage.checkYourAnswers.label",
+          value = ValueViewModel(answer.formatDateForUIOutput()),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.DateOfArrivalController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, CheckMode).url)
-              .withVisuallyHiddenText(messages("dateOfArrival.checkYourAnswers.change.hidden"))
+            ActionItemViewModel(
+              "site.change",
+              routes.DateOfArrivalController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, CheckMode).url,
+              id = DateOfArrivalPage
+            ).withVisuallyHiddenText(messages(s"$DateOfArrivalPage.checkYourAnswers.change.hidden"))
           )
         )
     }

@@ -27,3 +27,7 @@ case object UnexpectedDownstreamResponseError extends ErrorResponse {
 case object JsonValidationError extends ErrorResponse {
   val message = "JSON validation error"
 }
+
+case class BadRequestError(msg: String) extends ErrorResponse {
+  val message = s"Bad Request returned from downstream service. With message: $msg"
+}

@@ -171,7 +171,7 @@ otherInformation.error.length = Information must be 350 characters or less
 otherInformation.error.required = Enter more information
 otherInformation.error.invalidCharacter = Information must not include < and > and : and ;
 otherInformation.error.character = Information must contain letters or numbers
-otherInformation.checkYourAnswers.label = Information about other reason(s) you are unsatisfied with this movement
+otherInformation.checkYourAnswers.label = Information about other reason(s)
 otherInformation.checkYourAnswers.change.hidden = information about other reason(s) you are unsatisfied with this movement
 otherInformation.checkYourAnswers.addMoreInformation = Enter more information about other reason(s) you are unsatisfied with this movement
 

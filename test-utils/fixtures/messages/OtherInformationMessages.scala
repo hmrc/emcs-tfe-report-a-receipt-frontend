@@ -39,7 +39,7 @@ object OtherInformationMessages {
     override val validationError = "Information must contain letters or numbers"
     override val lengthError = "Information must be 350 characters or less"
     override val requiredError = "Enter more information"
-    override val checkYourAnswersLabel = "Information about other reason(s) you are unsatisfied with this movement"
+    override val checkYourAnswersLabel = "Information about other reason(s)"
     override val hiddenChangeLink = "information about other reason(s) you are unsatisfied with this movement"
     override val addMoreInformation = "Enter more information about other reason(s) you are unsatisfied with this movement"
   }
@@ -52,7 +52,7 @@ object OtherInformationMessages {
     override val validationError = "Information must contain letters or numbers"
     override val lengthError = "Information must be 350 characters or less"
     override val requiredError = "Enter more information"
-    override val checkYourAnswersLabel = "Information about other reason(s) you are unsatisfied with this movement"
+    override val checkYourAnswersLabel = "Information about other reason(s)"
     override val hiddenChangeLink = "information about other reason(s) you are unsatisfied with this movement"
     override val addMoreInformation = "Enter more information about other reason(s) you are unsatisfied with this movement"
   }

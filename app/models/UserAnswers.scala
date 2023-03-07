@@ -17,16 +17,20 @@
 package models
 
 import play.api.libs.json._
-import queries.{Gettable, Settable}
+import queries.{Gettable, Query, Settable}
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
 import java.time.Instant
+import scala.collection.Seq
 
 final case class UserAnswers(internalId: String,
                              ern: String,
                              arc: String,
                              data: JsObject = Json.obj(),
                              lastUpdated: Instant = Instant.now) {
+
+  def getList[A](path: JsPath)(implicit rds: Reads[A]): Seq[A] =
+    path.read[Seq[A]].reads(data).getOrElse(Seq.empty)
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).asOpt.flatten

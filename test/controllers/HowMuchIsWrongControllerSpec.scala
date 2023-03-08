@@ -18,22 +18,20 @@ package controllers
 
 import base.SpecBase
 import forms.HowMuchIsWrongFormProvider
+import mocks.services.MockUserAnswersService
 import models.{HowMuchIsWrong, NormalMode}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
 import pages.unsatisfactory.HowMuchIsWrongPage
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
+import services.UserAnswersService
 import views.html.HowMuchIsWrongView
 
 import scala.concurrent.Future
 
-class HowMuchIsWrongControllerSpec extends SpecBase with MockitoSugar {
+class HowMuchIsWrongControllerSpec extends SpecBase with MockUserAnswersService {
 
   def onwardRoute = Call("GET", "/foo")
 
@@ -80,15 +78,14 @@ class HowMuchIsWrongControllerSpec extends SpecBase with MockitoSugar {
 
     "must redirect to the next page when valid data is submitted" in {
 
-      val mockSessionRepository = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      val updatedAnswers = emptyUserAnswers.set(HowMuchIsWrongPage, HowMuchIsWrong.values.head)
+      MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
             bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
 

@@ -18,24 +18,22 @@ package controllers
 
 import base.SpecBase
 import forms.MoreInformationFormProvider
+import mocks.services.MockUserAnswersService
 import models.NormalMode
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
-import pages.MoreInformationPage
 import pages.unsatisfactory._
+import pages.{AddMoreInformationPage, MoreInformationPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
+import services.UserAnswersService
 import utils.JsonOptionFormatter
 import views.html.MoreInformationView
 
 import scala.concurrent.Future
 
-class MoreInformationControllerSpec extends SpecBase with MockitoSugar with JsonOptionFormatter {
+class MoreInformationControllerSpec extends SpecBase with JsonOptionFormatter with MockUserAnswersService {
 
   def onwardRoute: Call = Call("GET", "/foo")
 
@@ -59,12 +57,12 @@ class MoreInformationControllerSpec extends SpecBase with MockitoSugar with Json
   "MoreInformation Controller" - {
 
     Seq(
-      (MoreInformationPage, moreInformationRoute, moreInformationSubmitAction),
-      (ShortageInformationPage, shortageInformationRoute, shortageInformationSubmitAction),
-      (ExcessInformationPage, excessInformationRoute, excessInformationSubmitAction),
-      (DamageInformationPage, damageInformationRoute, damageInformationSubmitAction),
-      (SealsInformationPage, sealsInformationRoute, sealsInformationSubmitAction)
-    ) foreach { case (page, url, submitAction) =>
+      (AddMoreInformationPage, MoreInformationPage, moreInformationRoute, moreInformationSubmitAction),
+      (AddShortageInformationPage, ShortageInformationPage, shortageInformationRoute, shortageInformationSubmitAction),
+      (AddExcessInformationPage, ExcessInformationPage, excessInformationRoute, excessInformationSubmitAction),
+      (AddDamageInformationPage, DamageInformationPage, damageInformationRoute, damageInformationSubmitAction),
+      (AddSealsInformationPage, SealsInformationPage, sealsInformationRoute, sealsInformationSubmitAction)
+    ) foreach { case (yesNoPage, page, url, submitAction) =>
 
       s"for the '$page' page" - {
 
@@ -106,15 +104,17 @@ class MoreInformationControllerSpec extends SpecBase with MockitoSugar with Json
 
         "must redirect to the next page when valid data is submitted" in {
 
-          val mockSessionRepository = mock[SessionRepository]
+          val updatedAnswers = emptyUserAnswers
+            .set(yesNoPage, true)
+            .set(page, Some("answer"))
 
-          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+          MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
 
           val application =
             applicationBuilder(userAnswers = Some(emptyUserAnswers))
               .overrides(
                 bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-                bind[SessionRepository].toInstance(mockSessionRepository)
+                bind[UserAnswersService].toInstance(mockUserAnswersService)
               )
               .build()
 
@@ -132,15 +132,17 @@ class MoreInformationControllerSpec extends SpecBase with MockitoSugar with Json
 
         "must redirect to the next page when NO data is submitted" in {
 
-          val mockSessionRepository = mock[SessionRepository]
-
-          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+          val updatedAnswers = emptyUserAnswers
+            .set(yesNoPage, false)
+            .set(page, None)
+          MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
+            .returns(Future.successful(updatedAnswers))
 
           val application =
             applicationBuilder(userAnswers = Some(emptyUserAnswers))
               .overrides(
                 bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-                bind[SessionRepository].toInstance(mockSessionRepository)
+                bind[UserAnswersService].toInstance(mockUserAnswersService)
               )
               .build()
 

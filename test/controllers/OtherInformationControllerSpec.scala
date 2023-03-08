@@ -18,23 +18,21 @@ package controllers
 
 import base.SpecBase
 import forms.OtherInformationFormProvider
+import mocks.services.MockUserAnswersService
 import models.NormalMode
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
 import pages.unsatisfactory._
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
+import services.UserAnswersService
 import utils.JsonOptionFormatter
 import views.html.OtherInformationView
 
 import scala.concurrent.Future
 
-class OtherInformationControllerSpec extends SpecBase with MockitoSugar with JsonOptionFormatter {
+class OtherInformationControllerSpec extends SpecBase with JsonOptionFormatter with MockUserAnswersService {
 
   def onwardRoute: Call = Call("GET", "/foo")
 
@@ -83,15 +81,15 @@ class OtherInformationControllerSpec extends SpecBase with MockitoSugar with Jso
 
     "must redirect to the next page when valid data is submitted" in {
 
-      val mockSessionRepository = mock[SessionRepository]
+      val updatedAnswers = emptyUserAnswers.set(OtherInformationPage, "answer")
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
             bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
 
@@ -109,15 +107,11 @@ class OtherInformationControllerSpec extends SpecBase with MockitoSugar with Jso
 
     "must return a Bad Request and errors when NO data is submitted" in {
 
-      val mockSessionRepository = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
             bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
 

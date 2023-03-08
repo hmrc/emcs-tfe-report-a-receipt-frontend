@@ -17,11 +17,10 @@
 package controllers
 
 import base.SpecBase
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
-class KeepAliveControllerSpec extends SpecBase with MockitoSugar {
+class KeepAliveControllerSpec extends SpecBase {
 
   "keepAlive" - {
 

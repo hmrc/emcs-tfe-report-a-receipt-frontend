@@ -24,7 +24,7 @@ import pages.unsatisfactory._
 import pages.{AddMoreInformationPage, MoreInformationPage, QuestionPage}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
-import repositories.SessionRepository
+import services.UserAnswersService
 import utils.JsonOptionFormatter
 import views.html.MoreInformationView
 
@@ -32,16 +32,16 @@ import javax.inject.Inject
 import scala.concurrent.Future
 
 class MoreInformationController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       override val sessionRepository: SessionRepository,
-                                       override val navigator: Navigator,
-                                       override val auth: AuthAction,
-                                       override val withMovement: MovementAction,
-                                       override val getData: DataRetrievalAction,
-                                       override val requireData: DataRequiredAction,
-                                       formProvider: MoreInformationFormProvider,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       view: MoreInformationView
+                                           override val messagesApi: MessagesApi,
+                                           override val userAnswersService: UserAnswersService,
+                                           override val navigator: Navigator,
+                                           override val auth: AuthAction,
+                                           override val withMovement: MovementAction,
+                                           override val getData: DataRetrievalAction,
+                                           override val requireData: DataRequiredAction,
+                                           formProvider: MoreInformationFormProvider,
+                                           val controllerComponents: MessagesControllerComponents,
+                                           view: MoreInformationView
                                      ) extends BaseNavigationController with AuthActionHelper with JsonOptionFormatter {
 
   def loadMoreInformation(ern: String, arc: String, mode: Mode): Action[AnyContent] =
@@ -90,11 +90,10 @@ class MoreInformationController @Inject()(
       formProvider(page).bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, page, action))),
-        value =>
-          for {
-            updatedYesNo <- save(yesNoPage, value.exists(_.nonEmpty))
-            saveAndRedirect <- saveAndRedirect(page, value, updatedYesNo, mode)
-          } yield saveAndRedirect
+        value => {
+          val updatedYesNo = request.userAnswers.set(yesNoPage, value.exists(_.nonEmpty))
+          saveAndRedirect(page, value, updatedYesNo, mode)
+        }
       )
     }
 }

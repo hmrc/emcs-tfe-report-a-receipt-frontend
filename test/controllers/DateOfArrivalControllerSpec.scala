@@ -18,25 +18,23 @@ package controllers
 
 import base.SpecBase
 import forms.DateOfArrivalFormProvider
+import mocks.services.MockUserAnswersService
 import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
 import pages.DateOfArrivalPage
 import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
+import services.UserAnswersService
 import utils.TimeMachine
 import views.html.DateOfArrivalView
 
 import java.time.{Instant, LocalDateTime}
 import scala.concurrent.Future
 
-class DateOfArrivalControllerSpec extends SpecBase with MockitoSugar {
+class DateOfArrivalControllerSpec extends SpecBase with MockUserAnswersService {
 
   val fixedNow = LocalDateTime.now()
   val dateOfDispatch = fixedNow.minusDays(3)
@@ -100,15 +98,15 @@ class DateOfArrivalControllerSpec extends SpecBase with MockitoSugar {
 
     "must redirect to the next page when valid data is submitted" in {
 
-      val mockSessionRepository = mock[SessionRepository]
+      val updatedAnswers = emptyUserAnswers.set(DateOfArrivalPage, validAnswer)
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
             bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
 

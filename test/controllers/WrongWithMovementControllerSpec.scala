@@ -18,22 +18,20 @@ package controllers
 
 import base.SpecBase
 import forms.WrongWithMovementFormProvider
+import mocks.services.MockUserAnswersService
 import models.{NormalMode, WrongWithMovement}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
 import pages.unsatisfactory.WrongWithMovementPage
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
+import services.UserAnswersService
 import views.html.WrongWithMovementView
 
 import scala.concurrent.Future
 
-class WrongWithMovementControllerSpec extends SpecBase with MockitoSugar {
+class WrongWithMovementControllerSpec extends SpecBase with MockUserAnswersService {
 
   def onwardRoute = Call("GET", "/foo")
 
@@ -80,15 +78,14 @@ class WrongWithMovementControllerSpec extends SpecBase with MockitoSugar {
 
     "must redirect to the next page when valid data is submitted" in {
 
-      val mockSessionRepository = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      val updatedAnswers = emptyUserAnswers.set(WrongWithMovementPage, Set(WrongWithMovement.values.head))
+      MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
             bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
 

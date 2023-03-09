@@ -17,18 +17,17 @@
 package controllers.actions
 
 import base.SpecBase
+import mocks.services.MockUserAnswersService
 import models.requests.{MovementRequest, OptionalDataRequest, UserRequest}
-import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
-import repositories.SessionRepository
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DataRetrievalActionSpec extends SpecBase with MockitoSugar {
+class DataRetrievalActionSpec extends SpecBase with MockitoSugar with MockUserAnswersService {
 
-  class Harness(sessionRepository: SessionRepository) extends DataRetrievalActionImpl(sessionRepository) {
+  lazy val dataRetrievalAction = new DataRetrievalActionImpl(mockUserAnswersService) {
     def callTransform[A](request: MovementRequest[A]): Future[OptionalDataRequest[A]] = transform(request)
   }
 
@@ -38,11 +37,9 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar {
 
       "must set userAnswers to 'None' in the request" in {
 
-        val sessionRepository = mock[SessionRepository]
-        when(sessionRepository.get(testInternalId, testErn, testArc)) thenReturn Future(None)
-        val action = new Harness(sessionRepository)
+        MockUserAnswersService.get(testErn, testArc).returns(Future.successful(None))
 
-        val result = action.callTransform(
+        val result = dataRetrievalAction.callTransform(
           MovementRequest(UserRequest(FakeRequest(), testErn, testInternalId, testCredId), testArc, getMovementResponseModel)
         ).futureValue
 
@@ -54,11 +51,9 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar {
 
       "must build a userAnswers object and add it to the request" in {
 
-        val sessionRepository = mock[SessionRepository]
-        when(sessionRepository.get(testInternalId, testErn, testArc)) thenReturn Future(Some(emptyUserAnswers))
-        val action = new Harness(sessionRepository)
+        MockUserAnswersService.get(testErn, testArc).returns(Future(Some(emptyUserAnswers)))
 
-        val result = action.callTransform(
+        val result = dataRetrievalAction.callTransform(
           MovementRequest(UserRequest(FakeRequest(), testErn, testInternalId, testCredId), testArc, getMovementResponseModel)
         ).futureValue
 

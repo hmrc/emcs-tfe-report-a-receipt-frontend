@@ -23,7 +23,7 @@ import navigation.Navigator
 import pages.unsatisfactory._
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import services.UserAnswersService
 import views.html.OtherInformationView
 
 import javax.inject.Inject
@@ -31,7 +31,7 @@ import scala.concurrent.Future
 
 class OtherInformationController @Inject()(
                                             override val messagesApi: MessagesApi,
-                                            override val sessionRepository: SessionRepository,
+                                            override val userAnswersService: UserAnswersService,
                                             override val navigator: Navigator,
                                             override val auth: AuthAction,
                                             override val withMovement: MovementAction,

@@ -19,6 +19,9 @@ package fixtures
 import models.UserAnswers
 import play.api.mvc.Call
 
+import java.time.Instant
+import java.time.temporal.ChronoUnit
+
 trait BaseFixtures {
 
   val testCredId: String = "credId"
@@ -28,5 +31,10 @@ trait BaseFixtures {
   val testConfirmationReference = "UYVQBLMXCYK6HAEBZI7TSWAQ6XDTXFYU"
   val testOnwardRoute = Call("GET", "/foo")
 
-  val emptyUserAnswers: UserAnswers = UserAnswers(testInternalId, testErn, testArc)
+  val emptyUserAnswers: UserAnswers = UserAnswers(
+    internalId = testInternalId,
+    ern = testErn,
+    arc = testArc,
+    lastUpdated = Instant.now().truncatedTo(ChronoUnit.MILLIS)
+  )
 }

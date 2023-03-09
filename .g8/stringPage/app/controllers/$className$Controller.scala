@@ -8,14 +8,14 @@ import navigation.Navigator
 import pages.$className$Page
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import services.UserAnswersService
 import views.html.$className$View
 
 import scala.concurrent.Future
 
 class $className$Controller @Inject()(
                                        override val messagesApi: MessagesApi,
-                                       override val sessionRepository: SessionRepository,
+                                       override val userAnswersService: UserAnswersService,
                                        override val navigator: Navigator,
                                        override val auth: AuthAction,
                                        override val withMovement: MovementAction,

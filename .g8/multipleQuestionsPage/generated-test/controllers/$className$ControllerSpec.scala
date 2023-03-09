@@ -2,23 +2,21 @@ package controllers
 
 import base.SpecBase
 import forms.$className$FormProvider
+import mocks.services.MockUserAnswersService
 import models.{NormalMode, $className$, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
 import pages.$className$Page
 import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
+import services.UserAnswersService
 import views.html.$className$View
 
 import scala.concurrent.Future
 
-class $className$ControllerSpec extends SpecBase with MockitoSugar {
+class $className$ControllerSpec extends SpecBase with MockUserAnswersService {
 
   def onwardRoute = Call("GET", "/foo")
 
@@ -75,9 +73,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar {
 
     "must redirect to the next page when valid data is submitted" in {
 
-      val mockSessionRepository = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      MockUserAnswersService.set().returns(Future.successful(emptyUserAnswers))
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))

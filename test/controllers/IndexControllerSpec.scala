@@ -17,25 +17,58 @@
 package controllers
 
 import base.SpecBase
+import mocks.services.MockUserAnswersService
 import models.NormalMode
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.UserAnswersService
 
-class IndexControllerSpec extends SpecBase {
+import scala.concurrent.Future
+
+class IndexControllerSpec extends SpecBase with MockUserAnswersService {
 
   "Index Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "when existing UserAnswers don't exist" - {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      "must Initialise the UserAnswers and redirect to DateOfArrival" in {
 
-      running(application) {
-        val request = FakeRequest(GET, routes.IndexController.onPageLoad(testErn, testArc).url)
+        MockUserAnswersService.set().returns(Future.successful(emptyUserAnswers))
 
-        val result = route(application, request).value
+        val application = applicationBuilder(userAnswers = None).overrides(
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        ).build()
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.DateOfArrivalController.onPageLoad(testErn, testArc, NormalMode).url)
+        running(application) {
+          val request = FakeRequest(GET, routes.IndexController.onPageLoad(testErn, testArc).url)
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result) mustBe Some(routes.DateOfArrivalController.onPageLoad(testErn, testArc, NormalMode).url)
+        }
+      }
+    }
+
+    "when existing UserAnswers exist" - {
+
+      "must use the existing answers and redirect to DateOfArrival" in {
+
+        MockUserAnswersService.set(emptyUserAnswers).returns(Future.successful(emptyUserAnswers))
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        ).build()
+
+        running(application) {
+          val request = FakeRequest(GET, routes.IndexController.onPageLoad(testErn, testArc).url)
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result) mustBe Some(routes.DateOfArrivalController.onPageLoad(testErn, testArc, NormalMode).url)
+        }
       }
     }
   }

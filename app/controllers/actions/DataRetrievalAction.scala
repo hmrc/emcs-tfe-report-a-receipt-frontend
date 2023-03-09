@@ -18,16 +18,24 @@ package controllers.actions
 
 import models.requests.{MovementRequest, OptionalDataRequest}
 import play.api.mvc.ActionTransformer
-import repositories.SessionRepository
+import services.UserAnswersService
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DataRetrievalActionImpl @Inject()(val sessionRepository: SessionRepository)
+class DataRetrievalActionImpl @Inject()(val userAnswersService: UserAnswersService)
                                        (implicit val executionContext: ExecutionContext) extends DataRetrievalAction {
 
   override protected def transform[A](request: MovementRequest[A]): Future[OptionalDataRequest[A]] = {
-    sessionRepository.get(request.internalId, request.ern, request.arc).map {
+
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(
+      session = request.session,
+      request = request
+    )
+
+    userAnswersService.get(request.ern, request.arc).map {
       OptionalDataRequest(request, _)
     }
   }

@@ -22,17 +22,18 @@ import navigation.BaseNavigator
 import pages.QuestionPage
 import play.api.libs.json.Format
 import play.api.mvc.Result
-import repositories.SessionRepository
+import services.UserAnswersService
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 
 trait BaseNavigationController extends BaseController {
 
-  val sessionRepository: SessionRepository
+  val userAnswersService: UserAnswersService
   val navigator: BaseNavigator
 
   def saveAndRedirect[A](page: QuestionPage[A], answer: A, currentAnswers: UserAnswers, mode: Mode)
-                        (implicit format: Format[A]): Future[Result] =
+                        (implicit hc: HeaderCarrier, format: Format[A]): Future[Result] =
     save(page, answer, currentAnswers).map { updatedAnswers =>
       Redirect(navigator.nextPage(page, mode, updatedAnswers))
     }
@@ -43,13 +44,13 @@ trait BaseNavigationController extends BaseController {
       Redirect(navigator.nextPage(page, mode, updatedAnswers))
     }
 
-  def save[A](page: QuestionPage[A], answer: A, currentAnswers: UserAnswers)(implicit format: Format[A]): Future[UserAnswers] =
+  def save[A](page: QuestionPage[A], answer: A, currentAnswers: UserAnswers)(implicit hc: HeaderCarrier, format: Format[A]): Future[UserAnswers] =
     if (currentAnswers.get[A](page).contains(answer)) {
       Future.successful(currentAnswers)
     } else {
       for {
         updatedAnswers <- Future.successful(currentAnswers.set(page, answer))
-        _ <- sessionRepository.set(updatedAnswers)
+        _ <- userAnswersService.set(updatedAnswers)
       } yield updatedAnswers
     }
 

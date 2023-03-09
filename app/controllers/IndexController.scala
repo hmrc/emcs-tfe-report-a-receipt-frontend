@@ -20,12 +20,12 @@ import controllers.actions.{AuthAction, DataRetrievalAction, MovementAction}
 import models.{NormalMode, UserAnswers}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import services.UserAnswersService
 
 import javax.inject.Inject
 
 class IndexController @Inject()(override val messagesApi: MessagesApi,
-                                val sessionRepository: SessionRepository,
+                                val userAnswersService: UserAnswersService,
                                 val controllerComponents: MessagesControllerComponents,
                                 authAction: AuthAction,
                                 withMovement: MovementAction,
@@ -36,7 +36,7 @@ class IndexController @Inject()(override val messagesApi: MessagesApi,
       case Some(answers) => answers
       case _ => UserAnswers(request.internalId, request.ern, request.arc)
     }
-    sessionRepository.set(userAnswers).map { _ =>
+    userAnswersService.set(userAnswers).map { _ =>
       Redirect(routes.DateOfArrivalController.onPageLoad(ern, arc, NormalMode))
     }
   }

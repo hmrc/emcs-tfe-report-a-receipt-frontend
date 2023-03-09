@@ -20,11 +20,11 @@ import controllers.actions._
 import forms.AddMoreInformationFormProvider
 import models.Mode
 import navigation.Navigator
-import pages.unsatisfactory.{AddDamageInformationPage, AddExcessInformationPage, AddSealsInformationPage, AddShortageInformationPage, DamageInformationPage, ExcessInformationPage, SealsInformationPage, ShortageInformationPage}
+import pages.unsatisfactory._
 import pages.{AddMoreInformationPage, MoreInformationPage, QuestionPage}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
-import repositories.SessionRepository
+import services.UserAnswersService
 import utils.JsonOptionFormatter
 import views.html.AddMoreInformationView
 
@@ -33,7 +33,7 @@ import scala.concurrent.Future
 
 class AddMoreInformationController @Inject()(
                                               override val messagesApi: MessagesApi,
-                                              override val sessionRepository: SessionRepository,
+                                              override val userAnswersService: UserAnswersService,
                                               override val navigator: Navigator,
                                               override val auth: AuthAction,
                                               override val withMovement: MovementAction,
@@ -98,10 +98,8 @@ class AddMoreInformationController @Inject()(
           case true =>
             saveAndRedirect(yesNoPage, true, mode)
           case false =>
-            for {
-              removedMoreInfo <- save(infoPage, None)
-              saveAndRedirect <- saveAndRedirect(yesNoPage, false, removedMoreInfo, mode)
-            } yield saveAndRedirect
+            val removedMoreInfo = request.userAnswers.set(infoPage, None)
+            saveAndRedirect(yesNoPage, false, removedMoreInfo, mode)
         }
       )
     }

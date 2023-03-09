@@ -24,22 +24,22 @@ import navigation.Navigator
 import pages.unsatisfactory.HowMuchIsWrongPage
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import services.UserAnswersService
 import views.html.HowMuchIsWrongView
 
 import scala.concurrent.Future
 
 class HowMuchIsWrongController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       override val sessionRepository: SessionRepository,
-                                       override val navigator: Navigator,
-                                       override val auth: AuthAction,
-                                       override val withMovement: MovementAction,
-                                       override val getData: DataRetrievalAction,
-                                       override val requireData: DataRequiredAction,
-                                       formProvider: HowMuchIsWrongFormProvider,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       view: HowMuchIsWrongView
+                                          override val messagesApi: MessagesApi,
+                                          override val userAnswersService: UserAnswersService,
+                                          override val navigator: Navigator,
+                                          override val auth: AuthAction,
+                                          override val withMovement: MovementAction,
+                                          override val getData: DataRetrievalAction,
+                                          override val requireData: DataRequiredAction,
+                                          formProvider: HowMuchIsWrongFormProvider,
+                                          val controllerComponents: MessagesControllerComponents,
+                                          view: HowMuchIsWrongView
                                      ) extends BaseNavigationController with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String, mode: Mode): Action[AnyContent] =

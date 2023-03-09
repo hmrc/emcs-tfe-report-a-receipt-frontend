@@ -18,23 +18,21 @@ package controllers
 
 import base.SpecBase
 import forms.AddMoreInformationFormProvider
+import mocks.services.MockUserAnswersService
 import models.NormalMode
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
-import pages.AddMoreInformationPage
-import pages.unsatisfactory.{AddDamageInformationPage, AddExcessInformationPage, AddSealsInformationPage, AddShortageInformationPage}
+import pages.unsatisfactory._
+import pages.{AddMoreInformationPage, MoreInformationPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
+import services.UserAnswersService
 import views.html.AddMoreInformationView
 
 import scala.concurrent.Future
 
-class AddMoreInformationControllerSpec extends SpecBase with MockitoSugar {
+class AddMoreInformationControllerSpec extends SpecBase with MockUserAnswersService {
 
   def onwardRoute = Call("GET", "/foo")
 
@@ -56,16 +54,16 @@ class AddMoreInformationControllerSpec extends SpecBase with MockitoSugar {
   lazy val addSealsInformationSubmitAction = routes.AddMoreInformationController.submitSealsInformation(testErn, testArc, NormalMode)
 
   Seq(
-    (AddMoreInformationPage, addMoreInformationRoute, addMoreInformationSubmitAction),
-    (AddShortageInformationPage, addShortageInformationRoute, addShortageInformationSubmitAction),
-    (AddExcessInformationPage, addExcessInformationRoute, addExcessInformationSubmitAction),
-    (AddDamageInformationPage, addDamageInformationRoute, addDamageInformationSubmitAction),
-    (AddSealsInformationPage, addSealsInformationRoute, addSealsInformationSubmitAction)
-  ) foreach { case (page, url, submitAction) =>
+    (AddMoreInformationPage, MoreInformationPage, addMoreInformationRoute, addMoreInformationSubmitAction),
+    (AddShortageInformationPage, ShortageInformationPage, addShortageInformationRoute, addShortageInformationSubmitAction),
+    (AddExcessInformationPage, ExcessInformationPage, addExcessInformationRoute, addExcessInformationSubmitAction),
+    (AddDamageInformationPage, DamageInformationPage, addDamageInformationRoute, addDamageInformationSubmitAction),
+    (AddSealsInformationPage, SealsInformationPage, addSealsInformationRoute, addSealsInformationSubmitAction)
+  ) foreach { case (yesNoPage, infoPage, url, submitAction) =>
 
-    s"for the '$page' page" - {
+    s"for the '$yesNoPage' page" - {
 
-      val form = formProvider(page)
+      val form = formProvider(yesNoPage)
 
       "AddMoreInformation Controller" - {
 
@@ -81,13 +79,13 @@ class AddMoreInformationControllerSpec extends SpecBase with MockitoSugar {
             val view = application.injector.instanceOf[AddMoreInformationView]
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form, page, submitAction)(dataRequest(request), messages(application)).toString
+            contentAsString(result) mustEqual view(form, yesNoPage, submitAction)(dataRequest(request), messages(application)).toString
           }
         }
 
         "must populate the view correctly on a GET when the question has previously been answered" in {
 
-          val userAnswers = emptyUserAnswers.set(page, true)
+          val userAnswers = emptyUserAnswers.set(yesNoPage, true)
 
           val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -99,21 +97,20 @@ class AddMoreInformationControllerSpec extends SpecBase with MockitoSugar {
             val result = route(application, request).value
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form.fill(true), page, submitAction)(dataRequest(request), messages(application)).toString
+            contentAsString(result) mustEqual view(form.fill(true), yesNoPage, submitAction)(dataRequest(request), messages(application)).toString
           }
         }
 
-        "must redirect to the next page when valid data is submitted" in {
+        "must redirect to the next page when valid data is submitted (true)" in {
 
-          val mockSessionRepository = mock[SessionRepository]
-
-          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+          val updatedAnswers = emptyUserAnswers.set(yesNoPage, true)
+          MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers)).once()
 
           val application =
             applicationBuilder(userAnswers = Some(emptyUserAnswers))
               .overrides(
                 bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-                bind[SessionRepository].toInstance(mockSessionRepository)
+                bind[UserAnswersService].toInstance(mockUserAnswersService)
               )
               .build()
 
@@ -121,6 +118,34 @@ class AddMoreInformationControllerSpec extends SpecBase with MockitoSugar {
             val request =
               FakeRequest(POST, url)
                 .withFormUrlEncodedBody(("value", "true"))
+
+            val result = route(application, request).value
+
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustEqual onwardRoute.url
+          }
+        }
+
+        "must redirect to the next page when valid data is submitted (false) AND clear answers" in {
+
+          val updatedAnswers = emptyUserAnswers
+            .set(yesNoPage, false)
+            .set(infoPage, None)
+
+          MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers)).once()
+
+          val application =
+            applicationBuilder(userAnswers = Some(emptyUserAnswers))
+              .overrides(
+                bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+                bind[UserAnswersService].toInstance(mockUserAnswersService)
+              )
+              .build()
+
+          running(application) {
+            val request =
+              FakeRequest(POST, url)
+                .withFormUrlEncodedBody(("value", "false"))
 
             val result = route(application, request).value
 
@@ -145,7 +170,7 @@ class AddMoreInformationControllerSpec extends SpecBase with MockitoSugar {
             val result = route(application, request).value
 
             status(result) mustEqual BAD_REQUEST
-            contentAsString(result) mustEqual view(boundForm, page, submitAction)(dataRequest(request), messages(application)).toString
+            contentAsString(result) mustEqual view(boundForm, yesNoPage, submitAction)(dataRequest(request), messages(application)).toString
           }
         }
 

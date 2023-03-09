@@ -23,23 +23,23 @@ import navigation.Navigator
 import pages.unsatisfactory.WrongWithMovementPage
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import services.UserAnswersService
 import views.html.WrongWithMovementView
 
 import javax.inject.Inject
 import scala.concurrent.Future
 
 class WrongWithMovementController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       override val sessionRepository: SessionRepository,
-                                       override val navigator: Navigator,
-                                       override val auth: AuthAction,
-                                       override val withMovement: MovementAction,
-                                       override val getData: DataRetrievalAction,
-                                       override val requireData: DataRequiredAction,
-                                       formProvider: WrongWithMovementFormProvider,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       view: WrongWithMovementView
+                                             override val messagesApi: MessagesApi,
+                                             override val userAnswersService: UserAnswersService,
+                                             override val navigator: Navigator,
+                                             override val auth: AuthAction,
+                                             override val withMovement: MovementAction,
+                                             override val getData: DataRetrievalAction,
+                                             override val requireData: DataRequiredAction,
+                                             formProvider: WrongWithMovementFormProvider,
+                                             val controllerComponents: MessagesControllerComponents,
+                                             view: WrongWithMovementView
                                      ) extends BaseNavigationController with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String, mode: Mode): Action[AnyContent] =

@@ -16,46 +16,75 @@
 
 package forms
 
-import fixtures.messages.WrongWithMovementMessages
+import fixtures.messages.{wrongWithItemMessages, WrongWithMovementMessages}
 import forms.behaviours.CheckboxFieldBehaviours
 import models.WrongWithMovement
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import pages.unsatisfactory.WrongWithMovementPage
+import pages.unsatisfactory.individualItems.WrongWithItemPage
 import play.api.data.FormError
 import play.api.i18n.{Messages, MessagesApi}
 
 class WrongWithMovementFormProviderSpec extends CheckboxFieldBehaviours with GuiceOneAppPerSuite {
 
-  val form = new WrongWithMovementFormProvider()()
+  Seq(
+    WrongWithMovementPage,
+    WrongWithItemPage(1)
+  ) foreach { page =>
 
-  ".value" - {
+    s"loading the form for the '$page' page" - {
 
-    val fieldName = "value"
-    val requiredKey = "wrongWithMovement.error.required"
+      val form = new WrongWithMovementFormProvider()(page)
 
-    behave like checkboxField[WrongWithMovement](
-      form,
-      fieldName,
-      validValues  = WrongWithMovement.values,
-      invalidError = FormError(s"$fieldName[0]", "error.invalid")
-    )
+      ".value" - {
 
-    behave like mandatoryCheckboxField(
-      form,
-      fieldName,
-      requiredKey
-    )
+        val fieldName = "value"
+        val requiredKey = s"$page.error.required"
+
+        behave like checkboxField[WrongWithMovement](
+          form,
+          fieldName,
+          validValues = WrongWithMovement.values,
+          invalidError = FormError(s"$fieldName[0]", "error.invalid")
+        )
+
+        behave like mandatoryCheckboxField(
+          form,
+          fieldName,
+          requiredKey
+        )
+      }
+    }
   }
 
   "Error Messages" - {
 
-    Seq(WrongWithMovementMessages.English, WrongWithMovementMessages.Welsh) foreach { messagesForLanguage =>
+    "for the WrongWithMovementPage" - {
 
-      implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(messagesForLanguage.lang))
+      Seq(WrongWithMovementMessages.English, WrongWithMovementMessages.Welsh) foreach { messagesForLanguage =>
 
-      s"when output for language code '${messagesForLanguage.lang.code}'" - {
+        implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(messagesForLanguage.lang))
 
-        "have the correct error message when no option is selected" in {
-          messages("wrongWithMovement.error.required") mustBe messagesForLanguage.requiredError
+        s"when output for language code '${messagesForLanguage.lang.code}'" - {
+
+          "have the correct error message when no option is selected" in {
+            messages(s"$WrongWithMovementPage.error.required") mustBe messagesForLanguage.requiredError
+          }
+        }
+      }
+    }
+
+    "for the wrongWithItemPage" - {
+
+      Seq(wrongWithItemMessages.English, wrongWithItemMessages.Welsh) foreach { messagesForLanguage =>
+
+        implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(messagesForLanguage.lang))
+
+        s"when output for language code '${messagesForLanguage.lang.code}'" - {
+
+          "have the correct error message when no option is selected" in {
+            messages(s"${WrongWithItemPage(1)}.error.required") mustBe messagesForLanguage.requiredError
+          }
         }
       }
     }

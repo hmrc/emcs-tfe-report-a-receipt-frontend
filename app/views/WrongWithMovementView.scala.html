@@ -15,6 +15,7 @@
  *@
 
 @import models.requests.DataRequest
+@import pages.QuestionPage
 
 @this(
         layout: templates.Layout,
@@ -26,11 +27,11 @@
         saveAndContinue: components.saveAndContinue
 )
 
-@(form: Form[_], mode: Mode)(implicit request: DataRequest[_], messages: Messages)
+@(page: QuestionPage[Set[WrongWithMovement]], form: Form[_], action: Call)(implicit request: DataRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("wrongWithMovement.title"))) {
+@layout(pageTitle = title(form, messages(s"$page.title"))) {
 
-    @formHelper(action = routes.WrongWithMovementController.onSubmit(request.ern, request.arc, mode), 'autoComplete -> "off") {
+    @formHelper(action, 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
@@ -41,8 +42,8 @@
                 form   = form,
                 name   = "value",
                 legend = LegendViewModel(HtmlContent(heading)).withCssClass("govuk-fieldset__legend govuk-fieldset__legend--l"),
-                items  = WrongWithMovement.checkboxItems
-            ).withHint(HintViewModel(Text(messages("wrongWithMovement.hint"))))
+                items  = WrongWithMovement.checkboxItems(page)
+            ).withHint(HintViewModel(Text(messages(s"$page.hint"))))
         )
 
         @saveAndContinue()
@@ -50,7 +51,7 @@
 }
 
 @heading = {
-    @h1("wrongWithMovement.heading", Some(messages("arc.subHeading", request.arc)), "govuk-fieldset__heading")
+    @h1(s"$page.heading", Some(messages("arc.subHeading", request.arc)), "govuk-fieldset__heading")
 }
 
 @{

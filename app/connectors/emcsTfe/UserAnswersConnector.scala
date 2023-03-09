@@ -19,7 +19,6 @@ package connectors.emcsTfe
 import config.AppConfig
 import models.UserAnswers
 import models.response.ErrorResponse
-import models.response.emcsTfe.GetMovementResponse
 import play.api.libs.json.Reads
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 

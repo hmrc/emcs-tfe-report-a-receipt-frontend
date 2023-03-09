@@ -220,3 +220,18 @@ wrongWithMovement.checkYourAnswers.damaged = Damaged items
 wrongWithMovement.checkYourAnswers.brokenSeals = Broken seal(s)
 wrongWithMovement.checkYourAnswers.other = Other
 wrongWithMovement.checkYourAnswers.change.hidden = what was wrong
+
+wrongWithItem.title = What’s wrong with this item?
+wrongWithItem.heading = What’s wrong with this item?
+wrongWithItem.hint = Select all that apply.
+wrongWithItem.moreOrLess = I received a shortage or excess
+wrongWithItem.damaged = Goods damaged
+wrongWithItem.brokenSeals = Broken seal(s)
+wrongWithItem.other = Other
+wrongWithItem.error.required = Select if there are any other reasons why you are unsatisfied with this item
+wrongWithItem.checkYourAnswers.moreOrLess = What was wrong
+wrongWithItem.checkYourAnswers.damaged = Goods damaged
+wrongWithItem.checkYourAnswers.brokenSeals = Broken seal(s)
+wrongWithItem.checkYourAnswers.other = Other
+wrongWithItem.checkYourAnswers.change.hidden = what was wrong
+

@@ -24,6 +24,7 @@ import models.WrongWithMovement._
 import models._
 import pages._
 import pages.unsatisfactory._
+import pages.unsatisfactory.individualItems.WrongWithItemPage
 
 class NavigatorSpec extends SpecBase {
 
@@ -99,7 +100,7 @@ class NavigatorSpec extends SpecBase {
 
             val userAnswers = emptyUserAnswers.set(HowMuchIsWrongPage, TheWholeMovement)
 
-            navigator.nextPage(HowMuchIsWrongPage, NormalMode, userAnswers) mustBe routes.WrongWithMovementController.onPageLoad(testErn, testArc, NormalMode)
+            navigator.nextPage(HowMuchIsWrongPage, NormalMode, userAnswers) mustBe routes.WrongWithMovementController.loadWrongWithMovement(testErn, testArc, NormalMode)
           }
         }
 
@@ -128,7 +129,7 @@ class NavigatorSpec extends SpecBase {
 
           "must go back to the WrongWithMovement page" in {
             navigator.nextPage(WrongWithMovementPage, NormalMode, emptyUserAnswers) mustBe
-              routes.WrongWithMovementController.onPageLoad(testErn, testArc, NormalMode)
+              routes.WrongWithMovementController.loadWrongWithMovement(testErn, testArc, NormalMode)
           }
         }
 
@@ -179,6 +180,61 @@ class NavigatorSpec extends SpecBase {
             val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, selectedOptions)
             navigator.nextPage(WrongWithMovementPage, NormalMode, userAnswers) mustBe
               routes.OtherInformationController.onPageLoad(testErn, testArc, NormalMode)
+          }
+        }
+      }
+
+      "for the wrongWithItem page" - {
+
+        "when no option has been selected (shouldn't happen)" - {
+
+          "must go back to the wrongWithItem page" in {
+            navigator.nextPage(WrongWithItemPage(1), NormalMode, emptyUserAnswers) mustBe
+              routes.WrongWithMovementController.loadwrongWithItem(testErn, testArc, idx = 1, mode = NormalMode)
+          }
+        }
+
+        "when the next page is MoreOrLess" - {
+
+          //TODO: Implement as part of future story when page is built
+          "must go to ItemShortageOrExcess page" ignore {
+            val selectedOptions: Set[WrongWithMovement] = Set(MoreOrLess, Damaged, BrokenSeals, Other)
+            val userAnswers = emptyUserAnswers.set(WrongWithItemPage(1), selectedOptions)
+            navigator.nextPage(WrongWithItemPage(1), NormalMode, userAnswers) mustBe
+              ???
+          }
+        }
+
+        "when the next page is Damaged" - {
+
+          //TODO: Implement as part of future story when page is built
+          "must go to ItemDamagedInformation add more info Yes/No page" ignore {
+            val selectedOptions: Set[WrongWithMovement] = Set(Damaged, BrokenSeals, Other)
+            val userAnswers = emptyUserAnswers.set(WrongWithItemPage(1), selectedOptions)
+            navigator.nextPage(WrongWithItemPage(1), NormalMode, userAnswers) mustBe
+              ???
+          }
+        }
+
+        "when the next page is BrokenSeals" - {
+
+          //TODO: Implement as part of future story when page is built
+          "must go to ItemBrokenSealsInformation add more info Yes/No page" ignore {
+            val selectedOptions: Set[WrongWithMovement] = Set(BrokenSeals, Other)
+            val userAnswers = emptyUserAnswers.set(WrongWithItemPage(1), selectedOptions)
+            navigator.nextPage(WrongWithItemPage(1), NormalMode, userAnswers) mustBe
+              ???
+          }
+        }
+
+        "when the next page is Other" - {
+
+          //TODO: Implement as part of future story when page is built
+          "must go to ItemOther information page" ignore {
+            val selectedOptions: Set[WrongWithMovement] = Set(Other)
+            val userAnswers = emptyUserAnswers.set(WrongWithItemPage(1), selectedOptions)
+            navigator.nextPage(WrongWithItemPage(1), NormalMode, userAnswers) mustBe
+              ???
           }
         }
       }

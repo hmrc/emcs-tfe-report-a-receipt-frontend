@@ -17,29 +17,30 @@
 package views
 
 import base.ViewSpecBase
-import fixtures.messages.WrongWithMovementMessages
+import fixtures.messages.{wrongWithItemMessages, WrongWithMovementMessages}
 import forms.WrongWithMovementFormProvider
-import models.NormalMode
 import org.jsoup.Jsoup
+import pages.unsatisfactory.WrongWithMovementPage
+import pages.unsatisfactory.individualItems.WrongWithItemPage
 import play.api.test.FakeRequest
 import views.html.WrongWithMovementView
 
 class WrongWithMovementViewSpec extends ViewSpecBase with ViewBehaviours {
 
-  lazy val form = app.injector.instanceOf[WrongWithMovementFormProvider].apply()
   lazy val view = app.injector.instanceOf[WrongWithMovementView]
+  implicit val request = dataRequest(FakeRequest(), emptyUserAnswers)
 
   object Selectors extends BaseSelectors
 
-  "AcceptMovement view" - {
+  "WrongWithMovement view" - {
 
     Seq(WrongWithMovementMessages.English, WrongWithMovementMessages.Welsh).foreach { messagesForLanguage =>
 
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
 
         implicit val msgs = messages(app, messagesForLanguage.lang)
-        implicit val request = dataRequest(FakeRequest(), emptyUserAnswers)
-        implicit val doc = Jsoup.parse(view(form, NormalMode).toString())
+        lazy val form = app.injector.instanceOf[WrongWithMovementFormProvider].apply(WrongWithMovementPage)
+        implicit val doc = Jsoup.parse(view(WrongWithMovementPage, form, testOnwardRoute).toString())
 
         behave like pageWithExpectedElementsAndMessages(Seq(
           Selectors.title -> messagesForLanguage.title,
@@ -51,6 +52,32 @@ class WrongWithMovementViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.checkboxItem(3) -> messagesForLanguage.damaged,
           Selectors.checkboxItem(4) -> messagesForLanguage.brokenSeals,
           Selectors.checkboxItem(5) -> messagesForLanguage.other,
+          Selectors.button -> messagesForLanguage.saveAndContinue,
+          Selectors.secondaryButton -> messagesForLanguage.saveAndReturnToMovement
+        ))
+      }
+    }
+  }
+
+  "WrongWithMovement view for an Individual Item" - {
+
+    Seq(wrongWithItemMessages.English, wrongWithItemMessages.Welsh).foreach { messagesForLanguage =>
+
+      s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
+
+        implicit val msgs = messages(app, messagesForLanguage.lang)
+        lazy val form = app.injector.instanceOf[WrongWithMovementFormProvider].apply(WrongWithItemPage(1))
+        implicit val doc = Jsoup.parse(view(WrongWithItemPage(1), form, testOnwardRoute).toString())
+
+        behave like pageWithExpectedElementsAndMessages(Seq(
+          Selectors.title -> messagesForLanguage.title,
+          Selectors.h2(1) -> messagesForLanguage.arcSubheading(testArc),
+          Selectors.h1 -> messagesForLanguage.heading,
+          Selectors.hint -> messagesForLanguage.hint,
+          Selectors.checkboxItem(1) -> messagesForLanguage.moreOrLessThanExpected,
+          Selectors.checkboxItem(2) -> messagesForLanguage.damaged,
+          Selectors.checkboxItem(3) -> messagesForLanguage.brokenSeals,
+          Selectors.checkboxItem(4) -> messagesForLanguage.other,
           Selectors.button -> messagesForLanguage.saveAndContinue,
           Selectors.secondaryButton -> messagesForLanguage.saveAndReturnToMovement
         ))

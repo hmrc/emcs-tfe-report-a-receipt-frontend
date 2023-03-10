@@ -117,8 +117,9 @@ class Navigator @Inject()() extends BaseNavigator {
   }
 
   private[navigation] def nextWrongWithMovementOptionToAnswer(selectedOptions: Set[WrongWithMovement],
-                                                              lastOption: Option[WrongWithMovement] = None): Option[WrongWithMovement] = {
-    val orderedSetOfOptions = WrongWithMovement.values.filter(selectedOptions.contains)
+                                                              lastOption: Option[WrongWithMovement] = None,
+                                                              checkboxOptions: Seq[WrongWithMovement] = WrongWithMovement.values): Option[WrongWithMovement] = {
+    val orderedSetOfOptions = checkboxOptions.filter(selectedOptions.contains)
     lastOption match {
       case Some(value) if orderedSetOfOptions.lastOption.contains(value) =>
         None
@@ -154,7 +155,7 @@ class Navigator @Inject()() extends BaseNavigator {
                                                               lastOption: Option[WrongWithMovement] = None)(implicit userAnswers: UserAnswers): Call =
     userAnswers.get(page) match {
       case Some(selectedOptions) =>
-        nextWrongWithMovementOptionToAnswer(selectedOptions, lastOption) match {
+        nextWrongWithMovementOptionToAnswer(selectedOptions, lastOption, WrongWithMovement.individualItemValues) match {
           case Some(MoreOrLess) =>
             //TODO: Route to the ItemMoreLessPage (future story)
             ???

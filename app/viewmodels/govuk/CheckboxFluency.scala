@@ -95,6 +95,9 @@ trait CheckboxFluency {
     def withHint(hint: Hint): CheckboxItem =
       item copy (hint = Some(hint))
 
+    def withId(id: String): CheckboxItem =
+      item copy (id = Some(id))
+
     def withConditionalHtml(html: Html): CheckboxItem =
       item copy (conditionalHtml = Some(html))
 

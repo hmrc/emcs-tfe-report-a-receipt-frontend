@@ -34,7 +34,7 @@
     @formHelper(action, 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
+            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> WrongWithMovement.checkboxItems(page).head.value)))
         }
 
         @govukCheckboxes(

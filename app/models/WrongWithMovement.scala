@@ -62,7 +62,7 @@ object WrongWithMovement extends Enumerable.Implicits {
           fieldId = "value",
           index   = index,
           value   = value.toString
-        )
+        ).withId(value.toString)
     }
   }
 

@@ -18,6 +18,7 @@ package connectors.emcsTfe
 
 import base.SpecBase
 import config.AppConfig
+import fixtures.GetMovementResponseFixtures
 import mocks.connectors.MockHttpClient
 import models.response.JsonValidationError
 import models.response.emcsTfe.GetMovementResponse
@@ -29,7 +30,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
-class GetMovementConnectorSpec extends SpecBase with Status with MimeTypes with HeaderNames with MockHttpClient with BeforeAndAfterAll {
+class GetMovementConnectorSpec extends SpecBase
+  with Status with MimeTypes with HeaderNames with MockHttpClient with BeforeAndAfterAll with GetMovementResponseFixtures {
 
   lazy val app = applicationBuilder(userAnswers = None).build()
 
@@ -53,13 +55,9 @@ class GetMovementConnectorSpec extends SpecBase with Status with MimeTypes with 
 
       "when downstream call is successful" in {
 
-        val model: GetMovementResponse = GetMovementResponse(
-          localReferenceNumber = "EN", eadStatus = "Accepted", consignorName = "Current 801 Consignor", dateOfDispatch = LocalDate.parse("2008-11-20"), journeyTime = "20 days", numberOfItems = 2
-        )
+        MockHttpClient.get(s"${appConfig.emcsTfeBaseUrl}/movement/ern/arc").returns(Future.successful(Right(getMovementResponseModel)))
 
-        MockHttpClient.get(s"${appConfig.emcsTfeBaseUrl}/movement/ern/arc").returns(Future.successful(Right(model)))
-
-        connector.getMovement(exciseRegistrationNumber = "ern", arc = "arc").futureValue mustBe Right(model)
+        connector.getMovement(exciseRegistrationNumber = "ern", arc = "arc").futureValue mustBe Right(getMovementResponseModel)
       }
     }
 

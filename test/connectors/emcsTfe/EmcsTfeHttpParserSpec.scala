@@ -17,6 +17,7 @@
 package connectors.emcsTfe
 
 import base.SpecBase
+import fixtures.GetMovementResponseFixtures
 import mocks.connectors.MockHttpClient
 import models.response.emcsTfe.GetMovementResponse
 import models.response.{JsonValidationError, UnexpectedDownstreamResponseError}
@@ -26,7 +27,8 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
 import java.time.LocalDate
 
-class EmcsTfeHttpParserSpec extends SpecBase with Status with MimeTypes with HeaderNames with MockHttpClient {
+class EmcsTfeHttpParserSpec extends SpecBase
+  with Status with MimeTypes with HeaderNames with MockHttpClient with GetMovementResponseFixtures {
 
   lazy implicit val hc: HeaderCarrier = HeaderCarrier()
 
@@ -41,13 +43,9 @@ class EmcsTfeHttpParserSpec extends SpecBase with Status with MimeTypes with Hea
 
       "when valid JSON is returned that can be parsed to the model" in {
 
-        val model: GetMovementResponse = GetMovementResponse(
-          localReferenceNumber = "EN", eadStatus = "Accepted", consignorName = "Current 801 Consignor", dateOfDispatch = LocalDate.parse("2008-11-20"), journeyTime = "20 days", numberOfItems = 2
-        )
+        val httpResponse = HttpResponse(Status.OK, getMovementResponseJson, Map())
 
-        val httpResponse = HttpResponse(Status.OK, Json.toJson(model), Map())
-
-        httpParser.EmcsTfeReads.read("POST", "/movement/ern/arc", httpResponse) mustBe Right(model)
+        httpParser.EmcsTfeReads.read("POST", "/movement/ern/arc", httpResponse) mustBe Right(getMovementResponseModel)
       }
     }
 

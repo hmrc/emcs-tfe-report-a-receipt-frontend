@@ -18,17 +18,14 @@ package models.response.emcsTfe
 
 import play.api.libs.json.{Format, Json}
 
-import java.time.LocalDate
+case class MovementItem(itemUniqueReference: Int,
+                        productCode: String,
+                        cnCode: String,
+                        quantity: BigDecimal,
+                        grossMass: BigDecimal,
+                        netMass: BigDecimal,
+                        alcoholicStrength: Option[BigDecimal])
+object MovementItem {
 
-
-case class GetMovementResponse(localReferenceNumber: String,
-                               eadStatus: String,
-                               consignorName: String,
-                               dateOfDispatch: LocalDate,
-                               journeyTime: String,
-                               items: Seq[MovementItem],
-                               numberOfItems: Int)
-
-object GetMovementResponse {
-  implicit val format: Format[GetMovementResponse] = Json.format
+  implicit val format: Format[MovementItem] = Json.format
 }

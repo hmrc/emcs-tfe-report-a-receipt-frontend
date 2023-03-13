@@ -16,7 +16,7 @@
 
 package fixtures
 
-import models.response.emcsTfe.GetMovementResponse
+import models.response.emcsTfe.{GetMovementResponse, MovementItem}
 import play.api.libs.json.{JsValue, Json}
 
 import java.time.LocalDate
@@ -29,16 +29,37 @@ trait GetMovementResponseFixtures { _: BaseFixtures =>
     consignorName = "MyConsignor",
     dateOfDispatch = LocalDate.parse("2010-03-04"),
     journeyTime = "MyJourneyTime",
-    numberOfItems = 0
+    items = Seq(
+      MovementItem(
+        itemUniqueReference = 1,
+        productCode = "W200",
+        cnCode = "22041011",
+        quantity = BigDecimal(500),
+        grossMass = BigDecimal(900),
+        netMass = BigDecimal(375),
+        alcoholicStrength = Some(BigDecimal(12.7))
+      )
+    ),
+    numberOfItems = 1
   )
 
-  val getMovementResponseJson: JsValue = Json.parse(
-    """{
-      |  "localReferenceNumber": "MyLrn",
-      |  "eadStatus": "MyEadStatus",
-      |  "consignorName": "MyConsignor",
-      |  "dateOfDispatch": "2010-03-04",
-      |  "journeyTime": "MyJourneyTime",
-      |  "numberOfItems": 0
-      |}""".stripMargin)
+  val getMovementResponseJson: JsValue = Json.obj(
+      "localReferenceNumber" -> "MyLrn",
+      "eadStatus" -> "MyEadStatus",
+      "consignorName" -> "MyConsignor",
+      "dateOfDispatch" -> "2010-03-04",
+      "journeyTime" -> "MyJourneyTime",
+      "items" -> Json.arr(
+        Json.obj(fields =
+          "itemUniqueReference" -> 1,
+          "productCode" -> "W200",
+          "cnCode" -> "22041011",
+          "quantity" -> 500,
+          "grossMass" -> 900,
+          "netMass" -> 375,
+          "alcoholicStrength" -> 12.7
+        )
+      ),
+      "numberOfItems" -> 1
+  )
 }

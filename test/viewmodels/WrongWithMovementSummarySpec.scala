@@ -67,7 +67,7 @@ class WrongWithMovementSummarySpec extends SpecBase with DateUtils {
                 actions = Seq(
                   ActionItemViewModel(
                     langMessages.change,
-                    routes.WrongWithMovementController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, NormalMode).url,
+                    routes.WrongWithMovementController.loadWrongWithMovement(request.userAnswers.ern, request.userAnswers.arc, NormalMode).url,
                     id = WrongWithMovementPage
                   ).withVisuallyHiddenText(langMessages.hiddenChangeLinkText)
                 )

@@ -19,10 +19,11 @@ package navigation
 import controllers.routes
 import models.AcceptMovement.{Satisfactory, Unsatisfactory}
 import models.HowMuchIsWrong.TheWholeMovement
-import models.WrongWithMovement.{BrokenSeals, Damaged, Less, More, Other}
+import models.WrongWithMovement.{BrokenSeals, Damaged, Less, More, MoreOrLess, Other}
 import models._
 import pages._
 import pages.unsatisfactory._
+import pages.unsatisfactory.individualItems.WrongWithItemPage
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
@@ -43,12 +44,14 @@ class Navigator @Inject()() extends BaseNavigator {
     case HowMuchIsWrongPage =>
       (userAnswers: UserAnswers) =>
         userAnswers.get(HowMuchIsWrongPage) match {
-          case Some(TheWholeMovement) => routes.WrongWithMovementController.onPageLoad(userAnswers.ern, userAnswers.arc, NormalMode)
+          case Some(TheWholeMovement) => routes.WrongWithMovementController.loadWrongWithMovement(userAnswers.ern, userAnswers.arc, NormalMode)
           case Some(_) => routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)
           case None => routes.HowMuchIsWrongController.onPageLoad(userAnswers.ern, userAnswers.arc, NormalMode)
         }
     case WrongWithMovementPage =>
       (userAnswers: UserAnswers) => redirectToNextWrongMovementPage()(userAnswers)
+    case wrongWithItemPage: WrongWithItemPage =>
+      (userAnswers: UserAnswers) => redirectToNextItemWrongMovementPage(wrongWithItemPage)(userAnswers)
     case AddShortageInformationPage =>
       (userAnswers: UserAnswers) =>
         userAnswers.get(AddShortageInformationPage) match {
@@ -114,8 +117,9 @@ class Navigator @Inject()() extends BaseNavigator {
   }
 
   private[navigation] def nextWrongWithMovementOptionToAnswer(selectedOptions: Set[WrongWithMovement],
-                                                              lastOption: Option[WrongWithMovement] = None): Option[WrongWithMovement] = {
-    val orderedSetOfOptions = WrongWithMovement.values.filter(selectedOptions.contains)
+                                                              lastOption: Option[WrongWithMovement] = None,
+                                                              checkboxOptions: Seq[WrongWithMovement] = WrongWithMovement.values): Option[WrongWithMovement] = {
+    val orderedSetOfOptions = checkboxOptions.filter(selectedOptions.contains)
     lastOption match {
       case Some(value) if orderedSetOfOptions.lastOption.contains(value) =>
         None
@@ -140,10 +144,34 @@ class Navigator @Inject()() extends BaseNavigator {
             routes.AddMoreInformationController.loadSealsInformation(userAnswers.ern, userAnswers.arc, NormalMode)
           case Some(Other) =>
             routes.OtherInformationController.onPageLoad(userAnswers.ern, userAnswers.arc, NormalMode)
-          case None =>
+          case _ =>
             routes.AddMoreInformationController.loadMoreInformation(userAnswers.ern, userAnswers.arc, NormalMode)
         }
       case _ =>
-        routes.WrongWithMovementController.onPageLoad(userAnswers.ern, userAnswers.arc, NormalMode)
+        routes.WrongWithMovementController.loadWrongWithMovement(userAnswers.ern, userAnswers.arc, NormalMode)
+    }
+
+  private[navigation] def redirectToNextItemWrongMovementPage(page: WrongWithItemPage,
+                                                              lastOption: Option[WrongWithMovement] = None)(implicit userAnswers: UserAnswers): Call =
+    userAnswers.get(page) match {
+      case Some(selectedOptions) =>
+        nextWrongWithMovementOptionToAnswer(selectedOptions, lastOption, WrongWithMovement.individualItemValues) match {
+          case Some(MoreOrLess) =>
+            //TODO: Route to the ItemMoreLessPage (future story)
+            ???
+          case Some(Damaged) =>
+            //TODO: Route to the ItemDamagedPage (future story)
+            ???
+          case Some(BrokenSeals) =>
+            //TODO: Route to the ItemDamagedPage (future story)
+            ???
+          case Some(Other) =>
+            //TODO: Route to the ItemDamagedPage (future story)
+            ???
+          case _ =>
+            routes.AddMoreInformationController.loadMoreInformation(userAnswers.ern, userAnswers.arc, NormalMode)
+        }
+      case _ =>
+        routes.WrongWithMovementController.loadwrongWithItem(userAnswers.ern, userAnswers.arc, page.idx, NormalMode)
     }
 }

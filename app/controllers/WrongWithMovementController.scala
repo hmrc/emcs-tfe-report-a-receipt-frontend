@@ -18,11 +18,13 @@ package controllers
 
 import controllers.actions._
 import forms.WrongWithMovementFormProvider
-import models.Mode
+import models.{Mode, WrongWithMovement}
 import navigation.Navigator
+import pages.QuestionPage
 import pages.unsatisfactory.WrongWithMovementPage
+import pages.unsatisfactory.individualItems.WrongWithItemPage
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.UserAnswersService
 import views.html.WrongWithMovementView
 
@@ -42,18 +44,35 @@ class WrongWithMovementController @Inject()(
                                              view: WrongWithMovementView
                                      ) extends BaseNavigationController with AuthActionHelper {
 
-  def onPageLoad(ern: String, arc: String, mode: Mode): Action[AnyContent] =
+  def loadWrongWithMovement(ern: String, arc: String, mode: Mode): Action[AnyContent] =
+    onPageLoad(WrongWithMovementPage, ern, arc, routes.WrongWithMovementController.submitWrongWithMovement(ern, arc, mode))
+  def submitWrongWithMovement(ern: String, arc: String, mode: Mode): Action[AnyContent] =
+    onSubmit(WrongWithMovementPage, ern, arc, mode, routes.WrongWithMovementController.submitWrongWithMovement(ern, arc, mode))
+
+  def loadwrongWithItem(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
+    onPageLoad(WrongWithItemPage(idx), ern, arc, routes.WrongWithMovementController.submitwrongWithItem(ern, arc, idx, mode))
+  def submitwrongWithItem(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
+    onSubmit(WrongWithItemPage(idx), ern, arc, mode, routes.WrongWithMovementController.submitwrongWithItem(ern, arc, idx, mode))
+
+  private def onPageLoad(page: QuestionPage[Set[WrongWithMovement]],
+                         ern: String,
+                         arc: String,
+                         action: Call): Action[AnyContent] =
     authorisedDataRequest(ern, arc) { implicit request =>
-      Ok(view(fillForm(WrongWithMovementPage, formProvider()), mode))
+      Ok(view(page, fillForm(page, formProvider(page)), action))
     }
 
-  def onSubmit(ern: String, arc: String, mode: Mode): Action[AnyContent] =
+  private def onSubmit(page: QuestionPage[Set[WrongWithMovement]],
+                       ern: String,
+                       arc: String,
+                       mode: Mode,
+                       action: Call): Action[AnyContent] =
     authorisedDataRequestAsync(ern, arc) { implicit request =>
-      formProvider().bindFromRequest().fold(
+      formProvider(page).bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
+          Future.successful(BadRequest(view(page, formWithErrors, action))),
         value =>
-          saveAndRedirect(WrongWithMovementPage, value, mode)
+          saveAndRedirect(page, value, mode)
       )
     }
 }

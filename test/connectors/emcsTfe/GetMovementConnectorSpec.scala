@@ -21,13 +21,11 @@ import config.AppConfig
 import fixtures.GetMovementResponseFixtures
 import mocks.connectors.MockHttpClient
 import models.response.JsonValidationError
-import models.response.emcsTfe.GetMovementResponse
 import org.scalatest.BeforeAndAfterAll
 import play.api.Play
 import play.api.http.{HeaderNames, MimeTypes, Status}
 import uk.gov.hmrc.http.HeaderCarrier
 
-import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 class GetMovementConnectorSpec extends SpecBase

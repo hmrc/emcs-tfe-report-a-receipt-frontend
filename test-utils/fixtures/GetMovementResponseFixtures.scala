@@ -16,12 +16,44 @@
 
 package fixtures
 
-import models.response.emcsTfe.{GetMovementResponse, MovementItem}
+import models.response.emcsTfe.{GetMovementResponse, MovementItem, Packaging}
 import play.api.libs.json.{JsValue, Json}
 
 import java.time.LocalDate
 
 trait GetMovementResponseFixtures { _: BaseFixtures =>
+
+  val boxPackage = Packaging(
+    typeOfPackage = "BX",
+    quantity = 165
+  )
+
+  val cratePackage = Packaging(
+    typeOfPackage = "CR",
+    quantity = 12
+  )
+
+  val item1 = MovementItem(
+    itemUniqueReference = 1,
+    productCode = "W200",
+    cnCode = "22041011",
+    quantity = BigDecimal(500),
+    grossMass = BigDecimal(900),
+    netMass = BigDecimal(375),
+    alcoholicStrength = Some(BigDecimal(12.7)),
+    packaging = Seq(boxPackage)
+  )
+
+  val item2 = MovementItem(
+    itemUniqueReference = 2,
+    productCode = "W300",
+    cnCode = "22041011",
+    quantity = BigDecimal(550),
+    grossMass = BigDecimal(910),
+    netMass = BigDecimal(315),
+    alcoholicStrength = None,
+    packaging = Seq(boxPackage, cratePackage)
+  )
 
   val getMovementResponseModel: GetMovementResponse = GetMovementResponse(
     localReferenceNumber = "MyLrn",
@@ -29,17 +61,7 @@ trait GetMovementResponseFixtures { _: BaseFixtures =>
     consignorName = "MyConsignor",
     dateOfDispatch = LocalDate.parse("2010-03-04"),
     journeyTime = "MyJourneyTime",
-    items = Seq(
-      MovementItem(
-        itemUniqueReference = 1,
-        productCode = "W200",
-        cnCode = "22041011",
-        quantity = BigDecimal(500),
-        grossMass = BigDecimal(900),
-        netMass = BigDecimal(375),
-        alcoholicStrength = Some(BigDecimal(12.7))
-      )
-    ),
+    items = Seq(item1),
     numberOfItems = 1
   )
 
@@ -57,7 +79,13 @@ trait GetMovementResponseFixtures { _: BaseFixtures =>
           "quantity" -> 500,
           "grossMass" -> 900,
           "netMass" -> 375,
-          "alcoholicStrength" -> 12.7
+          "alcoholicStrength" -> 12.7,
+          "packaging" -> Json.arr(
+            Json.obj(fields =
+              "typeOfPackage" -> "BX",
+              "quantity" -> 165
+            )
+          )
         )
       ),
       "numberOfItems" -> 1

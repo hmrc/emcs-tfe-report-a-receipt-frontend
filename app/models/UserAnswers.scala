@@ -21,7 +21,6 @@ import queries.{Gettable, Settable}
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
 import java.time.Instant
-import scala.collection.Seq
 
 final case class UserAnswers(internalId: String,
                              ern: String,

@@ -14,7 +14,15 @@
  * limitations under the License.
  */
 
-package object forms {
-  private[forms] val TEXTAREA_MAX_LENGTH = 350
-  private[forms] val NUMERIC_15_3DP_REGEX: String = "^[1-9]\\d{0,14}$|^([1-9]\\d{0,13}|0)\\.[0-9]$|^([1-9]\\d{0,12}|0)\\.\\d[0-9]$|^([1-9]\\d{0,11}|0)\\.\\d\\d[0-9]$"
+package pages.unsatisfactory.individualItems
+
+import models.ItemShortageOrExcessModel
+import pages.QuestionPage
+import play.api.libs.json.{JsPath, __}
+
+case class ItemShortageOrExcessPage(idx: Int) extends QuestionPage[ItemShortageOrExcessModel] {
+
+  override def path: JsPath = __ \ "items" \ (idx - 1) \ toString
+
+  override def toString: String = "itemShortageOrExcess"
 }

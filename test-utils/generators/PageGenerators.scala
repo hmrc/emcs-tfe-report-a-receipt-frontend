@@ -18,9 +18,13 @@ package generators
 
 import org.scalacheck.Arbitrary
 import pages._
+import pages.unsatisfactory.individualItems.ItemShortageOrExcessPage
 import pages.unsatisfactory.{HowMuchIsWrongPage, WrongWithMovementPage}
 
 trait PageGenerators {
+
+  implicit lazy val arbitraryItemShortageOrExcessPage: Arbitrary[ItemShortageOrExcessPage.type] =
+    Arbitrary(ItemShortageOrExcessPage)
 
   implicit lazy val arbitraryHowMuchIsWrongPage: Arbitrary[HowMuchIsWrongPage.type] =
     Arbitrary(HowMuchIsWrongPage)

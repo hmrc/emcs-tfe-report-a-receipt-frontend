@@ -23,7 +23,7 @@ import models.WrongWithMovement.{BrokenSeals, Damaged, Less, More, MoreOrLess, O
 import models._
 import pages._
 import pages.unsatisfactory._
-import pages.unsatisfactory.individualItems.{SelectItemsPage, WrongWithItemPage}
+import pages.unsatisfactory.individualItems.{ItemShortageOrExcessPage, SelectItemsPage, WrongWithItemPage}
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
@@ -72,6 +72,8 @@ class Navigator @Inject()() extends BaseNavigator {
         }
     case ExcessInformationPage =>
       (userAnswers: UserAnswers) => redirectToNextWrongMovementPage(Some(More))(userAnswers)
+    case itemShortageOrExcess: ItemShortageOrExcessPage =>
+      (userAnswers: UserAnswers) => redirectToNextItemWrongMovementPage(WrongWithItemPage(itemShortageOrExcess.idx), Some(MoreOrLess))(userAnswers)
     case AddDamageInformationPage =>
       (userAnswers: UserAnswers) =>
         userAnswers.get(AddDamageInformationPage) match {
@@ -159,8 +161,7 @@ class Navigator @Inject()() extends BaseNavigator {
       case Some(selectedOptions) =>
         nextWrongWithMovementOptionToAnswer(selectedOptions, lastOption, WrongWithMovement.individualItemValues) match {
           case Some(MoreOrLess) =>
-            //TODO: Route to the ItemMoreLessPage (future story)
-            testOnly.controllers.routes.UnderConstructionController.onPageLoad()
+            routes.ItemShortageOrExcessController.onPageLoad(userAnswers.ern, userAnswers.arc, page.idx, NormalMode)
           case Some(Damaged) =>
             //TODO: Route to the ItemDamagedPage (future story)
             testOnly.controllers.routes.UnderConstructionController.onPageLoad()

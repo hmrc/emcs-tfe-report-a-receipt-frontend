@@ -204,12 +204,11 @@ class NavigatorSpec extends SpecBase {
 
         "when the next page is MoreOrLess" - {
 
-          //TODO: Implement as part of future story when page is built
           "must go to ItemShortageOrExcess page" in {
             val selectedOptions: Set[WrongWithMovement] = Set(MoreOrLess, Damaged, BrokenSeals, Other)
             val userAnswers = emptyUserAnswers.set(WrongWithItemPage(1), selectedOptions)
             navigator.nextPage(WrongWithItemPage(1), NormalMode, userAnswers) mustBe
-              testOnly.controllers.routes.UnderConstructionController.onPageLoad()
+              routes.ItemShortageOrExcessController.onPageLoad(testErn, testArc, 1, NormalMode)
           }
         }
 

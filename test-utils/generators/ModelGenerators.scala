@@ -16,6 +16,7 @@
 
 package generators
 
+import models.WrongWithMovement.{Less, More}
 import models._
 import org.scalacheck.{Arbitrary, Gen}
 
@@ -34,5 +35,21 @@ trait ModelGenerators {
   implicit lazy val arbitraryAcceptMovement: Arbitrary[AcceptMovement] =
     Arbitrary {
       Gen.oneOf(AcceptMovement.values)
+    }
+
+  implicit lazy val arbitraryAboutShortageExcess: Arbitrary[ItemShortageOrExcessModel] =
+    Arbitrary {
+      Gen.oneOf(Seq(
+        ItemShortageOrExcessModel(
+          More,
+          BigDecimal(12),
+          None
+        ),
+        ItemShortageOrExcessModel(
+          Less,
+          BigDecimal(12.123),
+          Some("info")
+        )
+      ))
     }
 }

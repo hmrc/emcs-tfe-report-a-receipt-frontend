@@ -17,6 +17,8 @@
 package models.requests
 
 import models.UserAnswers
+import models.response.emcsTfe.MovementItem
+import pages.unsatisfactory.individualItems.SelectItemsPage
 import play.api.mvc.WrappedRequest
 
 case class DataRequest[A](request: MovementRequest[A], userAnswers: UserAnswers) extends WrappedRequest[A](request) {
@@ -24,4 +26,9 @@ case class DataRequest[A](request: MovementRequest[A], userAnswers: UserAnswers)
   val ern = request.ern
   val arc = request.arc
   val movementDetails = request.movementDetails
+
+  def getItemDetails(idx: Int)(implicit request: DataRequest[_]): Option[MovementItem] =
+    request.userAnswers.get(SelectItemsPage(idx)).flatMap(reference =>
+      request.movementDetails.item(reference)
+    )
 }

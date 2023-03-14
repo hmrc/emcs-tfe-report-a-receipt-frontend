@@ -14,6 +14,15 @@ site.signIn = Sign in
 site.govuk = GOV.UK
 site.opensInNewTab = (yn agor tab newydd)
 
+unitOfMeasure.kilograms.short = kg
+unitOfMeasure.kilograms.long = kilograms
+unitOfMeasure.litres15.short = litres
+unitOfMeasure.litres15.long = litres (temperature of 15°C)
+unitOfMeasure.litres20.short = litres
+unitOfMeasure.litres20.long = litres (temperature of 20°C)
+unitOfMeasure.thousands.short = x1000
+unitOfMeasure.thousands.long = x1000 items
+
 date.day = Day
 date.month = Month
 date.year = Year
@@ -244,3 +253,17 @@ selectItems.table.heading.alcohol = Alcohol
 selectItems.table.heading.packaging = Packaging
 selectItems.table.row.alcohol = {0}%
 selectItems.table.row.alcohol.na = N/A
+
+itemShortageOrExcess.title = Tell us about the shortage or excess
+itemShortageOrExcess.heading = Tell us about the shortage or excess
+itemShortageOrExcess.shortageOrExcess.label = Shortage or excess
+itemShortageOrExcess.shortageOrExcess.more = Excess
+itemShortageOrExcess.shortageOrExcess.less = Shortage
+itemShortageOrExcess.shortageOrExcess.error.required = Select if you want to tell us about a shortage or an excess
+itemShortageOrExcess.amount.label = Amount of shortage or excess, in {0}
+itemShortageOrExcess.amount.error.required = Enter the amount
+itemShortageOrExcess.amount.error.maxLength = The amount must be 15 numbers or less
+itemShortageOrExcess.amount.error.regex = The amount must be a number, like 150 or 12.694
+itemShortageOrExcess.additionalInfo.label = Give more information about the shortage or excess (optional)
+itemShortageOrExcess.additionalInfo.error.invalidCharacter = Information must not include < and > and : and ;
+itemShortageOrExcess.additionalInfo.error.character = Information must contain letters or numbers

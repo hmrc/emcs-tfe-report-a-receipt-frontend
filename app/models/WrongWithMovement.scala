@@ -21,6 +21,7 @@ import pages.unsatisfactory.WrongWithMovementPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.checkboxes.CheckboxItem
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import viewmodels.govuk.checkbox._
 
 sealed trait WrongWithMovement
@@ -64,6 +65,21 @@ object WrongWithMovement extends Enumerable.Implicits {
           value   = value.toString
         ).withId(value.toString)
     }
+  }
+
+  def itemShortageOrExcessOptions(implicit messages: Messages) = {
+    Seq(
+      RadioItem(
+        content = Text(messages(s"itemShortageOrExcess.shortageOrExcess.$Less")),
+        value = Some(Less.toString),
+        id = Some(Less.toString)
+      ),
+      RadioItem(
+        content = Text(messages(s"itemShortageOrExcess.shortageOrExcess.$More")),
+        value = Some(More.toString),
+        id = Some(More.toString)
+      )
+    )
   }
 
   implicit val enumerable: Enumerable[WrongWithMovement] =

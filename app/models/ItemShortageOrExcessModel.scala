@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
-package object forms {
-  private[forms] val MAX_LENGTH_15 = 15
-  private[forms] val TEXTAREA_MAX_LENGTH = 350
-  private[forms] val ALPHANUMERIC_REGEX = "^(?s)(?=.*[A-Za-z0-9]).{1,}$"
-  private[forms] val XSS_REGEX = "^(?s)(?!.*javascript)(?!.*[<>;:]).{1,}$"
-  private[forms] val NUMERIC_15_3DP_REGEX: String = "^[1-9]\\d{0,14}$|^([1-9]\\d{0,13}|0)\\.[0-9]$|^([1-9]\\d{0,12}|0)\\.\\d[0-9]$|^([1-9]\\d{0,11}|0)\\.\\d\\d[0-9]$"
+package models
+
+import play.api.libs.json.{Format, Json}
+
+case class ItemShortageOrExcessModel(wrongWithItem: WrongWithMovement,
+                                     amount: BigDecimal,
+                                     additionalInfo: Option[String])
+
+object ItemShortageOrExcessModel {
+  implicit val format: Format[ItemShortageOrExcessModel] = Json.format
 }

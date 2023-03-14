@@ -34,7 +34,7 @@ class OtherInformationFormProvider @Inject() extends Mappings {
           identity
         )
         .verifying(maxLength(TEXTAREA_MAX_LENGTH, s"$OtherInformationPage.error.length"))
-        .verifying(regexp("^(?s)(?=.*[A-Za-z0-9]).{1,}$", s"$OtherInformationPage.error.character"))
-        .verifying(regexp("^(?s)(?!.*javascript)(?!.*[<>;:]).{1,}$", s"$OtherInformationPage.error.invalidCharacter"))
+        .verifying(regexp(ALPHANUMERIC_REGEX, s"$OtherInformationPage.error.character"))
+        .verifying(regexp(XSS_REGEX, s"$OtherInformationPage.error.invalidCharacter"))
     )
 }

@@ -22,6 +22,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.TryValues
 import pages._
+import pages.unsatisfactory.individualItems.ItemShortageOrExcessPage
 import pages.unsatisfactory.{HowMuchIsWrongPage, WrongWithMovementPage}
 import play.api.libs.json.{JsValue, Json}
 
@@ -29,6 +30,7 @@ trait UserAnswersGenerator extends TryValues with BaseFixtures {
   self: Generators =>
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
+    arbitrary[(ItemShortageOrExcessPage, JsValue)] ::
     arbitrary[(HowMuchIsWrongPage.type, JsValue)] ::
     arbitrary[(WrongWithMovementPage.type, JsValue)] ::
     arbitrary[(MoreInformationPage.type, JsValue)] ::

@@ -16,6 +16,7 @@
 
 package models.response.emcsTfe
 
+import pages.unsatisfactory.individualItems.SelectItemsPage
 import play.api.libs.json.{Format, Json}
 
 import java.time.LocalDate
@@ -27,7 +28,10 @@ case class GetMovementResponse(localReferenceNumber: String,
                                dateOfDispatch: LocalDate,
                                journeyTime: String,
                                items: Seq[MovementItem],
-                               numberOfItems: Int)
+                               numberOfItems: Int) {
+
+  def item(reference: Int): Option[MovementItem] = items.find(_.itemUniqueReference == reference)
+}
 
 object GetMovementResponse {
   implicit val format: Format[GetMovementResponse] = Json.format

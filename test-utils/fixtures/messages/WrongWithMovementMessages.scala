@@ -37,7 +37,7 @@ object WrongWithMovementMessages {
     val hiddenChangeLinkText: String
   }
   object English extends ViewMessages with BaseEnglish {
-    override val heading = "What is wrong with this movement?"
+    override val heading = "What’s wrong with the movement?"
     override val title = title(heading)
     override val hint = "Select all that apply."
     override val lessThanExpected: String = "I was sent less items than expected"
@@ -56,7 +56,7 @@ object WrongWithMovementMessages {
   }
 
   object Welsh extends ViewMessages with BaseWelsh {
-    override val heading = "What is wrong with this movement?"
+    override val heading = "What’s wrong with the movement?"
     override val title = title(heading)
     override val hint = "Select all that apply."
     override val lessThanExpected: String = "I was sent less items than expected"

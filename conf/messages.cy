@@ -204,8 +204,8 @@ howMuchIsWrong.checkYourAnswers.wholeMovement = Whole movement
 howMuchIsWrong.checkYourAnswers.individualItem = Individual items
 howMuchIsWrong.checkYourAnswers.change.hidden = how much of this movement is wrong
 
-wrongWithMovement.title = What is wrong with this movement?
-wrongWithMovement.heading = What is wrong with this movement?
+wrongWithMovement.title = What’s wrong with the movement?
+wrongWithMovement.heading = What’s wrong with the movement?
 wrongWithMovement.hint = Select all that apply.
 wrongWithMovement.less = I was sent less items than expected
 wrongWithMovement.more = I was sent more items than expected

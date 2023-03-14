@@ -102,3 +102,8 @@ GET         /:ern/:arc/item/:idx/what-wrong-item                    controllers.
 POST        /:ern/:arc/item/:idx/what-wrong-item                    controllers.WrongWithMovementController.submitwrongWithItem(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
 GET         /:ern/:arc/item/:idx/what-wrong-item/change             controllers.WrongWithMovementController.loadwrongWithItem(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)
 POST        /:ern/:arc/item/:idx/what-wrong-item/change             controllers.WrongWithMovementController.submitwrongWithItem(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)
+
+GET        /:ern/:arc/choose-give-reason-item-damage                   controllers.ChooseGiveReasonItemDamagedController.onPageLoad(ern: String, arc: String, mode: Mode = NormalMode)
+POST       /:ern/:arc/choose-give-reason-item-damage                   controllers.ChooseGiveReasonItemDamagedController.onSubmit(ern: String, arc: String, mode: Mode = NormalMode)
+GET        /:ern/:arc/choose-give-reason-item-damage/change            controllers.ChooseGiveReasonItemDamagedController.onPageLoad(ern: String, arc: String, mode: Mode = CheckMode)
+POST       /:ern/:arc/choose-give-reason-item-damage/change            controllers.ChooseGiveReasonItemDamagedController.onSubmit(ern: String, arc: String, mode: Mode = CheckMode)

@@ -235,3 +235,9 @@ wrongWithItem.checkYourAnswers.brokenSeals = Broken seal(s)
 wrongWithItem.checkYourAnswers.other = Other
 wrongWithItem.checkYourAnswers.change.hidden = what was wrong
 
+
+chooseGiveReasonItemDamaged.title = chooseGiveReasonItemDamaged
+chooseGiveReasonItemDamaged.heading = chooseGiveReasonItemDamaged
+chooseGiveReasonItemDamaged.checkYourAnswersLabel = chooseGiveReasonItemDamaged
+chooseGiveReasonItemDamaged.error.required = Select yes if chooseGiveReasonItemDamaged
+chooseGiveReasonItemDamaged.change.hidden = ChooseGiveReasonItemDamaged

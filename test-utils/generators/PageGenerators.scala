@@ -26,6 +26,9 @@ trait PageGenerators {
   implicit lazy val arbitraryItemShortageOrExcessPage: Arbitrary[ItemShortageOrExcessPage] =
     Arbitrary(ItemShortageOrExcessPage(1))
 
+  implicit lazy val arbitraryChooseGiveReasonItemDamagedPage: Arbitrary[ChooseGiveReasonItemDamagedPage.type] =
+    Arbitrary(ChooseGiveReasonItemDamagedPage)
+
   implicit lazy val arbitraryHowMuchIsWrongPage: Arbitrary[HowMuchIsWrongPage.type] =
     Arbitrary(HowMuchIsWrongPage)
 

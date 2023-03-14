@@ -245,6 +245,12 @@ wrongWithItem.checkYourAnswers.other = Other
 wrongWithItem.checkYourAnswers.change.hidden = what was wrong
 
 
+chooseGiveReasonItemDamaged.title = chooseGiveReasonItemDamaged
+chooseGiveReasonItemDamaged.heading = chooseGiveReasonItemDamaged
+chooseGiveReasonItemDamaged.checkYourAnswersLabel = chooseGiveReasonItemDamaged
+chooseGiveReasonItemDamaged.error.required = Select yes if chooseGiveReasonItemDamaged
+chooseGiveReasonItemDamaged.change.hidden = ChooseGiveReasonItemDamaged
+
 selectItems.title = Select an item to give information about
 selectItems.heading = Select an item to give information about
 selectItems.table.heading.description = Description

@@ -31,6 +31,7 @@ trait UserAnswersGenerator extends TryValues with BaseFixtures {
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
     arbitrary[(ItemShortageOrExcessPage, JsValue)] ::
+    arbitrary[(ChooseGiveReasonItemDamagedPage.type, JsValue)] ::
     arbitrary[(HowMuchIsWrongPage.type, JsValue)] ::
     arbitrary[(WrongWithMovementPage.type, JsValue)] ::
     arbitrary[(MoreInformationPage.type, JsValue)] ::

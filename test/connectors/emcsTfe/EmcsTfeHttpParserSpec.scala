@@ -25,8 +25,6 @@ import play.api.http.{HeaderNames, MimeTypes, Status}
 import play.api.libs.json.{Json, Reads}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
-import java.time.LocalDate
-
 class EmcsTfeHttpParserSpec extends SpecBase
   with Status with MimeTypes with HeaderNames with MockHttpClient with GetMovementResponseFixtures {
 

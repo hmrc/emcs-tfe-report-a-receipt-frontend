@@ -24,7 +24,7 @@ import models.WrongWithMovement._
 import models._
 import pages._
 import pages.unsatisfactory._
-import pages.unsatisfactory.individualItems.WrongWithItemPage
+import pages.unsatisfactory.individualItems.{SelectItemsPage, WrongWithItemPage}
 
 class NavigatorSpec extends SpecBase {
 
@@ -110,8 +110,7 @@ class NavigatorSpec extends SpecBase {
 
             val userAnswers = emptyUserAnswers.set(HowMuchIsWrongPage, IndividualItem)
 
-            //TODO: Needs updating when page is available to route to
-            navigator.nextPage(HowMuchIsWrongPage, NormalMode, userAnswers) mustBe routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+            navigator.nextPage(HowMuchIsWrongPage, NormalMode, userAnswers) mustBe routes.SelectItemsController.onPageLoad(testErn, testArc)
           }
         }
 
@@ -120,6 +119,15 @@ class NavigatorSpec extends SpecBase {
           "must go to back to the HowMuchIsWrong page" in {
             navigator.nextPage(HowMuchIsWrongPage, NormalMode, emptyUserAnswers) mustBe routes.HowMuchIsWrongController.onPageLoad(testErn, testArc, NormalMode)
           }
+        }
+      }
+
+      "for the SelectItems page" - {
+
+        "must go to the WrongWithItem page at the specified index" in {
+
+          navigator.nextPage(SelectItemsPage(3), NormalMode, emptyUserAnswers) mustBe
+            routes.WrongWithMovementController.loadwrongWithItem(testErn, testArc, 3, NormalMode)
         }
       }
 
@@ -197,44 +205,44 @@ class NavigatorSpec extends SpecBase {
         "when the next page is MoreOrLess" - {
 
           //TODO: Implement as part of future story when page is built
-          "must go to ItemShortageOrExcess page" ignore {
+          "must go to ItemShortageOrExcess page" in {
             val selectedOptions: Set[WrongWithMovement] = Set(MoreOrLess, Damaged, BrokenSeals, Other)
             val userAnswers = emptyUserAnswers.set(WrongWithItemPage(1), selectedOptions)
             navigator.nextPage(WrongWithItemPage(1), NormalMode, userAnswers) mustBe
-              ???
+              testOnly.controllers.routes.UnderConstructionController.onPageLoad()
           }
         }
 
         "when the next page is Damaged" - {
 
           //TODO: Implement as part of future story when page is built
-          "must go to ItemDamagedInformation add more info Yes/No page" ignore {
+          "must go to ItemDamagedInformation add more info Yes/No page" in {
             val selectedOptions: Set[WrongWithMovement] = Set(Damaged, BrokenSeals, Other)
             val userAnswers = emptyUserAnswers.set(WrongWithItemPage(1), selectedOptions)
             navigator.nextPage(WrongWithItemPage(1), NormalMode, userAnswers) mustBe
-              ???
+              testOnly.controllers.routes.UnderConstructionController.onPageLoad()
           }
         }
 
         "when the next page is BrokenSeals" - {
 
           //TODO: Implement as part of future story when page is built
-          "must go to ItemBrokenSealsInformation add more info Yes/No page" ignore {
+          "must go to ItemBrokenSealsInformation add more info Yes/No page" in {
             val selectedOptions: Set[WrongWithMovement] = Set(BrokenSeals, Other)
             val userAnswers = emptyUserAnswers.set(WrongWithItemPage(1), selectedOptions)
             navigator.nextPage(WrongWithItemPage(1), NormalMode, userAnswers) mustBe
-              ???
+              testOnly.controllers.routes.UnderConstructionController.onPageLoad()
           }
         }
 
         "when the next page is Other" - {
 
           //TODO: Implement as part of future story when page is built
-          "must go to ItemOther information page" ignore {
+          "must go to ItemOther information page" in {
             val selectedOptions: Set[WrongWithMovement] = Set(Other)
             val userAnswers = emptyUserAnswers.set(WrongWithItemPage(1), selectedOptions)
             navigator.nextPage(WrongWithItemPage(1), NormalMode, userAnswers) mustBe
-              ???
+              testOnly.controllers.routes.UnderConstructionController.onPageLoad()
           }
         }
       }

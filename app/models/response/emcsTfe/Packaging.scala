@@ -16,19 +16,11 @@
 
 package models.response.emcsTfe
 
-import play.api.libs.json.{Format, Json, Reads, __}
+import play.api.libs.json.{Format, Json, OWrites}
 
-case class MovementItem(itemUniqueReference: Int,
-                        productCode: String,
-                        cnCode: String,
-                        quantity: BigDecimal,
-                        grossMass: BigDecimal,
-                        netMass: BigDecimal,
-                        alcoholicStrength: Option[BigDecimal],
-                        packaging: Seq[Packaging])
-object MovementItem {
+case class Packaging(typeOfPackage: String,
+                     quantity: BigDecimal)
+object Packaging {
 
-  implicit val format: Format[MovementItem] = Json.format
-
-  val readItemUniqueReference: Reads[Int] = Reads.at[Int](__ \ "itemUniqueReference")
+  implicit val format: Format[Packaging] = Json.format
 }

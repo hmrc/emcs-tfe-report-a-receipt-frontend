@@ -235,3 +235,12 @@ wrongWithItem.checkYourAnswers.brokenSeals = Broken seal(s)
 wrongWithItem.checkYourAnswers.other = Other
 wrongWithItem.checkYourAnswers.change.hidden = what was wrong
 
+
+selectItems.title = Select an item to give information about
+selectItems.heading = Select an item to give information about
+selectItems.table.heading.description = Description
+selectItems.table.heading.quantity = Quantity
+selectItems.table.heading.alcohol = Alcohol
+selectItems.table.heading.packaging = Packaging
+selectItems.table.row.alcohol = {0}%
+selectItems.table.row.alcohol.na = N/A

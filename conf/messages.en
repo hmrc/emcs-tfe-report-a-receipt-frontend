@@ -234,3 +234,9 @@ wrongWithItem.checkYourAnswers.damaged = Goods damaged
 wrongWithItem.checkYourAnswers.brokenSeals = Broken seal(s)
 wrongWithItem.checkYourAnswers.other = Other
 wrongWithItem.checkYourAnswers.change.hidden = what was wrong
+
+chooseGiveReasonItemDamaged.title = Do you want to give more information about being sent damaged items?
+chooseGiveReasonItemDamaged.heading = Do you want to give more information about being sent damaged items?
+chooseGiveReasonItemDamaged.checkYourAnswersLabel = chooseGiveReasonItemDamaged
+chooseGiveReasonItemDamaged.error.required = Select yes if chooseGiveReasonItemDamaged
+chooseGiveReasonItemDamaged.change.hidden = ChooseGiveReasonItemDamaged

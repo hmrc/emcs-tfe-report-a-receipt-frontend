@@ -19,13 +19,15 @@ package testOnly.controllers
 import play.api.i18n.MessagesApi
 import play.api.mvc.MessagesControllerComponents
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import testOnly.views.html.UnderConstructionView
 
 import javax.inject.Inject
 
 class UnderConstructionController @Inject()(override val messagesApi: MessagesApi,
-                                            val controllerComponents: MessagesControllerComponents) extends FrontendBaseController {
+                                            val controllerComponents: MessagesControllerComponents,
+                                            view: UnderConstructionView) extends FrontendBaseController {
 
-  def onPageLoad() = Action {
-    Ok("User Journey Under Construction.")
+  def onPageLoad() = Action { implicit request =>
+    Ok(view())
   }
 }

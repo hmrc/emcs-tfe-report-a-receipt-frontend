@@ -103,10 +103,10 @@ POST        /:ern/:arc/item/:idx/what-wrong-item                    controllers.
 GET         /:ern/:arc/item/:idx/what-wrong-item/change             controllers.WrongWithMovementController.loadwrongWithItem(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)
 POST        /:ern/:arc/item/:idx/what-wrong-item/change             controllers.WrongWithMovementController.submitwrongWithItem(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)
 
-GET        /:ern/:arc/choose-give-reason-item-damage                   controllers.ChooseGiveReasonItemDamagedController.onPageLoad(ern: String, arc: String, mode: Mode = NormalMode)
-POST       /:ern/:arc/choose-give-reason-item-damage                   controllers.ChooseGiveReasonItemDamagedController.onSubmit(ern: String, arc: String, mode: Mode = NormalMode)
-GET        /:ern/:arc/choose-give-reason-item-damage/change            controllers.ChooseGiveReasonItemDamagedController.onPageLoad(ern: String, arc: String, mode: Mode = CheckMode)
-POST       /:ern/:arc/choose-give-reason-item-damage/change            controllers.ChooseGiveReasonItemDamagedController.onSubmit(ern: String, arc: String, mode: Mode = CheckMode)
+GET        /:ern/:arc/item/:idx/choose-give-reason-item-damage                   controllers.ChooseGiveReasonItemDamagedController.loadChooseGiveReasonDamagedItem(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
+POST       /:ern/:arc/item/:idx/choose-give-reason-item-damage                   controllers.ChooseGiveReasonItemDamagedController.submitChooseGiveReasonDamagedItem(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
+GET        /:ern/:arc/item/:idx/choose-give-reason-item-damage/change            controllers.ChooseGiveReasonItemDamagedController.loadChooseGiveReasonDamagedItem(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)
+POST       /:ern/:arc/item/:idx/choose-give-reason-item-damage/change            controllers.ChooseGiveReasonItemDamagedController.submitChooseGiveReasonDamagedItem(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)
 
 GET         /:ern/:arc/select-items-give-information                       controllers.SelectItemsController.onPageLoad(ern: String, arc: String)
 GET         /:ern/:arc/select-items-give-information/:uniqueItemReference  controllers.SelectItemsController.addItemToList(ern: String, arc: String, uniqueItemReference: Int)

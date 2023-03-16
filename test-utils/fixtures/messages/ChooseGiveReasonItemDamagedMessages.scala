@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 
-package pages
+package fixtures.messages
 
-import pages.behaviours.PageBehaviours
-import pages.unsatisfactory.individualItems.ChooseGiveReasonItemDamagedPage
+object ChooseGiveReasonItemDamagedMessages {
 
-class ChooseGiveReasonItemDamagedPageSpec extends PageBehaviours {
+  sealed trait ViewMessages { _: i18n =>
+    val title: String
+    val heading: String
+  }
+  object English extends ViewMessages with BaseEnglish {
+    override val heading = "Do you want to give more information about being sent damaged items?"
+    override val title = title(heading)
 
-  "ChooseGiveReasonItemDamagedPage" - {
+  }
 
-    beRetrievable[Boolean](ChooseGiveReasonItemDamagedPage(1))
-
-    beSettable[Boolean](ChooseGiveReasonItemDamagedPage(1))
-
-    beRemovable[Boolean](ChooseGiveReasonItemDamagedPage(1))
+  object Welsh extends ViewMessages with BaseWelsh {
+    override val heading = "Do you want to give more information about being sent damaged items?"
+    override val title = title(heading)
   }
 }

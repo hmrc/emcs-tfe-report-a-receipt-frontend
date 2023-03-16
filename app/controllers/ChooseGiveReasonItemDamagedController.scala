@@ -18,12 +18,14 @@ package controllers
 
 import controllers.actions._
 import forms.ChooseGiveReasonItemDamagedFormProvider
+
 import javax.inject.Inject
-import models.Mode
+import models.{Mode, WrongWithMovement}
 import navigation.Navigator
-import pages.ChooseGiveReasonItemDamagedPage
+import pages.QuestionPage
+import pages.unsatisfactory.individualItems.{ChooseGiveReasonItemDamagedPage, WrongWithItemPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.UserAnswersService
 import views.html.ChooseGiveReasonItemDamagedView
 
@@ -42,18 +44,26 @@ class ChooseGiveReasonItemDamagedController @Inject()(
                                        view: ChooseGiveReasonItemDamagedView
                                      ) extends BaseNavigationController with AuthActionHelper {
 
-  def onPageLoad(ern: String, arc: String, mode: Mode): Action[AnyContent] =
+
+
+  def loadChooseGiveReasonDamagedItem(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
+    onPageLoad(ChooseGiveReasonItemDamagedPage(idx), ern, arc, routes.ChooseGiveReasonItemDamagedController.submitChooseGiveReasonDamagedItem(ern, arc, idx, mode))
+  def submitChooseGiveReasonDamagedItem(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
+    onSubmit(ChooseGiveReasonItemDamagedPage(idx), ern, arc, mode, routes.ChooseGiveReasonItemDamagedController.submitChooseGiveReasonDamagedItem(ern, arc, idx, mode))
+
+
+  def onPageLoad(page: QuestionPage[Boolean], ern: String, arc: String, action: Call): Action[AnyContent] =
     authorisedDataRequest(ern, arc) { implicit request =>
-      Ok(view(fillForm(ChooseGiveReasonItemDamagedPage, formProvider()), mode))
+      Ok(view(fillForm(page, formProvider()), action))
     }
 
-  def onSubmit(ern: String, arc: String, mode: Mode): Action[AnyContent] =
+  def onSubmit(page: QuestionPage[Boolean], ern: String, arc: String, mode: Mode, action: Call): Action[AnyContent] =
     authorisedDataRequestAsync(ern, arc) { implicit request =>
       formProvider().bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
+          Future.successful(BadRequest(view(formWithErrors, action))),
         value =>
-          saveAndRedirect(ChooseGiveReasonItemDamagedPage, value, mode)
+          saveAndRedirect(page, value, mode)
       )
     }
 }

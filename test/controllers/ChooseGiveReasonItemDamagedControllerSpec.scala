@@ -21,7 +21,7 @@ import forms.ChooseGiveReasonItemDamagedFormProvider
 import mocks.services.MockUserAnswersService
 import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import pages.ChooseGiveReasonItemDamagedPage
+import pages.unsatisfactory.individualItems.ChooseGiveReasonItemDamagedPage
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -38,7 +38,9 @@ class ChooseGiveReasonItemDamagedControllerSpec extends SpecBase with MockUserAn
   val formProvider = new ChooseGiveReasonItemDamagedFormProvider()
   val form = formProvider()
 
-  lazy val chooseGiveReasonItemDamagedRoute = routes.ChooseGiveReasonItemDamagedController.onPageLoad(testErn, testArc, NormalMode).url
+
+  lazy val chooseGiveReasonItemDamagedRoute = routes.ChooseGiveReasonItemDamagedController.loadChooseGiveReasonDamagedItem(testErn, testArc, 1, NormalMode).url
+  def chooseGiveReasonItemDamagedAction(idx: Int): Call = routes.ChooseGiveReasonItemDamagedController.submitChooseGiveReasonDamagedItem(testErn, testArc, idx, NormalMode)
 
   "ChooseGiveReasonItemDamaged Controller" - {
 
@@ -54,13 +56,13 @@ class ChooseGiveReasonItemDamagedControllerSpec extends SpecBase with MockUserAn
         val view = application.injector.instanceOf[ChooseGiveReasonItemDamagedView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(dataRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, chooseGiveReasonItemDamagedAction(1))(dataRequest(request), messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(ChooseGiveReasonItemDamagedPage, true)
+      val userAnswers = emptyUserAnswers.set(ChooseGiveReasonItemDamagedPage(1), true)
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -72,7 +74,7 @@ class ChooseGiveReasonItemDamagedControllerSpec extends SpecBase with MockUserAn
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode)(dataRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(true), chooseGiveReasonItemDamagedAction(1))(dataRequest(request), messages(application)).toString
       }
     }
 
@@ -116,7 +118,7 @@ class ChooseGiveReasonItemDamagedControllerSpec extends SpecBase with MockUserAn
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(dataRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, chooseGiveReasonItemDamagedAction(1))(dataRequest(request), messages(application)).toString
       }
     }
 

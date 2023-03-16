@@ -165,8 +165,7 @@ class Navigator @Inject()() extends BaseNavigator {
           case Some(ShortageOrExcess) =>
             routes.ItemShortageOrExcessController.onPageLoad(userAnswers.ern, userAnswers.arc, page.idx, NormalMode)
           case Some(Damaged) =>
-            //TODO: Route to the ItemDamagedPage (future story)
-            testOnly.controllers.routes.UnderConstructionController.onPageLoad()
+          routes.ChooseGiveReasonItemDamagedController.loadChooseGiveReasonDamagedItem(userAnswers.ern, userAnswers.arc, page.idx, NormalMode)
           case Some(BrokenSeals) =>
             //TODO: Route to the ItemDamagedPage (future story)
             testOnly.controllers.routes.UnderConstructionController.onPageLoad()

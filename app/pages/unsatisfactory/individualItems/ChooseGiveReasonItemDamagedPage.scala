@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.unsatisfactory.individualItems
 
-import play.api.libs.json.JsPath
+import pages.QuestionPage
+import play.api.libs.json.{JsPath, __}
 
-case object ChooseGiveReasonItemDamagedPage extends QuestionPage[Boolean] {
+case class ChooseGiveReasonItemDamagedPage(idx: Int) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = __ \ "items" \ (idx - 1) \ toString
 
   override def toString: String = "chooseGiveReasonItemDamaged"
 }

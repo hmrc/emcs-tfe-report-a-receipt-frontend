@@ -276,8 +276,9 @@ itemOtherInformation.error.length = Information must be 350 characters or less
 itemOtherInformation.error.required = Enter more information
 itemOtherInformation.error.invalidCharacter = Information must not include < and > and : and ;
 itemOtherInformation.error.character = Information must contain letters or numbers
+
 chooseGiveReasonItemDamaged.title = Do you want to give more information about being sent damaged items?
 chooseGiveReasonItemDamaged.heading = Do you want to give more information about being sent damaged items?
 chooseGiveReasonItemDamaged.checkYourAnswersLabel = chooseGiveReasonItemDamaged
-chooseGiveReasonItemDamaged.error.required = Select yes if chooseGiveReasonItemDamaged
+chooseGiveReasonItemDamaged.error.required = Select yes if you want to give more information about [reason]
 chooseGiveReasonItemDamaged.change.hidden = ChooseGiveReasonItemDamaged

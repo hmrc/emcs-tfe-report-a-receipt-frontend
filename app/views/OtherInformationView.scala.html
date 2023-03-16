@@ -17,6 +17,7 @@
 @import models.requests.DataRequest
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.charactercount.CharacterCount
 @import viewmodels.LabelSize
+@import pages.QuestionPage
 
 @this(
         layout: templates.Layout,
@@ -29,9 +30,9 @@
         saveAndContinue: components.saveAndContinue
 )
 
-@(form: Form[_], action: Call)(implicit request: DataRequest[_], messages: Messages)
+@(page: QuestionPage[String], form: Form[_], action: Call)(implicit request: DataRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("otherInformation.title"))) {
+@layout(pageTitle = title(form, messages(s"$page.title"))) {
 
     @formHelper(action) {
 
@@ -46,8 +47,8 @@
                 id = "more-information",
                 name = "more-information",
                 maxLength = Some(350),
-                label = LabelViewModel(Text(messages("otherInformation.heading"))).asPageHeading(LabelSize.Large),
-                hint = Some(HintViewModel(Text(messages("otherInformation.hint")))),
+                label = LabelViewModel(Text(messages(s"$page.heading"))).asPageHeading(LabelSize.Large),
+                hint = Some(HintViewModel(Text(messages(s"$page.hint")))),
                 value = form("more-information").value,
                 errorMessage = form.errors("more-information") match {
                     case Nil => None

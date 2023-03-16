@@ -22,6 +22,7 @@ import mocks.services.MockUserAnswersService
 import models.NormalMode
 import navigation.{FakeNavigator, Navigator}
 import pages.unsatisfactory._
+import pages.unsatisfactory.individualItems.ItemOtherInformationPage
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -38,146 +39,155 @@ class OtherInformationControllerSpec extends SpecBase with JsonOptionFormatter w
 
   val formProvider = new OtherInformationFormProvider()
 
-  lazy val url: String = routes.OtherInformationController.onPageLoad(testErn, testArc, NormalMode).url
-  lazy val submitAction: Call = routes.OtherInformationController.onSubmit(testErn, testArc, NormalMode)
+  lazy val otherInformationRoute: String = routes.OtherInformationController.loadOtherInformation(testErn, testArc, NormalMode).url
+  lazy val otherInformationSubmitAction: Call = routes.OtherInformationController.submitOtherInformation(testErn, testArc, NormalMode)
 
-  "OtherInformation Controller" - {
+  lazy val itemOtherInformationRoute: String = routes.OtherInformationController.loadItemOtherInformation(testErn, testArc, idx = 1, NormalMode).url
+  lazy val itemOtherInformationSubmitAction: Call = routes.OtherInformationController.submitItemOtherInformation(testErn, testArc, idx = 1, NormalMode)
 
-    val form = formProvider()
+  Seq(
+    (OtherInformationPage, otherInformationRoute, otherInformationSubmitAction),
+    (ItemOtherInformationPage(1), itemOtherInformationRoute, itemOtherInformationSubmitAction)
+  ) foreach { case (page, url, submitAction) =>
 
-    "must return OK and the correct view for a GET" in {
+    s"for the '$page' page" - {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val form = formProvider(page)
 
-      running(application) {
-        val request = FakeRequest(GET, url)
+      "must return OK and the correct view for a GET" in {
 
-        val result = route(application, request).value
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-        val view = application.injector.instanceOf[OtherInformationView]
+        running(application) {
+          val request = FakeRequest(GET, url)
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, submitAction)(dataRequest(request), messages(application)).toString
+          val result = route(application, request).value
+
+          val view = application.injector.instanceOf[OtherInformationView]
+
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view(page, form, submitAction)(dataRequest(request), messages(application)).toString
+        }
       }
-    }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
+      "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(OtherInformationPage, "answer")
+        val userAnswers = emptyUserAnswers.set(page, "answer")
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-      running(application) {
-        val request = FakeRequest(GET, url)
+        running(application) {
+          val request = FakeRequest(GET, url)
 
-        val view = application.injector.instanceOf[OtherInformationView]
+          val view = application.injector.instanceOf[OtherInformationView]
 
-        val result = route(application, request).value
+          val result = route(application, request).value
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), submitAction)(dataRequest(request), messages(application)).toString
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view(page, form.fill("answer"), submitAction)(dataRequest(request), messages(application)).toString
+        }
       }
-    }
 
-    "must redirect to the next page when valid data is submitted" in {
+      "must redirect to the next page when valid data is submitted" in {
 
-      val updatedAnswers = emptyUserAnswers.set(OtherInformationPage, "answer")
+        val updatedAnswers = emptyUserAnswers.set(page, "answer")
 
-      MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
+        MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[UserAnswersService].toInstance(mockUserAnswersService)
-          )
-          .build()
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(
+              bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+              bind[UserAnswersService].toInstance(mockUserAnswersService)
+            )
+            .build()
 
-      running(application) {
-        val request =
-          FakeRequest(POST, url)
-            .withFormUrlEncodedBody(("more-information", "answer"))
+        running(application) {
+          val request =
+            FakeRequest(POST, url)
+              .withFormUrlEncodedBody(("more-information", "answer"))
 
-        val result = route(application, request).value
+          val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual onwardRoute.url
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual onwardRoute.url
+        }
       }
-    }
 
-    "must return a Bad Request and errors when NO data is submitted" in {
+      "must return a Bad Request and errors when NO data is submitted" in {
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[UserAnswersService].toInstance(mockUserAnswersService)
-          )
-          .build()
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(
+              bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+              bind[UserAnswersService].toInstance(mockUserAnswersService)
+            )
+            .build()
 
-      running(application) {
-        val request =
-          FakeRequest(POST, url)
-            .withFormUrlEncodedBody(("more-information", ""))
+        running(application) {
+          val request =
+            FakeRequest(POST, url)
+              .withFormUrlEncodedBody(("more-information", ""))
 
-        val boundForm = form.bind(Map("more-information" -> ""))
+          val boundForm = form.bind(Map("more-information" -> ""))
 
-        val view = application.injector.instanceOf[OtherInformationView]
+          val view = application.injector.instanceOf[OtherInformationView]
 
-        val result = route(application, request).value
+          val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, submitAction)(dataRequest(request), messages(application)).toString
+          status(result) mustEqual BAD_REQUEST
+          contentAsString(result) mustEqual view(page, boundForm, submitAction)(dataRequest(request), messages(application)).toString
+        }
       }
-    }
 
-    "must return a Bad Request and errors when invalid data is submitted" in {
+      "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      running(application) {
-        val request =
-          FakeRequest(POST, url)
-            .withFormUrlEncodedBody(("more-information", "<>"))
+        running(application) {
+          val request =
+            FakeRequest(POST, url)
+              .withFormUrlEncodedBody(("more-information", "<>"))
 
-        val boundForm = form.bind(Map("more-information" -> "<>"))
+          val boundForm = form.bind(Map("more-information" -> "<>"))
 
-        val view = application.injector.instanceOf[OtherInformationView]
+          val view = application.injector.instanceOf[OtherInformationView]
 
-        val result = route(application, request).value
+          val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, submitAction)(dataRequest(request), messages(application)).toString
+          status(result) mustEqual BAD_REQUEST
+          contentAsString(result) mustEqual view(page, boundForm, submitAction)(dataRequest(request), messages(application)).toString
+        }
       }
-    }
 
-    "must redirect to Journey Recovery for a GET if no existing data is found" in {
+      "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+        val application = applicationBuilder(userAnswers = None).build()
 
-      running(application) {
-        val request = FakeRequest(GET, url)
+        running(application) {
+          val request = FakeRequest(GET, url)
 
-        val result = route(application, request).value
+          val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        }
       }
-    }
 
-    "must redirect to Journey Recovery for a POST if no existing data is found" in {
+      "must redirect to Journey Recovery for a POST if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+        val application = applicationBuilder(userAnswers = None).build()
 
-      running(application) {
-        val request =
-          FakeRequest(POST, url)
-            .withFormUrlEncodedBody(("more-information", "answer"))
+        running(application) {
+          val request =
+            FakeRequest(POST, url)
+              .withFormUrlEncodedBody(("more-information", "answer"))
 
-        val result = route(application, request).value
+          val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        }
       }
     }
   }

@@ -78,10 +78,10 @@ POST        /:ern/:arc/give-reason-movement-seals                   controllers.
 GET         /:ern/:arc/give-reason-movement-seals/change            controllers.MoreInformationController.loadSealsInformation(ern: String, arc: String, mode: Mode = CheckMode)
 POST        /:ern/:arc/give-reason-movement-seals/change            controllers.MoreInformationController.submitSealsInformation(ern: String, arc: String, mode: Mode = CheckMode)
 
-GET         /:ern/:arc/give-reason-movement-other                   controllers.OtherInformationController.onPageLoad(ern: String, arc: String, mode: Mode = NormalMode)
-POST        /:ern/:arc/give-reason-movement-other                   controllers.OtherInformationController.onSubmit(ern: String, arc: String, mode: Mode = NormalMode)
-GET         /:ern/:arc/give-reason-movement-other/change            controllers.OtherInformationController.onPageLoad(ern: String, arc: String, mode: Mode = CheckMode)
-POST        /:ern/:arc/give-reason-movement-other/change            controllers.OtherInformationController.onSubmit(ern: String, arc: String, mode: Mode = CheckMode)
+GET         /:ern/:arc/give-reason-movement-other                   controllers.OtherInformationController.loadOtherInformation(ern: String, arc: String, mode: Mode = NormalMode)
+POST        /:ern/:arc/give-reason-movement-other                   controllers.OtherInformationController.submitOtherInformation(ern: String, arc: String, mode: Mode = NormalMode)
+GET         /:ern/:arc/give-reason-movement-other/change            controllers.OtherInformationController.loadOtherInformation(ern: String, arc: String, mode: Mode = CheckMode)
+POST        /:ern/:arc/give-reason-movement-other/change            controllers.OtherInformationController.submitOtherInformation(ern: String, arc: String, mode: Mode = CheckMode)
 
 GET         /:ern/:arc/check-answers                                controllers.CheckYourAnswersController.onPageLoad(ern: String, arc: String)
 POST        /:ern/:arc/check-answers                                controllers.CheckYourAnswersController.onSubmit(ern: String, arc: String)
@@ -110,3 +110,8 @@ GET         /:ern/:arc/item/:idx/about-shortage-excess              controllers.
 POST        /:ern/:arc/item/:idx/about-shortage-excess              controllers.ItemShortageOrExcessController.onSubmit(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
 GET         /:ern/:arc/item/:idx/about-shortage-excess/change       controllers.ItemShortageOrExcessController.onPageLoad(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)
 POST        /:ern/:arc/item/:idx/about-shortage-excess/change       controllers.ItemShortageOrExcessController.onSubmit(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)
+
+GET         /:ern/:arc/item/:idx/give-reason-item-other             controllers.OtherInformationController.loadItemOtherInformation(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
+POST        /:ern/:arc/item/:idx/give-reason-item-other             controllers.OtherInformationController.submitItemOtherInformation(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
+GET         /:ern/:arc/item/:idx/give-reason-item-other/change      controllers.OtherInformationController.loadItemOtherInformation(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)
+POST        /:ern/:arc/item/:idx/give-reason-item-other/change      controllers.OtherInformationController.submitItemOtherInformation(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)

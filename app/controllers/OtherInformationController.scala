@@ -20,9 +20,11 @@ import controllers.actions._
 import forms.OtherInformationFormProvider
 import models.Mode
 import navigation.Navigator
+import pages.QuestionPage
 import pages.unsatisfactory._
+import pages.unsatisfactory.individualItems.ItemOtherInformationPage
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.UserAnswersService
 import views.html.OtherInformationView
 
@@ -43,25 +45,30 @@ class OtherInformationController @Inject()(
                                           ) extends BaseNavigationController with AuthActionHelper {
 
 
-  def onPageLoad(ern: String, arc: String, mode: Mode): Action[AnyContent] =
+  def loadOtherInformation(ern: String, arc: String, mode: Mode) =
+    onPageLoad(OtherInformationPage, ern, arc, routes.OtherInformationController.submitOtherInformation(ern, arc, mode))
+
+  def submitOtherInformation(ern: String, arc: String, mode: Mode) =
+    onSubmit(OtherInformationPage, ern, arc, routes.OtherInformationController.submitOtherInformation(ern, arc, mode), mode)
+
+  def loadItemOtherInformation(ern: String, arc: String, idx: Int, mode: Mode) =
+    onPageLoad(ItemOtherInformationPage(idx), ern, arc, routes.OtherInformationController.submitItemOtherInformation(ern, arc, idx, mode))
+
+  def submitItemOtherInformation(ern: String, arc: String, idx: Int, mode: Mode) =
+    onSubmit(ItemOtherInformationPage(idx), ern, arc, routes.OtherInformationController.submitItemOtherInformation(ern, arc, idx, mode), mode)
+
+  private def onPageLoad(page: QuestionPage[String], ern: String, arc: String, action: Call): Action[AnyContent] =
     authorisedDataRequest(ern, arc) { implicit request =>
-      Ok(view(
-        fillForm(OtherInformationPage, formProvider()),
-        routes.OtherInformationController.onSubmit(ern, arc, mode)
-      ))
+      Ok(view(page, fillForm(page, formProvider(page)), action))
     }
 
-  def onSubmit(ern: String,
-               arc: String,
-               mode: Mode): Action[AnyContent] =
+  private def onSubmit(page: QuestionPage[String], ern: String, arc: String, action: Call, mode: Mode): Action[AnyContent] =
     authorisedDataRequestAsync(ern, arc) { implicit request =>
-      formProvider().bindFromRequest().fold(
+      formProvider(page).bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(
-            formWithErrors,
-            routes.OtherInformationController.onSubmit(ern, arc, mode)
-          ))),
-        value => saveAndRedirect(OtherInformationPage, value, mode)
+          Future.successful(BadRequest(view(page, formWithErrors, action))),
+        value =>
+          saveAndRedirect(page, value, mode)
       )
     }
 }

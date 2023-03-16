@@ -19,11 +19,11 @@ package navigation
 import controllers.routes
 import models.AcceptMovement.{Satisfactory, Unsatisfactory}
 import models.HowMuchIsWrong.TheWholeMovement
-import models.WrongWithMovement.{BrokenSeals, Damaged, Shortage, Excess, ShortageOrExcess, Other}
+import models.WrongWithMovement.{BrokenSeals, Damaged, Excess, Other, Shortage, ShortageOrExcess}
 import models._
 import pages._
 import pages.unsatisfactory._
-import pages.unsatisfactory.individualItems.{ItemShortageOrExcessPage, SelectItemsPage, WrongWithItemPage}
+import pages.unsatisfactory.individualItems.{ItemOtherInformationPage, ItemShortageOrExcessPage, SelectItemsPage, WrongWithItemPage}
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
@@ -72,8 +72,8 @@ class Navigator @Inject()() extends BaseNavigator {
         }
     case ExcessInformationPage =>
       (userAnswers: UserAnswers) => redirectToNextWrongMovementPage(Some(Excess))(userAnswers)
-    case itemShortageOrExcess: ItemShortageOrExcessPage =>
-      (userAnswers: UserAnswers) => redirectToNextItemWrongMovementPage(WrongWithItemPage(itemShortageOrExcess.idx), Some(ShortageOrExcess))(userAnswers)
+    case ItemShortageOrExcessPage(idx) =>
+      (userAnswers: UserAnswers) => redirectToNextItemWrongMovementPage(WrongWithItemPage(idx), Some(ShortageOrExcess))(userAnswers)
     case AddDamageInformationPage =>
       (userAnswers: UserAnswers) =>
         userAnswers.get(AddDamageInformationPage) match {
@@ -94,6 +94,8 @@ class Navigator @Inject()() extends BaseNavigator {
       (userAnswers: UserAnswers) => redirectToNextWrongMovementPage(Some(BrokenSeals))(userAnswers)
     case OtherInformationPage =>
       (userAnswers: UserAnswers) => redirectToNextWrongMovementPage(Some(Other))(userAnswers)
+    case ItemOtherInformationPage(idx) =>
+      (userAnswers: UserAnswers) => redirectToNextItemWrongMovementPage(WrongWithItemPage(idx), Some(Other))(userAnswers)
     case AddMoreInformationPage =>
       (userAnswers: UserAnswers) =>
         userAnswers.get(AddMoreInformationPage) match {
@@ -134,10 +136,10 @@ class Navigator @Inject()() extends BaseNavigator {
     }
   }
 
-  private[navigation] def redirectToNextWrongMovementPage(lastOption: Option[WrongWithMovement] = None)(implicit userAnswers: UserAnswers): Call =
+  private[navigation] def redirectToNextWrongMovementPage(lastOptionAnswered: Option[WrongWithMovement] = None)(implicit userAnswers: UserAnswers): Call =
     userAnswers.get(WrongWithMovementPage) match {
       case Some(selectedOptions) =>
-        nextWrongWithMovementOptionToAnswer(selectedOptions, lastOption) match {
+        nextWrongWithMovementOptionToAnswer(selectedOptions, lastOptionAnswered) match {
           case Some(Shortage) =>
             routes.AddMoreInformationController.loadShortageInformation(userAnswers.ern, userAnswers.arc, NormalMode)
           case Some(Excess) =>
@@ -147,7 +149,7 @@ class Navigator @Inject()() extends BaseNavigator {
           case Some(BrokenSeals) =>
             routes.AddMoreInformationController.loadSealsInformation(userAnswers.ern, userAnswers.arc, NormalMode)
           case Some(Other) =>
-            routes.OtherInformationController.onPageLoad(userAnswers.ern, userAnswers.arc, NormalMode)
+            routes.OtherInformationController.loadOtherInformation(userAnswers.ern, userAnswers.arc, NormalMode)
           case _ =>
             routes.AddMoreInformationController.loadMoreInformation(userAnswers.ern, userAnswers.arc, NormalMode)
         }
@@ -156,10 +158,10 @@ class Navigator @Inject()() extends BaseNavigator {
     }
 
   private[navigation] def redirectToNextItemWrongMovementPage(page: WrongWithItemPage,
-                                                              lastOption: Option[WrongWithMovement] = None)(implicit userAnswers: UserAnswers): Call =
+                                                              lastOptionAnswered: Option[WrongWithMovement] = None)(implicit userAnswers: UserAnswers): Call =
     userAnswers.get(page) match {
       case Some(selectedOptions) =>
-        nextWrongWithMovementOptionToAnswer(selectedOptions, lastOption, WrongWithMovement.individualItemValues) match {
+        nextWrongWithMovementOptionToAnswer(selectedOptions, lastOptionAnswered, WrongWithMovement.individualItemValues) match {
           case Some(ShortageOrExcess) =>
             routes.ItemShortageOrExcessController.onPageLoad(userAnswers.ern, userAnswers.arc, page.idx, NormalMode)
           case Some(Damaged) =>
@@ -169,10 +171,9 @@ class Navigator @Inject()() extends BaseNavigator {
             //TODO: Route to the ItemDamagedPage (future story)
             testOnly.controllers.routes.UnderConstructionController.onPageLoad()
           case Some(Other) =>
-            //TODO: Route to the ItemDamagedPage (future story)
-            testOnly.controllers.routes.UnderConstructionController.onPageLoad()
+            routes.OtherInformationController.loadItemOtherInformation(userAnswers.ern, userAnswers.arc, page.idx, NormalMode)
           case _ =>
-            routes.AddMoreInformationController.loadMoreInformation(userAnswers.ern, userAnswers.arc, NormalMode)
+            testOnly.controllers.routes.UnderConstructionController.onPageLoad()
         }
       case _ =>
         routes.WrongWithMovementController.loadwrongWithItem(userAnswers.ern, userAnswers.arc, page.idx, NormalMode)

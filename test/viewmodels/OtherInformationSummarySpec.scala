@@ -50,7 +50,7 @@ class OtherInformationSummarySpec extends SpecBase {
 
               val answers = emptyUserAnswers.set(OtherInformationPage, "Info")
               implicit val request = dataRequest(FakeRequest(), answers)
-              lazy val changeRoute = routes.OtherInformationController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, CheckMode)
+              lazy val changeRoute = routes.OtherInformationController.loadOtherInformation(request.userAnswers.ern, request.userAnswers.arc, CheckMode)
 
               otherInformationSummary.row() mustBe
                 SummaryListRowViewModel(
@@ -72,7 +72,7 @@ class OtherInformationSummarySpec extends SpecBase {
             "must render the expected SummaryListRow" in {
 
               implicit val request = dataRequest(FakeRequest(), emptyUserAnswers)
-              lazy val changeRoute = routes.OtherInformationController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, CheckMode)
+              lazy val changeRoute = routes.OtherInformationController.loadOtherInformation(request.userAnswers.ern, request.userAnswers.arc, CheckMode)
 
               otherInformationSummary.row() mustBe
                 SummaryListRowViewModel(

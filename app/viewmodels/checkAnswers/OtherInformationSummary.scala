@@ -41,7 +41,7 @@ class OtherInformationSummary @Inject()(link: link) extends JsonOptionFormatter 
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              routes.OtherInformationController.onSubmit(request.userAnswers.ern, request.userAnswers.arc, CheckMode).url,
+              routes.OtherInformationController.submitOtherInformation(request.userAnswers.ern, request.userAnswers.arc, CheckMode).url,
               id = OtherInformationPage
             ).withVisuallyHiddenText(messages(s"$OtherInformationPage.checkYourAnswers.change.hidden"))
           )
@@ -50,7 +50,7 @@ class OtherInformationSummary @Inject()(link: link) extends JsonOptionFormatter 
         SummaryListRowViewModel(
           key = s"$OtherInformationPage.checkYourAnswers.label",
           value = ValueViewModel(HtmlContent(link(
-            link = routes.OtherInformationController.onSubmit(request.userAnswers.ern, request.userAnswers.arc, CheckMode).url,
+            link = routes.OtherInformationController.submitOtherInformation(request.userAnswers.ern, request.userAnswers.arc, CheckMode).url,
             messageKey = s"$OtherInformationPage.checkYourAnswers.addMoreInformation"
           )))
         )

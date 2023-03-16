@@ -24,7 +24,7 @@ import models.WrongWithMovement._
 import models._
 import pages._
 import pages.unsatisfactory._
-import pages.unsatisfactory.individualItems.{SelectItemsPage, WrongWithItemPage}
+import pages.unsatisfactory.individualItems.{ItemOtherInformationPage, SelectItemsPage, WrongWithItemPage}
 
 class NavigatorSpec extends SpecBase {
 
@@ -187,7 +187,7 @@ class NavigatorSpec extends SpecBase {
             val selectedOptions: Set[WrongWithMovement] = Set(Other)
             val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, selectedOptions)
             navigator.nextPage(WrongWithMovementPage, NormalMode, userAnswers) mustBe
-              routes.OtherInformationController.onPageLoad(testErn, testArc, NormalMode)
+              routes.OtherInformationController.loadOtherInformation(testErn, testArc, NormalMode)
           }
         }
       }
@@ -236,12 +236,11 @@ class NavigatorSpec extends SpecBase {
 
         "when the next page is Other" - {
 
-          //TODO: Implement as part of future story when page is built
           "must go to ItemOther information page" in {
             val selectedOptions: Set[WrongWithMovement] = Set(Other)
             val userAnswers = emptyUserAnswers.set(WrongWithItemPage(1), selectedOptions)
             navigator.nextPage(WrongWithItemPage(1), NormalMode, userAnswers) mustBe
-              testOnly.controllers.routes.UnderConstructionController.onPageLoad()
+              routes.OtherInformationController.loadItemOtherInformation(testErn, testArc, idx = 1, mode = NormalMode)
           }
         }
       }
@@ -421,6 +420,17 @@ class NavigatorSpec extends SpecBase {
           val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, Set[WrongWithMovement](Shortage, Excess, Other))
 
           navigator.nextPage(OtherInformationPage, NormalMode, userAnswers) mustBe routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
+        }
+      }
+
+      "for the ItemOtherInformationPage page" - {
+
+        //TODO: Update to add routing as part of future story
+        "must go to the next WhatWrongWith page to answer" in {
+
+          val userAnswers = emptyUserAnswers.set(WrongWithItemPage(1), Set[WrongWithMovement](Other))
+
+          navigator.nextPage(ItemOtherInformationPage(1), NormalMode, userAnswers) mustBe testOnly.controllers.routes.UnderConstructionController.onPageLoad()
         }
       }
 

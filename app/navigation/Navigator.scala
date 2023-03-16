@@ -109,6 +109,8 @@ class Navigator @Inject()() extends BaseNavigator {
         }
     case SealsInformationPage =>
       (userAnswers: UserAnswers) => redirectToNextWrongMovementPage(Some(BrokenSeals))(userAnswers)
+    case itemSealsInformationPage: ItemSealsInformationPage =>
+      (userAnswers: UserAnswers) => redirectToNextItemWrongMovementPage(WrongWithItemPage(itemSealsInformationPage.idx), Some(BrokenSeals))(userAnswers)
     case OtherInformationPage =>
       (userAnswers: UserAnswers) => redirectToNextWrongMovementPage(Some(Other))(userAnswers)
     case ItemOtherInformationPage(idx) =>

@@ -111,6 +111,11 @@ POST        /:ern/:arc/item/:idx/what-wrong-item                                
 GET         /:ern/:arc/item/:idx/what-wrong-item/change                                     controllers.WrongWithMovementController.loadwrongWithItem(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)
 POST        /:ern/:arc/item/:idx/what-wrong-item/change                                     controllers.WrongWithMovementController.submitwrongWithItem(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)
 
+GET         /:ern/:arc/item/:idx/give-reason-item-seals             controllers.MoreInformationController.loadItemSealsInformation(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
+POST        /:ern/:arc/item/:idx/give-reason-item-seals             controllers.MoreInformationController.submitItemSealsInformation(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
+GET         /:ern/:arc/item/:idx/give-reason-item-seals/change      controllers.MoreInformationController.loadItemSealsInformation(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)
+POST        /:ern/:arc/item/:idx/give-reason-item-seals/change      controllers.MoreInformationController.submitItemSealsInformation(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)
+
 GET         /:ern/:arc/item/:idx/about-shortage-excess                                       controllers.ItemShortageOrExcessController.onPageLoad(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
 POST        /:ern/:arc/item/:idx/about-shortage-excess                                       controllers.ItemShortageOrExcessController.onSubmit(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
 GET         /:ern/:arc/item/:idx/about-shortage-excess/change                                controllers.ItemShortageOrExcessController.onPageLoad(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)

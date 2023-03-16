@@ -63,6 +63,7 @@ class ItemShortageOrExcessViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.shortageLabel -> viewMessagesForLanguage.shortageLabel,
           Selectors.excessLabel -> viewMessagesForLanguage.excessLabel,
           Selectors.amountLabel -> viewMessagesForLanguage.amountLabel(unitOfMeasureMessagesForLanguage.kilogramsLong),
+          Selectors.inputSuffix -> unitOfMeasureMessagesForLanguage.kilogramsShort,
           Selectors.additionalInfoLabel -> viewMessagesForLanguage.additionalInfoLabel,
           Selectors.button -> viewMessagesForLanguage.saveAndContinue,
           Selectors.secondaryButton -> viewMessagesForLanguage.saveAndReturnToMovement
@@ -96,6 +97,7 @@ class ItemShortageOrExcessViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.shortageLabel -> viewMessagesForLanguage.shortageLabel,
           Selectors.excessLabel -> viewMessagesForLanguage.excessLabel,
           Selectors.amountLabel -> viewMessagesForLanguage.amountLabel(unitOfMeasureMessagesForLanguage.litres15Long),
+          Selectors.inputSuffix -> unitOfMeasureMessagesForLanguage.litres15Short,
           Selectors.additionalInfoLabel -> viewMessagesForLanguage.additionalInfoLabel,
           Selectors.button -> viewMessagesForLanguage.saveAndContinue,
           Selectors.secondaryButton -> viewMessagesForLanguage.saveAndReturnToMovement
@@ -129,6 +131,7 @@ class ItemShortageOrExcessViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.shortageLabel -> viewMessagesForLanguage.shortageLabel,
           Selectors.excessLabel -> viewMessagesForLanguage.excessLabel,
           Selectors.amountLabel -> viewMessagesForLanguage.amountLabel(unitOfMeasureMessagesForLanguage.litres20Long),
+          Selectors.inputSuffix -> unitOfMeasureMessagesForLanguage.litres20Short,
           Selectors.additionalInfoLabel -> viewMessagesForLanguage.additionalInfoLabel,
           Selectors.button -> viewMessagesForLanguage.saveAndContinue,
           Selectors.secondaryButton -> viewMessagesForLanguage.saveAndReturnToMovement
@@ -162,6 +165,7 @@ class ItemShortageOrExcessViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.shortageLabel -> viewMessagesForLanguage.shortageLabel,
           Selectors.excessLabel -> viewMessagesForLanguage.excessLabel,
           Selectors.amountLabel -> viewMessagesForLanguage.amountLabel(unitOfMeasureMessagesForLanguage.thousandsLong),
+          Selectors.inputSuffix -> unitOfMeasureMessagesForLanguage.thousandsShort,
           Selectors.additionalInfoLabel -> viewMessagesForLanguage.additionalInfoLabel,
           Selectors.button -> viewMessagesForLanguage.saveAndContinue,
           Selectors.secondaryButton -> viewMessagesForLanguage.saveAndReturnToMovement

@@ -17,7 +17,7 @@
 package controllers.actions
 
 import base.SpecBase
-import com.google.inject.Inject
+import javax.inject.Inject
 import config.{AppConfig, EnrolmentKeys}
 import fixtures.BaseFixtures
 import org.scalatest.BeforeAndAfterAll

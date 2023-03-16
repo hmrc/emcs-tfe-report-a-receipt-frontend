@@ -16,7 +16,7 @@
 
 package controllers.actions
 
-import com.google.inject.Inject
+import javax.inject.Inject
 import config.{AppConfig, EnrolmentKeys}
 import models.requests.UserRequest
 import play.api.mvc.Results._

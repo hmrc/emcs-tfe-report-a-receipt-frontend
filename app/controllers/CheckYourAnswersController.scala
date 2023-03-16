@@ -16,7 +16,6 @@
 
 package controllers
 
-import com.google.inject.Inject
 import controllers.actions._
 import models.NormalMode
 import navigation.Navigator
@@ -25,6 +24,8 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import viewmodels.checkAnswers.CheckAnswersHelper
 import views.html.CheckYourAnswersView
+
+import javax.inject.Inject
 
 class CheckYourAnswersController @Inject()(
                                             override val messagesApi: MessagesApi,

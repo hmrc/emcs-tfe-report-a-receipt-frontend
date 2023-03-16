@@ -267,3 +267,11 @@ itemShortageOrExcess.amount.error.regex = The amount must be a number, like 150 
 itemShortageOrExcess.additionalInfo.label = Give more information about the shortage or excess (optional)
 itemShortageOrExcess.additionalInfo.error.invalidCharacter = Information must not include < and > and : and ;
 itemShortageOrExcess.additionalInfo.error.character = Information must contain letters or numbers
+
+itemOtherInformation.title = Give more information about other reason(s) you are unsatisfied with this item
+itemOtherInformation.heading = Give more information about other reason(s) you are unsatisfied with this item
+itemOtherInformation.hint = Give more information
+itemOtherInformation.error.length = Information must be 350 characters or less
+itemOtherInformation.error.required = Enter more information
+itemOtherInformation.error.invalidCharacter = Information must not include < and > and : and ;
+itemOtherInformation.error.character = Information must contain letters or numbers

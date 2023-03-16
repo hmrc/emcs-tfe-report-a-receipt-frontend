@@ -18,6 +18,7 @@ package forms
 
 import forms.behaviours.StringFieldBehaviours
 import pages.unsatisfactory._
+import pages.unsatisfactory.individualItems.ItemOtherInformationPage
 import play.api.data.FormError
 
 class OtherInformationFormProviderSpec extends StringFieldBehaviours {
@@ -25,88 +26,94 @@ class OtherInformationFormProviderSpec extends StringFieldBehaviours {
   val maxLength = 350
   val aboveMaxLength = 351
 
-  s"loading the form for the '$OtherInformationPage' page" - {
+  Seq(
+    OtherInformationPage,
+    ItemOtherInformationPage(1)
+  ).foreach { page =>
 
-    val form = new OtherInformationFormProvider()()
+    s"loading the form for the '$page' page" - {
 
-    ".value" - {
+      val form = new OtherInformationFormProvider()(page)
 
-      "more information form accepts a value that is valid" in {
-        val data = Map("more-information" -> "Test 123.")
-        val result = form.bind(data)
+      ".value" - {
 
-        result.errors mustBe Seq()
-        result.value mustBe Some("Test 123.")
-      }
+        "more information form accepts a value that is valid" in {
+          val data = Map("more-information" -> "Test 123.")
+          val result = form.bind(data)
 
-      "more information form accepts a value that includes a Carriage Return" in {
-        val data = Map("more-information" -> "Test\n123.")
-        val result = form.bind(data)
+          result.errors mustBe Seq()
+          result.value mustBe Some("Test 123.")
+        }
 
-        result.errors mustBe Seq()
-        result.value mustBe Some("Test 123.")
-      }
+        "more information form accepts a value that includes a Carriage Return" in {
+          val data = Map("more-information" -> "Test\n123.")
+          val result = form.bind(data)
+
+          result.errors mustBe Seq()
+          result.value mustBe Some("Test 123.")
+        }
 
 
-      "more information form accepts a value of 350 alpha characters that are valid" in {
-        val data = Map("more-information" -> "a" * maxLength)
-        val result = form.bind(data)
+        "more information form accepts a value of 350 alpha characters that are valid" in {
+          val data = Map("more-information" -> "a" * maxLength)
+          val result = form.bind(data)
 
-        result.errors mustBe Seq()
-        result.value mustBe Some("a" * maxLength)
-      }
+          result.errors mustBe Seq()
+          result.value mustBe Some("a" * maxLength)
+        }
 
-      "more information form accepts a value that begins with a valid special character" in {
-        val data = Map("more-information" -> ".A")
-        val result = form.bind(data)
+        "more information form accepts a value that begins with a valid special character" in {
+          val data = Map("more-information" -> ".A")
+          val result = form.bind(data)
 
-        result.errors mustBe Seq()
-        result.value mustBe Some(".A")
-      }
+          result.errors mustBe Seq()
+          result.value mustBe Some(".A")
+        }
 
-      "more information form accepts just numbers" in {
-        val data = Map("more-information" -> "123")
-        val result = form.bind(data)
+        "more information form accepts just numbers" in {
+          val data = Map("more-information" -> "123")
+          val result = form.bind(data)
 
-        result.errors mustBe Seq()
-        result.value mustBe Some("123")
-      }
+          result.errors mustBe Seq()
+          result.value mustBe Some("123")
+        }
 
-      "return an error if alpha numeric data isn't used" in {
-        val data = Map("more-information" -> "..")
-        val result = form.bind(data)
+        "return an error if alpha numeric data isn't used" in {
+          val data = Map("more-information" -> "..")
+          val result = form.bind(data)
 
-        result.errors must contain only FormError("more-information", s"$OtherInformationPage.error.character", Seq(ALPHANUMERIC_REGEX))
-      }
+          result.errors must contain only FormError("more-information", s"$page.error.character", Seq(ALPHANUMERIC_REGEX))
+        }
 
-      "return an error if more than 350 characters are used" in {
-        val data = Map("more-information" -> "a" * aboveMaxLength)
-        val result = form.bind(data)
+        "return an error if more than 350 characters are used" in {
+          val data = Map("more-information" -> "a" * aboveMaxLength)
+          val result = form.bind(data)
 
-        result.errors must contain only FormError("more-information", s"$OtherInformationPage.error.length", Seq(maxLength))
-      }
+          result.errors must contain only FormError("more-information", s"$page.error.length", Seq(maxLength))
+        }
 
-      "return errors if invalid characters are used" in {
-        val data = Map("more-information" -> "<>")
-        val result = form.bind(data)
+        "return errors if invalid characters are used" in {
+          val data = Map("more-information" -> "<>")
+          val result = form.bind(data)
 
-        result.errors must contain only(
-          FormError("more-information", s"$OtherInformationPage.error.character", Seq(ALPHANUMERIC_REGEX)),
-          FormError("more-information", s"$OtherInformationPage.error.invalidCharacter", Seq(XSS_REGEX))
-        )
-      }
+          result.errors must contain only(
+            FormError("more-information", s"$page.error.character", Seq(ALPHANUMERIC_REGEX)),
+            FormError("more-information", s"$page.error.invalidCharacter", Seq(XSS_REGEX))
+          )
+        }
 
-      "return errors if the required field is empty" in {
-        val data = Map("more-information" -> "")
-        val result = form.bind(data)
+        "return errors if the required field is empty" in {
+          val data = Map("more-information" -> "")
+          val result = form.bind(data)
 
-        result.errors must contain only FormError("more-information", s"$OtherInformationPage.error.required")
-      }
-      "return errors if the required field is not present" in {
-        val data = Map("something" -> "")
-        val result = form.bind(data)
+          result.errors must contain only FormError("more-information", s"$page.error.required")
+        }
+        "return errors if the required field is not present" in {
+          val data = Map("something" -> "")
+          val result = form.bind(data)
 
-        result.errors must contain only FormError("more-information", s"$OtherInformationPage.error.required")
+          result.errors must contain only FormError("more-information", s"$page.error.required")
+        }
       }
     }
   }

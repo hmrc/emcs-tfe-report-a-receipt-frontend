@@ -17,15 +17,16 @@
 package forms
 
 import forms.mappings.Mappings
+import pages.QuestionPage
 import pages.unsatisfactory.OtherInformationPage
 import play.api.data.Form
 
 import javax.inject.Inject
 
 class OtherInformationFormProvider @Inject() extends Mappings {
-  def apply(): Form[String] =
+  def apply(page: QuestionPage[String]): Form[String] =
     Form(
-      "more-information" -> text(errorKey = s"$OtherInformationPage.error.required")
+      "more-information" -> text(errorKey = s"$page.error.required")
         .transform[String](
           _.replace("\n", " ")
             .replace("\r", " ")
@@ -33,8 +34,8 @@ class OtherInformationFormProvider @Inject() extends Mappings {
             .trim,
           identity
         )
-        .verifying(maxLength(TEXTAREA_MAX_LENGTH, s"$OtherInformationPage.error.length"))
-        .verifying(regexp(ALPHANUMERIC_REGEX, s"$OtherInformationPage.error.character"))
-        .verifying(regexp(XSS_REGEX, s"$OtherInformationPage.error.invalidCharacter"))
+        .verifying(maxLength(TEXTAREA_MAX_LENGTH, s"$page.error.length"))
+        .verifying(regexp(ALPHANUMERIC_REGEX, s"$page.error.character"))
+        .verifying(regexp(XSS_REGEX, s"$page.error.invalidCharacter"))
     )
 }

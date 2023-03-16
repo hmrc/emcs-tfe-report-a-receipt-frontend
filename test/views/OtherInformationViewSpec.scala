@@ -17,11 +17,13 @@
 package views
 
 import base.ViewSpecBase
-import fixtures.messages.OtherInformationMessages
+import fixtures.messages.{ItemOtherInformationMessages, OtherInformationMessages}
 import forms.OtherInformationFormProvider
 import models.requests.DataRequest
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import pages.unsatisfactory.OtherInformationPage
+import pages.unsatisfactory.individualItems.ItemOtherInformationPage
 import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
@@ -31,7 +33,7 @@ class OtherInformationViewSpec extends ViewSpecBase with ViewBehaviours {
 
   object Selectors extends BaseSelectors
 
-  "view" - {
+  "Rendering for the OtherInformationPage" - {
 
     Seq(OtherInformationMessages.English, OtherInformationMessages.Welsh).foreach { messagesForLanguage =>
 
@@ -40,10 +42,36 @@ class OtherInformationViewSpec extends ViewSpecBase with ViewBehaviours {
         implicit val msgs: Messages = messages(app, messagesForLanguage.lang)
         implicit val request: DataRequest[AnyContentAsEmpty.type] = dataRequest(FakeRequest(), emptyUserAnswers)
 
-        val form = app.injector.instanceOf[OtherInformationFormProvider].apply()
+        val form = app.injector.instanceOf[OtherInformationFormProvider].apply(OtherInformationPage)
         val view = app.injector.instanceOf[OtherInformationView]
 
-        implicit val doc: Document = Jsoup.parse(view(form, testOnwardRoute).toString())
+        implicit val doc: Document = Jsoup.parse(view(OtherInformationPage, form, testOnwardRoute).toString())
+
+        behave like pageWithExpectedElementsAndMessages(Seq(
+          Selectors.title -> messagesForLanguage.title,
+          Selectors.h2(1) -> messagesForLanguage.arcSubheading(testArc),
+          Selectors.h1 -> messagesForLanguage.heading,
+          Selectors.hint -> messagesForLanguage.hint,
+          Selectors.button -> messagesForLanguage.saveAndContinue,
+          Selectors.secondaryButton -> messagesForLanguage.saveAndReturnToMovement
+        ))
+      }
+    }
+  }
+
+  "Rendering for the ItemOtherInformationPage" - {
+
+    Seq(ItemOtherInformationMessages.English, ItemOtherInformationMessages.Welsh).foreach { messagesForLanguage =>
+
+      s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
+
+        implicit val msgs: Messages = messages(app, messagesForLanguage.lang)
+        implicit val request: DataRequest[AnyContentAsEmpty.type] = dataRequest(FakeRequest(), emptyUserAnswers)
+
+        val form = app.injector.instanceOf[OtherInformationFormProvider].apply(ItemOtherInformationPage(1))
+        val view = app.injector.instanceOf[OtherInformationView]
+
+        implicit val doc: Document = Jsoup.parse(view(ItemOtherInformationPage(1), form, testOnwardRoute).toString())
 
         behave like pageWithExpectedElementsAndMessages(Seq(
           Selectors.title -> messagesForLanguage.title,

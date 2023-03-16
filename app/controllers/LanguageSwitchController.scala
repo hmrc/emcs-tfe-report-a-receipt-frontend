@@ -16,7 +16,7 @@
 
 package controllers
 
-import com.google.inject.Inject
+import javax.inject.Inject
 import config.AppConfig
 import play.api.i18n.Lang
 import play.api.mvc._

@@ -485,13 +485,12 @@ class NavigatorSpec extends SpecBase {
 
       "for the ItemSealsInformationPage page" - {
 
-        //TODO: Update as part of future story when forward routing becomes available
         "must go to the next WhatWrongWith page to answer" in {
 
           val userAnswers = emptyUserAnswers.set(WrongWithItemPage(1), Set[WrongWithMovement](BrokenSeals, Other))
 
           navigator.nextPage(ItemSealsInformationPage(1), NormalMode, userAnswers) mustBe
-            testOnly.controllers.routes.UnderConstructionController.onPageLoad()
+            routes.OtherInformationController.loadItemOtherInformation(testErn, testArc, 1, NormalMode)
         }
       }
 

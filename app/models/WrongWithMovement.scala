@@ -21,29 +21,30 @@ import pages.unsatisfactory.WrongWithMovementPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.checkboxes.CheckboxItem
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import viewmodels.govuk.checkbox._
 
 sealed trait WrongWithMovement
 
 object WrongWithMovement extends Enumerable.Implicits {
 
-  case object Less extends WithName("less") with WrongWithMovement
-  case object More extends WithName("more") with WrongWithMovement
-  case object MoreOrLess extends WithName("moreOrLess") with WrongWithMovement
+  case object Shortage extends WithName("shortage") with WrongWithMovement
+  case object Excess extends WithName("excess") with WrongWithMovement
+  case object ShortageOrExcess extends WithName("shortageOrExcess") with WrongWithMovement
   case object Damaged extends WithName("damaged") with WrongWithMovement
   case object BrokenSeals extends WithName("brokenSeals") with WrongWithMovement
   case object Other extends WithName("other") with WrongWithMovement
 
   val values: Seq[WrongWithMovement] = Seq(
-    Less,
-    More,
+    Shortage,
+    Excess,
     Damaged,
     BrokenSeals,
     Other
   )
 
   val individualItemValues: Seq[WrongWithMovement] = Seq(
-    MoreOrLess,
+    ShortageOrExcess,
     Damaged,
     BrokenSeals,
     Other
@@ -64,6 +65,21 @@ object WrongWithMovement extends Enumerable.Implicits {
           value   = value.toString
         ).withId(value.toString)
     }
+  }
+
+  def itemShortageOrExcessOptions(implicit messages: Messages) = {
+    Seq(
+      RadioItem(
+        content = Text(messages(s"itemShortageOrExcess.shortageOrExcess.$Shortage")),
+        value = Some(Shortage.toString),
+        id = Some(Shortage.toString)
+      ),
+      RadioItem(
+        content = Text(messages(s"itemShortageOrExcess.shortageOrExcess.$Excess")),
+        value = Some(Excess.toString),
+        id = Some(Excess.toString)
+      )
+    )
   }
 
   implicit val enumerable: Enumerable[WrongWithMovement] =

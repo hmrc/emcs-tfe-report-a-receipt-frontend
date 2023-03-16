@@ -76,7 +76,7 @@ class OtherInformationFormProviderSpec extends StringFieldBehaviours {
         val data = Map("more-information" -> "..")
         val result = form.bind(data)
 
-        result.errors must contain only FormError("more-information", s"$OtherInformationPage.error.character", Seq("^(?s)(?=.*[A-Za-z0-9]).{1,}$"))
+        result.errors must contain only FormError("more-information", s"$OtherInformationPage.error.character", Seq(ALPHANUMERIC_REGEX))
       }
 
       "return an error if more than 350 characters are used" in {
@@ -91,8 +91,8 @@ class OtherInformationFormProviderSpec extends StringFieldBehaviours {
         val result = form.bind(data)
 
         result.errors must contain only(
-          FormError("more-information", s"$OtherInformationPage.error.character", Seq("^(?s)(?=.*[A-Za-z0-9]).{1,}$")),
-          FormError("more-information", s"$OtherInformationPage.error.invalidCharacter", Seq("^(?s)(?!.*javascript)(?!.*[<>;:]).{1,}$"))
+          FormError("more-information", s"$OtherInformationPage.error.character", Seq(ALPHANUMERIC_REGEX)),
+          FormError("more-information", s"$OtherInformationPage.error.invalidCharacter", Seq(XSS_REGEX))
         )
       }
 

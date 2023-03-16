@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package models.response.emcsTfe
+package models
 
 import play.api.libs.json.{Format, Json}
 
-case class Packaging(typeOfPackage: String,
-                     quantity: BigDecimal)
-object Packaging {
+case class ItemShortageOrExcessModel(wrongWithItem: WrongWithMovement,
+                                     amount: BigDecimal,
+                                     additionalInfo: Option[String])
 
-  implicit val format: Format[Packaging] = Json.format
+object ItemShortageOrExcessModel {
+  implicit val format: Format[ItemShortageOrExcessModel] = Json.format
 }

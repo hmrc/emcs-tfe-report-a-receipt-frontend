@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package models.response.emcsTfe
+package pages.unsatisfactory.individualItems
 
-import play.api.libs.json.{Format, Json}
+import models.ItemShortageOrExcessModel
+import pages.QuestionPage
+import play.api.libs.json.{JsPath, __}
 
-case class Packaging(typeOfPackage: String,
-                     quantity: BigDecimal)
-object Packaging {
+case class ItemShortageOrExcessPage(idx: Int) extends QuestionPage[ItemShortageOrExcessModel] {
 
-  implicit val format: Format[Packaging] = Json.format
+  override def path: JsPath = __ \ "items" \ (idx - 1) \ toString
+
+  override def toString: String = "itemShortageOrExcess"
 }

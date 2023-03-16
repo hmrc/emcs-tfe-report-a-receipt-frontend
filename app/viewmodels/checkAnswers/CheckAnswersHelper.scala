@@ -18,7 +18,7 @@ package viewmodels.checkAnswers
 
 import models.AcceptMovement.Unsatisfactory
 import models.CheckMode
-import models.WrongWithMovement.{BrokenSeals, Damaged, Less, More, Other}
+import models.WrongWithMovement.{BrokenSeals, Damaged, Shortage, Excess, Other}
 import models.requests.DataRequest
 import pages.unsatisfactory._
 import pages.{AcceptMovementPage, MoreInformationPage}
@@ -67,7 +67,7 @@ class CheckAnswersHelper @Inject()(acceptMovementSummary: AcceptMovementSummary,
   }
 
   private def shortageInformation()(implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] =
-    if (request.userAnswers.get(WrongWithMovementPage).exists(_.contains(Less))) {
+    if (request.userAnswers.get(WrongWithMovementPage).exists(_.contains(Shortage))) {
       Some(moreInformationSummary.row(
         page = ShortageInformationPage,
         changeAction = controllers.routes.MoreInformationController.loadShortageInformation(request.ern, request.arc, CheckMode))
@@ -77,7 +77,7 @@ class CheckAnswersHelper @Inject()(acceptMovementSummary: AcceptMovementSummary,
     }
 
   private def excessInformation()(implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] =
-    if (request.userAnswers.get(WrongWithMovementPage).exists(_.contains(More))) {
+    if (request.userAnswers.get(WrongWithMovementPage).exists(_.contains(Excess))) {
       Some(moreInformationSummary.row(
         page = ExcessInformationPage,
         changeAction = controllers.routes.MoreInformationController.loadExcessInformation(request.ern, request.arc, CheckMode))

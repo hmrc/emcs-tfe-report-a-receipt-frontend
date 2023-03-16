@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-package models
+package
+models
 
 import play.api.libs.json._
 import queries.{Gettable, Settable}

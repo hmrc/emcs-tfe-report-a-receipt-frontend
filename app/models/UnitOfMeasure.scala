@@ -14,13 +14,24 @@
  * limitations under the License.
  */
 
-package models.response.emcsTfe
+package models
 
-import play.api.libs.json.{Format, Json}
+sealed trait UnitOfMeasure
 
-case class Packaging(typeOfPackage: String,
-                     quantity: BigDecimal)
-object Packaging {
+object UnitOfMeasure extends Enumerable.Implicits {
 
-  implicit val format: Format[Packaging] = Json.format
+  case object Kilograms extends WithName("kilograms") with UnitOfMeasure
+  case object Litres15 extends WithName("litres15") with UnitOfMeasure
+  case object Litres20 extends WithName("litres20") with UnitOfMeasure
+  case object Thousands extends WithName("thousands") with UnitOfMeasure
+
+  val values: Seq[UnitOfMeasure] = Seq(
+    Kilograms,
+    Litres15,
+    Litres20,
+    Thousands
+  )
+
+  implicit val enumerable: Enumerable[UnitOfMeasure] =
+    Enumerable(values.distinct.map(v => v.toString -> v): _*)
 }

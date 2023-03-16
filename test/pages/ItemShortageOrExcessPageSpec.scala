@@ -14,13 +14,20 @@
  * limitations under the License.
  */
 
-package models.response.emcsTfe
+package pages
 
-import play.api.libs.json.{Format, Json}
+import models.ItemShortageOrExcessModel
+import pages.behaviours.PageBehaviours
+import pages.unsatisfactory.individualItems.ItemShortageOrExcessPage
 
-case class Packaging(typeOfPackage: String,
-                     quantity: BigDecimal)
-object Packaging {
+class ItemShortageOrExcessPageSpec extends PageBehaviours {
 
-  implicit val format: Format[Packaging] = Json.format
+  "ItemShortageOrExcessPage" - {
+
+    beRetrievable[ItemShortageOrExcessModel](ItemShortageOrExcessPage(1))
+
+    beSettable[ItemShortageOrExcessModel](ItemShortageOrExcessPage(1))
+
+    beRemovable[ItemShortageOrExcessModel](ItemShortageOrExcessPage(1))
+  }
 }

@@ -19,7 +19,7 @@ package viewmodels
 import base.SpecBase
 import mocks.viewmodels._
 import models.AcceptMovement.{Satisfactory, Unsatisfactory}
-import models.WrongWithMovement.{BrokenSeals, Damaged, Less, More, Other}
+import models.WrongWithMovement.{BrokenSeals, Damaged, Shortage, Excess, Other}
 import models.{CheckMode, WrongWithMovement}
 import pages.unsatisfactory._
 import pages.{AcceptMovementPage, MoreInformationPage}
@@ -92,7 +92,7 @@ class CheckAnswersHelperSpec extends SpecBase
         FakeRequest(),
         emptyUserAnswers
           .set(AcceptMovementPage, Unsatisfactory)
-          .set(WrongWithMovementPage, Set[WrongWithMovement](Less, More, Damaged, BrokenSeals, Other))
+          .set(WrongWithMovementPage, Set[WrongWithMovement](Shortage, Excess, Damaged, BrokenSeals, Other))
       )
 
       s"must return the expected SummaryList" in {
@@ -100,7 +100,7 @@ class CheckAnswersHelperSpec extends SpecBase
         val dateOfArrivalAnswer = SummaryListRow("DateOfArrival", ValueViewModel("today"))
         val acceptMovementAnswer = SummaryListRow("AcceptMovement", ValueViewModel("Yes"))
         val howMuchIsWrongAnswer = SummaryListRow("HowMuchIsWrong", ValueViewModel("Whole Movement"))
-        val wrongWithMovementAnswer = SummaryListRow("WrongWithMovement", ValueViewModel("Less"))
+        val wrongWithMovementAnswer = SummaryListRow("WrongWithMovement", ValueViewModel("shortage"))
         val shortageInformationAnswer = SummaryListRow("ShortageInfo", ValueViewModel("Info"))
         val excessInformationAnswer = SummaryListRow("ExcessInfo", ValueViewModel("Info"))
         val damagedInformationAnswer = SummaryListRow("DamageInfo", ValueViewModel("Info"))

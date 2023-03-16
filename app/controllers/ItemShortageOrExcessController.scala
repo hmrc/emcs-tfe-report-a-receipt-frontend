@@ -18,22 +18,20 @@ package controllers
 
 import controllers.actions._
 import forms.ItemShortageOrExcessFormProvider
-
-import javax.inject.Inject
-import models.{ItemShortageOrExcessModel, Mode}
 import models.UnitOfMeasure.Kilograms
-import models.WrongWithMovement.Less
+import models.WrongWithMovement.Shortage
 import models.requests.DataRequest
-import models.response.emcsTfe.MovementItem
+import models.{ItemShortageOrExcessModel, Mode}
 import navigation.Navigator
-import pages.unsatisfactory.individualItems.{ItemShortageOrExcessPage, SelectItemsPage}
+import pages.unsatisfactory.individualItems.ItemShortageOrExcessPage
 import play.api.data.{Form, FormError}
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
+import play.api.i18n.MessagesApi
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat
 import services.UserAnswersService
 import views.html.ItemShortageOrExcessView
 
+import javax.inject.Inject
 import scala.concurrent.Future
 
 class ItemShortageOrExcessController @Inject()(
@@ -62,7 +60,7 @@ class ItemShortageOrExcessController @Inject()(
             formWithErrors =>
               Future.successful(BadRequest(renderView(formWithErrors, ern, arc, idx, mode)))
             , {
-              case value if value.wrongWithItem == Less && value.amount > item.quantity =>
+              case value if value.wrongWithItem == Shortage && value.amount > item.quantity =>
                 val formWithError =
                   formProvider()
                     .fill(value)

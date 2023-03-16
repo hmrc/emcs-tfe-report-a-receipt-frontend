@@ -19,7 +19,7 @@ package viewmodels
 import base.SpecBase
 import controllers.routes
 import fixtures.messages.WrongWithMovementMessages
-import models.WrongWithMovement.{BrokenSeals, Damaged, Less, More, Other}
+import models.WrongWithMovement.{BrokenSeals, Damaged, Shortage, Excess, Other}
 import models.{NormalMode, WrongWithMovement}
 import pages.unsatisfactory.WrongWithMovementPage
 import play.api.test.FakeRequest
@@ -49,7 +49,7 @@ class WrongWithMovementSummarySpec extends SpecBase with DateUtils {
 
           "must render the expected SummaryListRow" in {
 
-            val answers = emptyUserAnswers.set(WrongWithMovementPage, Set[WrongWithMovement](Less, Damaged, Other, BrokenSeals, More))
+            val answers = emptyUserAnswers.set(WrongWithMovementPage, Set[WrongWithMovement](Shortage, Damaged, Other, BrokenSeals, Excess))
             implicit val request = dataRequest(FakeRequest(), answers)
 
             wrongWithMovementSummary.row() mustBe

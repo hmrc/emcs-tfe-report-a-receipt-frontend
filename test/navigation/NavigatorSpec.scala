@@ -144,7 +144,7 @@ class NavigatorSpec extends SpecBase {
         "when the next page is Less" - {
 
           "must go to ShortageInformation Yes/No page" in {
-            val selectedOptions: Set[WrongWithMovement] = Set(Less, More, Damaged, BrokenSeals, Other)
+            val selectedOptions: Set[WrongWithMovement] = Set(Shortage, Excess, Damaged, BrokenSeals, Other)
             val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, selectedOptions)
             navigator.nextPage(WrongWithMovementPage, NormalMode, userAnswers) mustBe
               routes.AddMoreInformationController.loadShortageInformation(testErn, testArc, NormalMode)
@@ -154,7 +154,7 @@ class NavigatorSpec extends SpecBase {
         "when the next page is More" - {
 
           "must go to ExcessInformation Yes/No page" in {
-            val selectedOptions: Set[WrongWithMovement] = Set(More, Damaged, BrokenSeals, Other)
+            val selectedOptions: Set[WrongWithMovement] = Set(Excess, Damaged, BrokenSeals, Other)
             val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, selectedOptions)
             navigator.nextPage(WrongWithMovementPage, NormalMode, userAnswers) mustBe
               routes.AddMoreInformationController.loadExcessInformation(testErn, testArc, NormalMode)
@@ -205,7 +205,7 @@ class NavigatorSpec extends SpecBase {
         "when the next page is MoreOrLess" - {
 
           "must go to ItemShortageOrExcess page" in {
-            val selectedOptions: Set[WrongWithMovement] = Set(MoreOrLess, Damaged, BrokenSeals, Other)
+            val selectedOptions: Set[WrongWithMovement] = Set(ShortageOrExcess, Damaged, BrokenSeals, Other)
             val userAnswers = emptyUserAnswers.set(WrongWithItemPage(1), selectedOptions)
             navigator.nextPage(WrongWithItemPage(1), NormalMode, userAnswers) mustBe
               routes.ItemShortageOrExcessController.onPageLoad(testErn, testArc, 1, NormalMode)
@@ -263,7 +263,7 @@ class NavigatorSpec extends SpecBase {
           "must go to the next WhatWrongWith page to answer" in {
 
             val userAnswers = emptyUserAnswers
-              .set(WrongWithMovementPage, Set[WrongWithMovement](Less))
+              .set(WrongWithMovementPage, Set[WrongWithMovement](Shortage))
               .set(AddShortageInformationPage, false)
 
             navigator.nextPage(AddShortageInformationPage, NormalMode, userAnswers) mustBe routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
@@ -282,7 +282,7 @@ class NavigatorSpec extends SpecBase {
 
         "must go to the next WhatWrongWith page to answer" in {
 
-          val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, Set[WrongWithMovement](Less))
+          val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, Set[WrongWithMovement](Shortage))
 
           navigator.nextPage(ShortageInformationPage, NormalMode, userAnswers) mustBe routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
         }
@@ -305,7 +305,7 @@ class NavigatorSpec extends SpecBase {
           "must go to the next WhatWrongWith page to answer" in {
 
             val userAnswers = emptyUserAnswers
-              .set(WrongWithMovementPage, Set[WrongWithMovement](Less, More))
+              .set(WrongWithMovementPage, Set[WrongWithMovement](Shortage, Excess))
               .set(AddExcessInformationPage, false)
 
             navigator.nextPage(AddExcessInformationPage, NormalMode, userAnswers) mustBe routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
@@ -324,7 +324,7 @@ class NavigatorSpec extends SpecBase {
 
         "must go to the next WhatWrongWith page to answer" in {
 
-          val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, Set[WrongWithMovement](Less, More))
+          val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, Set[WrongWithMovement](Shortage, Excess))
 
           navigator.nextPage(ExcessInformationPage, NormalMode, userAnswers) mustBe routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
         }
@@ -389,7 +389,7 @@ class NavigatorSpec extends SpecBase {
           "must go to the next WhatWrongWith page to answer" in {
 
             val userAnswers = emptyUserAnswers
-              .set(WrongWithMovementPage, Set[WrongWithMovement](Less, More, BrokenSeals))
+              .set(WrongWithMovementPage, Set[WrongWithMovement](Shortage, Excess, BrokenSeals))
               .set(AddSealsInformationPage, false)
 
             navigator.nextPage(AddSealsInformationPage, NormalMode, userAnswers) mustBe routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
@@ -408,7 +408,7 @@ class NavigatorSpec extends SpecBase {
 
         "must go to the next WhatWrongWith page to answer" in {
 
-          val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, Set[WrongWithMovement](Less, More, BrokenSeals))
+          val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, Set[WrongWithMovement](Shortage, Excess, BrokenSeals))
 
           navigator.nextPage(SealsInformationPage, NormalMode, userAnswers) mustBe routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
         }
@@ -418,7 +418,7 @@ class NavigatorSpec extends SpecBase {
 
         "must go to the next WhatWrongWith page to answer" in {
 
-          val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, Set[WrongWithMovement](Less, More, Other))
+          val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, Set[WrongWithMovement](Shortage, Excess, Other))
 
           navigator.nextPage(OtherInformationPage, NormalMode, userAnswers) mustBe routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
         }
@@ -477,12 +477,12 @@ class NavigatorSpec extends SpecBase {
 
       "when all options are selected" - {
 
-        val setOfOptions: Set[WrongWithMovement] = Set(Damaged, Other, Less, More, BrokenSeals)
+        val setOfOptions: Set[WrongWithMovement] = Set(Damaged, Other, Shortage, Excess, BrokenSeals)
 
         "when user hasn't answered any reasons yet" - {
 
           "must return the first one to answer based on the order radio items" in {
-            navigator.nextWrongWithMovementOptionToAnswer(setOfOptions) mustBe Some(Less)
+            navigator.nextWrongWithMovementOptionToAnswer(setOfOptions) mustBe Some(Shortage)
           }
         }
 
@@ -503,19 +503,19 @@ class NavigatorSpec extends SpecBase {
 
       "when some of the options are selected" - {
 
-        val setOfOptions: Set[WrongWithMovement] = Set(Other, More)
+        val setOfOptions: Set[WrongWithMovement] = Set(Other, Excess)
 
         "when user hasn't answered any reasons yet" - {
 
           "must return the first one to answer based on the order radio items" in {
-            navigator.nextWrongWithMovementOptionToAnswer(setOfOptions) mustBe Some(More)
+            navigator.nextWrongWithMovementOptionToAnswer(setOfOptions) mustBe Some(Excess)
           }
         }
 
         "when user has answered some of the reasons" - {
 
           "must return the next one to answer" in {
-            navigator.nextWrongWithMovementOptionToAnswer(setOfOptions, Some(More)) mustBe Some(Other)
+            navigator.nextWrongWithMovementOptionToAnswer(setOfOptions, Some(Excess)) mustBe Some(Other)
           }
         }
 
@@ -529,19 +529,19 @@ class NavigatorSpec extends SpecBase {
 
       "when one of the options are selected" - {
 
-        val setOfOptions: Set[WrongWithMovement] = Set(More)
+        val setOfOptions: Set[WrongWithMovement] = Set(Excess)
 
         "when user hasn't answered any reasons yet" - {
 
           "must return the first one to answer based on the order radio items" in {
-            navigator.nextWrongWithMovementOptionToAnswer(setOfOptions) mustBe Some(More)
+            navigator.nextWrongWithMovementOptionToAnswer(setOfOptions) mustBe Some(Excess)
           }
         }
 
         "when user has answered the last reason" - {
 
           "must return None" in {
-            navigator.nextWrongWithMovementOptionToAnswer(setOfOptions, Some(More)) mustBe None
+            navigator.nextWrongWithMovementOptionToAnswer(setOfOptions, Some(Excess)) mustBe None
           }
         }
       }

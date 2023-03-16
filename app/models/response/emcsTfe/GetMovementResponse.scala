@@ -16,7 +16,6 @@
 
 package models.response.emcsTfe
 
-import pages.unsatisfactory.individualItems.SelectItemsPage
 import play.api.libs.json.{Format, Json}
 
 import java.time.LocalDate

@@ -18,7 +18,7 @@ package forms
 
 import forms.behaviours.BooleanFieldBehaviours
 import models.ItemShortageOrExcessModel
-import models.WrongWithMovement.{BrokenSeals, Less, More}
+import models.WrongWithMovement.{BrokenSeals, Shortage, Excess}
 import play.api.data.FormError
 
 import scala.collection.immutable.Map
@@ -37,7 +37,7 @@ class ItemShortageOrExcessFormProviderSpec extends BooleanFieldBehaviours {
       "when all fields supplied (Less, 3dp for amount & Extra info)" in {
 
         val data = Map(
-          s"shortageOrExcess" -> Less.toString,
+          s"shortageOrExcess" -> Shortage.toString,
           s"amount" -> "123456789012.123",
           s"additionalInfo" -> "info"
         )
@@ -46,7 +46,7 @@ class ItemShortageOrExcessFormProviderSpec extends BooleanFieldBehaviours {
 
         result.errors mustBe Seq()
         result.value mustBe Some(ItemShortageOrExcessModel(
-          wrongWithItem = Less,
+          wrongWithItem = Shortage,
           amount = BigDecimal("123456789012.123"),
           additionalInfo = Some("info")
         ))
@@ -55,7 +55,7 @@ class ItemShortageOrExcessFormProviderSpec extends BooleanFieldBehaviours {
       "when all fields supplied (More, 2dp for amount & No extra info)" in {
 
         val data = Map(
-          s"shortageOrExcess" -> More.toString,
+          s"shortageOrExcess" -> Excess.toString,
           s"amount" -> "1234567890123.12"
         )
 
@@ -63,7 +63,7 @@ class ItemShortageOrExcessFormProviderSpec extends BooleanFieldBehaviours {
 
         result.errors mustBe Seq()
         result.value mustBe Some(ItemShortageOrExcessModel(
-          wrongWithItem = More,
+          wrongWithItem = Excess,
           amount = BigDecimal("1234567890123.12"),
           additionalInfo = None
         ))
@@ -72,7 +72,7 @@ class ItemShortageOrExcessFormProviderSpec extends BooleanFieldBehaviours {
       "when all fields supplied (1dp for amount, text area contains carriage returns)" in {
 
         val data = Map(
-          s"shortageOrExcess" -> Less.toString,
+          s"shortageOrExcess" -> Shortage.toString,
           s"amount" -> "12345678901234.1"
         )
 
@@ -80,7 +80,7 @@ class ItemShortageOrExcessFormProviderSpec extends BooleanFieldBehaviours {
 
         result.errors mustBe Seq()
         result.value mustBe Some(ItemShortageOrExcessModel(
-          wrongWithItem = Less,
+          wrongWithItem = Shortage,
           amount = BigDecimal("12345678901234.1"),
           additionalInfo = None
         ))
@@ -89,7 +89,7 @@ class ItemShortageOrExcessFormProviderSpec extends BooleanFieldBehaviours {
       "when all fields supplied (0dp for amount, maximum text area input)" in {
 
         val data = Map(
-          s"shortageOrExcess" -> Less.toString,
+          s"shortageOrExcess" -> Shortage.toString,
           s"amount" -> "123456789012345",
           s"additionalInfo" -> "\n\n\na\n\nb\nc\nd\n\n\n"
         )
@@ -98,7 +98,7 @@ class ItemShortageOrExcessFormProviderSpec extends BooleanFieldBehaviours {
 
         result.errors mustBe Seq()
         result.value mustBe Some(ItemShortageOrExcessModel(
-          wrongWithItem = Less,
+          wrongWithItem = Shortage,
           amount = BigDecimal("123456789012345"),
           additionalInfo = Some("a b c d")
         ))
@@ -110,7 +110,7 @@ class ItemShortageOrExcessFormProviderSpec extends BooleanFieldBehaviours {
       "when no amount is supplied" in {
 
         val data = Map(
-          s"shortageOrExcess" -> Less.toString,
+          s"shortageOrExcess" -> Shortage.toString,
           s"additionalInfo" -> "info"
         )
 
@@ -124,7 +124,7 @@ class ItemShortageOrExcessFormProviderSpec extends BooleanFieldBehaviours {
       "when amount exceeds 3dp" in {
 
         val data = Map(
-          s"shortageOrExcess" -> Less.toString,
+          s"shortageOrExcess" -> Shortage.toString,
           s"amount" -> "12345678901.1234",
           s"additionalInfo" -> "info"
         )
@@ -139,7 +139,7 @@ class ItemShortageOrExcessFormProviderSpec extends BooleanFieldBehaviours {
       "when amount exceeds 15 numerics" in {
 
         val data = Map(
-          s"shortageOrExcess" -> Less.toString,
+          s"shortageOrExcess" -> Shortage.toString,
           s"amount" -> "1234567890123456",
           s"additionalInfo" -> "info"
         )
@@ -154,7 +154,7 @@ class ItemShortageOrExcessFormProviderSpec extends BooleanFieldBehaviours {
       "when amount is not a number" in {
 
         val data = Map(
-          s"shortageOrExcess" -> Less.toString,
+          s"shortageOrExcess" -> Shortage.toString,
           s"amount" -> "abcd",
           s"additionalInfo" -> "info"
         )
@@ -204,7 +204,7 @@ class ItemShortageOrExcessFormProviderSpec extends BooleanFieldBehaviours {
       "exceeds 350 chars" in {
 
         val data = Map(
-          s"shortageOrExcess" -> More.toString,
+          s"shortageOrExcess" -> Excess.toString,
           s"amount" -> "123456789012.123",
           s"additionalInfo" -> "a" * (TEXTAREA_MAX_LENGTH + 1)
         )
@@ -219,7 +219,7 @@ class ItemShortageOrExcessFormProviderSpec extends BooleanFieldBehaviours {
       "return an error if alpha numeric data isn't used" in {
 
         val data = Map(
-          s"shortageOrExcess" -> More.toString,
+          s"shortageOrExcess" -> Excess.toString,
           s"amount" -> "123456789012.123",
           s"additionalInfo" -> ".."
         )
@@ -233,13 +233,13 @@ class ItemShortageOrExcessFormProviderSpec extends BooleanFieldBehaviours {
 
       "return errors if invalid characters are used" in {
         val data = Map(
-          s"shortageOrExcess" -> More.toString,
+          s"shortageOrExcess" -> Excess.toString,
           s"amount" -> "123456789012.123",
           s"additionalInfo" -> "<>"
         )
         val result = form.bind(data)
 
-        result.errors must contain only(
+        result.errors mustBe Seq(
           FormError("additionalInfo", "itemShortageOrExcess.additionalInfo.error.character",  Seq(ALPHANUMERIC_REGEX)),
           FormError("additionalInfo", "itemShortageOrExcess.additionalInfo.error.invalidCharacter",  Seq(XSS_REGEX))
         )

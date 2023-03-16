@@ -28,23 +28,23 @@ sealed trait WrongWithMovement
 
 object WrongWithMovement extends Enumerable.Implicits {
 
-  case object Less extends WithName("less") with WrongWithMovement
-  case object More extends WithName("more") with WrongWithMovement
-  case object MoreOrLess extends WithName("moreOrLess") with WrongWithMovement
+  case object Shortage extends WithName("shortage") with WrongWithMovement
+  case object Excess extends WithName("excess") with WrongWithMovement
+  case object ShortageOrExcess extends WithName("shortageOrExcess") with WrongWithMovement
   case object Damaged extends WithName("damaged") with WrongWithMovement
   case object BrokenSeals extends WithName("brokenSeals") with WrongWithMovement
   case object Other extends WithName("other") with WrongWithMovement
 
   val values: Seq[WrongWithMovement] = Seq(
-    Less,
-    More,
+    Shortage,
+    Excess,
     Damaged,
     BrokenSeals,
     Other
   )
 
   val individualItemValues: Seq[WrongWithMovement] = Seq(
-    MoreOrLess,
+    ShortageOrExcess,
     Damaged,
     BrokenSeals,
     Other
@@ -70,14 +70,14 @@ object WrongWithMovement extends Enumerable.Implicits {
   def itemShortageOrExcessOptions(implicit messages: Messages) = {
     Seq(
       RadioItem(
-        content = Text(messages(s"itemShortageOrExcess.shortageOrExcess.$Less")),
-        value = Some(Less.toString),
-        id = Some(Less.toString)
+        content = Text(messages(s"itemShortageOrExcess.shortageOrExcess.$Shortage")),
+        value = Some(Shortage.toString),
+        id = Some(Shortage.toString)
       ),
       RadioItem(
-        content = Text(messages(s"itemShortageOrExcess.shortageOrExcess.$More")),
-        value = Some(More.toString),
-        id = Some(More.toString)
+        content = Text(messages(s"itemShortageOrExcess.shortageOrExcess.$Excess")),
+        value = Some(Excess.toString),
+        id = Some(Excess.toString)
       )
     )
   }

@@ -16,7 +16,7 @@
 
 package models.response.emcsTfe
 
-import play.api.libs.json.{Format, Json, OWrites}
+import play.api.libs.json.{Format, Json}
 
 case class Packaging(typeOfPackage: String,
                      quantity: BigDecimal)

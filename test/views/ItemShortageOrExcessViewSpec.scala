@@ -17,18 +17,16 @@
 package views
 
 import base.ViewSpecBase
-import fixtures.messages.{ExcessInformationMessages, ItemShortageOrExcessMessages, MoreInformationMessages, ShortageInformationMessages, UnitOfMeasureMessages}
-import forms.{ItemShortageOrExcessFormProvider, MoreInformationFormProvider}
+import fixtures.messages.{ItemShortageOrExcessMessages, UnitOfMeasureMessages}
+import forms.ItemShortageOrExcessFormProvider
 import models.UnitOfMeasure.{Kilograms, Litres15, Litres20, Thousands}
 import models.requests.DataRequest
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import pages.MoreInformationPage
-import pages.unsatisfactory.{ExcessInformationPage, ShortageInformationPage}
 import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import views.html.{ItemShortageOrExcessView, MoreInformationView}
+import views.html.ItemShortageOrExcessView
 
 class ItemShortageOrExcessViewSpec extends ViewSpecBase with ViewBehaviours {
 
@@ -36,8 +34,8 @@ class ItemShortageOrExcessViewSpec extends ViewSpecBase with ViewBehaviours {
     val shortageExcessLegend = "main legend"
     val amountLabel = "main label[for='amount']"
     val additionalInfoLabel = "main label[for='additionalInfo']"
-    val shortageLabel = "main label[for='less']"
-    val excessLabel = "main label[for='more']"
+    val shortageLabel = "main label[for='shortage']"
+    val excessLabel = "main label[for='excess']"
   }
 
   "ItemShortageOrExcessView rendered in the Kilograms variant of view" - {

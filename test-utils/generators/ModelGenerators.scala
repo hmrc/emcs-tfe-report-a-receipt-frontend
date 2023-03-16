@@ -16,7 +16,7 @@
 
 package generators
 
-import models.WrongWithMovement.{Less, More}
+import models.WrongWithMovement.{Shortage, Excess}
 import models._
 import org.scalacheck.{Arbitrary, Gen}
 
@@ -41,12 +41,12 @@ trait ModelGenerators {
     Arbitrary {
       Gen.oneOf(Seq(
         ItemShortageOrExcessModel(
-          More,
+          Excess,
           BigDecimal(12),
           None
         ),
         ItemShortageOrExcessModel(
-          Less,
+          Shortage,
           BigDecimal(12.123),
           Some("info")
         )

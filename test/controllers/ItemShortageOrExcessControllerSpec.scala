@@ -20,8 +20,8 @@ import base.SpecBase
 import forms.ItemShortageOrExcessFormProvider
 import mocks.services.MockUserAnswersService
 import models.UnitOfMeasure.Kilograms
-import models.WrongWithMovement.{Less, More}
-import models.{ItemShortageOrExcessModel, NormalMode, UserAnswers}
+import models.WrongWithMovement.{Excess, Shortage}
+import models.{ItemShortageOrExcessModel, NormalMode}
 import navigation.{FakeNavigator, Navigator}
 import pages.unsatisfactory.individualItems.{ItemShortageOrExcessPage, SelectItemsPage}
 import play.api.data.FormError
@@ -42,7 +42,7 @@ class ItemShortageOrExcessControllerSpec extends SpecBase with MockUserAnswersSe
   val form = formProvider()
 
   lazy val itemShortageOrExcess = ItemShortageOrExcessModel(
-    wrongWithItem = More,
+    wrongWithItem = Excess,
     amount = 12.123,
     additionalInfo = Some("info")
   )
@@ -111,7 +111,7 @@ class ItemShortageOrExcessControllerSpec extends SpecBase with MockUserAnswersSe
         val request =
           FakeRequest(POST, itemShortageOrExcessRoute)
             .withFormUrlEncodedBody(
-              ("shortageOrExcess", Less.toString),
+              ("shortageOrExcess", Shortage.toString),
               ("amount", item1.quantity.toString()),
               ("additionalInformation", "info")
             )
@@ -139,7 +139,7 @@ class ItemShortageOrExcessControllerSpec extends SpecBase with MockUserAnswersSe
         val request =
           FakeRequest(POST, itemShortageOrExcessRoute)
             .withFormUrlEncodedBody(
-              ("shortageOrExcess", Less.toString),
+              ("shortageOrExcess", Shortage.toString),
               ("amount", (item1.quantity - 0.001).toString()),
               ("additionalInformation", "info")
             )
@@ -159,13 +159,13 @@ class ItemShortageOrExcessControllerSpec extends SpecBase with MockUserAnswersSe
         val request =
           FakeRequest(POST, itemShortageOrExcessRoute)
             .withFormUrlEncodedBody(
-              ("shortageOrExcess", Less.toString),
+              ("shortageOrExcess", Shortage.toString),
               ("amount", (item1.quantity + 0.001).toString()),
               ("additionalInformation", "info")
             )
 
         val boundForm = form.bind(Map(
-          ("shortageOrExcess", Less.toString),
+          ("shortageOrExcess", Shortage.toString),
           ("amount", (item1.quantity + 0.001).toString()),
           ("additionalInformation", "info")
         ))

@@ -17,7 +17,7 @@
 package forms
 
 import forms.mappings.Mappings
-import models.WrongWithMovement.{Less, More}
+import models.WrongWithMovement.{Shortage, Excess}
 import models.{ItemShortageOrExcessModel, WrongWithMovement}
 import play.api.data.Form
 import play.api.data.Forms.{mapping, optional, text => playText}
@@ -58,7 +58,7 @@ class ItemShortageOrExcessFormProvider @Inject() extends Mappings {
 
   private def isShortageOrExcess(): Constraint[WrongWithMovement] =
     Constraint {
-      case Less | More => Valid
+      case Shortage | Excess => Valid
       case _ => Invalid("itemShortageOrExcess.shortageOrExcess.error.required")
     }
 }

@@ -100,7 +100,7 @@ class MoreInformationFormProviderSpec extends StringFieldBehaviours {
           val data = Map("more-information" -> "<>")
           val result = form.bind(data)
 
-          result.errors must contain only(
+          result.errors mustBe Seq(
             FormError("more-information", s"$page.error.character", Seq(ALPHANUMERIC_REGEX)),
             FormError("more-information", s"$page.error.invalidCharacter", Seq(XSS_REGEX))
           )

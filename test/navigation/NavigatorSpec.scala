@@ -24,7 +24,7 @@ import models.WrongWithMovement._
 import models._
 import pages._
 import pages.unsatisfactory._
-import pages.unsatisfactory.individualItems.{ChooseGiveReasonItemDamagedPage, ItemOtherInformationPage, SelectItemsPage, WrongWithItemPage}
+import pages.unsatisfactory.individualItems._
 
 class NavigatorSpec extends SpecBase {
 
@@ -225,12 +225,11 @@ class NavigatorSpec extends SpecBase {
 
         "when the next page is BrokenSeals" - {
 
-          //TODO: Implement as part of future story when page is built
           "must go to ItemBrokenSealsInformation add more info Yes/No page" in {
             val selectedOptions: Set[WrongWithMovement] = Set(BrokenSeals, Other)
             val userAnswers = emptyUserAnswers.set(WrongWithItemPage(1), selectedOptions)
             navigator.nextPage(WrongWithItemPage(1), NormalMode, userAnswers) mustBe
-              testOnly.controllers.routes.UnderConstructionController.onPageLoad()
+              routes.AddMoreInformationController.loadItemSealsInformation(userAnswers.ern, userAnswers.arc, 1, NormalMode)
           }
         }
 
@@ -377,7 +376,6 @@ class NavigatorSpec extends SpecBase {
 
         s"when the user answers is No" - {
 
-          //TODO: Update routing as part of future story
           "must go to the next WhatWrongWith page to answer" in {
 
             val userAnswers = emptyUserAnswers
@@ -385,7 +383,7 @@ class NavigatorSpec extends SpecBase {
               .set(ChooseGiveReasonItemDamagedPage(1), false)
 
             navigator.nextPage(ChooseGiveReasonItemDamagedPage(1), NormalMode, userAnswers) mustBe
-              testOnly.controllers.routes.UnderConstructionController.onPageLoad()
+              routes.AddMoreInformationController.loadItemSealsInformation(testErn, testArc, 1, NormalMode)
           }
         }
 
@@ -436,6 +434,41 @@ class NavigatorSpec extends SpecBase {
 
           "must go back to itself" in {
             navigator.nextPage(AddSealsInformationPage, NormalMode, emptyUserAnswers) mustBe routes.AddMoreInformationController.loadSealsInformation(testErn, testArc, NormalMode)
+          }
+        }
+      }
+
+      "for the AddItemSealsInformationPage page" - {
+
+        s"when the user answers is Yes" - {
+
+          "must go to the DamageInformation page" in {
+
+            val userAnswers = emptyUserAnswers.set(AddItemSealsInformationPage(1), true)
+
+            navigator.nextPage(AddItemSealsInformationPage(1), NormalMode, userAnswers) mustBe
+              testOnly.controllers.routes.UnderConstructionController.onPageLoad()
+          }
+        }
+
+        s"when the user answers is No" - {
+
+          "must go to the next WhatWrongWith page to answer" in {
+
+            val userAnswers = emptyUserAnswers
+              .set(WrongWithMovementPage, Set[WrongWithMovement](Shortage, Excess, BrokenSeals))
+              .set(AddItemSealsInformationPage(1), false)
+
+            navigator.nextPage(AddItemSealsInformationPage(1), NormalMode, userAnswers) mustBe
+              routes.WrongWithMovementController.loadwrongWithItem(userAnswers.ern, userAnswers.arc, 1, NormalMode)
+          }
+        }
+
+        s"when the user answers is None (shouldn't be possible)" - {
+
+          "must go back to itself" in {
+            navigator.nextPage(AddItemSealsInformationPage(1), NormalMode, emptyUserAnswers) mustBe
+              routes.AddMoreInformationController.loadItemSealsInformation(testErn, testArc, 1, NormalMode)
           }
         }
       }

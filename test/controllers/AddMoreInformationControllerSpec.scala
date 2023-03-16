@@ -22,6 +22,7 @@ import mocks.services.MockUserAnswersService
 import models.NormalMode
 import navigation.{FakeNavigator, Navigator}
 import pages.unsatisfactory._
+import pages.unsatisfactory.individualItems.{AddItemSealsInformationPage, ItemSealsInformationPage}
 import pages.{AddMoreInformationPage, MoreInformationPage}
 import play.api.inject.bind
 import play.api.mvc.Call
@@ -33,6 +34,8 @@ import views.html.AddMoreInformationView
 import scala.concurrent.Future
 
 class AddMoreInformationControllerSpec extends SpecBase with MockUserAnswersService {
+
+  private val idx = 1
 
   def onwardRoute = Call("GET", "/foo")
 
@@ -53,12 +56,16 @@ class AddMoreInformationControllerSpec extends SpecBase with MockUserAnswersServ
   lazy val addSealsInformationRoute = routes.AddMoreInformationController.loadSealsInformation(testErn, testArc, NormalMode).url
   lazy val addSealsInformationSubmitAction = routes.AddMoreInformationController.submitSealsInformation(testErn, testArc, NormalMode)
 
+  lazy val addItemSealsInformationRoute = routes.AddMoreInformationController.loadItemSealsInformation(testErn, testArc, idx, NormalMode).url
+  lazy val addItemSealsInformationSubmitAction = routes.AddMoreInformationController.submitItemSealsInformation(testErn, testArc, idx, NormalMode)
+
   Seq(
     (AddMoreInformationPage, MoreInformationPage, addMoreInformationRoute, addMoreInformationSubmitAction),
     (AddShortageInformationPage, ShortageInformationPage, addShortageInformationRoute, addShortageInformationSubmitAction),
     (AddExcessInformationPage, ExcessInformationPage, addExcessInformationRoute, addExcessInformationSubmitAction),
     (AddDamageInformationPage, DamageInformationPage, addDamageInformationRoute, addDamageInformationSubmitAction),
-    (AddSealsInformationPage, SealsInformationPage, addSealsInformationRoute, addSealsInformationSubmitAction)
+    (AddSealsInformationPage, SealsInformationPage, addSealsInformationRoute, addSealsInformationSubmitAction),
+    (AddItemSealsInformationPage(idx), ItemSealsInformationPage(idx), addItemSealsInformationRoute, addItemSealsInformationSubmitAction),
   ) foreach { case (yesNoPage, infoPage, url, submitAction) =>
 
     s"for the '$yesNoPage' page" - {

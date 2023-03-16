@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import forms.ChooseGiveReasonItemDamagedFormProvider
 import mocks.services.MockUserAnswersService
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
 import navigation.{FakeNavigator, Navigator}
 import pages.unsatisfactory.individualItems.ChooseGiveReasonItemDamagedPage
 import play.api.inject.bind

@@ -98,6 +98,15 @@ class Navigator @Inject()() extends BaseNavigator {
           case Some(false) => redirectToNextWrongMovementPage(Some(BrokenSeals))(userAnswers)
           case _ => routes.AddMoreInformationController.loadSealsInformation(userAnswers.ern, userAnswers.arc, NormalMode)
         }
+    case AddItemSealsInformationPage(idx) =>
+      (userAnswers: UserAnswers) =>
+        userAnswers.get(AddItemSealsInformationPage(idx)) match {
+          case Some(true) =>
+            // TODO: update when page is created
+            testOnly.controllers.routes.UnderConstructionController.onPageLoad()
+          case Some(false) => redirectToNextItemWrongMovementPage(WrongWithItemPage(idx), Some(BrokenSeals))(userAnswers)
+          case _ => routes.AddMoreInformationController.loadItemSealsInformation(userAnswers.ern, userAnswers.arc, idx, NormalMode)
+        }
     case SealsInformationPage =>
       (userAnswers: UserAnswers) => redirectToNextWrongMovementPage(Some(BrokenSeals))(userAnswers)
     case OtherInformationPage =>
@@ -175,8 +184,7 @@ class Navigator @Inject()() extends BaseNavigator {
           case Some(Damaged) =>
           routes.ChooseGiveReasonItemDamagedController.loadChooseGiveReasonDamagedItem(userAnswers.ern, userAnswers.arc, page.idx, NormalMode)
           case Some(BrokenSeals) =>
-            //TODO: Route to the ItemDamagedPage (future story)
-            testOnly.controllers.routes.UnderConstructionController.onPageLoad()
+            routes.AddMoreInformationController.loadItemSealsInformation(userAnswers.ern, userAnswers.arc, page.idx, NormalMode)
           case Some(Other) =>
             routes.OtherInformationController.loadItemOtherInformation(userAnswers.ern, userAnswers.arc, page.idx, NormalMode)
           case _ =>

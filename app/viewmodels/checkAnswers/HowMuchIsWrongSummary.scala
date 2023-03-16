@@ -17,8 +17,8 @@
 package viewmodels.checkAnswers
 
 import controllers.routes
+import models.NormalMode
 import models.requests.DataRequest
-import models.CheckMode
 import pages.unsatisfactory.HowMuchIsWrongPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -46,7 +46,7 @@ class HowMuchIsWrongSummary {
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              routes.HowMuchIsWrongController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, CheckMode).url,
+              routes.HowMuchIsWrongController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, NormalMode).url,
               id = HowMuchIsWrongPage
             ).withVisuallyHiddenText(messages(s"$HowMuchIsWrongPage.checkYourAnswers.change.hidden"))
           )

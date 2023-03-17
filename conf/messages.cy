@@ -245,6 +245,12 @@ wrongWithItem.checkYourAnswers.other = Other
 wrongWithItem.checkYourAnswers.change.hidden = what was wrong
 
 
+chooseGiveReasonItemDamaged.title = chooseGiveReasonItemDamaged
+chooseGiveReasonItemDamaged.heading = chooseGiveReasonItemDamaged
+chooseGiveReasonItemDamaged.checkYourAnswersLabel = chooseGiveReasonItemDamaged
+chooseGiveReasonItemDamaged.error.required = Select yes if chooseGiveReasonItemDamaged
+chooseGiveReasonItemDamaged.change.hidden = ChooseGiveReasonItemDamaged
+
 selectItems.title = Select an item to give information about
 selectItems.heading = Select an item to give information about
 selectItems.table.heading.description = Description
@@ -275,3 +281,9 @@ itemOtherInformation.error.length = Information must be 350 characters or less
 itemOtherInformation.error.required = Enter more information
 itemOtherInformation.error.invalidCharacter = Information must not include < and > and : and ;
 itemOtherInformation.error.character = Information must contain letters or numbers
+
+chooseGiveReasonItemDamaged.title = Do you want to give more information about being sent damaged items?
+chooseGiveReasonItemDamaged.heading = Do you want to give more information about being sent damaged items?
+chooseGiveReasonItemDamaged.checkYourAnswersLabel = chooseGiveReasonItemDamaged
+chooseGiveReasonItemDamaged.error.required = Select yes if you want to give more information about [reason]
+chooseGiveReasonItemDamaged.change.hidden = ChooseGiveReasonItemDamaged

@@ -23,7 +23,7 @@ import models.WrongWithMovement.{BrokenSeals, Damaged, Excess, Other, Shortage, 
 import models._
 import pages._
 import pages.unsatisfactory._
-import pages.unsatisfactory.individualItems.{ItemOtherInformationPage, ItemShortageOrExcessPage, SelectItemsPage, WrongWithItemPage}
+import pages.unsatisfactory.individualItems._
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
@@ -80,6 +80,14 @@ class Navigator @Inject()() extends BaseNavigator {
           case Some(true) => routes.MoreInformationController.loadDamageInformation(userAnswers.ern, userAnswers.arc, NormalMode)
           case Some(false) => redirectToNextWrongMovementPage(Some(Damaged))(userAnswers)
           case _ => routes.AddMoreInformationController.loadDamageInformation(userAnswers.ern, userAnswers.arc, NormalMode)
+        }
+    case ChooseGiveReasonItemDamagedPage(idx) =>
+      (userAnswers: UserAnswers) =>
+        //TODO: Route to Damaged Item Info page as part of future story
+        userAnswers.get(ChooseGiveReasonItemDamagedPage(idx)) match {
+          case Some(true) => testOnly.controllers.routes.UnderConstructionController.onPageLoad()
+          case Some(false) => redirectToNextItemWrongMovementPage(WrongWithItemPage(idx), Some(Damaged))(userAnswers)
+          case _ => routes.ChooseGiveReasonItemDamagedController.loadChooseGiveReasonDamagedItem(userAnswers.ern, userAnswers.arc, idx, NormalMode)
         }
     case DamageInformationPage =>
       (userAnswers: UserAnswers) => redirectToNextWrongMovementPage(Some(Damaged))(userAnswers)
@@ -165,8 +173,7 @@ class Navigator @Inject()() extends BaseNavigator {
           case Some(ShortageOrExcess) =>
             routes.ItemShortageOrExcessController.onPageLoad(userAnswers.ern, userAnswers.arc, page.idx, NormalMode)
           case Some(Damaged) =>
-            //TODO: Route to the ItemDamagedPage (future story)
-            testOnly.controllers.routes.UnderConstructionController.onPageLoad()
+          routes.ChooseGiveReasonItemDamagedController.loadChooseGiveReasonDamagedItem(userAnswers.ern, userAnswers.arc, page.idx, NormalMode)
           case Some(BrokenSeals) =>
             //TODO: Route to the ItemDamagedPage (future story)
             testOnly.controllers.routes.UnderConstructionController.onPageLoad()

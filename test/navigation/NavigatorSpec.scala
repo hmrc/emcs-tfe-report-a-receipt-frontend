@@ -447,7 +447,7 @@ class NavigatorSpec extends SpecBase {
             val userAnswers = emptyUserAnswers.set(AddItemSealsInformationPage(1), true)
 
             navigator.nextPage(AddItemSealsInformationPage(1), NormalMode, userAnswers) mustBe
-              testOnly.controllers.routes.UnderConstructionController.onPageLoad()
+              routes.MoreInformationController.loadItemSealsInformation(testErn, testArc, 1, NormalMode)
           }
         }
 

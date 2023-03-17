@@ -447,7 +447,7 @@ class NavigatorSpec extends SpecBase {
             val userAnswers = emptyUserAnswers.set(AddItemSealsInformationPage(1), true)
 
             navigator.nextPage(AddItemSealsInformationPage(1), NormalMode, userAnswers) mustBe
-              testOnly.controllers.routes.UnderConstructionController.onPageLoad()
+              routes.MoreInformationController.loadItemSealsInformation(testErn, testArc, 1, NormalMode)
           }
         }
 
@@ -480,6 +480,17 @@ class NavigatorSpec extends SpecBase {
           val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, Set[WrongWithMovement](Shortage, Excess, BrokenSeals))
 
           navigator.nextPage(SealsInformationPage, NormalMode, userAnswers) mustBe routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
+        }
+      }
+
+      "for the ItemSealsInformationPage page" - {
+
+        "must go to the next WhatWrongWith page to answer" in {
+
+          val userAnswers = emptyUserAnswers.set(WrongWithItemPage(1), Set[WrongWithMovement](BrokenSeals, Other))
+
+          navigator.nextPage(ItemSealsInformationPage(1), NormalMode, userAnswers) mustBe
+            routes.OtherInformationController.loadItemOtherInformation(testErn, testArc, 1, NormalMode)
         }
       }
 

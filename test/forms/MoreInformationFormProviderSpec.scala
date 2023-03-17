@@ -20,6 +20,7 @@ package forms
 import forms.behaviours.StringFieldBehaviours
 import pages.MoreInformationPage
 import pages.unsatisfactory._
+import pages.unsatisfactory.individualItems.ItemSealsInformationPage
 import play.api.data.FormError
 
 class MoreInformationFormProviderSpec extends StringFieldBehaviours {
@@ -32,7 +33,8 @@ class MoreInformationFormProviderSpec extends StringFieldBehaviours {
     ShortageInformationPage,
     ExcessInformationPage,
     DamageInformationPage,
-    SealsInformationPage
+    SealsInformationPage,
+    ItemSealsInformationPage(1)
   ) foreach { page =>
 
     s"loading the form for the '$page' page" - {

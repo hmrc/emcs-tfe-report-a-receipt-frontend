@@ -101,14 +101,14 @@ class Navigator @Inject()() extends BaseNavigator {
     case AddItemSealsInformationPage(idx) =>
       (userAnswers: UserAnswers) =>
         userAnswers.get(AddItemSealsInformationPage(idx)) match {
-          case Some(true) =>
-            // TODO: update when page is created
-            testOnly.controllers.routes.UnderConstructionController.onPageLoad()
+          case Some(true) => routes.MoreInformationController.loadItemSealsInformation(userAnswers.ern, userAnswers.arc, idx, NormalMode)
           case Some(false) => redirectToNextItemWrongMovementPage(WrongWithItemPage(idx), Some(BrokenSeals))(userAnswers)
           case _ => routes.AddMoreInformationController.loadItemSealsInformation(userAnswers.ern, userAnswers.arc, idx, NormalMode)
         }
     case SealsInformationPage =>
       (userAnswers: UserAnswers) => redirectToNextWrongMovementPage(Some(BrokenSeals))(userAnswers)
+    case itemSealsInformationPage: ItemSealsInformationPage =>
+      (userAnswers: UserAnswers) => redirectToNextItemWrongMovementPage(WrongWithItemPage(itemSealsInformationPage.idx), Some(BrokenSeals))(userAnswers)
     case OtherInformationPage =>
       (userAnswers: UserAnswers) => redirectToNextWrongMovementPage(Some(Other))(userAnswers)
     case ItemOtherInformationPage(idx) =>

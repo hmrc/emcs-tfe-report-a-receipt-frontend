@@ -17,11 +17,11 @@
 package pages.unsatisfactory.individualItems
 
 import pages.QuestionPage
-import play.api.libs.json.JsPath
+import play.api.libs.json.{JsPath, __}
 
 case class ItemSealsInformationPage(idx: Int) extends QuestionPage[Option[String]] {
 
-  override def path: JsPath = JsPath \ "items" \ (idx - 1) \ toString
+  override def path: JsPath = __ \ "items" \ (idx - 1) \ toString
 
   override def toString: String = "itemSealsInformation"
 }

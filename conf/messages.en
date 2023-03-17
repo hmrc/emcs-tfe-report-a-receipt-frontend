@@ -286,3 +286,14 @@ chooseGiveReasonItemDamaged.heading = Do you want to give more information about
 chooseGiveReasonItemDamaged.checkYourAnswersLabel = chooseGiveReasonItemDamaged
 chooseGiveReasonItemDamaged.error.required = Select yes if you want to give more information about being sent damaged items
 chooseGiveReasonItemDamaged.change.hidden = ChooseGiveReasonItemDamaged
+
+
+itemSealsInformation.title = Give more information about broken seal(s)
+itemSealsInformation.heading = Give more information about broken seal(s)
+itemSealsInformation.hint = Give more information (optional)
+itemSealsInformation.error.length = Information must be 350 characters or less
+itemSealsInformation.error.invalidCharacter = Information must not include < and > and : and ;
+itemSealsInformation.error.character = Information must contain letters or numbers
+itemSealsInformation.checkYourAnswers.label = Information about broken seal(s)
+itemSealsInformation.checkYourAnswers.change.hidden = information about broken seal(s)
+itemSealsInformation.checkYourAnswers.addMoreInformation = Enter more information about broken seal(s) (optional)

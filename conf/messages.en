@@ -280,5 +280,5 @@ itemOtherInformation.error.character = Information must contain letters or numbe
 chooseGiveReasonItemDamaged.title = Do you want to give more information about being sent damaged items?
 chooseGiveReasonItemDamaged.heading = Do you want to give more information about being sent damaged items?
 chooseGiveReasonItemDamaged.checkYourAnswersLabel = chooseGiveReasonItemDamaged
-chooseGiveReasonItemDamaged.error.required = Select yes if you want to give more information about [reason]
+chooseGiveReasonItemDamaged.error.required = Select yes if you want to give more information about being sent damaged items
 chooseGiveReasonItemDamaged.change.hidden = ChooseGiveReasonItemDamaged

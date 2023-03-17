@@ -24,7 +24,7 @@ import models.WrongWithMovement._
 import models._
 import pages._
 import pages.unsatisfactory._
-import pages.unsatisfactory.individualItems.{ItemOtherInformationPage, SelectItemsPage, WrongWithItemPage}
+import pages.unsatisfactory.individualItems.{ChooseGiveReasonItemDamagedPage, ItemOtherInformationPage, SelectItemsPage, WrongWithItemPage}
 
 class NavigatorSpec extends SpecBase {
 
@@ -357,6 +357,43 @@ class NavigatorSpec extends SpecBase {
 
           "must go back to itself" in {
             navigator.nextPage(AddDamageInformationPage, NormalMode, emptyUserAnswers) mustBe routes.AddMoreInformationController.loadDamageInformation(testErn, testArc, NormalMode)
+          }
+        }
+      }
+
+      "for the ChooseGiveReasonItemDamaged page" - {
+
+        s"when the user answers is Yes" - {
+
+          //TODO: Update routing as part of future story
+          "must go to the DamageInformation page" in {
+
+            val userAnswers = emptyUserAnswers.set(ChooseGiveReasonItemDamagedPage(1), true)
+
+            navigator.nextPage(ChooseGiveReasonItemDamagedPage(1), NormalMode, userAnswers) mustBe
+              testOnly.controllers.routes.UnderConstructionController.onPageLoad()
+          }
+        }
+
+        s"when the user answers is No" - {
+
+          //TODO: Update routing as part of future story
+          "must go to the next WhatWrongWith page to answer" in {
+
+            val userAnswers = emptyUserAnswers
+              .set(WrongWithItemPage(1), Set[WrongWithMovement](Damaged, BrokenSeals))
+              .set(ChooseGiveReasonItemDamagedPage(1), false)
+
+            navigator.nextPage(ChooseGiveReasonItemDamagedPage(1), NormalMode, userAnswers) mustBe
+              testOnly.controllers.routes.UnderConstructionController.onPageLoad()
+          }
+        }
+
+        s"when the user answers is None (shouldn't be possible)" - {
+
+          "must go back to itself" in {
+            navigator.nextPage(ChooseGiveReasonItemDamagedPage(1), NormalMode, emptyUserAnswers) mustBe
+              routes.ChooseGiveReasonItemDamagedController.loadChooseGiveReasonDamagedItem(testErn, testArc, idx = 1, NormalMode)
           }
         }
       }

@@ -19,9 +19,9 @@ package pages.unsatisfactory.individualItems
 import pages.QuestionPage
 import play.api.libs.json.{JsPath, __}
 
-case class ChooseGiveReasonItemDamagedPage(idx: Int) extends QuestionPage[Boolean] {
+case class AddItemDamageInformationPage(idx: Int) extends QuestionPage[Boolean] {
 
   override def path: JsPath = __ \ "items" \ (idx - 1) \ toString
 
-  override def toString: String = "chooseGiveReasonItemDamaged"
+  override def toString: String = "addItemDamageInformation"
 }

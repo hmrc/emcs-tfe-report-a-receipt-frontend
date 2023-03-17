@@ -14,19 +14,11 @@
  * limitations under the License.
  */
 
-package pages
+package pages.unsatisfactory.individualItems
 
-import pages.behaviours.PageBehaviours
-import pages.unsatisfactory.individualItems.AddItemDamageInformationPage
+import pages.Page
 
-class ChooseGiveReasonItemDamagedPageSpec extends PageBehaviours {
+case class CheckAnswersItemPage(idx: Int) extends Page {
 
-  "ChooseGiveReasonItemDamagedPage" - {
-
-    beRetrievable[Boolean](AddItemDamageInformationPage(1))
-
-    beSettable[Boolean](AddItemDamageInformationPage(1))
-
-    beRemovable[Boolean](AddItemDamageInformationPage(1))
-  }
+  override def toString: String = "checkAnswersItem"
 }

@@ -119,6 +119,10 @@ addDamageInformation.title = Do you want to give more information about being se
 addDamageInformation.heading = Do you want to give more information about being sent damaged item(s)?
 addDamageInformation.error.required = Select yes if you want to give more information about being sent damaged item(s)
 
+addItemDamageInformation.title = Do you want to give more information about being sent damaged item(s)?
+addItemDamageInformation.heading = Do you want to give more information about being sent damaged item(s)?
+addItemDamageInformation.error.required = Select yes if you want to give more information about being sent damaged item(s)
+
 addSealsInformation.title = Do you want to give more information about being sent item(s) with broken seal(s)?
 addSealsInformation.heading = Do you want to give more information about being sent item(s) with broken seal(s)?
 addSealsInformation.error.required = Select yes if you want to give more information about being sent item(s) with broken seal(s)
@@ -195,6 +199,10 @@ checkYourAnswers.submit.h2 = Now submit your report of receipt
 checkYourAnswers.declaration = By submitting this report of receipt you are confirming that, to the best of your knowledge, the details you are providing are correct.
 checkYourAnswers.submit.button = Submit report of receipt
 
+checkYourAnswersItem.title = Check your answers for {0}
+checkYourAnswersItem.heading = Check your answers for {0}
+checkYourAnswersItem.movementDetails.h2 = Movement details
+
 confirmation.title = Report of receipt submitted
 confirmation.heading = Report of receipt submitted
 confirmation.reference = Your reference is
@@ -242,7 +250,8 @@ wrongWithItem.damaged = Goods damaged
 wrongWithItem.brokenSeals = Broken seal(s)
 wrongWithItem.other = Other
 wrongWithItem.error.required = Select what’s wrong with this item
-wrongWithItem.checkYourAnswers.shortageOrExcess = What was wrong
+wrongWithItem.checkYourAnswers.label = What was wrong
+wrongWithItem.checkYourAnswers.shortageOrExcess = Shortage or excess
 wrongWithItem.checkYourAnswers.damaged = Goods damaged
 wrongWithItem.checkYourAnswers.brokenSeals = Broken seal(s)
 wrongWithItem.checkYourAnswers.other = Other
@@ -272,6 +281,14 @@ itemShortageOrExcess.additionalInfo.label = Give more information about the shor
 itemShortageOrExcess.additionalInfo.error.invalidCharacter = Information must not include < and > and : and ;
 itemShortageOrExcess.additionalInfo.error.character = Information must contain letters or numbers
 itemShortageOrExcess.additionalInfo.error.maxLength = Information must be 350 characters or less
+itemShortageOrExcess.checkYourAnswers.shortageOrExcess.label = Shortage or excess
+itemShortageOrExcess.checkYourAnswers.shortageOrExcess.change.hidden = shortage or excess
+itemShortageOrExcess.checkYourAnswers.amount.label = Amount of shortage or excess
+itemShortageOrExcess.checkYourAnswers.amount.value = {0} {1}
+itemShortageOrExcess.checkYourAnswers.amount.change.hidden = amount of shortage or excess
+itemShortageOrExcess.checkYourAnswers.additionalInfo.label = Information about shortage or excess
+itemShortageOrExcess.checkYourAnswers.additionalInfo.change.hidden = information about shortage or excess
+itemShortageOrExcess.checkYourAnswers.addMoreInformation = Enter more information about shortage or excess (optional)
 
 itemOtherInformation.title = Give more information about other reason(s) you are unsatisfied with this item
 itemOtherInformation.heading = Give more information about other reason(s) you are unsatisfied with this item
@@ -280,13 +297,19 @@ itemOtherInformation.error.length = Information must be 350 characters or less
 itemOtherInformation.error.required = Enter more information
 itemOtherInformation.error.invalidCharacter = Information must not include < and > and : and ;
 itemOtherInformation.error.character = Information must contain letters or numbers
+itemOtherInformation.checkYourAnswers.label = Information about other reason(s)
+itemOtherInformation.checkYourAnswers.change.hidden = information about other reason(s)
 
-chooseGiveReasonItemDamaged.title = Do you want to give more information about being sent damaged items?
-chooseGiveReasonItemDamaged.heading = Do you want to give more information about being sent damaged items?
-chooseGiveReasonItemDamaged.checkYourAnswersLabel = chooseGiveReasonItemDamaged
-chooseGiveReasonItemDamaged.error.required = Select yes if you want to give more information about being sent damaged items
-chooseGiveReasonItemDamaged.change.hidden = ChooseGiveReasonItemDamaged
-
+itemDamageInformation.title = Give more information about being sent damaged items
+itemDamageInformation.heading = Give more information about being sent damaged items
+itemDamageInformation.hint = Give more information (optional)
+itemDamageInformation.error.length = Information must be 350 characters or less
+itemDamageInformation.error.required = Enter more information
+itemDamageInformation.error.invalidCharacter = Information must not include < and > and : and ;
+itemDamageInformation.error.character = Information must contain letters or numbers
+itemDamageInformation.checkYourAnswers.label = Information about damaged items
+itemDamageInformation.checkYourAnswers.change.hidden = information about damaged items
+itemDamageInformation.checkYourAnswers.addMoreInformation = Enter more information about damaged items (optional)
 
 itemSealsInformation.title = Give more information about broken seal(s)
 itemSealsInformation.heading = Give more information about broken seal(s)
@@ -298,21 +321,9 @@ itemSealsInformation.checkYourAnswers.label = Information about broken seal(s)
 itemSealsInformation.checkYourAnswers.change.hidden = information about broken seal(s)
 itemSealsInformation.checkYourAnswers.addMoreInformation = Enter more information about broken seal(s) (optional)
 
-
 addedItems.title.singular = You have given information for 1 item
 addedItems.title.plural = You have given information for {0} items
 addedItems.heading.singular = You have given information for 1 item
 addedItems.heading.plural = You have given information for {0} items
 addedItems.addAnother = Do you want to give information for another item?
 addedItems.error.required = Select yes if you want to give information about another item
-
-
-itemDamageInformation.title = Give more information about being sent damaged items
-itemDamageInformation.heading = Give more information about being sent damaged items
-itemDamageInformation.hint = Give more information (optional)
-itemDamageInformation.checkYourAnswersLabel = addGiveReasonItemDamaged
-itemDamageInformation.error.required = Enter more information
-itemDamageInformation.error.character = Information must contain letters or numbers
-itemDamageInformation.error.length = Information must be 350 characters or less
-itemDamageInformation.error.invalidCharacter = Information must not include < and > and : and ;
-itemDamageInformation.change.hidden = AddGiveReasonItemDamaged

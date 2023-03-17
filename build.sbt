@@ -35,7 +35,7 @@ lazy val root = (project in file("."))
     PlayKeys.playDefaultPort := 8313,
     ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*handlers.*;.*components.*;" +
       ".*Routes.*;.*viewmodels.govuk.*;.*testOnly.*;",
-    ScoverageKeys.coverageMinimumStmtTotal := 85,
+    ScoverageKeys.coverageMinimumStmtTotal := 95,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true,
         scalacOptions ++= Seq(

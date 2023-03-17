@@ -21,7 +21,7 @@ import forms.MoreInformationFormProvider
 import models.Mode
 import navigation.Navigator
 import pages.unsatisfactory._
-import pages.unsatisfactory.individualItems.{ItemDamageInformationPage, AddItemSealsInformationPage, ChooseGiveReasonItemDamagedPage, ItemSealsInformationPage}
+import pages.unsatisfactory.individualItems.{ItemDamageInformationPage, AddItemSealsInformationPage, AddItemDamageInformationPage, ItemSealsInformationPage}
 import pages.{AddMoreInformationPage, MoreInformationPage, QuestionPage}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -85,7 +85,7 @@ class MoreInformationController @Inject()(
     onPageLoad(ern, arc, ItemDamageInformationPage(idx), routes.MoreInformationController.submitItemDamageInformation(ern, arc, idx, mode))
 
   def submitItemDamageInformation(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
-    onSubmit(ern, arc, ItemDamageInformationPage(idx), ChooseGiveReasonItemDamagedPage(idx),
+    onSubmit(ern, arc, ItemDamageInformationPage(idx), AddItemDamageInformationPage(idx),
       routes.MoreInformationController.submitItemDamageInformation(ern, arc, idx, mode), mode)
 
   private def onPageLoad(ern: String, arc: String, page: QuestionPage[Option[String]], action: Call): Action[AnyContent] =

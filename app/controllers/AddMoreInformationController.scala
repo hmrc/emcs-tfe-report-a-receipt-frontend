@@ -21,7 +21,7 @@ import forms.AddMoreInformationFormProvider
 import models.Mode
 import navigation.Navigator
 import pages.unsatisfactory._
-import pages.unsatisfactory.individualItems.{AddItemSealsInformationPage, ItemSealsInformationPage}
+import pages.unsatisfactory.individualItems.{AddItemDamageInformationPage, AddItemSealsInformationPage, ItemDamageInformationPage, ItemSealsInformationPage}
 import pages.{AddMoreInformationPage, MoreInformationPage, QuestionPage}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -69,17 +69,23 @@ class AddMoreInformationController @Inject()(
   def submitDamageInformation(ern: String, arc: String, mode: Mode): Action[AnyContent] =
     onSubmit(ern, arc, AddDamageInformationPage, DamageInformationPage, routes.AddMoreInformationController.submitDamageInformation(ern, arc, mode), mode)
 
+  def loadItemDamageInformation(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
+    onPageLoad(ern, arc, AddItemDamageInformationPage(idx), routes.AddMoreInformationController.submitItemDamageInformation(ern, arc, idx, mode))
+
+  def submitItemDamageInformation(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
+    onSubmit(ern, arc, AddItemDamageInformationPage(idx), ItemDamageInformationPage(idx), routes.AddMoreInformationController.submitItemDamageInformation(ern, arc, idx, mode), mode)
+
   def loadSealsInformation(ern: String, arc: String, mode: Mode): Action[AnyContent] =
     onPageLoad(ern, arc, AddSealsInformationPage, routes.AddMoreInformationController.submitSealsInformation(ern, arc, mode))
 
   def submitSealsInformation(ern: String, arc: String, mode: Mode): Action[AnyContent] =
     onSubmit(ern, arc, AddSealsInformationPage, SealsInformationPage, routes.AddMoreInformationController.submitSealsInformation(ern, arc, mode), mode)
 
-  def loadItemSealsInformation(ern: String, arc: String, uniqueItemReference: Int, mode: Mode): Action[AnyContent] =
-    onPageLoad(ern, arc, AddItemSealsInformationPage(uniqueItemReference), routes.AddMoreInformationController.submitItemSealsInformation(ern, arc, uniqueItemReference, mode))
+  def loadItemSealsInformation(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
+    onPageLoad(ern, arc, AddItemSealsInformationPage(idx), routes.AddMoreInformationController.submitItemSealsInformation(ern, arc, idx, mode))
 
-  def submitItemSealsInformation(ern: String, arc: String, uniqueItemReference: Int, mode: Mode): Action[AnyContent] =
-    onSubmit(ern, arc, AddItemSealsInformationPage(uniqueItemReference), ItemSealsInformationPage(uniqueItemReference), routes.AddMoreInformationController.submitItemSealsInformation(ern, arc, uniqueItemReference, mode), mode)
+  def submitItemSealsInformation(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
+    onSubmit(ern, arc, AddItemSealsInformationPage(idx), ItemSealsInformationPage(idx), routes.AddMoreInformationController.submitItemSealsInformation(ern, arc, idx, mode), mode)
 
 
   private def onPageLoad(ern: String,

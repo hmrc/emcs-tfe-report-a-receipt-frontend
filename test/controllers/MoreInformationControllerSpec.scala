@@ -22,7 +22,7 @@ import mocks.services.MockUserAnswersService
 import models.NormalMode
 import navigation.{FakeNavigator, Navigator}
 import pages.unsatisfactory._
-import pages.unsatisfactory.individualItems.{ItemDamageInformationPage, ChooseGiveReasonItemDamagedPage}
+import pages.unsatisfactory.individualItems.{AddItemSealsInformationPage, AddItemDamageInformationPage, ItemDamageInformationPage, ItemSealsInformationPage}
 import pages.{AddMoreInformationPage, MoreInformationPage}
 import play.api.inject.bind
 import play.api.mvc.Call
@@ -40,23 +40,26 @@ class MoreInformationControllerSpec extends SpecBase with JsonOptionFormatter wi
 
   val formProvider = new MoreInformationFormProvider()
 
-  lazy val moreInformationRoute = routes.MoreInformationController.loadMoreInformation(testErn, testArc, NormalMode).url
-  lazy val moreInformationSubmitAction = routes.MoreInformationController.submitMoreInformation(testErn, testArc, NormalMode)
+  private lazy val moreInformationRoute = routes.MoreInformationController.loadMoreInformation(testErn, testArc, NormalMode).url
+  private lazy val moreInformationSubmitAction = routes.MoreInformationController.submitMoreInformation(testErn, testArc, NormalMode)
 
-  lazy val shortageInformationRoute = routes.MoreInformationController.loadShortageInformation(testErn, testArc, NormalMode).url
-  lazy val shortageInformationSubmitAction = routes.MoreInformationController.submitShortageInformation(testErn, testArc, NormalMode)
+  private lazy val shortageInformationRoute = routes.MoreInformationController.loadShortageInformation(testErn, testArc, NormalMode).url
+  private lazy val shortageInformationSubmitAction = routes.MoreInformationController.submitShortageInformation(testErn, testArc, NormalMode)
 
-  lazy val excessInformationRoute = routes.MoreInformationController.loadExcessInformation(testErn, testArc, NormalMode).url
-  lazy val excessInformationSubmitAction = routes.MoreInformationController.submitExcessInformation(testErn, testArc, NormalMode)
+  private lazy val excessInformationRoute = routes.MoreInformationController.loadExcessInformation(testErn, testArc, NormalMode).url
+  private lazy val excessInformationSubmitAction = routes.MoreInformationController.submitExcessInformation(testErn, testArc, NormalMode)
 
-  lazy val damageInformationRoute = routes.MoreInformationController.loadDamageInformation(testErn, testArc, NormalMode).url
-  lazy val damageInformationSubmitAction = routes.MoreInformationController.submitDamageInformation(testErn, testArc, NormalMode)
+  private lazy val damageInformationRoute = routes.MoreInformationController.loadDamageInformation(testErn, testArc, NormalMode).url
+  private lazy val damageInformationSubmitAction = routes.MoreInformationController.submitDamageInformation(testErn, testArc, NormalMode)
 
-  lazy val sealsInformationRoute = routes.MoreInformationController.loadSealsInformation(testErn, testArc, NormalMode).url
-  lazy val sealsInformationSubmitAction = routes.MoreInformationController.submitSealsInformation(testErn, testArc, NormalMode)
+  private lazy val sealsInformationRoute = routes.MoreInformationController.loadSealsInformation(testErn, testArc, NormalMode).url
+  private lazy val sealsInformationSubmitAction = routes.MoreInformationController.submitSealsInformation(testErn, testArc, NormalMode)
 
-  lazy val itemDamageInformationRoute = routes.MoreInformationController.loadItemDamageInformation(testErn, testArc,1, NormalMode).url
-  lazy val itemDamageInformationSubmitAction = routes.MoreInformationController.submitItemDamageInformation(testErn, testArc, 1, NormalMode)
+  private lazy val itemDamageInformationRoute = routes.MoreInformationController.loadItemDamageInformation(testErn, testArc, 1, NormalMode).url
+  private lazy val itemDamageInformationSubmitAction = routes.MoreInformationController.submitItemDamageInformation(testErn, testArc, 1, NormalMode)
+
+  private lazy val sealsItemInformationRoute = routes.MoreInformationController.loadItemSealsInformation(testErn, testArc, 1, NormalMode).url
+  private lazy val sealsItemInformationSubmitAction = routes.MoreInformationController.submitItemSealsInformation(testErn, testArc, 1, NormalMode)
 
   "MoreInformation Controller" - {
 
@@ -66,7 +69,8 @@ class MoreInformationControllerSpec extends SpecBase with JsonOptionFormatter wi
       (AddExcessInformationPage, ExcessInformationPage, excessInformationRoute, excessInformationSubmitAction),
       (AddDamageInformationPage, DamageInformationPage, damageInformationRoute, damageInformationSubmitAction),
       (AddSealsInformationPage, SealsInformationPage, sealsInformationRoute, sealsInformationSubmitAction),
-      (ChooseGiveReasonItemDamagedPage(1), ItemDamageInformationPage(1), itemDamageInformationRoute, itemDamageInformationSubmitAction)
+      (AddItemDamageInformationPage(1), ItemDamageInformationPage(1), itemDamageInformationRoute, itemDamageInformationSubmitAction),
+      (AddItemSealsInformationPage(1), ItemSealsInformationPage(1), sealsItemInformationRoute, sealsItemInformationSubmitAction)
     ) foreach { case (yesNoPage, page, url, submitAction) =>
 
       s"for the '$page' page" - {

@@ -50,7 +50,7 @@ class SelectItemsControllerSpec extends SpecBase with JsonOptionFormatter with M
           val view = application.injector.instanceOf[SelectItemsView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(Seq(item1))(dataRequest(request), messages(application)).toString
+          contentAsString(result) mustEqual view(Seq(item1, item2))(dataRequest(request), messages(application)).toString
         }
       }
 

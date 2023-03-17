@@ -61,8 +61,8 @@ trait GetMovementResponseFixtures { _: BaseFixtures =>
     consignorName = "MyConsignor",
     dateOfDispatch = LocalDate.parse("2010-03-04"),
     journeyTime = "MyJourneyTime",
-    items = Seq(item1),
-    numberOfItems = 1
+    items = Seq(item1, item2),
+    numberOfItems = 2
   )
 
   val getMovementResponseJson: JsValue = Json.obj(
@@ -86,8 +86,26 @@ trait GetMovementResponseFixtures { _: BaseFixtures =>
               "quantity" -> 165
             )
           )
+        ),
+        Json.obj(fields =
+          "itemUniqueReference" -> 2,
+          "productCode" -> "W300",
+          "cnCode" -> "22041011",
+          "quantity" -> 550,
+          "grossMass" -> 910,
+          "netMass" -> 315,
+          "packaging" -> Json.arr(
+            Json.obj(fields =
+              "typeOfPackage" -> "BX",
+              "quantity" -> 165
+            ),
+            Json.obj(fields =
+              "typeOfPackage" -> "CR",
+              "quantity" -> 12
+            )
+          )
         )
       ),
-      "numberOfItems" -> 1
+      "numberOfItems" -> 2
   )
 }

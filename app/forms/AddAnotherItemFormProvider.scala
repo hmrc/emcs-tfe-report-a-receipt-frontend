@@ -14,21 +14,17 @@
  * limitations under the License.
  */
 
-package models.requests
+package forms
 
-import models.UserAnswers
-import models.response.emcsTfe.MovementItem
-import pages.unsatisfactory.individualItems.SelectItemsPage
-import play.api.mvc.WrappedRequest
+import forms.mappings.Mappings
+import play.api.data.Form
 
-case class DataRequest[A](request: MovementRequest[A], userAnswers: UserAnswers) extends WrappedRequest[A](request) {
-  val internalId = request.internalId
-  val ern = request.ern
-  val arc = request.arc
-  val movementDetails = request.movementDetails
+import javax.inject.Inject
 
-  def getItemDetails(idx: Int): Option[MovementItem] =
-    userAnswers.get(SelectItemsPage(idx)).flatMap(reference =>
-      request.movementDetails.item(reference)
+class AddAnotherItemFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean(s"addedItems.error.required")
     )
 }

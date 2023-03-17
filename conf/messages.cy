@@ -301,3 +301,10 @@ itemSealsInformation.error.character = Information must contain letters or numbe
 itemSealsInformation.checkYourAnswers.label = Information about broken seal(s)
 itemSealsInformation.checkYourAnswers.change.hidden = information about broken seal(s)
 itemSealsInformation.checkYourAnswers.addMoreInformation = Enter more information about broken seal(s) (optional)
+
+addedItems.title.singular = You have given information for {0} item
+addedItems.title.plural = You have given information for {0} items
+addedItems.heading.singular = You have given information for {0} item
+addedItems.heading.plural = You have given information for {0} items
+addedItems.addAnother = Do you need to give information for another item?
+addedItems.error.required = Select yes if you want to give information about another item

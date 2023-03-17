@@ -188,7 +188,8 @@ class Navigator @Inject()() extends BaseNavigator {
           case Some(Other) =>
             routes.OtherInformationController.loadItemOtherInformation(userAnswers.ern, userAnswers.arc, page.idx, NormalMode)
           case _ =>
-            testOnly.controllers.routes.UnderConstructionController.onPageLoad()
+            //TODO: Redirect to the CheckAnswer page for the Item when that story is played
+            routes.AddedItemsController.onPageLoad(userAnswers.ern, userAnswers.arc)
         }
       case _ =>
         routes.WrongWithMovementController.loadwrongWithItem(userAnswers.ern, userAnswers.arc, page.idx, NormalMode)

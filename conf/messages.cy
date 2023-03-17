@@ -123,6 +123,10 @@ addSealsInformation.title = Do you want to give more information about being sen
 addSealsInformation.heading = Do you want to give more information about being sent item(s) with broken seal(s)?
 addSealsInformation.error.required = Select yes if you want to give more information about being sent item(s) with broken seal(s)
 
+addItemSealsInformation.title = Do you want to give more information about broken seal(s)?
+addItemSealsInformation.heading = Do you want to give more information about broken seal(s)?
+addItemSealsInformation.error.required = Select yes if you want to give more information about broken seal(s)
+
 moreInformation.title = Give more information about this movement
 moreInformation.heading = Give more information about this movement
 moreInformation.hint = Give more information (optional)

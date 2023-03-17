@@ -19,8 +19,8 @@ package viewmodels
 import base.SpecBase
 import controllers.routes
 import fixtures.messages.HowMuchIsWrongMessages
-import models.CheckMode
 import models.HowMuchIsWrong.TheWholeMovement
+import models.NormalMode
 import pages.unsatisfactory.HowMuchIsWrongPage
 import play.api.test.FakeRequest
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -56,7 +56,7 @@ class HowMuchIsWrongSummarySpec extends SpecBase with DateUtils {
                 actions = Seq(
                   ActionItemViewModel(
                     langMessages.change,
-                    routes.HowMuchIsWrongController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, CheckMode).url,
+                    routes.HowMuchIsWrongController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, NormalMode).url,
                     id = HowMuchIsWrongPage
                   ).withVisuallyHiddenText(langMessages.hiddenChangeLinkText)
                 )

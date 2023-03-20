@@ -308,3 +308,13 @@ addedItems.heading.singular = You have given information for {0} item
 addedItems.heading.plural = You have given information for {0} items
 addedItems.addAnother = Do you want to give information for another item?
 addedItems.error.required = Select yes if you want to give information about another item
+
+
+addGiveReasonItemDamaged.title = Give more information about being sent damaged items
+addGiveReasonItemDamaged.heading = Give more information about being sent damaged items
+addGiveReasonItemDamaged.checkYourAnswersLabel = addGiveReasonItemDamaged
+addGiveReasonItemDamaged.error.required = Enter more information
+addGiveReasonItemDamaged.error.invalidCharacter = Information must contain letters or numbers
+addGiveReasonItemDamaged.error.invalidCharacter = Information must not include [special character] and [special character]
+addGiveReasonItemDamaged.change.hidden = AddGiveReasonItemDamaged
+

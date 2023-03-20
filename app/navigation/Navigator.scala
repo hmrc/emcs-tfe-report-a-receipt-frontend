@@ -83,9 +83,8 @@ class Navigator @Inject()() extends BaseNavigator {
         }
     case ChooseGiveReasonItemDamagedPage(idx) =>
       (userAnswers: UserAnswers) =>
-        //TODO: Route to Damaged Item Info page as part of future story
         userAnswers.get(ChooseGiveReasonItemDamagedPage(idx)) match {
-          case Some(true) => testOnly.controllers.routes.UnderConstructionController.onPageLoad()
+          case Some(true) => routes.AddGiveReasonItemDamagedController.loadAddGiveReasonDamagedItem(userAnswers.ern, userAnswers.arc, idx, NormalMode)
           case Some(false) => redirectToNextItemWrongMovementPage(WrongWithItemPage(idx), Some(Damaged))(userAnswers)
           case _ => routes.ChooseGiveReasonItemDamagedController.loadChooseGiveReasonDamagedItem(userAnswers.ern, userAnswers.arc, idx, NormalMode)
         }

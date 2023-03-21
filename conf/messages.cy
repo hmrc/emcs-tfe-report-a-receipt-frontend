@@ -310,11 +310,13 @@ addedItems.addAnother = Do you want to give information for another item?
 addedItems.error.required = Select yes if you want to give information about another item
 
 
-addGiveReasonItemDamaged.title = Give more information about being sent damaged items
-addGiveReasonItemDamaged.heading = Give more information about being sent damaged items
-addGiveReasonItemDamaged.checkYourAnswersLabel = addGiveReasonItemDamaged
-addGiveReasonItemDamaged.error.required = Enter more information
-addGiveReasonItemDamaged.error.invalidCharacter = Information must contain letters or numbers
-addGiveReasonItemDamaged.error.invalidCharacter = Information must not include [special character] and [special character]
-addGiveReasonItemDamaged.change.hidden = AddGiveReasonItemDamaged
+itemDamageInformation.title = Give more information about being sent damaged items
+itemDamageInformation.heading = Give more information about being sent damaged items
+itemDamageInformation.hint = Give more information (optional)
+itemDamageInformation.checkYourAnswersLabel = addGiveReasonItemDamaged
+itemDamageInformation.error.required = Enter more information
+itemDamageInformation.error.character = Information must contain letters or numbers
+itemDamageInformation.error.length = Information must be 350 characters or less
+itemDamageInformation.error.invalidCharacter = Information must not include < and > and : and ;
+itemDamageInformation.change.hidden = AddGiveReasonItemDamaged
 

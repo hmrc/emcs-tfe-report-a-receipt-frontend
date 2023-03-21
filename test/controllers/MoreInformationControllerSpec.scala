@@ -22,6 +22,7 @@ import mocks.services.MockUserAnswersService
 import models.NormalMode
 import navigation.{FakeNavigator, Navigator}
 import pages.unsatisfactory._
+import pages.unsatisfactory.individualItems.{ItemDamageInformationPage, ChooseGiveReasonItemDamagedPage}
 import pages.{AddMoreInformationPage, MoreInformationPage}
 import play.api.inject.bind
 import play.api.mvc.Call
@@ -54,6 +55,9 @@ class MoreInformationControllerSpec extends SpecBase with JsonOptionFormatter wi
   lazy val sealsInformationRoute = routes.MoreInformationController.loadSealsInformation(testErn, testArc, NormalMode).url
   lazy val sealsInformationSubmitAction = routes.MoreInformationController.submitSealsInformation(testErn, testArc, NormalMode)
 
+  lazy val itemDamageInformationRoute = routes.MoreInformationController.loadItemDamageInformation(testErn, testArc,1, NormalMode).url
+  lazy val itemDamageInformationSubmitAction = routes.MoreInformationController.submitItemDamageInformation(testErn, testArc, 1, NormalMode)
+
   "MoreInformation Controller" - {
 
     Seq(
@@ -61,7 +65,8 @@ class MoreInformationControllerSpec extends SpecBase with JsonOptionFormatter wi
       (AddShortageInformationPage, ShortageInformationPage, shortageInformationRoute, shortageInformationSubmitAction),
       (AddExcessInformationPage, ExcessInformationPage, excessInformationRoute, excessInformationSubmitAction),
       (AddDamageInformationPage, DamageInformationPage, damageInformationRoute, damageInformationSubmitAction),
-      (AddSealsInformationPage, SealsInformationPage, sealsInformationRoute, sealsInformationSubmitAction)
+      (AddSealsInformationPage, SealsInformationPage, sealsInformationRoute, sealsInformationSubmitAction),
+      (ChooseGiveReasonItemDamagedPage(1), ItemDamageInformationPage(1), itemDamageInformationRoute, itemDamageInformationSubmitAction)
     ) foreach { case (yesNoPage, page, url, submitAction) =>
 
       s"for the '$page' page" - {

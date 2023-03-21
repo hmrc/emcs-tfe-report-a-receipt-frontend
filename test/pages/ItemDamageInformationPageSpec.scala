@@ -14,14 +14,20 @@
  * limitations under the License.
  */
 
-package pages.unsatisfactory.individualItems
+package pages
 
-import pages.QuestionPage
-import play.api.libs.json.{JsPath, __}
+import pages.behaviours.PageBehaviours
+import pages.unsatisfactory.individualItems.ItemDamageInformationPage
+import utils.JsonOptionFormatter
 
-case class AddGiveReasonItemDamagedPage(idx: Int) extends QuestionPage[String] {
+class ItemDamageInformationPageSpec extends PageBehaviours with JsonOptionFormatter {
 
-  override def path: JsPath = __ \ "items" \ (idx - 1) \ toString
+  "ItemDamageInformationPage" - {
 
-  override def toString: String = "addGiveReasonItemDamaged"
+    beRetrievable[Option[String]](ItemDamageInformationPage(1))
+
+    beSettable[Option[String]](ItemDamageInformationPage(1))
+
+    beRemovable[Option[String]](ItemDamageInformationPage(1))
+  }
 }

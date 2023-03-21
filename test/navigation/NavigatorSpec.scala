@@ -363,14 +363,12 @@ class NavigatorSpec extends SpecBase {
       "for the ChooseGiveReasonItemDamaged page" - {
 
         s"when the user answers is Yes" - {
-
-          //TODO: Update routing as part of future story
           "must go to the DamageInformation page" in {
 
             val userAnswers = emptyUserAnswers.set(ChooseGiveReasonItemDamagedPage(1), true)
 
             navigator.nextPage(ChooseGiveReasonItemDamagedPage(1), NormalMode, userAnswers) mustBe
-              testOnly.controllers.routes.UnderConstructionController.onPageLoad()
+              routes.MoreInformationController.loadItemDamageInformation(testErn, testArc, 1, NormalMode)
           }
         }
 

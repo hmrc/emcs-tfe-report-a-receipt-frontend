@@ -14,22 +14,14 @@
  * limitations under the License.
  */
 
-package fixtures.messages
+package pages.unsatisfactory.individualItems
 
-object AddGiveReasonItemDamagedMessages {
+import pages.QuestionPage
+import play.api.libs.json.{JsPath, __}
 
-  sealed trait ViewMessages { _: i18n =>
-    val title: String
-    val heading: String
-  }
-  object English extends ViewMessages with BaseEnglish {
-    override val heading = "Give more information about being sent damaged items"
-    override val title = title(heading)
+case class ItemDamageInformationPage(idx: Int) extends QuestionPage[Option[String]] {
 
-  }
+  override def path: JsPath = __ \ "items" \ (idx - 1) \ toString
 
-  object Welsh extends ViewMessages with BaseWelsh {
-    override val heading = "Give more information about being sent damaged items"
-    override val title = title(heading)
-  }
+  override def toString: String = "itemDamageInformation"
 }

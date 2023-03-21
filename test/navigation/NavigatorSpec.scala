@@ -506,12 +506,13 @@ class NavigatorSpec extends SpecBase {
 
       "for the ItemOtherInformationPage page" - {
 
-        //TODO: Update to add routing as part of future story
         "must go to the next WhatWrongWith page to answer" in {
 
           val userAnswers = emptyUserAnswers.set(WrongWithItemPage(1), Set[WrongWithMovement](Other))
 
-          navigator.nextPage(ItemOtherInformationPage(1), NormalMode, userAnswers) mustBe testOnly.controllers.routes.UnderConstructionController.onPageLoad()
+          navigator.nextPage(ItemOtherInformationPage(1), NormalMode, userAnswers) mustBe
+            //TODO: Update to add routing as part of future story to go to the CheckAnswers page for this item
+            routes.AddedItemsController.onPageLoad(testErn, testArc)
         }
       }
 

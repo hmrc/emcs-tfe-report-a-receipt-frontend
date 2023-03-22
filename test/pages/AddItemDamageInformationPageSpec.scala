@@ -14,22 +14,19 @@
  * limitations under the License.
  */
 
-package fixtures.messages
+package pages
 
-object itemDamageInformationMessages {
+import pages.behaviours.PageBehaviours
+import pages.unsatisfactory.individualItems.AddItemDamageInformationPage
 
-  sealed trait ViewMessages { _: i18n =>
-    val title: String
-    val heading: String
-  }
-  object English extends ViewMessages with BaseEnglish {
-    override val heading = "Give more information about being sent damaged items"
-    override val title = title(heading)
+class AddItemDamageInformationPageSpec extends PageBehaviours {
 
-  }
+  "AddItemDamageInformationPage" - {
 
-  object Welsh extends ViewMessages with BaseWelsh {
-    override val heading = "Give more information about being sent damaged items"
-    override val title = title(heading)
+    beRetrievable[Boolean](AddItemDamageInformationPage(1))
+
+    beSettable[Boolean](AddItemDamageInformationPage(1))
+
+    beRemovable[Boolean](AddItemDamageInformationPage(1))
   }
 }

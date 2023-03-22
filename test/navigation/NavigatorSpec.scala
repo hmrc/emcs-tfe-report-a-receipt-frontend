@@ -223,6 +223,17 @@ class NavigatorSpec extends SpecBase {
           }
         }
 
+        "for the ItemDamagedInformation page" - {
+
+          "must go to the next WhatWrongWith page to answer" in {
+
+            val userAnswers = emptyUserAnswers.set(WrongWithItemPage(1), Set[WrongWithMovement](Damaged))
+
+            navigator.nextPage(ItemDamageInformationPage(1), NormalMode, userAnswers) mustBe
+              routes.AddedItemsController.onPageLoad(testErn, testArc)
+          }
+        }
+
         "when the next page is BrokenSeals" - {
 
           "must go to ItemBrokenSealsInformation add more info Yes/No page" in {
@@ -363,14 +374,12 @@ class NavigatorSpec extends SpecBase {
       "for the ChooseGiveReasonItemDamaged page" - {
 
         s"when the user answers is Yes" - {
-
-          //TODO: Update routing as part of future story
           "must go to the DamageInformation page" in {
 
             val userAnswers = emptyUserAnswers.set(ChooseGiveReasonItemDamagedPage(1), true)
 
             navigator.nextPage(ChooseGiveReasonItemDamagedPage(1), NormalMode, userAnswers) mustBe
-              testOnly.controllers.routes.UnderConstructionController.onPageLoad()
+              routes.MoreInformationController.loadItemDamageInformation(testErn, testArc, 1, NormalMode)
           }
         }
 

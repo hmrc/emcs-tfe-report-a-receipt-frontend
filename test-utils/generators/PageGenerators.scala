@@ -18,11 +18,13 @@ package generators
 
 import org.scalacheck.Arbitrary
 import pages._
-import pages.unsatisfactory.individualItems.ChooseGiveReasonItemDamagedPage
-import pages.unsatisfactory.individualItems.ItemShortageOrExcessPage
+import pages.unsatisfactory.individualItems.{ItemDamageInformationPage, ChooseGiveReasonItemDamagedPage, ItemShortageOrExcessPage}
 import pages.unsatisfactory.{HowMuchIsWrongPage, WrongWithMovementPage}
 
 trait PageGenerators {
+
+  implicit lazy val arbitraryItemDamageInformationPage: Arbitrary[ItemDamageInformationPage] =
+    Arbitrary(ItemDamageInformationPage(1))
 
   implicit lazy val arbitraryItemShortageOrExcessPage: Arbitrary[ItemShortageOrExcessPage] =
     Arbitrary(ItemShortageOrExcessPage(1))

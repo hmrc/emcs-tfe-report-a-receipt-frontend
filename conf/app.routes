@@ -138,3 +138,8 @@ POST        /:ern/:arc/item/:idx/give-reason-item-other/change                  
 
 GET         /:ern/:arc/add-to-list                                  controllers.AddedItemsController.onPageLoad(ern, arc)
 POST        /:ern/:arc/add-to-list                                  controllers.AddedItemsController.onSubmit(ern, arc)
+
+GET        /:ern/:arc/item/:idx/give-reason-item-damage                                     controllers.MoreInformationController.loadItemDamageInformation(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
+POST       /:ern/:arc/item/:idx/give-reason-item-damage                                     controllers.MoreInformationController.submitItemDamageInformation(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
+GET        /:ern/:arc/item/:idx/give-reason-item-damage/change                              controllers.MoreInformationController.loadItemDamageInformation(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)
+POST       /:ern/:arc/item/:idx/give-reason-item-damage/change                              controllers.MoreInformationController.submitItemDamageInformation(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)

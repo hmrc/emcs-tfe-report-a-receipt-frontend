@@ -88,6 +88,8 @@ class Navigator @Inject()() extends BaseNavigator {
           case Some(false) => redirectToNextItemWrongMovementPage(WrongWithItemPage(idx), Some(Damaged))(userAnswers)
           case _ => routes.ChooseGiveReasonItemDamagedController.loadChooseGiveReasonDamagedItem(userAnswers.ern, userAnswers.arc, idx, NormalMode)
         }
+    case ItemDamageInformationPage(idx) =>
+      (userAnswers: UserAnswers) => redirectToNextItemWrongMovementPage(WrongWithItemPage(idx), Some(Damaged))(userAnswers)
     case DamageInformationPage =>
       (userAnswers: UserAnswers) => redirectToNextWrongMovementPage(Some(Damaged))(userAnswers)
     case AddSealsInformationPage =>

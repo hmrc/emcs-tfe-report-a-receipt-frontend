@@ -223,6 +223,17 @@ class NavigatorSpec extends SpecBase {
           }
         }
 
+        "for the ItemDamagedInformation page" - {
+
+          "must go to the next WhatWrongWith page to answer" in {
+
+            val userAnswers = emptyUserAnswers.set(WrongWithItemPage(1), Set[WrongWithMovement](Damaged))
+
+            navigator.nextPage(ItemDamageInformationPage(1), NormalMode, userAnswers) mustBe
+              routes.AddedItemsController.onPageLoad(testErn, testArc)
+          }
+        }
+
         "when the next page is BrokenSeals" - {
 
           "must go to ItemBrokenSealsInformation add more info Yes/No page" in {

@@ -131,7 +131,6 @@ class Navigator @Inject()() extends BaseNavigator {
   }
 
   private[navigation] val checkRouteMap: Page => UserAnswers => Call = {
-    //TODO: add Damaged Goods more info page
     case ItemShortageOrExcessPage(idx) =>
       (userAnswers: UserAnswers) => routes.CheckYourAnswersItemController.onPageLoad(userAnswers.ern, userAnswers.arc, idx)
     case ItemSealsInformationPage(idx) =>

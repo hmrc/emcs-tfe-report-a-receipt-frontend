@@ -48,7 +48,7 @@ class ShortageOrExcessItemSummary @Inject()(link: link) {
         shortageOrExcess =>
           SummaryListRowViewModel(
             key = s"${ItemShortageOrExcessPage(idx)}.checkYourAnswers.shortageOrExcess.label",
-            value = ValueViewModel(Text(shortageOrExcess.wrongWithItem.toString)),
+            value = ValueViewModel(messages(s"itemShortageOrExcess.shortageOrExcess.${shortageOrExcess.wrongWithItem.toString}")),
             actions = Seq(
               shortageOrExcessChangeAction(idx, "shortageOrExcess")
             )

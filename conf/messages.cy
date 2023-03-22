@@ -201,7 +201,6 @@ checkYourAnswers.submit.button = Submit report of receipt
 
 checkYourAnswersItem.title = Check your answers for {0}
 checkYourAnswersItem.heading = Check your answers for {0}
-checkYourAnswersItem.movementDetails.h2 = Movement details
 
 confirmation.title = Report of receipt submitted
 confirmation.heading = Report of receipt submitted

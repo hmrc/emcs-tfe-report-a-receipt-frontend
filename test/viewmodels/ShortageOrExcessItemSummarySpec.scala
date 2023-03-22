@@ -56,7 +56,7 @@ class ShortageOrExcessItemSummarySpec extends SpecBase {
 
     lazy val shortageOrExcessRow = SummaryListRow(
       key = msgs(s"${ItemShortageOrExcessPage(1)}.checkYourAnswers.shortageOrExcess.label"),
-      value = ValueViewModel(Text(Shortage.toString)),
+      value = ValueViewModel(msgs(s"itemShortageOrExcess.shortageOrExcess.${Shortage.toString}")),
       actions = Some(Actions(items = Seq(
         ActionItem(
           href = routes.ItemShortageOrExcessController.onPageLoad(testErn, testArc, 1, CheckMode).url,

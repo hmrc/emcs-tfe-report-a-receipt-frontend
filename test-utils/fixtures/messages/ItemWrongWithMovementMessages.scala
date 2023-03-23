@@ -39,7 +39,7 @@ object wrongWithItemMessages {
     override val title = title(heading)
     override val hint = "Select all that apply."
     override val moreOrLessThanExpected: String = "I received a shortage or excess"
-    override val damaged: String = "Goods damaged"
+    override val damaged: String = "Items were damaged"
     override val brokenSeals: String = "Broken seal(s)"
     override val other: String = "Other"
     override val requiredError: String = "Select what’s wrong with this item"
@@ -56,7 +56,7 @@ object wrongWithItemMessages {
     override val title = title(heading)
     override val hint = "Select all that apply."
     override val moreOrLessThanExpected: String = "I received a shortage or excess"
-    override val damaged: String = "Goods damaged"
+    override val damaged: String = "Items were damaged"
     override val brokenSeals: String = "Broken seal(s)"
     override val other: String = "Other"
     override val requiredError: String = "Select what’s wrong with this item"

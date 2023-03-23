@@ -17,27 +17,29 @@
 package controllers
 
 import base.SpecBase
+import mocks.services.MockUserAnswersService
 import mocks.viewmodels.MockCheckAnswersItemHelper
+import models.WrongWithMovement
+import models.WrongWithMovement.Damaged
 import navigation.{FakeNavigator, Navigator}
+import pages.unsatisfactory.individualItems.{AddItemDamageInformationPage, CheckAnswersItemPage, SelectItemsPage, WrongWithItemPage}
 import play.api.inject
-import play.api.libs.json.{JsArray, JsObject, JsString, Json}
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.UserAnswersService
 import viewmodels.checkAnswers.CheckAnswersItemHelper
 import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersItemView
 
-class CheckYourAnswersItemControllerSpec extends SpecBase with SummaryListFluency with MockCheckAnswersItemHelper {
+import scala.concurrent.Future
 
-  private lazy val userAnswersData: JsObject = Json.obj(
-    "items" -> JsArray(Seq(Json.obj(
-      "itemUniqueReference" -> 1,
-      "wrongWithItem" -> JsArray(Seq(
-        JsString("damaged")
-      )),
-      "chooseGiveReasonItemDamaged" -> false
-    )))
-  )
+class CheckYourAnswersItemControllerSpec extends SpecBase with SummaryListFluency with MockCheckAnswersItemHelper with MockUserAnswersService {
+
+  private lazy val userAnswers = emptyUserAnswers
+    .set(SelectItemsPage(1), 1)
+    .set(WrongWithItemPage(1), Set[WrongWithMovement](Damaged))
+    .set(AddItemDamageInformationPage(1), false)
 
   "Check Your Answers Controller" - {
 
@@ -45,7 +47,7 @@ class CheckYourAnswersItemControllerSpec extends SpecBase with SummaryListFluenc
 
       "must return OK and the correct view for a GET" in {
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(data = userAnswersData)))
+        val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(inject.bind[CheckAnswersItemHelper].toInstance(mockCheckAnswersItemHelper))
           .build()
 
@@ -104,10 +106,15 @@ class CheckYourAnswersItemControllerSpec extends SpecBase with SummaryListFluenc
 
       "must redirect to the onward route" in {
 
+        val updatedAnswers = userAnswers.set(CheckAnswersItemPage(1), true)
+
+        MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
+
         val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(data = userAnswersData)))
+          applicationBuilder(userAnswers = Some(userAnswers))
             .overrides(
-              inject.bind[Navigator].toInstance(new FakeNavigator(testOnwardRoute))
+              inject.bind[Navigator].toInstance(new FakeNavigator(testOnwardRoute)),
+              bind[UserAnswersService].toInstance(mockUserAnswersService)
             )
             .build()
 
@@ -119,6 +126,20 @@ class CheckYourAnswersItemControllerSpec extends SpecBase with SummaryListFluenc
 
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual testOnwardRoute.url
+        }
+      }
+
+      "must redirect to Journey Recovery for a POST if no existing data is found" in {
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+        running(application) {
+          val request = FakeRequest(POST, routes.CheckYourAnswersItemController.onSubmit(testErn, testArc, 1).url)
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual routes.SelectItemsController.onPageLoad(testErn, testArc).url
         }
       }
     }

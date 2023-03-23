@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import forms.AddAnotherItemFormProvider
 import models.NormalMode
-import pages.unsatisfactory.individualItems.SelectItemsPage
+import pages.unsatisfactory.individualItems.{CheckAnswersItemPage, SelectItemsPage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewmodels.AddedItemsSummary
@@ -34,11 +34,27 @@ class AddedItemsControllerSpec extends SpecBase {
 
     ".onPageLoad()" - {
 
-      "when no items have been added" - {
+      "must redirect to the SelectItems page" - {
 
-        "must redirect to the SelectItems page" in {
+        "when no items have been added" in {
 
           val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+          running(application) {
+            val request = FakeRequest(GET, routes.AddedItemsController.onPageLoad(testErn, testArc).url)
+            val result = route(application, request).value
+
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result) mustBe Some(routes.SelectItemsController.onPageLoad(testErn, testArc).url)
+          }
+        }
+
+        "when items have been added, but not completed" in {
+
+          val userAnswers = emptyUserAnswers
+            .set(SelectItemsPage(1), item1.itemUniqueReference)
+
+          val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
           running(application) {
             val request = FakeRequest(GET, routes.AddedItemsController.onPageLoad(testErn, testArc).url)
@@ -54,7 +70,9 @@ class AddedItemsControllerSpec extends SpecBase {
 
         "must render the view with the Radio option form to add more" in {
 
-          val userAnswers = emptyUserAnswers.set(SelectItemsPage(1), item1.itemUniqueReference)
+          val userAnswers = emptyUserAnswers
+            .set(SelectItemsPage(1), item1.itemUniqueReference)
+            .set(CheckAnswersItemPage(1), true)
 
           val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -82,7 +100,9 @@ class AddedItemsControllerSpec extends SpecBase {
           val userAnswers =
             emptyUserAnswers
               .set(SelectItemsPage(1), item1.itemUniqueReference)
+              .set(CheckAnswersItemPage(1), true)
               .set(SelectItemsPage(2), item2.itemUniqueReference)
+              .set(CheckAnswersItemPage(2), true)
 
           val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -128,7 +148,9 @@ class AddedItemsControllerSpec extends SpecBase {
 
           "must render a BAD_REQUEST with the formError" in {
 
-            val userAnswers = emptyUserAnswers.set(SelectItemsPage(1), item1.itemUniqueReference)
+            val userAnswers = emptyUserAnswers
+              .set(SelectItemsPage(1), item1.itemUniqueReference)
+              .set(CheckAnswersItemPage(1), true)
             val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
             running(application) {
@@ -153,7 +175,10 @@ class AddedItemsControllerSpec extends SpecBase {
 
           "must redirect to the SelectItem view" in {
 
-            val userAnswers = emptyUserAnswers.set(SelectItemsPage(1), item1.itemUniqueReference)
+            val userAnswers = emptyUserAnswers
+              .set(SelectItemsPage(1), item1.itemUniqueReference)
+              .set(CheckAnswersItemPage(1), true)
+
             val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
             running(application) {
@@ -173,7 +198,9 @@ class AddedItemsControllerSpec extends SpecBase {
 
           "must redirect to the AddMoreInfo view" in {
 
-            val userAnswers = emptyUserAnswers.set(SelectItemsPage(1), item1.itemUniqueReference)
+            val userAnswers = emptyUserAnswers
+              .set(SelectItemsPage(1), item1.itemUniqueReference)
+              .set(CheckAnswersItemPage(1), true)
             val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
             running(application) {
@@ -196,7 +223,9 @@ class AddedItemsControllerSpec extends SpecBase {
 
           val userAnswers = emptyUserAnswers
             .set(SelectItemsPage(1), item1.itemUniqueReference)
+            .set(CheckAnswersItemPage(1), true)
             .set(SelectItemsPage(2), item2.itemUniqueReference)
+            .set(CheckAnswersItemPage(2), true)
 
           val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 

@@ -22,6 +22,7 @@ import navigation.Navigator
 import pages.unsatisfactory.individualItems.CheckAnswersItemPage
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.UserAnswersService
 import viewmodels.checkAnswers.CheckAnswersItemHelper
 import views.html.CheckYourAnswersItemView
 
@@ -36,26 +37,27 @@ class CheckYourAnswersItemController @Inject()(
                                             val controllerComponents: MessagesControllerComponents,
                                             val navigator: Navigator,
                                             view: CheckYourAnswersItemView,
-                                            checkAnswersItemHelper: CheckAnswersItemHelper
-                                          ) extends BaseController with AuthActionHelper {
+                                            checkAnswersItemHelper: CheckAnswersItemHelper,
+                                            val userAnswersService: UserAnswersService
+                                          ) extends BaseNavigationController with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String, idx: Int): Action[AnyContent] =
     authorisedDataRequest(ern, arc) { implicit request =>
       withItem(idx) {
         item =>
           Ok(view(
-            routes.CheckYourAnswersItemController.onSubmit(ern, arc, idx),
-            checkAnswersItemHelper.itemName(item),
-            checkAnswersItemHelper.summaryList(idx, item)
+            submitAction = routes.CheckYourAnswersItemController.onSubmit(ern, arc, idx),
+            itemName = checkAnswersItemHelper.itemName(item),
+            list = checkAnswersItemHelper.summaryList(idx, item)
           ))
       }
     }
 
   def onSubmit(ern: String, arc: String, idx: Int): Action[AnyContent] =
-    authorisedDataRequest(ern, arc) { implicit request =>
-      withItem(idx) {
+    authorisedDataRequestAsync(ern, arc) { implicit request =>
+      withItemAsync(idx) {
         _ =>
-          Redirect(navigator.nextPage(CheckAnswersItemPage(idx), NormalMode, request.userAnswers))
+          saveAndRedirect(CheckAnswersItemPage(idx), true, request.userAnswers, NormalMode)
       }
     }
 }

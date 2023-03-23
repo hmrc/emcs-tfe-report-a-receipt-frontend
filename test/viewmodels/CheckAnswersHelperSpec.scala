@@ -19,7 +19,7 @@ package viewmodels
 import base.SpecBase
 import mocks.viewmodels._
 import models.AcceptMovement.{Satisfactory, Unsatisfactory}
-import models.WrongWithMovement.{BrokenSeals, Damaged, Shortage, Excess, Other}
+import models.WrongWithMovement.{BrokenSeals, Damaged, Excess, Other, Shortage}
 import models.{CheckMode, WrongWithMovement}
 import pages.unsatisfactory._
 import pages.{AcceptMovementPage, MoreInformationPage}
@@ -35,8 +35,7 @@ class CheckAnswersHelperSpec extends SpecBase
   with MockHowMuchIsWrongSummary
   with MockMoreInformationSummary
   with MockOtherInformationSummary
-  with MockWrongWithMovementSummary
-{
+  with MockWrongWithMovementSummary {
 
   lazy val checkAnswersHelper = new CheckAnswersHelper(
     mockAcceptMovementSummary,
@@ -146,6 +145,42 @@ class CheckAnswersHelperSpec extends SpecBase
           otherInformationAnswer,
           moreInformationAnswer
         )).withCssClass("govuk-!-margin-bottom-9")
+      }
+    }
+
+    "being rendered with options missing" - {
+      implicit lazy val request = dataRequest(
+        FakeRequest(),
+        emptyUserAnswers
+          .set(AcceptMovementPage, Unsatisfactory)
+          .set(WrongWithMovementPage, Set[WrongWithMovement]())
+      )
+
+      "must return only the mandatory rows" - {
+        "when the WrongWithMovementPage contains no WrongWithMovement values" in {
+          val dateOfArrivalAnswer = SummaryListRow("DateOfArrival", ValueViewModel("today"))
+          val acceptMovementAnswer = SummaryListRow("AcceptMovement", ValueViewModel("Yes"))
+          val howMuchIsWrongAnswer = SummaryListRow("HowMuchIsWrong", ValueViewModel("Whole Movement"))
+          val wrongWithMovementAnswer = SummaryListRow("WrongWithMovement", ValueViewModel("shortage"))
+          val moreInformationAnswer = SummaryListRow("MoreInfo", ValueViewModel("Info"))
+
+          MockDateOfArrivalSummary.row().returns(Some(dateOfArrivalAnswer))
+          MockAcceptMovementSummary.row().returns(Some(acceptMovementAnswer))
+          MockHowMuchIsWrongSummary.row().returns(Some(howMuchIsWrongAnswer))
+          MockWrongWithMovementSummary.row().returns(Some(wrongWithMovementAnswer))
+          MockMoreInformationSummary.row(
+            MoreInformationPage,
+            controllers.routes.MoreInformationController.loadMoreInformation(testErn, testArc, CheckMode)
+          ).returns(moreInformationAnswer)
+
+          checkAnswersHelper.summaryList() mustBe SummaryList(Seq(
+            dateOfArrivalAnswer,
+            acceptMovementAnswer,
+            howMuchIsWrongAnswer,
+            wrongWithMovementAnswer,
+            moreInformationAnswer
+          )).withCssClass("govuk-!-margin-bottom-9")
+        }
       }
     }
   }

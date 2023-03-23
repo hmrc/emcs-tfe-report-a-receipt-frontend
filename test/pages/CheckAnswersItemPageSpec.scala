@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-package pages.unsatisfactory.individualItems
+package pages
 
-import pages.QuestionPage
-import play.api.libs.json.{JsPath, __}
+import pages.behaviours.PageBehaviours
+import pages.unsatisfactory.individualItems.CheckAnswersItemPage
 
-case class ChooseGiveReasonItemDamagedPage(idx: Int) extends QuestionPage[Boolean] {
+class CheckAnswersItemPageSpec extends PageBehaviours {
 
-  override def path: JsPath = __ \ "items" \ (idx - 1) \ toString
+  "CheckAnswersItemPage" - {
 
-  override def toString: String = "chooseGiveReasonItemDamaged"
+    "toString" - {
+      "must be correct" in {
+        CheckAnswersItemPage(1).toString mustBe "checkAnswersItem"
+      }
+    }
+  }
 }

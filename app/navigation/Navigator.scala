@@ -81,12 +81,12 @@ class Navigator @Inject()() extends BaseNavigator {
           case Some(false) => redirectToNextWrongMovementPage(Some(Damaged))(userAnswers)
           case _ => routes.AddMoreInformationController.loadDamageInformation(userAnswers.ern, userAnswers.arc, NormalMode)
         }
-    case ChooseGiveReasonItemDamagedPage(idx) =>
+    case AddItemDamageInformationPage(idx) =>
       (userAnswers: UserAnswers) =>
-        userAnswers.get(ChooseGiveReasonItemDamagedPage(idx)) match {
+        userAnswers.get(AddItemDamageInformationPage(idx)) match {
           case Some(true) => routes.MoreInformationController.loadItemDamageInformation(userAnswers.ern, userAnswers.arc, idx, NormalMode)
           case Some(false) => redirectToNextItemWrongMovementPage(WrongWithItemPage(idx), Some(Damaged))(userAnswers)
-          case _ => routes.ChooseGiveReasonItemDamagedController.loadChooseGiveReasonDamagedItem(userAnswers.ern, userAnswers.arc, idx, NormalMode)
+          case _ => routes.AddMoreInformationController.loadItemDamageInformation(userAnswers.ern, userAnswers.arc, idx, NormalMode)
         }
     case ItemDamageInformationPage(idx) =>
       (userAnswers: UserAnswers) => redirectToNextItemWrongMovementPage(WrongWithItemPage(idx), Some(Damaged))(userAnswers)
@@ -124,11 +124,21 @@ class Navigator @Inject()() extends BaseNavigator {
       (userAnswers: UserAnswers) => routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)
     case CheckAnswersPage =>
       (userAnswers: UserAnswers) => routes.ConfirmationController.onPageLoad(userAnswers.ern, userAnswers.arc)
+    case CheckAnswersItemPage(_) =>
+      (userAnswers: UserAnswers) => routes.AddedItemsController.onPageLoad(userAnswers.ern, userAnswers.arc)
     case _ =>
       (userAnswers: UserAnswers) => routes.IndexController.onPageLoad(userAnswers.ern, userAnswers.arc)
   }
 
-  private val checkRouteMap: Page => UserAnswers => Call = {
+  private[navigation] val checkRouteMap: Page => UserAnswers => Call = {
+    case ItemShortageOrExcessPage(idx) =>
+      (userAnswers: UserAnswers) => routes.CheckYourAnswersItemController.onPageLoad(userAnswers.ern, userAnswers.arc, idx)
+    case ItemSealsInformationPage(idx) =>
+      (userAnswers: UserAnswers) => routes.CheckYourAnswersItemController.onPageLoad(userAnswers.ern, userAnswers.arc, idx)
+    case ItemDamageInformationPage(idx) =>
+      (userAnswers: UserAnswers) => routes.CheckYourAnswersItemController.onPageLoad(userAnswers.ern, userAnswers.arc, idx)
+    case ItemOtherInformationPage(idx) =>
+      (userAnswers: UserAnswers) => routes.CheckYourAnswersItemController.onPageLoad(userAnswers.ern, userAnswers.arc, idx)
     case _ =>
       (userAnswers: UserAnswers) => routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)
   }
@@ -183,14 +193,13 @@ class Navigator @Inject()() extends BaseNavigator {
           case Some(ShortageOrExcess) =>
             routes.ItemShortageOrExcessController.onPageLoad(userAnswers.ern, userAnswers.arc, page.idx, NormalMode)
           case Some(Damaged) =>
-          routes.ChooseGiveReasonItemDamagedController.loadChooseGiveReasonDamagedItem(userAnswers.ern, userAnswers.arc, page.idx, NormalMode)
+            routes.AddMoreInformationController.loadItemDamageInformation(userAnswers.ern, userAnswers.arc, page.idx, NormalMode)
           case Some(BrokenSeals) =>
             routes.AddMoreInformationController.loadItemSealsInformation(userAnswers.ern, userAnswers.arc, page.idx, NormalMode)
           case Some(Other) =>
             routes.OtherInformationController.loadItemOtherInformation(userAnswers.ern, userAnswers.arc, page.idx, NormalMode)
           case _ =>
-            //TODO: Redirect to the CheckAnswer page for the Item when that story is played
-            routes.AddedItemsController.onPageLoad(userAnswers.ern, userAnswers.arc)
+            routes.CheckYourAnswersItemController.onPageLoad(userAnswers.ern, userAnswers.arc, page.idx)
         }
       case _ =>
         routes.WrongWithMovementController.loadwrongWithItem(userAnswers.ern, userAnswers.arc, page.idx, NormalMode)

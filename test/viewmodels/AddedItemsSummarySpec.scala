@@ -17,6 +17,7 @@
 package viewmodels
 
 import base.SpecBase
+import controllers.routes
 import pages.unsatisfactory.individualItems.SelectItemsPage
 import play.api.test.FakeRequest
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
@@ -38,12 +39,12 @@ class AddedItemsSummarySpec extends SpecBase {
       acceptMovementSummary.itemList() mustBe Seq(
         ListItem(
           item1.cnCode,
-          testOnly.controllers.routes.UnderConstructionController.onPageLoad().url,
+          routes.CheckYourAnswersItemController.onPageLoad(answers.ern, answers.arc, 1).url,
           testOnly.controllers.routes.UnderConstructionController.onPageLoad().url
         ),
         ListItem(
           item2.cnCode,
-          testOnly.controllers.routes.UnderConstructionController.onPageLoad().url,
+          routes.CheckYourAnswersItemController.onPageLoad(answers.ern, answers.arc, 2).url,
           testOnly.controllers.routes.UnderConstructionController.onPageLoad().url
         )
       )

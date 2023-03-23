@@ -37,13 +37,15 @@ class NavigatorSpec extends SpecBase {
       "must go from a page that doesn't exist in the route map to Index" in {
 
         case object UnknownPage extends Page
-        navigator.nextPage(UnknownPage, NormalMode, emptyUserAnswers) mustBe routes.IndexController.onPageLoad(testErn, testArc)
+        navigator.nextPage(UnknownPage, NormalMode, emptyUserAnswers) mustBe
+          routes.IndexController.onPageLoad(testErn, testArc)
       }
 
       "for the DateOfArrival page" - {
 
         "must go to AcceptMovement page" in {
-          navigator.nextPage(DateOfArrivalPage, NormalMode, emptyUserAnswers) mustBe routes.AcceptMovementController.onPageLoad(testErn, testArc, NormalMode)
+          navigator.nextPage(DateOfArrivalPage, NormalMode, emptyUserAnswers) mustBe
+            routes.AcceptMovementController.onPageLoad(testErn, testArc, NormalMode)
         }
       }
 
@@ -55,7 +57,8 @@ class NavigatorSpec extends SpecBase {
 
             val userAnswers = emptyUserAnswers.set(AcceptMovementPage, Satisfactory)
 
-            navigator.nextPage(AcceptMovementPage, NormalMode, userAnswers) mustBe routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
+            navigator.nextPage(AcceptMovementPage, NormalMode, userAnswers) mustBe
+              routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
           }
         }
 
@@ -65,7 +68,8 @@ class NavigatorSpec extends SpecBase {
 
             val userAnswers = emptyUserAnswers.set(AcceptMovementPage, Unsatisfactory)
 
-            navigator.nextPage(AcceptMovementPage, NormalMode, userAnswers) mustBe routes.HowMuchIsWrongController.onPageLoad(testErn, testArc, NormalMode)
+            navigator.nextPage(AcceptMovementPage, NormalMode, userAnswers) mustBe
+              routes.HowMuchIsWrongController.onPageLoad(testErn, testArc, NormalMode)
           }
         }
 
@@ -76,7 +80,8 @@ class NavigatorSpec extends SpecBase {
 
             val userAnswers = emptyUserAnswers.set(AcceptMovementPage, Refused)
 
-            navigator.nextPage(AcceptMovementPage, NormalMode, userAnswers) mustBe routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+            navigator.nextPage(AcceptMovementPage, NormalMode, userAnswers) mustBe
+              routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
           }
         }
 
@@ -87,7 +92,8 @@ class NavigatorSpec extends SpecBase {
 
             val userAnswers = emptyUserAnswers.set(AcceptMovementPage, PartiallyRefused)
 
-            navigator.nextPage(AcceptMovementPage, NormalMode, userAnswers) mustBe routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+            navigator.nextPage(AcceptMovementPage, NormalMode, userAnswers) mustBe
+              routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
           }
         }
       }
@@ -100,7 +106,8 @@ class NavigatorSpec extends SpecBase {
 
             val userAnswers = emptyUserAnswers.set(HowMuchIsWrongPage, TheWholeMovement)
 
-            navigator.nextPage(HowMuchIsWrongPage, NormalMode, userAnswers) mustBe routes.WrongWithMovementController.loadWrongWithMovement(testErn, testArc, NormalMode)
+            navigator.nextPage(HowMuchIsWrongPage, NormalMode, userAnswers) mustBe
+              routes.WrongWithMovementController.loadWrongWithMovement(testErn, testArc, NormalMode)
           }
         }
 
@@ -110,14 +117,16 @@ class NavigatorSpec extends SpecBase {
 
             val userAnswers = emptyUserAnswers.set(HowMuchIsWrongPage, IndividualItem)
 
-            navigator.nextPage(HowMuchIsWrongPage, NormalMode, userAnswers) mustBe routes.SelectItemsController.onPageLoad(testErn, testArc)
+            navigator.nextPage(HowMuchIsWrongPage, NormalMode, userAnswers) mustBe
+              routes.SelectItemsController.onPageLoad(testErn, testArc)
           }
         }
 
         s"when there is no answer for the question" - {
 
           "must go to back to the HowMuchIsWrong page" in {
-            navigator.nextPage(HowMuchIsWrongPage, NormalMode, emptyUserAnswers) mustBe routes.HowMuchIsWrongController.onPageLoad(testErn, testArc, NormalMode)
+            navigator.nextPage(HowMuchIsWrongPage, NormalMode, emptyUserAnswers) mustBe
+              routes.HowMuchIsWrongController.onPageLoad(testErn, testArc, NormalMode)
           }
         }
       }
@@ -214,23 +223,22 @@ class NavigatorSpec extends SpecBase {
 
         "when the next page is Damaged" - {
 
-          //TODO: Implement as part of future story when page is built
           "must go to ItemDamagedInformation add more info Yes/No page" in {
             val selectedOptions: Set[WrongWithMovement] = Set(Damaged, BrokenSeals, Other)
             val userAnswers = emptyUserAnswers.set(WrongWithItemPage(1), selectedOptions)
             navigator.nextPage(WrongWithItemPage(1), NormalMode, userAnswers) mustBe
-              routes.ChooseGiveReasonItemDamagedController.loadChooseGiveReasonDamagedItem(testErn, testArc, 1, NormalMode)
+              routes.AddMoreInformationController.loadItemDamageInformation(testErn, testArc, 1, NormalMode)
           }
         }
 
         "for the ItemDamagedInformation page" - {
 
           "must go to the next WhatWrongWith page to answer" in {
-
-            val userAnswers = emptyUserAnswers.set(WrongWithItemPage(1), Set[WrongWithMovement](Damaged))
+            val selectedOptions: Set[WrongWithMovement] = Set(Damaged, BrokenSeals, Other)
+            val userAnswers = emptyUserAnswers.set(WrongWithItemPage(1), selectedOptions)
 
             navigator.nextPage(ItemDamageInformationPage(1), NormalMode, userAnswers) mustBe
-              routes.AddedItemsController.onPageLoad(testErn, testArc)
+              routes.AddMoreInformationController.loadItemSealsInformation(testErn, testArc, 1, NormalMode)
           }
         }
 
@@ -263,7 +271,8 @@ class NavigatorSpec extends SpecBase {
 
             val userAnswers = emptyUserAnswers.set(AddShortageInformationPage, true)
 
-            navigator.nextPage(AddShortageInformationPage, NormalMode, userAnswers) mustBe routes.MoreInformationController.loadShortageInformation(testErn, testArc, NormalMode)
+            navigator.nextPage(AddShortageInformationPage, NormalMode, userAnswers) mustBe
+              routes.MoreInformationController.loadShortageInformation(testErn, testArc, NormalMode)
           }
         }
 
@@ -275,14 +284,16 @@ class NavigatorSpec extends SpecBase {
               .set(WrongWithMovementPage, Set[WrongWithMovement](Shortage))
               .set(AddShortageInformationPage, false)
 
-            navigator.nextPage(AddShortageInformationPage, NormalMode, userAnswers) mustBe routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
+            navigator.nextPage(AddShortageInformationPage, NormalMode, userAnswers) mustBe
+              routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
           }
         }
 
         s"when the user answers is None (shouldn't be possible)" - {
 
           "must go back to itself" in {
-            navigator.nextPage(AddShortageInformationPage, NormalMode, emptyUserAnswers) mustBe routes.AddMoreInformationController.loadShortageInformation(testErn, testArc, NormalMode)
+            navigator.nextPage(AddShortageInformationPage, NormalMode, emptyUserAnswers) mustBe
+              routes.AddMoreInformationController.loadShortageInformation(testErn, testArc, NormalMode)
           }
         }
       }
@@ -293,7 +304,19 @@ class NavigatorSpec extends SpecBase {
 
           val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, Set[WrongWithMovement](Shortage))
 
-          navigator.nextPage(ShortageInformationPage, NormalMode, userAnswers) mustBe routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
+          navigator.nextPage(ShortageInformationPage, NormalMode, userAnswers) mustBe
+            routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
+        }
+      }
+
+      "for the ItemShortageOrExcess page" - {
+
+        "must go to the next WhatWrongWith page to answer" in {
+
+          val userAnswers = emptyUserAnswers.set(WrongWithItemPage(1), Set[WrongWithMovement](ShortageOrExcess, Damaged, BrokenSeals, Other))
+
+          navigator.nextPage(ItemShortageOrExcessPage(1), NormalMode, userAnswers) mustBe
+            routes.AddMoreInformationController.loadItemDamageInformation(testErn, testArc, 1, NormalMode)
         }
       }
 
@@ -305,7 +328,8 @@ class NavigatorSpec extends SpecBase {
 
             val userAnswers = emptyUserAnswers.set(AddExcessInformationPage, true)
 
-            navigator.nextPage(AddExcessInformationPage, NormalMode, userAnswers) mustBe routes.MoreInformationController.loadExcessInformation(testErn, testArc, NormalMode)
+            navigator.nextPage(AddExcessInformationPage, NormalMode, userAnswers) mustBe
+              routes.MoreInformationController.loadExcessInformation(testErn, testArc, NormalMode)
           }
         }
 
@@ -317,14 +341,16 @@ class NavigatorSpec extends SpecBase {
               .set(WrongWithMovementPage, Set[WrongWithMovement](Shortage, Excess))
               .set(AddExcessInformationPage, false)
 
-            navigator.nextPage(AddExcessInformationPage, NormalMode, userAnswers) mustBe routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
+            navigator.nextPage(AddExcessInformationPage, NormalMode, userAnswers) mustBe
+              routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
           }
         }
 
         s"when the user answers is None (shouldn't be possible)" - {
 
           "must go back to itself" in {
-            navigator.nextPage(AddExcessInformationPage, NormalMode, emptyUserAnswers) mustBe routes.AddMoreInformationController.loadExcessInformation(testErn, testArc, NormalMode)
+            navigator.nextPage(AddExcessInformationPage, NormalMode, emptyUserAnswers) mustBe
+              routes.AddMoreInformationController.loadExcessInformation(testErn, testArc, NormalMode)
           }
         }
       }
@@ -335,7 +361,8 @@ class NavigatorSpec extends SpecBase {
 
           val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, Set[WrongWithMovement](Shortage, Excess))
 
-          navigator.nextPage(ExcessInformationPage, NormalMode, userAnswers) mustBe routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
+          navigator.nextPage(ExcessInformationPage, NormalMode, userAnswers) mustBe
+            routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
         }
       }
 
@@ -347,7 +374,8 @@ class NavigatorSpec extends SpecBase {
 
             val userAnswers = emptyUserAnswers.set(AddDamageInformationPage, true)
 
-            navigator.nextPage(AddDamageInformationPage, NormalMode, userAnswers) mustBe routes.MoreInformationController.loadDamageInformation(testErn, testArc, NormalMode)
+            navigator.nextPage(AddDamageInformationPage, NormalMode, userAnswers) mustBe
+              routes.MoreInformationController.loadDamageInformation(testErn, testArc, NormalMode)
           }
         }
 
@@ -359,14 +387,16 @@ class NavigatorSpec extends SpecBase {
               .set(WrongWithMovementPage, Set[WrongWithMovement](Damaged, BrokenSeals))
               .set(AddDamageInformationPage, false)
 
-            navigator.nextPage(AddDamageInformationPage, NormalMode, userAnswers) mustBe routes.AddMoreInformationController.loadSealsInformation(testErn, testArc, NormalMode)
+            navigator.nextPage(AddDamageInformationPage, NormalMode, userAnswers) mustBe
+              routes.AddMoreInformationController.loadSealsInformation(testErn, testArc, NormalMode)
           }
         }
 
         s"when the user answers is None (shouldn't be possible)" - {
 
           "must go back to itself" in {
-            navigator.nextPage(AddDamageInformationPage, NormalMode, emptyUserAnswers) mustBe routes.AddMoreInformationController.loadDamageInformation(testErn, testArc, NormalMode)
+            navigator.nextPage(AddDamageInformationPage, NormalMode, emptyUserAnswers) mustBe
+              routes.AddMoreInformationController.loadDamageInformation(testErn, testArc, NormalMode)
           }
         }
       }
@@ -376,9 +406,9 @@ class NavigatorSpec extends SpecBase {
         s"when the user answers is Yes" - {
           "must go to the DamageInformation page" in {
 
-            val userAnswers = emptyUserAnswers.set(ChooseGiveReasonItemDamagedPage(1), true)
+            val userAnswers = emptyUserAnswers.set(AddItemDamageInformationPage(1), true)
 
-            navigator.nextPage(ChooseGiveReasonItemDamagedPage(1), NormalMode, userAnswers) mustBe
+            navigator.nextPage(AddItemDamageInformationPage(1), NormalMode, userAnswers) mustBe
               routes.MoreInformationController.loadItemDamageInformation(testErn, testArc, 1, NormalMode)
           }
         }
@@ -389,9 +419,9 @@ class NavigatorSpec extends SpecBase {
 
             val userAnswers = emptyUserAnswers
               .set(WrongWithItemPage(1), Set[WrongWithMovement](Damaged, BrokenSeals))
-              .set(ChooseGiveReasonItemDamagedPage(1), false)
+              .set(AddItemDamageInformationPage(1), false)
 
-            navigator.nextPage(ChooseGiveReasonItemDamagedPage(1), NormalMode, userAnswers) mustBe
+            navigator.nextPage(AddItemDamageInformationPage(1), NormalMode, userAnswers) mustBe
               routes.AddMoreInformationController.loadItemSealsInformation(testErn, testArc, 1, NormalMode)
           }
         }
@@ -399,8 +429,8 @@ class NavigatorSpec extends SpecBase {
         s"when the user answers is None (shouldn't be possible)" - {
 
           "must go back to itself" in {
-            navigator.nextPage(ChooseGiveReasonItemDamagedPage(1), NormalMode, emptyUserAnswers) mustBe
-              routes.ChooseGiveReasonItemDamagedController.loadChooseGiveReasonDamagedItem(testErn, testArc, idx = 1, NormalMode)
+            navigator.nextPage(AddItemDamageInformationPage(1), NormalMode, emptyUserAnswers) mustBe
+              routes.AddMoreInformationController.loadItemDamageInformation(testErn, testArc, idx = 1, NormalMode)
           }
         }
       }
@@ -411,7 +441,8 @@ class NavigatorSpec extends SpecBase {
 
           val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, Set[WrongWithMovement](Damaged, BrokenSeals))
 
-          navigator.nextPage(DamageInformationPage, NormalMode, userAnswers) mustBe routes.AddMoreInformationController.loadSealsInformation(testErn, testArc, NormalMode)
+          navigator.nextPage(DamageInformationPage, NormalMode, userAnswers) mustBe
+            routes.AddMoreInformationController.loadSealsInformation(testErn, testArc, NormalMode)
         }
       }
 
@@ -423,7 +454,8 @@ class NavigatorSpec extends SpecBase {
 
             val userAnswers = emptyUserAnswers.set(AddSealsInformationPage, true)
 
-            navigator.nextPage(AddSealsInformationPage, NormalMode, userAnswers) mustBe routes.MoreInformationController.loadSealsInformation(testErn, testArc, NormalMode)
+            navigator.nextPage(AddSealsInformationPage, NormalMode, userAnswers) mustBe
+              routes.MoreInformationController.loadSealsInformation(testErn, testArc, NormalMode)
           }
         }
 
@@ -435,14 +467,16 @@ class NavigatorSpec extends SpecBase {
               .set(WrongWithMovementPage, Set[WrongWithMovement](Shortage, Excess, BrokenSeals))
               .set(AddSealsInformationPage, false)
 
-            navigator.nextPage(AddSealsInformationPage, NormalMode, userAnswers) mustBe routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
+            navigator.nextPage(AddSealsInformationPage, NormalMode, userAnswers) mustBe
+              routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
           }
         }
 
         s"when the user answers is None (shouldn't be possible)" - {
 
           "must go back to itself" in {
-            navigator.nextPage(AddSealsInformationPage, NormalMode, emptyUserAnswers) mustBe routes.AddMoreInformationController.loadSealsInformation(testErn, testArc, NormalMode)
+            navigator.nextPage(AddSealsInformationPage, NormalMode, emptyUserAnswers) mustBe
+              routes.AddMoreInformationController.loadSealsInformation(testErn, testArc, NormalMode)
           }
         }
       }
@@ -488,7 +522,8 @@ class NavigatorSpec extends SpecBase {
 
           val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, Set[WrongWithMovement](Shortage, Excess, BrokenSeals))
 
-          navigator.nextPage(SealsInformationPage, NormalMode, userAnswers) mustBe routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
+          navigator.nextPage(SealsInformationPage, NormalMode, userAnswers) mustBe
+            routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
         }
       }
 
@@ -509,7 +544,8 @@ class NavigatorSpec extends SpecBase {
 
           val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, Set[WrongWithMovement](Shortage, Excess, Other))
 
-          navigator.nextPage(OtherInformationPage, NormalMode, userAnswers) mustBe routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
+          navigator.nextPage(OtherInformationPage, NormalMode, userAnswers) mustBe
+            routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
         }
       }
 
@@ -520,8 +556,7 @@ class NavigatorSpec extends SpecBase {
           val userAnswers = emptyUserAnswers.set(WrongWithItemPage(1), Set[WrongWithMovement](Other))
 
           navigator.nextPage(ItemOtherInformationPage(1), NormalMode, userAnswers) mustBe
-            //TODO: Update to add routing as part of future story to go to the CheckAnswers page for this item
-            routes.AddedItemsController.onPageLoad(testErn, testArc)
+            routes.CheckYourAnswersItemController.onPageLoad(testErn, testArc, 1)
         }
       }
 
@@ -533,7 +568,8 @@ class NavigatorSpec extends SpecBase {
 
             val userAnswers = emptyUserAnswers.set(AddMoreInformationPage, true)
 
-            navigator.nextPage(AddMoreInformationPage, NormalMode, userAnswers) mustBe routes.MoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
+            navigator.nextPage(AddMoreInformationPage, NormalMode, userAnswers) mustBe
+              routes.MoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
           }
         }
 
@@ -543,7 +579,8 @@ class NavigatorSpec extends SpecBase {
 
             val userAnswers = emptyUserAnswers.set(AddMoreInformationPage, false)
 
-            navigator.nextPage(AddMoreInformationPage, NormalMode, userAnswers) mustBe routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+            navigator.nextPage(AddMoreInformationPage, NormalMode, userAnswers) mustBe
+              routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
           }
         }
       }
@@ -552,7 +589,8 @@ class NavigatorSpec extends SpecBase {
 
         "must go to the CheckYourAnswers page" in {
 
-          navigator.nextPage(MoreInformationPage, NormalMode, emptyUserAnswers) mustBe routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+          navigator.nextPage(MoreInformationPage, NormalMode, emptyUserAnswers) mustBe
+            routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
         }
       }
 
@@ -560,17 +598,38 @@ class NavigatorSpec extends SpecBase {
 
         "must go to the Confirmation page" in {
 
-          navigator.nextPage(CheckAnswersPage, NormalMode, emptyUserAnswers) mustBe routes.ConfirmationController.onPageLoad(testErn, testArc)
+          navigator.nextPage(CheckAnswersPage, NormalMode, emptyUserAnswers) mustBe
+            routes.ConfirmationController.onPageLoad(testErn, testArc)
+        }
+      }
+
+      "for the CheckYourAnswers item page" - {
+
+        "must go to the AddedItemsList page" in {
+
+          navigator.nextPage(CheckAnswersItemPage(1), NormalMode, emptyUserAnswers) mustBe
+            routes.AddedItemsController.onPageLoad(testErn, testArc)
         }
       }
     }
 
     "in Check mode" - {
 
+      "must go to the CheckYourAnswersItem page" - {
+        Seq(ItemShortageOrExcessPage(1), ItemSealsInformationPage(1), ItemDamageInformationPage(1), ItemOtherInformationPage(1)).foreach {
+          page: QuestionPage[_] =>
+            s"when the previous page is $page" in {
+              navigator.nextPage(page, CheckMode, emptyUserAnswers) mustBe
+                routes.CheckYourAnswersItemController.onPageLoad(testErn, testArc, 1)
+            }
+        }
+      }
+
       "must go from a page that doesn't exist in the edit route map to CheckYourAnswers" in {
 
         case object UnknownPage extends Page
-        navigator.nextPage(UnknownPage, CheckMode, emptyUserAnswers) mustBe routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+        navigator.nextPage(UnknownPage, CheckMode, emptyUserAnswers) mustBe
+          routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
       }
     }
 

@@ -22,7 +22,7 @@ import mocks.services.MockUserAnswersService
 import models.NormalMode
 import navigation.{FakeNavigator, Navigator}
 import pages.unsatisfactory._
-import pages.unsatisfactory.individualItems.{AddItemSealsInformationPage, ItemSealsInformationPage}
+import pages.unsatisfactory.individualItems.{AddItemDamageInformationPage, AddItemSealsInformationPage, ItemDamageInformationPage, ItemSealsInformationPage}
 import pages.{AddMoreInformationPage, MoreInformationPage}
 import play.api.inject.bind
 import play.api.mvc.Call
@@ -53,6 +53,9 @@ class AddMoreInformationControllerSpec extends SpecBase with MockUserAnswersServ
   lazy val addDamageInformationRoute = routes.AddMoreInformationController.loadDamageInformation(testErn, testArc, NormalMode).url
   lazy val addDamageInformationSubmitAction = routes.AddMoreInformationController.submitDamageInformation(testErn, testArc, NormalMode)
 
+  lazy val addItemDamageInformationRoute = routes.AddMoreInformationController.loadItemDamageInformation(testErn, testArc, idx, NormalMode).url
+  lazy val addItemDamageInformationSubmitAction = routes.AddMoreInformationController.submitItemDamageInformation(testErn, testArc, idx, NormalMode)
+
   lazy val addSealsInformationRoute = routes.AddMoreInformationController.loadSealsInformation(testErn, testArc, NormalMode).url
   lazy val addSealsInformationSubmitAction = routes.AddMoreInformationController.submitSealsInformation(testErn, testArc, NormalMode)
 
@@ -64,6 +67,7 @@ class AddMoreInformationControllerSpec extends SpecBase with MockUserAnswersServ
     (AddShortageInformationPage, ShortageInformationPage, addShortageInformationRoute, addShortageInformationSubmitAction),
     (AddExcessInformationPage, ExcessInformationPage, addExcessInformationRoute, addExcessInformationSubmitAction),
     (AddDamageInformationPage, DamageInformationPage, addDamageInformationRoute, addDamageInformationSubmitAction),
+    (AddItemDamageInformationPage(idx), ItemDamageInformationPage(idx), addItemDamageInformationRoute, addItemDamageInformationSubmitAction),
     (AddSealsInformationPage, SealsInformationPage, addSealsInformationRoute, addSealsInformationSubmitAction),
     (AddItemSealsInformationPage(idx), ItemSealsInformationPage(idx), addItemSealsInformationRoute, addItemSealsInformationSubmitAction),
   ) foreach { case (yesNoPage, infoPage, url, submitAction) =>

@@ -20,7 +20,7 @@ import models._
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
-import pages.unsatisfactory.individualItems.{ItemDamageInformationPage, ChooseGiveReasonItemDamagedPage, ItemShortageOrExcessPage}
+import pages.unsatisfactory.individualItems.{ItemDamageInformationPage, AddItemDamageInformationPage, ItemShortageOrExcessPage}
 import pages.unsatisfactory.{HowMuchIsWrongPage, WrongWithMovementPage}
 import play.api.libs.json.{JsValue, Json}
 
@@ -42,10 +42,10 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryChooseGiveReasonItemDamagedUserAnswersEntry: Arbitrary[(ChooseGiveReasonItemDamagedPage, JsValue)] =
+  implicit lazy val arbitraryChooseGiveReasonItemDamagedUserAnswersEntry: Arbitrary[(AddItemDamageInformationPage, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[ChooseGiveReasonItemDamagedPage]
+        page  <- arbitrary[AddItemDamageInformationPage]
         value <- arbitrary[Boolean].map(Json.toJson(_))
       } yield (page, value)
     }

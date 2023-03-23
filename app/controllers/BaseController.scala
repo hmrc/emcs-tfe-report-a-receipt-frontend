@@ -18,10 +18,12 @@ package controllers
 
 import models._
 import models.requests.DataRequest
+import models.response.emcsTfe.MovementItem
 import pages.QuestionPage
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Format
+import play.api.mvc.Result
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import scala.concurrent.ExecutionContext
@@ -33,4 +35,10 @@ trait BaseController extends FrontendBaseController with I18nSupport with Enumer
   def fillForm[A](page: QuestionPage[A], form: Form[A])
                  (implicit request: DataRequest[_], format: Format[A]): Form[A] =
     request.userAnswers.get(page).fold(form)(form.fill)
+
+  def withItem(idx: Int)(f: MovementItem => Result)(implicit request: DataRequest[_]): Result =
+    request.getItemDetails(idx) match {
+      case Some(item) => f(item)
+      case None => Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url)
+    }
 }

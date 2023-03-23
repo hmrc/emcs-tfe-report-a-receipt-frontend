@@ -16,6 +16,7 @@
 
 package viewmodels
 
+import controllers.routes
 import models.requests.DataRequest
 import models.response.emcsTfe.MovementItem
 import play.api.libs.json.__
@@ -27,9 +28,10 @@ class AddedItemsSummary  {
     request.userAnswers.getList[Int](__ \ "items")(MovementItem.readItemUniqueReference).zipWithIndex.flatMap {
       case (uniqueReference, idx) =>
         request.movementDetails.item(uniqueReference).map { item =>
+          val pageIdx = idx + 1 // zipWithIndex is zero-indexed so need to + 1 to match what we're doing everywhere else
           ListItem(
             name = item.cnCode,
-            testOnly.controllers.routes.UnderConstructionController.onPageLoad().url,
+            routes.CheckYourAnswersItemController.onPageLoad(request.ern, request.arc, pageIdx).url,
             testOnly.controllers.routes.UnderConstructionController.onPageLoad().url
           )
         }

@@ -14,17 +14,11 @@
  * limitations under the License.
  */
 
-package forms
+package pages.unsatisfactory.individualItems
 
-import javax.inject.Inject
+import pages.Page
 
-import forms.mappings.Mappings
-import play.api.data.Form
+case class CheckAnswersItemPage(idx: Int) extends Page {
 
-class ChooseGiveReasonItemDamagedFormProvider @Inject() extends Mappings {
-
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("chooseGiveReasonItemDamaged.error.required")
-    )
+  override def toString: String = "checkAnswersItem"
 }

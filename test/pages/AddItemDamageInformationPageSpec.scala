@@ -17,16 +17,16 @@
 package pages
 
 import pages.behaviours.PageBehaviours
-import pages.unsatisfactory.individualItems.ChooseGiveReasonItemDamagedPage
+import pages.unsatisfactory.individualItems.AddItemDamageInformationPage
 
-class ChooseGiveReasonItemDamagedPageSpec extends PageBehaviours {
+class AddItemDamageInformationPageSpec extends PageBehaviours {
 
-  "ChooseGiveReasonItemDamagedPage" - {
+  "AddItemDamageInformationPage" - {
 
-    beRetrievable[Boolean](ChooseGiveReasonItemDamagedPage(1))
+    beRetrievable[Boolean](AddItemDamageInformationPage(1))
 
-    beSettable[Boolean](ChooseGiveReasonItemDamagedPage(1))
+    beSettable[Boolean](AddItemDamageInformationPage(1))
 
-    beRemovable[Boolean](ChooseGiveReasonItemDamagedPage(1))
+    beRemovable[Boolean](AddItemDamageInformationPage(1))
   }
 }

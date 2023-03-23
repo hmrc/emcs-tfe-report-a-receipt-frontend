@@ -143,7 +143,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
             damagedGoodsInformationRow,
             brokenSealsInformationRow,
             otherInformationRow
-          )).withCssClass("govuk-!-margin-bottom-9")
+          ))
         }
       }
 
@@ -178,7 +178,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
             whatWasWrongRow,
             damagedGoodsInformationRow,
             brokenSealsInformationRow
-          )).withCssClass("govuk-!-margin-bottom-9")
+          ))
         }
 
         "when provided values are None" in new Test {
@@ -211,7 +211,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
             whatWasWrongRow,
             damagedGoodsInformationRow,
             brokenSealsInformationRow
-          )).withCssClass("govuk-!-margin-bottom-9")
+          ))
         }
       }
 
@@ -223,7 +223,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
             emptyUserAnswers
           )
 
-          checkAnswersItemHelper.summaryList(1, item1) mustBe SummaryList(Seq()).withCssClass("govuk-!-margin-bottom-9")
+          checkAnswersItemHelper.summaryList(1, item1) mustBe SummaryList(Seq())
         }
 
       }
@@ -236,7 +236,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
           MockShortageOrExcessItemSummary.rows().returns(Seq())
 
           checkAnswersItemHelper.summaryList(1, item1) mustBe
-            SummaryList(Seq(whatWasWrongRow.copy(value = ValueViewModel(HtmlContent(list(Seq())))))).withCssClass("govuk-!-margin-bottom-9")
+            SummaryList(Seq(whatWasWrongRow.copy(value = ValueViewModel(HtmlContent(list(Seq()))))))
         }
       }
     }

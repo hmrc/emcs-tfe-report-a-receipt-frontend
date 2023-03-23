@@ -60,9 +60,7 @@ class CheckAnswersItemHelper @Inject()(
           ).flatten
       }.getOrElse(Seq.empty)
 
-    SummaryListViewModel(
-      rows = rows
-    ).withCssClass("govuk-!-margin-bottom-9")
+    SummaryListViewModel(rows = rows)
   }
 
   private def whatWasWrongRow(answers: Set[WrongWithMovement], idx: Int)(implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] =

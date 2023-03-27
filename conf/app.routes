@@ -144,5 +144,8 @@ POST        /:ern/:arc/item/:idx/choose-refuse-item/change                      
 GET         /:ern/:arc/item/:idx/check-answers-item                              controllers.CheckYourAnswersItemController.onPageLoad(ern: String, arc: String, idx: Int)
 POST        /:ern/:arc/item/:idx/check-answers-item                              controllers.CheckYourAnswersItemController.onSubmit(ern: String, arc: String, idx: Int)
 
+GET         /:ern/:arc/item/:idx/remove-from-list                                controllers.RemoveItemController.onPageLoad(ern: String, arc: String, idx: Int)
+POST        /:ern/:arc/item/:idx/remove-from-list                                controllers.RemoveItemController.onSubmit(ern: String, arc: String, idx: Int)
+
 GET         /:ern/:arc/add-to-list                                               controllers.AddedItemsController.onPageLoad(ern, arc)
 POST        /:ern/:arc/add-to-list                                               controllers.AddedItemsController.onSubmit(ern, arc)

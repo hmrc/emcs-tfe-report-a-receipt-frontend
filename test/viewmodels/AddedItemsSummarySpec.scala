@@ -42,12 +42,12 @@ class AddedItemsSummarySpec extends SpecBase {
         ListItem(
           item1.cnCode,
           routes.CheckYourAnswersItemController.onPageLoad(answers.ern, answers.arc, 1).url,
-          testOnly.controllers.routes.UnderConstructionController.onPageLoad().url
+          routes.RemoveItemController.onPageLoad(answers.ern, answers.arc, 1).url
         ),
         ListItem(
           item2.cnCode,
           routes.CheckYourAnswersItemController.onPageLoad(answers.ern, answers.arc, 2).url,
-          testOnly.controllers.routes.UnderConstructionController.onPageLoad().url
+          routes.RemoveItemController.onPageLoad(answers.ern, answers.arc, 2).url
         )
       )
     }
@@ -66,7 +66,7 @@ class AddedItemsSummarySpec extends SpecBase {
           ListItem(
             item2.cnCode,
             routes.CheckYourAnswersItemController.onPageLoad(answers.ern, answers.arc, 2).url,
-            testOnly.controllers.routes.UnderConstructionController.onPageLoad().url
+            routes.RemoveItemController.onPageLoad(answers.ern, answers.arc, 2).url
           )
         )
       }

@@ -17,10 +17,11 @@
 package views
 
 import base.ViewSpecBase
-import fixtures.messages.{AddDamageInformationMessages, AddExcessInformationMessages, AddMoreInformationMessages, AddSealsInformationMessages, AddShortageInformationMessages}
+import fixtures.messages._
 import forms.AddMoreInformationFormProvider
 import org.jsoup.Jsoup
 import pages.AddMoreInformationPage
+import pages.unsatisfactory.individualItems.RemoveItemPage
 import pages.unsatisfactory.{AddDamageInformationPage, AddExcessInformationPage, AddSealsInformationPage, AddShortageInformationPage}
 import play.api.test.FakeRequest
 import views.html.AddMoreInformationView
@@ -142,6 +143,31 @@ class AddMoreInformationViewSpec extends ViewSpecBase with ViewBehaviours {
         implicit val msgs = messages(app, messagesForLanguage.lang)
         implicit val request = dataRequest(FakeRequest(), emptyUserAnswers)
         implicit val doc = Jsoup.parse(view(form, AddSealsInformationPage, testOnwardRoute).toString())
+
+        behave like pageWithExpectedElementsAndMessages(Seq(
+          Selectors.title -> messagesForLanguage.title,
+          Selectors.h2(1) -> messagesForLanguage.arcSubheading(testArc),
+          Selectors.h1 -> messagesForLanguage.heading,
+          Selectors.radioButton(1) -> messagesForLanguage.yes,
+          Selectors.radioButton(2) -> messagesForLanguage.no,
+          Selectors.button -> messagesForLanguage.saveAndContinue,
+          Selectors.secondaryButton -> messagesForLanguage.saveAndReturnToMovement
+        ))
+      }
+    }
+  }
+
+  "For the RemoveItemPage view" - {
+
+    lazy val form = app.injector.instanceOf[AddMoreInformationFormProvider].apply(RemoveItemPage(1))
+
+    Seq(RemoveItemMessages.English, RemoveItemMessages.Welsh).foreach { messagesForLanguage =>
+
+      s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
+
+        implicit val msgs = messages(app, messagesForLanguage.lang)
+        implicit val request = dataRequest(FakeRequest(), emptyUserAnswers)
+        implicit val doc = Jsoup.parse(view(form, RemoveItemPage(1), testOnwardRoute).toString())
 
         behave like pageWithExpectedElementsAndMessages(Seq(
           Selectors.title -> messagesForLanguage.title,

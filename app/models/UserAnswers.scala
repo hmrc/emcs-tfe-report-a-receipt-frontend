@@ -45,6 +45,11 @@ final case class UserAnswers(internalId: String,
       data.removeObject(page.path)
     }
 
+  def removeItem(idx: Int): UserAnswers =
+    handleResult {
+      data.removeObject(__ \ "items" \ (idx - 1))
+    }
+
   private[models] def handleResult: JsResult[JsObject] => UserAnswers = {
     case JsSuccess(updatedAnswers, _) =>
       copy(data = updatedAnswers)

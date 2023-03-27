@@ -33,7 +33,7 @@ class AddedItemsSummary  {
           ListItem(
             name = item.cnCode,
             routes.CheckYourAnswersItemController.onPageLoad(request.ern, request.arc, pageIdx).url,
-            testOnly.controllers.routes.UnderConstructionController.onPageLoad().url
+            routes.RemoveItemController.onPageLoad(request.ern, request.arc, pageIdx).url
           )
         }
     }

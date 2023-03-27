@@ -20,6 +20,7 @@ import models._
 import models.requests.DataRequest
 import navigation.BaseNavigator
 import pages.QuestionPage
+import pages.unsatisfactory.individualItems.RemoveItemPage
 import play.api.libs.json.Format
 import play.api.mvc.Result
 import services.UserAnswersService
@@ -43,6 +44,13 @@ trait BaseNavigationController extends BaseController {
     save(page, answer).map { updatedAnswers =>
       Redirect(navigator.nextPage(page, mode, updatedAnswers))
     }
+
+  def removeItemAndRedirect(idx: Int)(implicit request: DataRequest[_]): Future[Result] = {
+    val updatedAnswers = request.userAnswers.removeItem(idx)
+    userAnswersService.set(updatedAnswers).map { ua =>
+      Redirect(navigator.nextPage(RemoveItemPage(idx), NormalMode, ua))
+    }
+  }
 
   private def save[A](page: QuestionPage[A], answer: A, currentAnswers: UserAnswers)(implicit hc: HeaderCarrier, format: Format[A]): Future[UserAnswers] =
     if (currentAnswers.get[A](page).contains(answer)) {

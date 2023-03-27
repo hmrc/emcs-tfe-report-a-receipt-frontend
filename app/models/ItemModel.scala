@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package pages.unsatisfactory.individualItems
+package models
 
-import pages.QuestionPage
-import play.api.libs.json.{JsPath, __}
+import play.api.libs.json.{Json, Reads}
 
-case class CheckAnswersItemPage(idx: Int) extends QuestionPage[Boolean] {
-  override def path: JsPath = __ \ "items" \ (idx - 1) \ toString
+case class ItemModel(itemUniqueReference: Int, checkAnswersItem: Option[Boolean])
 
-  override def toString: String = "checkAnswersItem"
+object ItemModel {
+  implicit def reads: Reads[ItemModel] = Json.reads
 }

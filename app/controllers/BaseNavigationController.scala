@@ -44,7 +44,7 @@ trait BaseNavigationController extends BaseController {
       Redirect(navigator.nextPage(page, mode, updatedAnswers))
     }
 
-  def save[A](page: QuestionPage[A], answer: A, currentAnswers: UserAnswers)(implicit hc: HeaderCarrier, format: Format[A]): Future[UserAnswers] =
+  private def save[A](page: QuestionPage[A], answer: A, currentAnswers: UserAnswers)(implicit hc: HeaderCarrier, format: Format[A]): Future[UserAnswers] =
     if (currentAnswers.get[A](page).contains(answer)) {
       Future.successful(currentAnswers)
     } else {
@@ -54,8 +54,8 @@ trait BaseNavigationController extends BaseController {
       } yield updatedAnswers
     }
 
-  def save[A](page: QuestionPage[A], answer: A)
-             (implicit request: DataRequest[_], format: Format[A]): Future[UserAnswers] =
+  private def save[A](page: QuestionPage[A], answer: A)
+                     (implicit request: DataRequest[_], format: Format[A]): Future[UserAnswers] =
     save(page, answer, request.userAnswers)
 }
 

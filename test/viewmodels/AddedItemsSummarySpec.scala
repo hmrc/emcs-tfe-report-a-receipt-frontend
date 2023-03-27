@@ -18,7 +18,7 @@ package viewmodels
 
 import base.SpecBase
 import controllers.routes
-import pages.unsatisfactory.individualItems.SelectItemsPage
+import pages.unsatisfactory.individualItems.{CheckAnswersItemPage, SelectItemsPage}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 
@@ -32,7 +32,9 @@ class AddedItemsSummarySpec extends SpecBase {
 
       val answers = emptyUserAnswers
         .set(SelectItemsPage(1), item1.itemUniqueReference)
+        .set(CheckAnswersItemPage(1), true)
         .set(SelectItemsPage(2), item2.itemUniqueReference)
+        .set(CheckAnswersItemPage(2), true)
 
       implicit val req = dataRequest(FakeRequest(), answers)
 
@@ -48,6 +50,48 @@ class AddedItemsSummarySpec extends SpecBase {
           testOnly.controllers.routes.UnderConstructionController.onPageLoad().url
         )
       )
+    }
+
+    "should return a filtered Seq" - {
+      "when some items don't have CheckAnswersItemPage = true" in {
+
+        val answers = emptyUserAnswers
+          .set(SelectItemsPage(1), item1.itemUniqueReference)
+          .set(SelectItemsPage(2), item2.itemUniqueReference)
+          .set(CheckAnswersItemPage(2), true)
+
+        implicit val req = dataRequest(FakeRequest(), answers)
+
+        acceptMovementSummary.itemList() mustBe Seq(
+          ListItem(
+            item2.cnCode,
+            routes.CheckYourAnswersItemController.onPageLoad(answers.ern, answers.arc, 2).url,
+            testOnly.controllers.routes.UnderConstructionController.onPageLoad().url
+          )
+        )
+      }
+      "when no items have CheckAnswersItemPage = true" in {
+
+        val answers = emptyUserAnswers
+          .set(SelectItemsPage(1), item1.itemUniqueReference)
+          .set(CheckAnswersItemPage(1), false)
+          .set(SelectItemsPage(2), item2.itemUniqueReference)
+          .set(CheckAnswersItemPage(2), false)
+
+        implicit val req = dataRequest(FakeRequest(), answers)
+
+        acceptMovementSummary.itemList() mustBe Seq()
+      }
+      "when no items have CheckAnswersItemPage" in {
+
+        val answers = emptyUserAnswers
+          .set(SelectItemsPage(1), item1.itemUniqueReference)
+          .set(SelectItemsPage(2), item2.itemUniqueReference)
+
+        implicit val req = dataRequest(FakeRequest(), answers)
+
+        acceptMovementSummary.itemList() mustBe Seq()
+      }
     }
   }
 }

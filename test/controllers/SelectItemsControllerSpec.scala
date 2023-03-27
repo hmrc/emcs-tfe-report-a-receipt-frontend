@@ -18,8 +18,10 @@ package controllers
 
 import base.SpecBase
 import mocks.services.MockUserAnswersService
+import models.WrongWithMovement
+import models.WrongWithMovement.Damaged
 import navigation.{FakeNavigator, Navigator}
-import pages.unsatisfactory.individualItems.SelectItemsPage
+import pages.unsatisfactory.individualItems.{AddItemDamageInformationPage, CheckAnswersItemPage, SelectItemsPage, WrongWithItemPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -51,6 +53,28 @@ class SelectItemsControllerSpec extends SpecBase with JsonOptionFormatter with M
 
           status(result) mustEqual OK
           contentAsString(result) mustEqual view(Seq(item1, item2))(dataRequest(request), messages(application)).toString
+        }
+      }
+
+      "must redirect to /add-to-list if filteredItems is empty" - {
+
+        "when userAnswers only contains CheckAnswersItemPage = true" in {
+          val application = applicationBuilder(userAnswers = Some(
+            emptyUserAnswers
+              .set(SelectItemsPage(1), 1)
+              .set(CheckAnswersItemPage(1), true)
+              .set(SelectItemsPage(2), 2)
+              .set(CheckAnswersItemPage(2), true)
+          )).build()
+
+          running(application) {
+            val request = FakeRequest(GET, loadListUrl)
+
+            val result = route(application, request).value
+
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustEqual routes.AddedItemsController.onPageLoad(testErn, testArc).url
+          }
         }
       }
 
@@ -166,6 +190,66 @@ class SelectItemsControllerSpec extends SpecBase with JsonOptionFormatter with M
 
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        }
+      }
+    }
+
+    "when calling .getFilteredItems" - {
+      val controller = baseApplicationBuilder.build().injector.instanceOf[SelectItemsController]
+      "must return the full unfiltered list" - {
+        "when no items have checkAnswersItem = true" in {
+          val userAnswers = emptyUserAnswers
+            .set(SelectItemsPage(1), 1)
+            .set(WrongWithItemPage(1), Set[WrongWithMovement](Damaged))
+            .set(AddItemDamageInformationPage(1), false)
+            .set(SelectItemsPage(2), 2)
+            .set(WrongWithItemPage(2), Set[WrongWithMovement](Damaged))
+            .set(AddItemDamageInformationPage(2), false)
+          controller.getFilteredItems(dataRequest(FakeRequest(), userAnswers)) mustBe Seq(item1, item2)
+        }
+
+        "when nothing has been selected yet" in {
+          val userAnswers = emptyUserAnswers
+          controller.getFilteredItems(dataRequest(FakeRequest(), userAnswers)) mustBe Seq(item1, item2)
+        }
+      }
+
+      "must return a filtered list" - {
+        "when the first item has checkAnswersItem = true" in {
+          val userAnswers = emptyUserAnswers
+            .set(SelectItemsPage(1), 1)
+            .set(WrongWithItemPage(1), Set[WrongWithMovement](Damaged))
+            .set(AddItemDamageInformationPage(1), false)
+            .set(CheckAnswersItemPage(1), true)
+            .set(SelectItemsPage(2), 2)
+            .set(WrongWithItemPage(2), Set[WrongWithMovement](Damaged))
+            .set(AddItemDamageInformationPage(2), false)
+          controller.getFilteredItems(dataRequest(FakeRequest(), userAnswers)) mustBe Seq(item2)
+        }
+
+        "when the second item has checkAnswersItem = true" in {
+          val userAnswers = emptyUserAnswers
+            .set(SelectItemsPage(1), 1)
+            .set(WrongWithItemPage(1), Set[WrongWithMovement](Damaged))
+            .set(AddItemDamageInformationPage(1), false)
+            .set(SelectItemsPage(2), 2)
+            .set(WrongWithItemPage(2), Set[WrongWithMovement](Damaged))
+            .set(AddItemDamageInformationPage(2), false)
+            .set(CheckAnswersItemPage(2), true)
+          controller.getFilteredItems(dataRequest(FakeRequest(), userAnswers)) mustBe Seq(item1)
+        }
+
+        "when both items have checkAnswersItem = true" in {
+          val userAnswers = emptyUserAnswers
+            .set(SelectItemsPage(1), 1)
+            .set(WrongWithItemPage(1), Set[WrongWithMovement](Damaged))
+            .set(AddItemDamageInformationPage(1), false)
+            .set(CheckAnswersItemPage(1), true)
+            .set(SelectItemsPage(2), 2)
+            .set(WrongWithItemPage(2), Set[WrongWithMovement](Damaged))
+            .set(AddItemDamageInformationPage(2), false)
+            .set(CheckAnswersItemPage(2), true)
+          controller.getFilteredItems(dataRequest(FakeRequest(), userAnswers)) mustBe Seq()
         }
       }
     }

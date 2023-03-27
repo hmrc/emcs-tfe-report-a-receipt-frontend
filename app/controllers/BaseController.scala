@@ -26,7 +26,7 @@ import play.api.libs.json.Format
 import play.api.mvc.Result
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 trait BaseController extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
 
@@ -40,5 +40,11 @@ trait BaseController extends FrontendBaseController with I18nSupport with Enumer
     request.getItemDetails(idx) match {
       case Some(item) => f(item)
       case None => Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url)
+    }
+
+  def withItemAsync(idx: Int)(f: MovementItem => Future[Result])(implicit request: DataRequest[_]): Future[Result] =
+    request.getItemDetails(idx) match {
+      case Some(item) => f(item)
+      case None => Future.successful(Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url))
     }
 }

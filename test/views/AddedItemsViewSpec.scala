@@ -22,7 +22,7 @@ import forms.AddAnotherItemFormProvider
 import models.requests.DataRequest
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import pages.unsatisfactory.individualItems.SelectItemsPage
+import pages.unsatisfactory.individualItems.{CheckAnswersItemPage, SelectItemsPage}
 import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
@@ -50,6 +50,7 @@ class AddedItemsViewSpec extends ViewSpecBase with ViewBehaviours {
 
           val userAnswers = emptyUserAnswers
             .set(SelectItemsPage(1), item1.itemUniqueReference)
+            .set(CheckAnswersItemPage(1), true)
 
           implicit val msgs: Messages = messages(app, messagesForLanguage.lang)
           implicit val request: DataRequest[AnyContentAsEmpty.type] = dataRequest(FakeRequest(), userAnswers)
@@ -75,7 +76,9 @@ class AddedItemsViewSpec extends ViewSpecBase with ViewBehaviours {
 
           val userAnswers = emptyUserAnswers
             .set(SelectItemsPage(1), item1.itemUniqueReference)
+            .set(CheckAnswersItemPage(1), true)
             .set(SelectItemsPage(2), item2.itemUniqueReference)
+            .set(CheckAnswersItemPage(2), true)
 
           implicit val msgs: Messages = messages(app, messagesForLanguage.lang)
           implicit val request: DataRequest[AnyContentAsEmpty.type] = dataRequest(FakeRequest(), userAnswers)

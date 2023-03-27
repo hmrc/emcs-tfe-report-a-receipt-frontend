@@ -17,9 +17,9 @@
 package controllers
 
 import controllers.actions._
-import models.NormalMode
 import models.requests.DataRequest
 import models.response.emcsTfe.MovementItem
+import models.{ItemModel, NormalMode}
 import navigation.Navigator
 import pages.unsatisfactory.individualItems.SelectItemsPage
 import play.api.i18n.MessagesApi
@@ -43,7 +43,12 @@ class SelectItemsController @Inject()(override val messagesApi: MessagesApi,
 
   def onPageLoad(ern: String, arc: String): Action[AnyContent] =
     authorisedDataRequest(ern, arc) { implicit request =>
-      Ok(view(request.movementDetails.items))
+      val filteredItems = getFilteredItems(request)
+      if (filteredItems.isEmpty) {
+        Redirect(routes.AddedItemsController.onPageLoad(ern, arc))
+      } else {
+        Ok(view(filteredItems))
+      }
     }
 
   def addItemToList(ern: String, arc: String, itemUniqueReference: Int): Action[AnyContent] =
@@ -58,5 +63,22 @@ class SelectItemsController @Inject()(override val messagesApi: MessagesApi,
 
   private def getAddedItemsWithIndex()(implicit request: DataRequest[_]): Seq[(Int, Int)] =
     request.userAnswers.getList[Int](__ \ "items")(MovementItem.readItemUniqueReference).zipWithIndex
+
+  private[controllers] def getFilteredItems(implicit request: DataRequest[_]): Seq[MovementItem] = {
+    val userAnswersUniqueReferences = request.userAnswers.getList(__ \ "items")(MovementItem.readItemUniqueReference)
+    if (userAnswersUniqueReferences.isEmpty) {
+      request.movementDetails.items
+    } else {
+      val userAnswerItems: Seq[ItemModel] =
+        request.userAnswers.getList(__ \ "items")(ItemModel.reads)
+
+      request.movementDetails.items.filterNot {
+        movementDetailsItem =>
+          userAnswerItems
+            .find(_.itemUniqueReference == movementDetailsItem.itemUniqueReference)
+            .exists(_.checkAnswersItem.contains(true))
+      }
+    }
+  }
 
 }

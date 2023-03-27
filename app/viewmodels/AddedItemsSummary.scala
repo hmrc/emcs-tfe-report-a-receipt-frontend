@@ -17,6 +17,7 @@
 package viewmodels
 
 import controllers.routes
+import models.ItemModel
 import models.requests.DataRequest
 import models.response.emcsTfe.MovementItem
 import play.api.libs.json.__
@@ -24,10 +25,10 @@ import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 
 class AddedItemsSummary  {
 
-  def itemList()(implicit request: DataRequest[_]): Seq[ListItem] =
+  def itemList()(implicit request: DataRequest[_]): Seq[ListItem] = {
     request.userAnswers.getList[Int](__ \ "items")(MovementItem.readItemUniqueReference).zipWithIndex.flatMap {
       case (uniqueReference, idx) =>
-        request.movementDetails.item(uniqueReference).map { item =>
+        request.movementDetails.copy(items = getFilteredItems).item(uniqueReference).map { item =>
           val pageIdx = idx + 1 // zipWithIndex is zero-indexed so need to + 1 to match what we're doing everywhere else
           ListItem(
             name = item.cnCode,
@@ -36,4 +37,16 @@ class AddedItemsSummary  {
           )
         }
     }
+  }
+
+  private def getFilteredItems(implicit request: DataRequest[_]): Seq[MovementItem] = {
+    val userAnswerItems: Seq[ItemModel] = request.userAnswers.getList(__ \ "items")(ItemModel.reads)
+
+    request.movementDetails.items.filter {
+      movementDetailsItem =>
+        userAnswerItems
+          .find(_.itemUniqueReference == movementDetailsItem.itemUniqueReference)
+          .exists(_.checkAnswersItem.contains(true))
+    }
+  }
 }

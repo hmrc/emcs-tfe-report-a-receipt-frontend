@@ -326,3 +326,7 @@ addedItems.heading.singular = You have given information for 1 item
 addedItems.heading.plural = You have given information for {0} items
 addedItems.addAnother = Do you want to give information for another item?
 addedItems.error.required = Select yes if you want to give information about another item
+
+refusingAnyAmountOfItem.title = Are you refusing any amount of this item?
+refusingAnyAmountOfItem.heading = Are you refusing any amount of this item?
+refusingAnyAmountOfItem.error.required = Select yes if you want to refuse an amount of this item

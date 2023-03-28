@@ -17,7 +17,7 @@
 package navigation
 
 import controllers.routes
-import models.AcceptMovement.{Satisfactory, Unsatisfactory}
+import models.AcceptMovement.{PartiallyRefused, Refused, Satisfactory, Unsatisfactory}
 import models.HowMuchIsWrong.TheWholeMovement
 import models.WrongWithMovement.{BrokenSeals, Damaged, Excess, Other, Shortage, ShortageOrExcess}
 import models._
@@ -38,8 +38,8 @@ class Navigator @Inject()() extends BaseNavigator {
       (userAnswers: UserAnswers) =>
         userAnswers.get(AcceptMovementPage) match {
           case Some(Satisfactory) => routes.AddMoreInformationController.loadMoreInformation(userAnswers.ern, userAnswers.arc, NormalMode)
-          case Some(Unsatisfactory) => routes.HowMuchIsWrongController.onPageLoad(userAnswers.ern, userAnswers.arc, NormalMode)
-          case _ => routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)
+          case Some(PartiallyRefused) => routes.SelectItemsController.onPageLoad(userAnswers.ern, userAnswers.arc)
+          case Some(_) => routes.HowMuchIsWrongController.onPageLoad(userAnswers.ern, userAnswers.arc, NormalMode)
         }
     case HowMuchIsWrongPage =>
       (userAnswers: UserAnswers) =>
@@ -48,8 +48,21 @@ class Navigator @Inject()() extends BaseNavigator {
           case Some(_) => routes.SelectItemsController.onPageLoad(userAnswers.ern, userAnswers.arc)
           case None => routes.HowMuchIsWrongController.onPageLoad(userAnswers.ern, userAnswers.arc, NormalMode)
         }
-    case selectItemsPage: SelectItemsPage =>
-      (userAnswers: UserAnswers) => routes.WrongWithMovementController.loadwrongWithItem(userAnswers.ern, userAnswers.arc, selectItemsPage.idx, NormalMode)
+    case SelectItemsPage(idx) =>
+      (userAnswers: UserAnswers) =>
+        userAnswers.get(AcceptMovementPage) match {
+          case Some(PartiallyRefused) => routes.RefusingAnyAmountOfItemController.onPageLoad(userAnswers.ern, userAnswers.arc, idx, NormalMode)
+          case _ => routes.WrongWithMovementController.loadwrongWithItem(userAnswers.ern, userAnswers.arc, idx, NormalMode)
+        }
+    case RefusingAnyAmountOfItemPage(idx) =>
+      (userAnswers: UserAnswers) =>
+        userAnswers.get(RefusingAnyAmountOfItemPage(idx)) match {
+          case Some(true) =>
+            //TODO: Needs to redirect to the Amount of Item being refused page as part of future story
+            routes.WrongWithMovementController.loadwrongWithItem(userAnswers.ern, userAnswers.arc, idx, NormalMode)
+          case _ =>
+            routes.WrongWithMovementController.loadwrongWithItem(userAnswers.ern, userAnswers.arc, idx, NormalMode)
+        }
     case WrongWithMovementPage =>
       (userAnswers: UserAnswers) => redirectToNextWrongMovementPage()(userAnswers)
     case wrongWithItemPage: WrongWithItemPage =>

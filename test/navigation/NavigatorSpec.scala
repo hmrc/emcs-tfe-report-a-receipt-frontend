@@ -75,25 +75,23 @@ class NavigatorSpec extends SpecBase {
 
         s"when the user answers is $Refused" - {
 
-          //TODO: Update this as part of future stories to go through the actual flow
-          "must go to the CheckAnswersPage page" in {
+          "must go to the HowMuchIsWrongWithMovement page" in {
 
             val userAnswers = emptyUserAnswers.set(AcceptMovementPage, Refused)
 
             navigator.nextPage(AcceptMovementPage, NormalMode, userAnswers) mustBe
-              routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+              routes.HowMuchIsWrongController.onPageLoad(testErn, testArc, NormalMode)
           }
         }
 
         s"when the user answers is $PartiallyRefused" - {
 
-          //TODO: Update this as part of future stories to go through the actual flow
-          "must go to the CheckAnswersPage page" in {
+          "must go to the SelectItems page" in {
 
             val userAnswers = emptyUserAnswers.set(AcceptMovementPage, PartiallyRefused)
 
             navigator.nextPage(AcceptMovementPage, NormalMode, userAnswers) mustBe
-              routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+              routes.SelectItemsController.onPageLoad(testErn, testArc)
           }
         }
       }
@@ -133,10 +131,50 @@ class NavigatorSpec extends SpecBase {
 
       "for the SelectItems page" - {
 
-        "must go to the WrongWithItem page at the specified index" in {
+        "when the movement is PartiallyRefused" - {
 
-          navigator.nextPage(SelectItemsPage(3), NormalMode, emptyUserAnswers) mustBe
-            routes.WrongWithMovementController.loadwrongWithItem(testErn, testArc, 3, NormalMode)
+          "must go to the AreYouRefusingAnyAmountOfItem page" in {
+
+            val userAnswers = emptyUserAnswers.set(AcceptMovementPage, PartiallyRefused)
+
+            navigator.nextPage(SelectItemsPage(3), NormalMode, userAnswers) mustBe
+              routes.RefusingAnyAmountOfItemController.onPageLoad(testErn, testArc, 3, NormalMode)
+          }
+        }
+
+        "when the movement is not PartiallyRefused" - {
+
+          "must go to the WrongWithItem page at the specified index" in {
+
+            navigator.nextPage(SelectItemsPage(3), NormalMode, emptyUserAnswers) mustBe
+              routes.WrongWithMovementController.loadwrongWithItem(testErn, testArc, 3, NormalMode)
+          }
+        }
+      }
+
+      "for the RefusingAnyAmountOfItem page" - {
+
+        "when the answer is Yes" - {
+
+          //TODO: Update to ask for the amount being refused page (future story)
+          "must go to the Amount being refused page" in {
+
+            val userAnswers = emptyUserAnswers.set(RefusingAnyAmountOfItemPage(1), true)
+
+            navigator.nextPage(RefusingAnyAmountOfItemPage(1), NormalMode, userAnswers) mustBe
+              routes.WrongWithMovementController.loadwrongWithItem(testErn, testArc, 1, NormalMode)
+          }
+        }
+
+        "when the answer is No" - {
+
+          "must go to the WrongWithItem page" in {
+
+            val userAnswers = emptyUserAnswers.set(RefusingAnyAmountOfItemPage(1), false)
+
+            navigator.nextPage(RefusingAnyAmountOfItemPage(1), NormalMode, userAnswers) mustBe
+              routes.WrongWithMovementController.loadwrongWithItem(testErn, testArc, 1, NormalMode)
+          }
         }
       }
 

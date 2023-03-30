@@ -330,3 +330,7 @@ addedItems.error.required = Select yes if you want to give information about ano
 refusingAnyAmountOfItem.title = Are you refusing any amount of this item?
 refusingAnyAmountOfItem.heading = Are you refusing any amount of this item?
 refusingAnyAmountOfItem.error.required = Select yes if you want to refuse an amount of this item
+
+removeItem.title = Are you sure you want to remove information about this item?
+removeItem.heading = Are you sure you want to remove information about this item?
+removeItem.error.required = Select yes if you want to remove information about this item

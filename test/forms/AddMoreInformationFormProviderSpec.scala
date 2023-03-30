@@ -16,10 +16,11 @@
 
 package forms
 
-import fixtures.messages.{AddDamageInformationMessages, AddExcessInformationMessages, AddMoreInformationMessages, AddSealsInformationMessages, AddShortageInformationMessages}
+import fixtures.messages._
 import forms.behaviours.BooleanFieldBehaviours
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import pages.AddMoreInformationPage
+import pages.unsatisfactory.individualItems.RemoveItemPage
 import pages.unsatisfactory.{AddDamageInformationPage, AddExcessInformationPage, AddSealsInformationPage, AddShortageInformationPage}
 import play.api.data.FormError
 import play.api.i18n.{Messages, MessagesApi}
@@ -31,7 +32,8 @@ class AddMoreInformationFormProviderSpec extends BooleanFieldBehaviours with Gui
     AddShortageInformationPage,
     AddExcessInformationPage,
     AddDamageInformationPage,
-    AddSealsInformationPage
+    AddSealsInformationPage,
+    RemoveItemPage(1)
   ) foreach { page =>
 
     s"loading the form for the '$page' page" - {
@@ -130,6 +132,21 @@ class AddMoreInformationFormProviderSpec extends BooleanFieldBehaviours with Gui
 
           "have the correct error message when no option is selected" in {
             messages(s"$AddSealsInformationPage.error.required") mustBe messagesForLanguage.requiredError
+          }
+        }
+      }
+    }
+
+    "for the RemoveItemPage" - {
+
+      Seq(RemoveItemMessages.English, RemoveItemMessages.Welsh) foreach { messagesForLanguage =>
+
+        implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(messagesForLanguage.lang))
+
+        s"when output for language code '${messagesForLanguage.lang.code}'" - {
+
+          "have the correct error message when no option is selected" in {
+            messages(s"${RemoveItemPage(1)}.error.required") mustBe messagesForLanguage.requiredError
           }
         }
       }

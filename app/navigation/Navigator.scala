@@ -139,6 +139,8 @@ class Navigator @Inject()() extends BaseNavigator {
       (userAnswers: UserAnswers) => routes.ConfirmationController.onPageLoad(userAnswers.ern, userAnswers.arc)
     case CheckAnswersItemPage(_) =>
       (userAnswers: UserAnswers) => routes.AddedItemsController.onPageLoad(userAnswers.ern, userAnswers.arc)
+    case AddedItemsPage =>
+      (userAnswers: UserAnswers) => routes.AddMoreInformationController.loadMoreInformation(userAnswers.ern, userAnswers.arc, NormalMode)
     case _ =>
       (userAnswers: UserAnswers) => routes.IndexController.onPageLoad(userAnswers.ern, userAnswers.arc)
   }

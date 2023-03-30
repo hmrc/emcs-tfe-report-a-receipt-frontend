@@ -20,8 +20,11 @@ import controllers.actions._
 import forms.AddAnotherItemFormProvider
 import models.NormalMode
 import models.requests.DataRequest
+import navigation.Navigator
+import pages.unsatisfactory.individualItems.AddedItemsPage
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import services.UserAnswersService
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 import viewmodels.AddedItemsSummary
 import views.html.AddedItemsView
@@ -38,8 +41,10 @@ class AddedItemsController @Inject()(
                                       override val controllerComponents: MessagesControllerComponents,
                                       view: AddedItemsView,
                                       formProvider: AddAnotherItemFormProvider,
-                                      addedItemsSummary: AddedItemsSummary
-                                    ) extends BaseController with AuthActionHelper {
+                                      addedItemsSummary: AddedItemsSummary,
+                                      override val userAnswersService: UserAnswersService,
+                                      override val navigator: Navigator,
+                                    ) extends BaseNavigationController with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String): Action[AnyContent] =
     authorisedDataRequestAsync(ern, arc) { implicit request =>
@@ -54,9 +59,9 @@ class AddedItemsController @Inject()(
       withAddedItems(ern, arc) {
         case items if items.size < request.movementDetails.items.size =>
           formProvider().bindFromRequest().fold(
-            formWithErrors =>
+            formWithErrors => {
               Future.successful(BadRequest(view(Some(formWithErrors), items, routes.AddedItemsController.onSubmit(ern, arc))))
-            ,{
+            }, {
               case true => addAnotherItemRedirect(ern, arc)
               case _ => onwardRedirect(ern, arc)
             }
@@ -75,6 +80,7 @@ class AddedItemsController @Inject()(
   private def addAnotherItemRedirect(ern: String, arc: String): Future[Result] =
     Future.successful(Redirect(routes.SelectItemsController.onPageLoad(ern, arc)))
 
-  private def onwardRedirect(ern: String, arc: String): Future[Result] =
-    Future.successful(Redirect(routes.AddMoreInformationController.loadMoreInformation(ern, arc, NormalMode)))
+  private def onwardRedirect(ern: String, arc: String)(implicit dataRequest: DataRequest[_]): Future[Result] = {
+    Future.successful(Redirect(navigator.nextPage(AddedItemsPage, NormalMode, dataRequest.userAnswers)))
+  }
 }

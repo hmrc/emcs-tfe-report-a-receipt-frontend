@@ -658,15 +658,6 @@ class NavigatorSpec extends SpecBase {
             routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode)
         }
       }
-
-      "for the RemoveItem page" - {
-
-        "must go to the AddedItemsList page" in {
-
-          navigator.nextPage(RemoveItemPage(1), NormalMode, emptyUserAnswers) mustBe
-            routes.AddedItemsController.onPageLoad(testErn, testArc)
-        }
-      }
     }
 
     "in Check mode" - {

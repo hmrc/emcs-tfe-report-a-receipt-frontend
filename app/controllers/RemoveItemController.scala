@@ -18,7 +18,6 @@ package controllers
 
 import controllers.actions._
 import forms.AddMoreInformationFormProvider
-import models.NormalMode
 import navigation.Navigator
 import pages.unsatisfactory.individualItems.RemoveItemPage
 import play.api.i18n.MessagesApi
@@ -49,7 +48,7 @@ class RemoveItemController @Inject()(
     authorisedDataRequest(ern, arc) { implicit request =>
       withItem(idx) {
         _ => Ok(view(
-          form = fillForm(RemoveItemPage(idx), formProvider(RemoveItemPage(idx))),
+          form = formProvider(RemoveItemPage(idx)),
           page = RemoveItemPage(idx),
           action = routes.RemoveItemController.onSubmit(ern, arc, idx)
         ))
@@ -67,9 +66,12 @@ class RemoveItemController @Inject()(
             Future.successful(BadRequest(view(formWithErrors, RemoveItemPage(idx), routes.RemoveItemController.onSubmit(ern, arc, idx)))),
           {
             case true =>
-              removeItemAndRedirect(idx)
+              val updatedAnswers = request.userAnswers.removeItem(idx)
+              userAnswersService.set(updatedAnswers).map { _ =>
+                Redirect(routes.AddedItemsController.onPageLoad(request.ern, request.arc))
+              }
             case false =>
-              saveAndRedirect(RemoveItemPage(idx), false, NormalMode)
+              Future.successful(Redirect(routes.AddedItemsController.onPageLoad(ern, arc)))
           }
         )
       }

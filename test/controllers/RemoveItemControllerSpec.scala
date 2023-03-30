@@ -75,25 +75,7 @@ class RemoveItemControllerSpec extends SpecBase with MockUserAnswersService {
         }
       }
 
-      "must populate the view correctly on a GET when the question has previously been answered" in {
-
-        val userAnswers = baseAnswers.set(page, true)
-
-        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-        running(application) {
-          val request = FakeRequest(GET, removeItemRoute.url)
-
-          val view = application.injector.instanceOf[AddMoreInformationView]
-
-          val result = route(application, request).value
-
-          status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form.fill(true), page, removeItemSubmitAction)(dataRequest(request), messages(application)).toString
-        }
-      }
-
-      "must redirect to the next page when valid data is submitted (true)" in {
+      "must redirect to the AddedItemsController when valid data is submitted (true) and remove the item" in {
 
         object ItemsPage extends QuestionPage[Seq[String]] {
           override def path: JsPath = JsPath \ "items"
@@ -120,15 +102,11 @@ class RemoveItemControllerSpec extends SpecBase with MockUserAnswersService {
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual onwardRoute.url
+          redirectLocation(result).value mustEqual routes.AddedItemsController.onPageLoad(testErn, testArc).url
         }
       }
 
-      "must redirect to the next page when valid data is submitted (false)" in {
-
-        val updatedAnswers = baseAnswers.set(page, false)
-
-        MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers)).once()
+      "must redirect to the AddedItems page when valid data is submitted (false) without removing the item" in {
 
         val application =
           applicationBuilder(userAnswers = Some(baseAnswers))
@@ -146,7 +124,7 @@ class RemoveItemControllerSpec extends SpecBase with MockUserAnswersService {
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual onwardRoute.url
+          redirectLocation(result).value mustEqual routes.AddedItemsController.onPageLoad(testErn, testArc).url
         }
       }
 

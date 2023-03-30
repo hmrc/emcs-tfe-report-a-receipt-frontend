@@ -156,13 +156,12 @@ class NavigatorSpec extends SpecBase {
 
         "when the answer is Yes" - {
 
-          //TODO: Update to ask for the amount being refused page (future story)
           "must go to the Amount being refused page" in {
 
             val userAnswers = emptyUserAnswers.set(RefusingAnyAmountOfItemPage(1), true)
 
             navigator.nextPage(RefusingAnyAmountOfItemPage(1), NormalMode, userAnswers) mustBe
-              routes.WrongWithMovementController.loadwrongWithItem(testErn, testArc, 1, NormalMode)
+              routes.RefusedAmountController.onPageLoad(testErn, testArc, 1, NormalMode)
           }
         }
 
@@ -175,6 +174,15 @@ class NavigatorSpec extends SpecBase {
             navigator.nextPage(RefusingAnyAmountOfItemPage(1), NormalMode, userAnswers) mustBe
               routes.WrongWithMovementController.loadwrongWithItem(testErn, testArc, 1, NormalMode)
           }
+        }
+      }
+
+      "for the RefusedAmount page" - {
+
+        "must go to the WrongWithItem page" in {
+
+          navigator.nextPage(RefusedAmountPage(1), NormalMode, emptyUserAnswers) mustBe
+            routes.WrongWithMovementController.loadwrongWithItem(testErn, testArc, 1, NormalMode)
         }
       }
 

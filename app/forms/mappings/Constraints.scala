@@ -94,6 +94,14 @@ trait Constraints {
         Invalid(errorKey, maximum)
     }
 
+  protected def decimalMaxAmount(maximum: BigDecimal, errorKey: String): Constraint[BigDecimal] =
+    Constraint {
+      case answer if answer <= maximum =>
+        Valid
+      case _ =>
+        Invalid(errorKey, maximum)
+    }
+
   protected def maxDate(maximum: LocalDate, errorKey: String, args: Any*): Constraint[LocalDate] =
     Constraint {
       case date if date.isAfter(maximum) =>

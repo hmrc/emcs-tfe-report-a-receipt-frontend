@@ -82,7 +82,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
         href = routes.WrongWithMovementController.loadwrongWithItem(testErn, testArc, 1, NormalMode).url,
         content = msgs("site.change"),
         visuallyHiddenText = Some(msgs(s"${WrongWithItemPage(1)}.checkYourAnswers.change.hidden")),
-        attributes = Map("id" -> WrongWithItemPage(1))
+        attributes = Map("id" -> s"${WrongWithItemPage(1)}-item-1")
       ))))
     )
   }
@@ -112,7 +112,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
               href = routes.MoreInformationController.loadItemDamageInformation(testErn, testArc, 1, CheckMode).url,
               content = msgs("site.change"),
               visuallyHiddenText = Some(msgs(s"${ItemDamageInformationPage(1)}.checkYourAnswers.change.hidden")),
-              attributes = Map("id" -> ItemDamageInformationPage(1))
+              attributes = Map("id" -> s"${ItemDamageInformationPage(1)}-item-1")
             ))))
           )
 
@@ -123,7 +123,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
               href = routes.MoreInformationController.loadItemSealsInformation(testErn, testArc, 1, CheckMode).url,
               content = msgs("site.change"),
               visuallyHiddenText = Some(msgs(s"${ItemSealsInformationPage(1)}.checkYourAnswers.change.hidden")),
-              attributes = Map("id" -> ItemSealsInformationPage(1))
+              attributes = Map("id" -> s"${ItemSealsInformationPage(1)}-item-1")
             ))))
           )
 
@@ -134,7 +134,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
               href = routes.OtherInformationController.loadItemOtherInformation(testErn, testArc, 1, CheckMode).url,
               content = msgs("site.change"),
               visuallyHiddenText = Some(msgs(s"${ItemOtherInformationPage(1)}.checkYourAnswers.change.hidden")),
-              attributes = Map("id" -> ItemOtherInformationPage(1))
+              attributes = Map("id" -> s"${ItemOtherInformationPage(1)}-item-1")
             ))))
           )
 

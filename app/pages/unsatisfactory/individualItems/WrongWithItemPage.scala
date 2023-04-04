@@ -24,5 +24,5 @@ case class WrongWithItemPage(idx: Int) extends QuestionPage[Set[WrongWithMovemen
 
   override def path: JsPath = __ \ "items" \ (idx - 1) \ toString
 
-  override def toString: String = "wrongWithItem"
+  override def toString: String = s"wrongWithItem"
 }

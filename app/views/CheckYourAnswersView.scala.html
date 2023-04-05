@@ -23,10 +23,11 @@
         h1: components.h1,
         h2: components.h2,
         p: components.p,
+        link: components.link,
         saveAndContinue: components.saveAndContinue
 )
 
-@(submitAction: Call, list: SummaryList)(implicit request: DataRequest[_], messages: Messages)
+@(submitAction: Call, addItemLink: String, list: SummaryList, itemList: Seq[(String, SummaryList)], itemsToAdd: Boolean)(implicit request: DataRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("checkYourAnswers.title"))) {
 
@@ -38,7 +39,26 @@
 
      @govukSummaryList(list)
 
-     @h2("checkYourAnswers.submit.h2")
+
+     @itemList.map { case (itemName, item) =>
+        @h2(messages("checkYourAnswers.itemDetails.h2", itemName))
+        @govukSummaryList(item)
+     }
+
+     @if(itemsToAdd) {
+        @link(
+            addItemLink,
+            "checkYourAnswers.add.item.link",
+            id = Some("add-item")
+        )
+     }
+
+    <br>
+    <br>
+    <br>
+    <br>
+
+@h2("checkYourAnswers.submit.h2")
 
      @p() {
          @messages("checkYourAnswers.declaration")

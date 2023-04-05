@@ -75,7 +75,7 @@ class CheckAnswersItemHelper @Inject()(
         ActionItemViewModel(
           "site.change",
           routes.WrongWithMovementController.loadwrongWithItem(request.userAnswers.ern, request.userAnswers.arc, idx, NormalMode).url,
-          id = s"${WrongWithItemPage(idx)}-item-$idx"
+          id = WrongWithItemPage(idx)
         ).withVisuallyHiddenText(messages(s"${WrongWithItemPage(idx)}.checkYourAnswers.change.hidden"))
       )
     ))
@@ -91,7 +91,7 @@ class CheckAnswersItemHelper @Inject()(
               ActionItemViewModel(
                 "site.change",
                 routes.MoreInformationController.loadItemSealsInformation(request.userAnswers.ern, request.userAnswers.arc, idx, CheckMode).url,
-                id = s"${ItemSealsInformationPage(idx)}-item-$idx"
+                id = ItemSealsInformationPage(idx)
               ).withVisuallyHiddenText(messages(s"${ItemSealsInformationPage(idx)}.checkYourAnswers.change.hidden"))
             )
           )
@@ -119,7 +119,7 @@ class CheckAnswersItemHelper @Inject()(
               ActionItemViewModel(
                 "site.change",
                 routes.MoreInformationController.loadItemDamageInformation(request.userAnswers.ern, request.userAnswers.arc, idx, CheckMode).url,
-                id = s"${ItemDamageInformationPage(idx)}-item-$idx"
+                id = ItemDamageInformationPage(idx)
               ).withVisuallyHiddenText(messages(s"${ItemDamageInformationPage(idx)}.checkYourAnswers.change.hidden"))
             )
           )
@@ -147,7 +147,7 @@ class CheckAnswersItemHelper @Inject()(
               ActionItemViewModel(
                 "site.change",
                 routes.OtherInformationController.loadItemOtherInformation(request.userAnswers.ern, request.userAnswers.arc, idx, CheckMode).url,
-                id = s"${ItemOtherInformationPage(idx)}-item-$idx"
+                id = ItemOtherInformationPage(idx)
               ).withVisuallyHiddenText(messages(s"${ItemOtherInformationPage(idx)}.checkYourAnswers.change.hidden"))
             )
           ))

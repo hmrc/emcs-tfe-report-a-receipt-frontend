@@ -116,7 +116,7 @@ class ShortageOrExcessItemSummary @Inject()(link: link) {
     ActionItemViewModel(
       "site.change",
       routes.ItemShortageOrExcessController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, idx, CheckMode).url,
-      id = s"${ItemShortageOrExcessPage(idx)}-$changeLabelPage-item-$idx"
+      id = s"${ItemShortageOrExcessPage(idx)}-$changeLabelPage"
     ).withVisuallyHiddenText(messages(s"${ItemShortageOrExcessPage(idx)}.checkYourAnswers.$changeLabelPage.change.hidden"))
 
 }

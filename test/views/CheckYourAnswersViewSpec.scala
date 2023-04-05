@@ -17,6 +17,7 @@
 package views
 
 import base.ViewSpecBase
+import controllers.routes
 import fixtures.messages.CheckYourAnswersMessages
 import models.requests.DataRequest
 import org.jsoup.Jsoup
@@ -37,6 +38,7 @@ class CheckYourAnswersViewSpec extends ViewSpecBase with ViewBehaviours {
 
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
 
+        val link = routes.SelectItemsController.onPageLoad(testErn, testArc).url
         implicit val msgs: Messages = messages(app, messagesForLanguage.lang)
         implicit val request: DataRequest[AnyContentAsEmpty.type] = dataRequest(FakeRequest(), emptyUserAnswers)
 
@@ -44,7 +46,10 @@ class CheckYourAnswersViewSpec extends ViewSpecBase with ViewBehaviours {
 
         implicit val doc: Document = Jsoup.parse(view(
           submitAction = controllers.routes.CheckYourAnswersController.onSubmit(testErn, testArc),
-          list = SummaryList(Seq())
+          link,
+          list = SummaryList(Seq()),
+          Seq.empty[(String, SummaryList)],
+          false
         ).toString())
 
         behave like pageWithExpectedElementsAndMessages(Seq(

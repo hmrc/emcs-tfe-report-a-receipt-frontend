@@ -62,7 +62,7 @@ class ShortageOrExcessItemSummarySpec extends SpecBase {
           href = routes.ItemShortageOrExcessController.onPageLoad(testErn, testArc, 1, CheckMode).url,
           content = msgs("site.change"),
           visuallyHiddenText = Some(msgs(s"${ItemShortageOrExcessPage(1)}.checkYourAnswers.shortageOrExcess.change.hidden")),
-          attributes = Map("id" -> s"${ItemShortageOrExcessPage(1)}-shortageOrExcess-item-1")
+          attributes = Map("id" -> s"${ItemShortageOrExcessPage(1)}-shortageOrExcess")
         )
       )))
     )
@@ -81,7 +81,7 @@ class ShortageOrExcessItemSummarySpec extends SpecBase {
           href = routes.ItemShortageOrExcessController.onPageLoad(testErn, testArc, 1, CheckMode).url,
           content = msgs("site.change"),
           visuallyHiddenText = Some(msgs(s"${ItemShortageOrExcessPage(1)}.checkYourAnswers.amount.change.hidden")),
-          attributes = Map("id" -> s"${ItemShortageOrExcessPage(1)}-amount-item-1")
+          attributes = Map("id" -> s"${ItemShortageOrExcessPage(1)}-amount")
         )
       )))
     )
@@ -110,7 +110,7 @@ class ShortageOrExcessItemSummarySpec extends SpecBase {
                       href = routes.ItemShortageOrExcessController.onPageLoad(testErn, testArc, 1, CheckMode).url,
                       content = msgs("site.change"),
                       visuallyHiddenText = Some(msgs(s"${ItemShortageOrExcessPage(1)}.checkYourAnswers.additionalInfo.change.hidden")),
-                      attributes = Map("id" -> s"${ItemShortageOrExcessPage(1)}-additionalInfo-item-1")
+                      attributes = Map("id" -> s"${ItemShortageOrExcessPage(1)}-additionalInfo")
                     )
                   )))
                 )

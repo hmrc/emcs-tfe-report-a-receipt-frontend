@@ -41,7 +41,6 @@ class DateOfArrivalControllerSpec extends SpecBase with MockUserAnswersService {
 
   val timeMachine = new TimeMachine {
     override def now(): LocalDateTime = fixedNow
-    override def instant(): Instant = Instant.now()
   }
 
   val formProvider = new DateOfArrivalFormProvider(timeMachine)

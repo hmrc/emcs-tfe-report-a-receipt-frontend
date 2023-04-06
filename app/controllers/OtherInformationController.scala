@@ -19,17 +19,21 @@ package controllers
 import controllers.actions._
 import forms.OtherInformationFormProvider
 import models.Mode
+import models.requests.DataRequest
 import navigation.Navigator
 import pages.QuestionPage
 import pages.unsatisfactory._
 import pages.unsatisfactory.individualItems.ItemOtherInformationPage
+import play.api.data.FormError
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc._
 import services.UserAnswersService
+import utils.Logging
 import views.html.OtherInformationView
 
 import javax.inject.Inject
 import scala.concurrent.Future
+import scala.util.{Failure, Success, Try}
 
 class OtherInformationController @Inject()(
                                             override val messagesApi: MessagesApi,
@@ -42,7 +46,7 @@ class OtherInformationController @Inject()(
                                             formProvider: OtherInformationFormProvider,
                                             val controllerComponents: MessagesControllerComponents,
                                             view: OtherInformationView
-                                          ) extends BaseNavigationController with AuthActionHelper {
+                                          ) extends BaseNavigationController with AuthActionHelper with Logging {
 
 
   def loadOtherInformation(ern: String, arc: String, mode: Mode): Action[AnyContent] =
@@ -63,12 +67,23 @@ class OtherInformationController @Inject()(
     }
 
   private def onSubmit(page: QuestionPage[String], ern: String, arc: String, action: Call, mode: Mode): Action[AnyContent] =
-    authorisedDataRequestAsync(ern, arc) { implicit request =>
-      formProvider(page).bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(page, formWithErrors, action))),
-        value =>
-          saveAndRedirect(page, value, mode)
-      )
+    authorisedDataRequestAsync(ern, arc) { implicit request: DataRequest[_] =>
+      Try {
+        val trimmedFormValues: Map[String, Seq[String]] = request.body.asInstanceOf[AnyContentAsFormUrlEncoded].data.map {
+          case (k, v) => (k, v.map(_.trim))
+        }
+
+        formProvider(page).bindFromRequest(trimmedFormValues).fold(
+          formWithErrors =>
+            Future.successful(BadRequest(view(page, formWithErrors, action))),
+          value =>
+            saveAndRedirect(page, value, mode)
+        )
+      } match {
+        case Failure(exception) =>
+          logger.warn(exception.getMessage)
+          Future.successful(BadRequest(view(page, formProvider(page).withError(FormError("more-information", s"$page.error.required")), action)))
+        case Success(value) => value
+      }
     }
 }

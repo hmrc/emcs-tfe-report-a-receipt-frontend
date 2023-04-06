@@ -34,7 +34,6 @@ class DateOfArrivalFormProviderSpec extends DateBehaviours with DateUtils with G
 
   val timeMachine = new TimeMachine {
     override def now(): LocalDateTime = fixedNow.atStartOfDay()
-    override def instant(): Instant = Instant.now()
   }
 
   val form = new DateOfArrivalFormProvider(timeMachine)(dateOfDispatch)

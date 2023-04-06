@@ -51,8 +51,8 @@ class ItemShortageOrExcessFormProvider @Inject() extends Mappings {
               identity
             )
             .verifying(maxLength(TEXTAREA_MAX_LENGTH, s"itemShortageOrExcess.additionalInfo.error.maxLength"))
-            .verifying(regexp(ALPHANUMERIC_REGEX, s"itemShortageOrExcess.additionalInfo.error.character"))
-            .verifying(regexp(XSS_REGEX, s"itemShortageOrExcess.additionalInfo.error.invalidCharacter"))
+            .verifying(regexpUnlessEmpty(ALPHANUMERIC_REGEX, s"itemShortageOrExcess.additionalInfo.error.character"))
+            .verifying(regexpUnlessEmpty(XSS_REGEX, s"itemShortageOrExcess.additionalInfo.error.invalidCharacter"))
         )
     )(ItemShortageOrExcessModel.apply)(ItemShortageOrExcessModel.unapply))
 

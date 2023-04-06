@@ -80,7 +80,7 @@ class ItemShortageOrExcessController @Inject()(
     val isPartiallyRefusingAnAmountOfItem =
       request.userAnswers.get(RefusingAnyAmountOfItemPage(idx)).contains(true) && request.userAnswers.get(AcceptMovementPage).contains(PartiallyRefused)
 
-    if(isPartiallyRefusingAnAmountOfItem) {
+    if (isPartiallyRefusingAnAmountOfItem) {
       item.quantity - request.userAnswers.get(RefusedAmountPage(idx)).getOrElse[BigDecimal](0)
     } else {
       item.quantity

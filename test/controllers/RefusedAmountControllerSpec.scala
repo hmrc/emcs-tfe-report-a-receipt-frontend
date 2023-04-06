@@ -19,8 +19,8 @@ package controllers
 import base.SpecBase
 import forms.RefusedAmountFormProvider
 import mocks.services.MockUserAnswersService
+import models.NormalMode
 import models.UnitOfMeasure.Kilograms
-import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import pages.unsatisfactory.individualItems.{RefusedAmountPage, SelectItemsPage}
 import play.api.inject.bind

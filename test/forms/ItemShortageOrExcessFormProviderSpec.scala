@@ -69,11 +69,21 @@ class ItemShortageOrExcessFormProviderSpec extends BooleanFieldBehaviours {
         ))
       }
 
-      "when all fields supplied (1dp for amount, text area contains carriage returns)" in {
+      "when all fields supplied (1dp for amount, text area contains only whitespace)" in {
 
         val data = Map(
           s"shortageOrExcess" -> Shortage.toString,
-          s"amount" -> "12345678901234.1"
+          s"amount" -> "12345678901234.1",
+          s"additionalInfo" ->
+            """
+              |
+              |
+              |
+              |
+              |
+              |
+              |
+              |""".stripMargin
         )
 
         val result = form.bind(data)
@@ -82,7 +92,7 @@ class ItemShortageOrExcessFormProviderSpec extends BooleanFieldBehaviours {
         result.value mustBe Some(ItemShortageOrExcessModel(
           wrongWithItem = Shortage,
           amount = BigDecimal("12345678901234.1"),
-          additionalInfo = None
+          additionalInfo = Some("")
         ))
       }
 

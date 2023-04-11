@@ -49,6 +49,15 @@ class RefusedAmountFormProviderSpec extends IntFieldBehaviours with GuiceOneAppP
       )
     }
 
+    "must return the max length error when the amount exceeds maximum characters" in {
+
+      val boundForm = form.bind(Map(fieldName -> "1234567890123456789"))
+
+      boundForm.errors mustBe Seq(
+        FormError(fieldName, "refusedAmount.error.maxLength", Seq(MAX_LENGTH_15))
+      )
+    }
+
     "must return non-Numeric error when the amount is not a number" in {
 
       val boundForm = form.bind(Map(fieldName -> "a"))
@@ -113,12 +122,16 @@ class RefusedAmountFormProviderSpec extends IntFieldBehaviours with GuiceOneAppP
           messages(s"refusedAmount.error.required") mustBe messagesForLanguage.requiredError
         }
 
-        "have the correct error message when value exceeds a max" in {
+        "have the correct error message when value exceeds quantity" in {
           messages(s"refusedAmount.error.tooLarge", 123.123) mustBe messagesForLanguage.tooLarge(123.123)
         }
 
         "have the correct error message when value is not a numeric" in {
           messages(s"refusedAmount.error.nonNumeric") mustBe messagesForLanguage.nonNumeric
+        }
+
+        "have the correct error message when value exceeds the max length" in {
+          messages(s"refusedAmount.error.maxLength", MAX_LENGTH_15) mustBe messagesForLanguage.maxLength(MAX_LENGTH_15)
         }
       }
     }

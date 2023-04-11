@@ -26,7 +26,11 @@ class RefusedAmountFormProvider @Inject() extends Mappings {
     Form(
       "value" ->
         text("refusedAmount.error.required")
-          .verifying(regexp(NUMERIC_15_3DP_REGEX, "refusedAmount.error.nonNumeric")
+          .verifying(
+            firstError(
+              maxLength(MAX_LENGTH_15, "refusedAmount.error.maxLength"),
+              regexp(NUMERIC_15_3DP_REGEX, "refusedAmount.error.nonNumeric")
+            )
           )
           .transform[BigDecimal](BigDecimal(_), _.toString())
           .verifying(decimalMaxAmount(itemQuantity, "refusedAmount.error.tooLarge"))

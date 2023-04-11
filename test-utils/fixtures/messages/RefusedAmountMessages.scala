@@ -23,6 +23,7 @@ object RefusedAmountMessages {
     def heading(unitOfMeasure: String): String
     val requiredError: String
     val nonNumeric: String
+    val maxLength: Int => String
     val tooLarge: BigDecimal => String
   }
 
@@ -33,6 +34,7 @@ object RefusedAmountMessages {
     override val requiredError: String = "Enter the amount you are refusing"
     override val nonNumeric: String = "The amount you are refusing must be a number, like 150 or 12.694"
     override val tooLarge: BigDecimal => String = (max: BigDecimal) => s"The amount you are refusing must be $max or fewer"
+    override val maxLength: Int => String = (max: Int) => s"The amount you are refusing must be $max characters or less"
   }
 
   object Welsh extends ViewMessages with BaseWelsh {
@@ -42,5 +44,6 @@ object RefusedAmountMessages {
     override val requiredError: String = "Enter the amount you are refusing"
     override val nonNumeric: String = "The amount you are refusing must be a number, like 150 or 12.694"
     override val tooLarge: BigDecimal => String = (max: BigDecimal) => s"The amount you are refusing must be $max or fewer"
+    override val maxLength: Int => String = (max: Int) => s"The amount you are refusing must be $max characters or less"
   }
 }

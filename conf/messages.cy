@@ -341,3 +341,4 @@ refusedAmount.hint = For example, 150 or 12.694.
 refusedAmount.error.nonNumeric = The amount you are refusing must be a number, like 150 or 12.694
 refusedAmount.error.required = Enter the amount you are refusing
 refusedAmount.error.tooLarge = The amount you are refusing must be {0} or fewer
+refusedAmount.error.maxLength = The amount you are refusing must be {0} characters or less

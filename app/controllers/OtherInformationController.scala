@@ -45,16 +45,16 @@ class OtherInformationController @Inject()(
                                           ) extends BaseNavigationController with AuthActionHelper {
 
 
-  def loadOtherInformation(ern: String, arc: String, mode: Mode) =
+  def loadOtherInformation(ern: String, arc: String, mode: Mode): Action[AnyContent] =
     onPageLoad(OtherInformationPage, ern, arc, routes.OtherInformationController.submitOtherInformation(ern, arc, mode))
 
-  def submitOtherInformation(ern: String, arc: String, mode: Mode) =
+  def submitOtherInformation(ern: String, arc: String, mode: Mode): Action[AnyContent] =
     onSubmit(OtherInformationPage, ern, arc, routes.OtherInformationController.submitOtherInformation(ern, arc, mode), mode)
 
-  def loadItemOtherInformation(ern: String, arc: String, idx: Int, mode: Mode) =
+  def loadItemOtherInformation(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
     onPageLoad(ItemOtherInformationPage(idx), ern, arc, routes.OtherInformationController.submitItemOtherInformation(ern, arc, idx, mode))
 
-  def submitItemOtherInformation(ern: String, arc: String, idx: Int, mode: Mode) =
+  def submitItemOtherInformation(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
     onSubmit(ItemOtherInformationPage(idx), ern, arc, routes.OtherInformationController.submitItemOtherInformation(ern, arc, idx, mode), mode)
 
   private def onPageLoad(page: QuestionPage[String], ern: String, arc: String, action: Call): Action[AnyContent] =

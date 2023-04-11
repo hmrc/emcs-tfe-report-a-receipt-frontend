@@ -183,6 +183,8 @@ sealsInformation.checkYourAnswers.addMoreInformation = Enter more information ab
 
 otherInformation.title = Give more information about other reason(s) you are unsatisfied with this movement
 otherInformation.heading = Give more information about other reason(s) you are unsatisfied with this movement
+otherInformation.refused.title = Give more information about other reason(s) you are refusing this movement
+otherInformation.refused.heading = Give more information about other reason(s) you are refusing this movement
 otherInformation.hint = Give more information
 otherInformation.error.length = Information must be 350 characters or less
 otherInformation.error.required = Enter more information

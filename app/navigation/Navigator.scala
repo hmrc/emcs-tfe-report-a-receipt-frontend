@@ -17,7 +17,7 @@
 package navigation
 
 import controllers.routes
-import models.AcceptMovement.{PartiallyRefused, Refused, Satisfactory, Unsatisfactory}
+import models.AcceptMovement.{PartiallyRefused, Satisfactory}
 import models.HowMuchIsWrong.TheWholeMovement
 import models.WrongWithMovement.{BrokenSeals, Damaged, Excess, Other, Shortage, ShortageOrExcess}
 import models._

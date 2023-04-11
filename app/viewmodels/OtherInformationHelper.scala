@@ -14,19 +14,25 @@
  * limitations under the License.
  */
 
-package pages
+package viewmodels
 
-import pages.behaviours.PageBehaviours
-import pages.unsatisfactory.individualItems.AddedItemsPage
+import models.AcceptMovement.Refused
+import models.requests.DataRequest
+import pages.{AcceptMovementPage, Page}
 
-class AddedItemsPageSpec extends PageBehaviours {
-
-  "AddedItemsPage" - {
-
-    "toString" - {
-      "must be correct" in {
-        AddedItemsPage.toString mustBe "addedItemsPage"
-      }
+object OtherInformationHelper {
+  def conditionalTitle(page: Page)(implicit request: DataRequest[_]): String =
+    if (request.userAnswers.get(AcceptMovementPage).contains(Refused)) {
+      s"$page.refused.title"
+    } else {
+      s"$page.title"
     }
-  }
+
+  def conditionalHeading(page: Page)(implicit request: DataRequest[_]): String =
+    if (request.userAnswers.get(AcceptMovementPage).contains(Refused)) {
+      s"$page.refused.heading"
+    } else {
+      s"$page.heading"
+    }
+
 }

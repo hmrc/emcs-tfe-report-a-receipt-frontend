@@ -32,7 +32,7 @@ import javax.inject.Inject
 
 class OtherInformationSummary @Inject()(link: link) extends JsonOptionFormatter {
 
-  def row()(implicit request: DataRequest[_], messages: Messages): SummaryListRow =
+  def row()(implicit request: DataRequest[_], messages: Messages): SummaryListRow = {
     request.userAnswers.get(OtherInformationPage) match {
       case Some(answer) if answer != "" =>
         SummaryListRowViewModel(
@@ -55,4 +55,5 @@ class OtherInformationSummary @Inject()(link: link) extends JsonOptionFormatter 
           )))
         )
     }
+  }
 }

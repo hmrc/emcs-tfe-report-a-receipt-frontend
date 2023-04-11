@@ -293,6 +293,8 @@ itemShortageOrExcess.checkYourAnswers.addMoreInformation = Enter more informatio
 
 itemOtherInformation.title = Give more information about other reason(s) you are unsatisfied with this item
 itemOtherInformation.heading = Give more information about other reason(s) you are unsatisfied with this item
+itemOtherInformation.refused.title = Give more information about other reason(s) you are unsatisfied with this item
+itemOtherInformation.refused.heading = Give more information about other reason(s) you are unsatisfied with this item
 itemOtherInformation.hint = Give more information
 itemOtherInformation.error.length = Information must be 350 characters or less
 itemOtherInformation.error.required = Enter more information

@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-package utils
+package forms
 
-import java.time.{LocalDateTime, ZoneId}
-import javax.inject.Inject
+import pages.QuestionPage
+import play.api.data.Form
 
-trait TimeMachine {
-  def now(): LocalDateTime
-}
-
-class TimeMachineImpl @Inject()() extends TimeMachine {
-  override def now(): LocalDateTime = LocalDateTime.now(ZoneId.of("UTC"))
+trait BaseFormProvider[PageType] {
+  def apply(page: Option[QuestionPage[PageType]]): Form[PageType]
 }

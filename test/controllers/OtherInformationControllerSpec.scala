@@ -24,6 +24,7 @@ import navigation.{FakeNavigator, Navigator}
 import pages.unsatisfactory._
 import pages.unsatisfactory.individualItems.ItemOtherInformationPage
 import play.api.inject.bind
+import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -52,7 +53,7 @@ class OtherInformationControllerSpec extends SpecBase with JsonOptionFormatter w
 
     s"for the '$page' page" - {
 
-      val form = formProvider(page)
+      val form = formProvider(Some(page))
 
       "must return OK and the correct view for a GET" in {
 
@@ -128,6 +129,67 @@ class OtherInformationControllerSpec extends SpecBase with JsonOptionFormatter w
           val request =
             FakeRequest(POST, url)
               .withFormUrlEncodedBody(("more-information", ""))
+
+          val boundForm = form.bind(Map("more-information" -> ""))
+
+          val view = application.injector.instanceOf[OtherInformationView]
+
+          val result = route(application, request).value
+
+          status(result) mustEqual BAD_REQUEST
+          contentAsString(result) mustEqual view(page, boundForm, submitAction)(dataRequest(request), messages(application)).toString
+        }
+      }
+
+      "must return a Bad Request and errors when only whitespace is submitted" in {
+
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(
+              bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+              bind[UserAnswersService].toInstance(mockUserAnswersService)
+            )
+            .build()
+
+        running(application) {
+          val request =
+            FakeRequest(POST, url)
+              .withFormUrlEncodedBody(("more-information",
+                """
+                  |
+                  |
+                  |
+                  |
+                  |
+                  |
+                  |
+                  |""".stripMargin))
+
+          val boundForm = form.bind(Map("more-information" -> ""))
+
+          val view = application.injector.instanceOf[OtherInformationView]
+
+          val result = route(application, request).value
+
+          status(result) mustEqual BAD_REQUEST
+          contentAsString(result) mustEqual view(page, boundForm, submitAction)(dataRequest(request), messages(application)).toString
+        }
+      }
+
+      "must return a Bad Request and errors when a non-FormUrlEncodedBody is submitted" in {
+
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(
+              bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+              bind[UserAnswersService].toInstance(mockUserAnswersService)
+            )
+            .build()
+
+        running(application) {
+          val request =
+            FakeRequest(POST, url)
+              .withJsonBody(Json.obj("more-information" -> ""))
 
           val boundForm = form.bind(Map("more-information" -> ""))
 

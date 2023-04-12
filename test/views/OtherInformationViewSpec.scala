@@ -44,7 +44,7 @@ class OtherInformationViewSpec extends ViewSpecBase with ViewBehaviours {
         implicit val msgs: Messages = messages(app, messagesForLanguage.lang)
         implicit val request: DataRequest[AnyContentAsEmpty.type] = dataRequest(FakeRequest(), emptyUserAnswers)
 
-        val form = app.injector.instanceOf[OtherInformationFormProvider].apply(OtherInformationPage)
+        val form = app.injector.instanceOf[OtherInformationFormProvider].apply(Some(OtherInformationPage))
         val view = app.injector.instanceOf[OtherInformationView]
 
         implicit val doc: Document = Jsoup.parse(view(OtherInformationPage, form, testOnwardRoute).toString())
@@ -70,7 +70,7 @@ class OtherInformationViewSpec extends ViewSpecBase with ViewBehaviours {
         implicit val msgs: Messages = messages(app, messagesForLanguage.lang)
         implicit val request: DataRequest[AnyContentAsEmpty.type] = dataRequest(FakeRequest(), emptyUserAnswers.set(AcceptMovementPage, Refused))
 
-        val form = app.injector.instanceOf[OtherInformationFormProvider].apply(OtherInformationPage)
+        val form = app.injector.instanceOf[OtherInformationFormProvider].apply(Some(OtherInformationPage))
         val view = app.injector.instanceOf[OtherInformationView]
 
         implicit val doc: Document = Jsoup.parse(view(OtherInformationPage, form, testOnwardRoute).toString())
@@ -96,7 +96,7 @@ class OtherInformationViewSpec extends ViewSpecBase with ViewBehaviours {
         implicit val msgs: Messages = messages(app, messagesForLanguage.lang)
         implicit val request: DataRequest[AnyContentAsEmpty.type] = dataRequest(FakeRequest(), emptyUserAnswers)
 
-        val form = app.injector.instanceOf[OtherInformationFormProvider].apply(ItemOtherInformationPage(1))
+        val form = app.injector.instanceOf[OtherInformationFormProvider].apply(Some(ItemOtherInformationPage(1)))
         val view = app.injector.instanceOf[OtherInformationView]
 
         implicit val doc: Document = Jsoup.parse(view(ItemOtherInformationPage(1), form, testOnwardRoute).toString())

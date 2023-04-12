@@ -43,69 +43,105 @@ class MoreInformationFormProviderSpec extends StringFieldBehaviours {
 
       ".value" - {
 
-        "more information form accepts a value that is valid" in {
-          val data = Map("more-information" -> "Test 123.")
-          val result = form.bind(data)
+        "form returns no errors when" - {
+          "input is valid" in {
+            val data = Map("more-information" -> "Test 123.")
+            val result = form.bind(data)
 
-          result.errors mustBe Seq()
-          result.value.flatten mustBe Some("Test 123.")
+            result.errors mustBe Seq()
+            result.value.flatten mustBe Some("Test 123.")
+          }
+
+          "input includes a Carriage Return" in {
+            val data = Map("more-information" -> "Test\n123.")
+            val result = form.bind(data)
+
+            result.errors mustBe Seq()
+            result.value.flatten mustBe Some("Test 123.")
+          }
+
+
+          "input is a value of 350 alpha characters that are valid" in {
+            val data = Map("more-information" -> "a" * maxLength)
+            val result = form.bind(data)
+
+            result.errors mustBe Seq()
+            result.value.flatten mustBe Some("a" * maxLength)
+          }
+
+          "input begins with a valid special character" in {
+            val data = Map("more-information" -> ".A")
+            val result = form.bind(data)
+
+            result.errors mustBe Seq()
+            result.value.flatten mustBe Some(".A")
+          }
+
+          "input is just numbers" in {
+            val data = Map("more-information" -> "123")
+            val result = form.bind(data)
+
+            result.errors mustBe Seq()
+            result.value.flatten mustBe Some("123")
+          }
+
+          "input is only whitespace" in {
+            val data = Map("more-information" ->
+              """
+                |
+                |
+                |
+                |
+                |
+                |
+                |""".stripMargin)
+            val result = form.bind(data)
+
+            result.errors mustBe Seq()
+            result.value.flatten mustBe Some("")
+          }
+
+          "input is empty" in {
+            val data = Map("more-information" -> "")
+            val result = form.bind(data)
+
+            result.errors mustBe Seq()
+            result.value.flatten mustBe None
+          }
+
+          "more-information field is missing" in {
+            val data = Map[String, String]()
+            val result = form.bind(data)
+
+            result.errors mustBe Seq()
+            result.value.flatten mustBe None
+          }
         }
 
-        "more information form accepts a value that includes a Carriage Return" in {
-          val data = Map("more-information" -> "Test\n123.")
-          val result = form.bind(data)
+        "form returns an error when" - {
+          "alpha numeric data isn't used" in {
+            val data = Map("more-information" -> "..")
+            val result = form.bind(data)
 
-          result.errors mustBe Seq()
-          result.value.flatten mustBe Some("Test 123.")
-        }
+            result.errors must contain only FormError("more-information", s"$page.error.character", Seq(ALPHANUMERIC_REGEX))
+          }
 
+          "more than 350 characters are used" in {
+            val data = Map("more-information" -> "a" * aboveMaxLength)
+            val result = form.bind(data)
 
-        "more information form accepts a value of 350 alpha characters that are valid" in {
-          val data = Map("more-information" -> "a" * maxLength)
-          val result = form.bind(data)
+            result.errors must contain only FormError("more-information", s"$page.error.length", Seq(maxLength))
+          }
 
-          result.errors mustBe Seq()
-          result.value.flatten mustBe Some("a" * maxLength)
-        }
+          "invalid characters are used" in {
+            val data = Map("more-information" -> "<>")
+            val result = form.bind(data)
 
-        "more information form accepts a value that begins with a valid special character" in {
-          val data = Map("more-information" -> ".A")
-          val result = form.bind(data)
-
-          result.errors mustBe Seq()
-          result.value.flatten mustBe Some(".A")
-        }
-
-        "more information form accepts just numbers" in {
-          val data = Map("more-information" -> "123")
-          val result = form.bind(data)
-
-          result.errors mustBe Seq()
-          result.value.flatten mustBe Some("123")
-        }
-
-        "return an error if alpha numeric data isn't used" in {
-          val data = Map("more-information" -> "..")
-          val result = form.bind(data)
-
-          result.errors must contain only FormError("more-information", s"$page.error.character", Seq(ALPHANUMERIC_REGEX))
-        }
-
-        "return an error if more than 350 characters are used" in {
-          val data = Map("more-information" -> "a" * aboveMaxLength)
-          val result = form.bind(data)
-
-          result.errors must contain only FormError("more-information", s"$page.error.length", Seq(maxLength))
-        }
-
-        "return errors if invalid characters are used" in {
-          val data = Map("more-information" -> "<>")
-          val result = form.bind(data)
-
-          result.errors mustBe Seq(
-            FormError("more-information", s"$page.error.character", Seq(ALPHANUMERIC_REGEX)),
-            FormError("more-information", s"$page.error.invalidCharacter", Seq(XSS_REGEX))
-          )
+            result.errors mustBe Seq(
+              FormError("more-information", s"$page.error.character", Seq(ALPHANUMERIC_REGEX)),
+              FormError("more-information", s"$page.error.invalidCharacter", Seq(XSS_REGEX))
+            )
+          }
         }
       }
     }

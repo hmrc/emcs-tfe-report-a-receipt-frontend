@@ -31,7 +31,7 @@ import services.UserAnswersService
 import utils.TimeMachine
 import views.html.DateOfArrivalView
 
-import java.time.{Instant, LocalDateTime}
+import java.time.LocalDateTime
 import scala.concurrent.Future
 
 class DateOfArrivalControllerSpec extends SpecBase with MockUserAnswersService {
@@ -41,7 +41,6 @@ class DateOfArrivalControllerSpec extends SpecBase with MockUserAnswersService {
 
   val timeMachine = new TimeMachine {
     override def now(): LocalDateTime = fixedNow
-    override def instant(): Instant = Instant.now()
   }
 
   val formProvider = new DateOfArrivalFormProvider(timeMachine)

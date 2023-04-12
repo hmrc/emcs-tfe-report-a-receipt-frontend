@@ -78,6 +78,16 @@ trait Constraints {
         Invalid(errorKey, regex)
     }
 
+  protected def regexpUnlessEmpty(regex: String, errorKey: String): Constraint[String] =
+    Constraint {
+      case str if str.isEmpty =>
+        Valid
+      case str if str.matches(regex) =>
+        Valid
+      case _ =>
+        Invalid(errorKey, regex)
+    }
+
   protected def maxLength(maximum: Int, errorKey: String): Constraint[String] =
     Constraint {
       case str if str.length <= maximum =>

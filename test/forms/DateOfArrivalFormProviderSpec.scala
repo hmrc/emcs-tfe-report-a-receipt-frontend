@@ -23,7 +23,7 @@ import play.api.data.FormError
 import play.api.i18n.{Lang, Messages, MessagesApi}
 import utils.{DateUtils, TimeMachine}
 
-import java.time.{Instant, LocalDate, LocalDateTime}
+import java.time.{LocalDate, LocalDateTime}
 
 class DateOfArrivalFormProviderSpec extends DateBehaviours with DateUtils with GuiceOneAppPerSuite {
 
@@ -34,7 +34,6 @@ class DateOfArrivalFormProviderSpec extends DateBehaviours with DateUtils with G
 
   val timeMachine = new TimeMachine {
     override def now(): LocalDateTime = fixedNow.atStartOfDay()
-    override def instant(): Instant = Instant.now()
   }
 
   val form = new DateOfArrivalFormProvider(timeMachine)(dateOfDispatch)

@@ -19,6 +19,8 @@ package fixtures.messages
 object OtherInformationMessages {
 
   sealed trait ViewMessages { _: i18n =>
+    val refusedTitle: String
+    val refusedHeading: String
     val title: String
     val heading: String
     val hint: String
@@ -32,6 +34,8 @@ object OtherInformationMessages {
   }
 
   object English extends ViewMessages with BaseEnglish {
+    override val refusedHeading = "Give more information about other reason(s) you are refusing this movement"
+    override val refusedTitle: String = title(refusedHeading)
     override val heading = "Give more information about other reason(s) you are unsatisfied with this movement"
     override val title: String = title(heading)
     override val hint = "Give more information"
@@ -45,6 +49,8 @@ object OtherInformationMessages {
   }
 
   object Welsh extends ViewMessages with BaseWelsh {
+    override val refusedHeading = "Give more information about other reason(s) you are refusing this movement"
+    override val refusedTitle: String = title(refusedHeading)
     override val heading = "Give more information about other reason(s) you are unsatisfied with this movement"
     override val title: String = title(heading)
     override val hint = "Give more information"

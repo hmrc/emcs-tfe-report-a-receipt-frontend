@@ -19,9 +19,11 @@ package views
 import base.ViewSpecBase
 import fixtures.messages.{ItemOtherInformationMessages, OtherInformationMessages}
 import forms.OtherInformationFormProvider
+import models.AcceptMovement.Refused
 import models.requests.DataRequest
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import pages.AcceptMovementPage
 import pages.unsatisfactory.OtherInformationPage
 import pages.unsatisfactory.individualItems.ItemOtherInformationPage
 import play.api.i18n.Messages
@@ -51,6 +53,32 @@ class OtherInformationViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.title -> messagesForLanguage.title,
           Selectors.h2(1) -> messagesForLanguage.arcSubheading(testArc),
           Selectors.h1 -> messagesForLanguage.heading,
+          Selectors.hint -> messagesForLanguage.hint,
+          Selectors.button -> messagesForLanguage.saveAndContinue,
+          Selectors.secondaryButton -> messagesForLanguage.saveAndReturnToMovement
+        ))
+      }
+    }
+  }
+
+  "Rendering for the OtherInformationPage - refused movement" - {
+
+    Seq(OtherInformationMessages.English, OtherInformationMessages.Welsh).foreach { messagesForLanguage =>
+
+      s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
+
+        implicit val msgs: Messages = messages(app, messagesForLanguage.lang)
+        implicit val request: DataRequest[AnyContentAsEmpty.type] = dataRequest(FakeRequest(), emptyUserAnswers.set(AcceptMovementPage, Refused))
+
+        val form = app.injector.instanceOf[OtherInformationFormProvider].apply(OtherInformationPage)
+        val view = app.injector.instanceOf[OtherInformationView]
+
+        implicit val doc: Document = Jsoup.parse(view(OtherInformationPage, form, testOnwardRoute).toString())
+
+        behave like pageWithExpectedElementsAndMessages(Seq(
+          Selectors.title -> messagesForLanguage.refusedTitle,
+          Selectors.h2(1) -> messagesForLanguage.arcSubheading(testArc),
+          Selectors.h1 -> messagesForLanguage.refusedHeading,
           Selectors.hint -> messagesForLanguage.hint,
           Selectors.button -> messagesForLanguage.saveAndContinue,
           Selectors.secondaryButton -> messagesForLanguage.saveAndReturnToMovement

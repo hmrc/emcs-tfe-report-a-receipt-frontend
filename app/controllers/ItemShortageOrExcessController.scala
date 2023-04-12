@@ -18,12 +18,15 @@ package controllers
 
 import controllers.actions._
 import forms.ItemShortageOrExcessFormProvider
+import models.AcceptMovement.PartiallyRefused
 import models.UnitOfMeasure.Kilograms
 import models.WrongWithMovement.Shortage
 import models.requests.DataRequest
+import models.response.emcsTfe.MovementItem
 import models.{ItemShortageOrExcessModel, Mode}
 import navigation.Navigator
-import pages.unsatisfactory.individualItems.ItemShortageOrExcessPage
+import pages.AcceptMovementPage
+import pages.unsatisfactory.individualItems.{ItemShortageOrExcessPage, RefusedAmountPage, RefusingAnyAmountOfItemPage}
 import play.api.data.{Form, FormError}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -54,27 +57,35 @@ class ItemShortageOrExcessController @Inject()(
 
   def onSubmit(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
     authorisedDataRequestAsync(ern, arc) { implicit request =>
-      request.getItemDetails(idx) match {
-        case Some(item) =>
-          formProvider().bindFromRequest().fold(
-            formWithErrors =>
-              Future.successful(BadRequest(renderView(formWithErrors, ern, arc, idx, mode)))
-            , {
-              case value if value.wrongWithItem == Shortage && value.amount > item.quantity =>
-                val formWithError =
-                  formProvider()
-                    .fill(value)
-                    .withError(FormError("amount", "itemShortageOrExcess.amount.error.tooLarge", Seq(item.quantity)))
-                Future.successful(BadRequest(renderView(formWithError, ern, arc, idx, mode)))
-              case value =>
-                saveAndRedirect(ItemShortageOrExcessPage(idx), value, mode)
-            }
-          )
-        case None =>
-          //Shouldn't be possible, but if this happens, redirect to the list view to recover journey
-          Future.successful(Redirect(routes.SelectItemsController.onPageLoad(ern, arc)))
+      withItemAsync(idx) { item =>
+        formProvider().bindFromRequest().fold(
+          formWithErrors =>
+            Future.successful(BadRequest(renderView(formWithErrors, ern, arc, idx, mode)))
+          , {
+            case value if value.wrongWithItem == Shortage && value.amount > maxAmount(idx, item) =>
+              val formWithError =
+                formProvider()
+                  .fill(value)
+                  .withError(FormError("amount", "itemShortageOrExcess.amount.error.tooLarge", Seq(maxAmount(idx, item))))
+              Future.successful(BadRequest(renderView(formWithError, ern, arc, idx, mode)))
+            case value =>
+              saveAndRedirect(ItemShortageOrExcessPage(idx), value, mode)
+          }
+        )
       }
     }
+
+  private def maxAmount(idx: Int, item: MovementItem)(implicit request: DataRequest[_]) = {
+
+    val isPartiallyRefusingAnAmountOfItem =
+      request.userAnswers.get(RefusingAnyAmountOfItemPage(idx)).contains(true) && request.userAnswers.get(AcceptMovementPage).contains(PartiallyRefused)
+
+    if(isPartiallyRefusingAnAmountOfItem) {
+      item.quantity - request.userAnswers.get(RefusedAmountPage(idx)).getOrElse[BigDecimal](0)
+    } else {
+      item.quantity
+    }
+  }
 
   private def renderView(form: Form[ItemShortageOrExcessModel], ern: String, arc: String, idx: Int, mode: Mode)
                         (implicit request: DataRequest[_]): HtmlFormat.Appendable =

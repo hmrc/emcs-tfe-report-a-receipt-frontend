@@ -141,6 +141,11 @@ POST        /:ern/:arc/item/:idx/choose-refuse-item                             
 GET         /:ern/:arc/item/:idx/choose-refuse-item/change                       controllers.RefusingAnyAmountOfItemController.onPageLoad(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)
 POST        /:ern/:arc/item/:idx/choose-refuse-item/change                       controllers.RefusingAnyAmountOfItemController.onSubmit(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)
 
+GET         /:ern/:arc/item/:idx/how-much-refuse-item                            controllers.RefusedAmountController.onPageLoad(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
+POST        /:ern/:arc/item/:idx/how-much-refuse-item                            controllers.RefusedAmountController.onSubmit(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
+GET         /:ern/:arc/item/:idx/how-much-refuse-item/change                     controllers.RefusedAmountController.onPageLoad(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)
+POST        /:ern/:arc/item/:idx/how-much-refuse-item/change                     controllers.RefusedAmountController.onSubmit(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)
+
 GET         /:ern/:arc/item/:idx/check-answers-item                              controllers.CheckYourAnswersItemController.onPageLoad(ern: String, arc: String, idx: Int)
 POST        /:ern/:arc/item/:idx/check-answers-item                              controllers.CheckYourAnswersItemController.onSubmit(ern: String, arc: String, idx: Int)
 

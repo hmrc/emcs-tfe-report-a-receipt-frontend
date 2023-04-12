@@ -19,11 +19,13 @@ package controllers
 import base.SpecBase
 import forms.ItemShortageOrExcessFormProvider
 import mocks.services.MockUserAnswersService
+import models.AcceptMovement.PartiallyRefused
 import models.UnitOfMeasure.Kilograms
 import models.WrongWithMovement.{Excess, Shortage}
 import models.{ItemShortageOrExcessModel, NormalMode}
 import navigation.{FakeNavigator, Navigator}
-import pages.unsatisfactory.individualItems.{ItemShortageOrExcessPage, SelectItemsPage}
+import pages.AcceptMovementPage
+import pages.unsatisfactory.individualItems.{ItemShortageOrExcessPage, RefusedAmountPage, RefusingAnyAmountOfItemPage, SelectItemsPage}
 import play.api.data.FormError
 import play.api.inject.bind
 import play.api.mvc.Call
@@ -170,6 +172,46 @@ class ItemShortageOrExcessControllerSpec extends SpecBase with MockUserAnswersSe
           ("additionalInformation", "info")
         ))
           .withError(FormError("amount", "itemShortageOrExcess.amount.error.tooLarge", Seq(item1.quantity)))
+
+        val view = application.injector.instanceOf[ItemShortageOrExcessView]
+
+        val result = route(application, request).value
+
+        status(result) mustEqual BAD_REQUEST
+        contentAsString(result) mustEqual view(
+          form = boundForm,
+          action = routes.ItemShortageOrExcessController.onSubmit(testErn, testArc, 1, NormalMode),
+          unitOfMeasure = Kilograms
+        )(dataRequest(request), messages(application)).toString
+      }
+    }
+
+    "must return a Bad Request and errors when valid data is submitted but shortage amount exceeds the quantity minus the amount already refused" in {
+
+      val refusedAmount: BigDecimal = 10.125
+
+      val userAnswers = defaultUserAnswers
+        .set(AcceptMovementPage, PartiallyRefused)
+        .set(RefusingAnyAmountOfItemPage(1), true)
+        .set(RefusedAmountPage(1), refusedAmount)
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, itemShortageOrExcessRoute)
+            .withFormUrlEncodedBody(
+              ("shortageOrExcess", Shortage.toString),
+              ("amount", ((item1.quantity - refusedAmount) + 0.001).toString()),
+              ("additionalInformation", "info")
+            )
+
+        val boundForm = form.bind(Map(
+          ("shortageOrExcess", Shortage.toString),
+          ("amount", ((item1.quantity - refusedAmount) + 0.001).toString()),
+          ("additionalInformation", "info")
+        ))
+          .withError(FormError("amount", "itemShortageOrExcess.amount.error.tooLarge", Seq(item1.quantity - refusedAmount)))
 
         val view = application.injector.instanceOf[ItemShortageOrExcessView]
 

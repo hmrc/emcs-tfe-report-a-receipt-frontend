@@ -24,7 +24,7 @@ import navigation.Navigator
 import pages.QuestionPage
 import pages.unsatisfactory._
 import pages.unsatisfactory.individualItems.ItemOtherInformationPage
-import play.api.data.FormError
+import play.api.data.{Form, FormError}
 import play.api.i18n.MessagesApi
 import play.api.mvc._
 import services.UserAnswersService
@@ -68,22 +68,10 @@ class OtherInformationController @Inject()(
 
   private def onSubmit(page: QuestionPage[String], ern: String, arc: String, action: Call, mode: Mode): Action[AnyContent] =
     authorisedDataRequestAsync(ern, arc) { implicit request: DataRequest[_] =>
-      Try {
-        val trimmedFormValues: Map[String, Seq[String]] = request.body.asInstanceOf[AnyContentAsFormUrlEncoded].data.map {
-          case (k, v) => (k, v.map(_.trim))
-        }
-
-        formProvider(page).bindFromRequest(trimmedFormValues).fold(
-          formWithErrors =>
-            Future.successful(BadRequest(view(page, formWithErrors, action))),
-          value =>
-            saveAndRedirect(page, value, mode)
-        )
-      } match {
-        case Failure(exception) =>
-          logger.warn(exception.getMessage)
-          Future.successful(BadRequest(view(page, formProvider(page).withError(FormError("more-information", s"$page.error.required")), action)))
-        case Success(value) => value
-      }
+      submitAndTrimWhitespaceFromTextarea[String](page, formProvider)(
+        formWithErrors => Future.successful(BadRequest(view(page, formWithErrors, action)))
+      )(
+        value => saveAndRedirect(page, value, mode)
+      )
     }
 }

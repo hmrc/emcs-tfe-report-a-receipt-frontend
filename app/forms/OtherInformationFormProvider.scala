@@ -22,7 +22,7 @@ import play.api.data.Form
 
 import javax.inject.Inject
 
-class OtherInformationFormProvider @Inject() extends Mappings {
+class OtherInformationFormProvider @Inject() extends BaseFormProvider[String] with Mappings {
   def apply(page: QuestionPage[String]): Form[String] =
     Form(
       "more-information" -> text(errorKey = s"$page.error.required")

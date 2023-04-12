@@ -58,20 +58,19 @@ class ItemShortageOrExcessController @Inject()(
   def onSubmit(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
     authorisedDataRequestAsync(ern, arc) { implicit request =>
       withItemAsync(idx) { item =>
-        formProvider().bindFromRequest().fold(
+        submitAndTrimWhitespaceFromTextarea(Some(ItemShortageOrExcessPage(idx)), formProvider)(
           formWithErrors =>
             Future.successful(BadRequest(renderView(formWithErrors, ern, arc, idx, mode)))
-          , {
-            case value if value.wrongWithItem == Shortage && value.amount > maxAmount(idx, item) =>
-              val formWithError =
-                formProvider()
-                  .fill(value)
-                  .withError(FormError("amount", "itemShortageOrExcess.amount.error.tooLarge", Seq(maxAmount(idx, item))))
-              Future.successful(BadRequest(renderView(formWithError, ern, arc, idx, mode)))
-            case value =>
-              saveAndRedirect(ItemShortageOrExcessPage(idx), value, mode)
-          }
-        )
+        ) {
+          case value if (value.wrongWithItem == Shortage) && (value.amount > maxAmount(idx, item)) =>
+            val formWithError =
+              formProvider()
+                .fill(value)
+                .withError(FormError("amount", "itemShortageOrExcess.amount.error.tooLarge", Seq(maxAmount(idx, item))))
+            Future.successful(BadRequest(renderView(formWithError, ern, arc, idx, mode)))
+          case value =>
+            saveAndRedirect(ItemShortageOrExcessPage(idx), value, mode)
+        }
       }
     }
 

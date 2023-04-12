@@ -33,7 +33,7 @@ class OtherInformationFormProviderSpec extends StringFieldBehaviours {
 
     s"loading the form for the '$page' page" - {
 
-      val form = new OtherInformationFormProvider()(page)
+      val form = new OtherInformationFormProvider()(Some(page))
 
       ".value" - {
 

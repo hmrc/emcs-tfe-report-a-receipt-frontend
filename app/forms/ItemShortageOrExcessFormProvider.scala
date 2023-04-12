@@ -17,17 +17,18 @@
 package forms
 
 import forms.mappings.Mappings
-import models.WrongWithMovement.{Shortage, Excess}
+import models.WrongWithMovement.{Excess, Shortage}
 import models.{ItemShortageOrExcessModel, WrongWithMovement}
+import pages.QuestionPage
 import play.api.data.Form
 import play.api.data.Forms.{mapping, optional, text => playText}
 import play.api.data.validation.{Constraint, Invalid, Valid}
 
 import javax.inject.Inject
 
-class ItemShortageOrExcessFormProvider @Inject() extends Mappings {
+class ItemShortageOrExcessFormProvider @Inject() extends BaseFormProvider[ItemShortageOrExcessModel] with Mappings {
 
-  def apply(): Form[ItemShortageOrExcessModel] =
+  def apply(page: Option[QuestionPage[ItemShortageOrExcessModel]] = None): Form[ItemShortageOrExcessModel] =
     Form(mapping(
       "shortageOrExcess" ->
         enumerable[WrongWithMovement]("itemShortageOrExcess.shortageOrExcess.error.required")

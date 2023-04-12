@@ -23,7 +23,7 @@ import play.api.data.FormError
 import play.api.i18n.{Lang, Messages, MessagesApi}
 import utils.{DateUtils, TimeMachine}
 
-import java.time.{Instant, LocalDate, LocalDateTime}
+import java.time.{LocalDate, LocalDateTime}
 
 class DateOfArrivalFormProviderSpec extends DateBehaviours with DateUtils with GuiceOneAppPerSuite {
 

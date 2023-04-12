@@ -20,5 +20,5 @@ import pages.QuestionPage
 import play.api.data.Form
 
 trait BaseFormProvider[PageType] {
-  def apply(page: QuestionPage[PageType]): Form[PageType]
+  def apply(page: Option[QuestionPage[PageType]]): Form[PageType]
 }

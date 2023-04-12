@@ -31,7 +31,7 @@ import services.UserAnswersService
 import utils.TimeMachine
 import views.html.DateOfArrivalView
 
-import java.time.{Instant, LocalDateTime}
+import java.time.LocalDateTime
 import scala.concurrent.Future
 
 class DateOfArrivalControllerSpec extends SpecBase with MockUserAnswersService {

@@ -24,7 +24,6 @@ import navigation.Navigator
 import pages.QuestionPage
 import pages.unsatisfactory._
 import pages.unsatisfactory.individualItems.ItemOtherInformationPage
-import play.api.data.{Form, FormError}
 import play.api.i18n.MessagesApi
 import play.api.mvc._
 import services.UserAnswersService
@@ -33,7 +32,6 @@ import views.html.OtherInformationView
 
 import javax.inject.Inject
 import scala.concurrent.Future
-import scala.util.{Failure, Success, Try}
 
 class OtherInformationController @Inject()(
                                             override val messagesApi: MessagesApi,
@@ -63,12 +61,12 @@ class OtherInformationController @Inject()(
 
   private def onPageLoad(page: QuestionPage[String], ern: String, arc: String, action: Call): Action[AnyContent] =
     authorisedDataRequest(ern, arc) { implicit request =>
-      Ok(view(page, fillForm(page, formProvider(page)), action))
+      Ok(view(page, fillForm(page, formProvider(Some(page))), action))
     }
 
   private def onSubmit(page: QuestionPage[String], ern: String, arc: String, action: Call, mode: Mode): Action[AnyContent] =
     authorisedDataRequestAsync(ern, arc) { implicit request: DataRequest[_] =>
-      submitAndTrimWhitespaceFromTextarea[String](page, formProvider)(
+      submitAndTrimWhitespaceFromTextarea[String](Some(page), formProvider)(
         formWithErrors => Future.successful(BadRequest(view(page, formWithErrors, action)))
       )(
         value => saveAndRedirect(page, value, mode)

@@ -125,31 +125,96 @@ class ItemShortageOrExcessControllerSpec extends SpecBase with MockUserAnswersSe
       }
     }
 
-    "must redirect to the next page when valid data is submitted (shortage less than Quantity)" in {
+    "must redirect to the next page when valid data is submitted (shortage less than Quantity)" - {
+      "default" in {
 
-      MockUserAnswersService.set().returns(Future.successful(defaultUserAnswers))
+        MockUserAnswersService.set().returns(Future.successful(defaultUserAnswers))
 
-      val application =
-        applicationBuilder(userAnswers = Some(defaultUserAnswers))
-          .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[UserAnswersService].toInstance(mockUserAnswersService)
-          )
-          .build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, itemShortageOrExcessRoute)
-            .withFormUrlEncodedBody(
-              ("shortageOrExcess", Shortage.toString),
-              ("amount", (item1.quantity - 0.001).toString()),
-              ("additionalInformation", "info")
+        val application =
+          applicationBuilder(userAnswers = Some(defaultUserAnswers))
+            .overrides(
+              bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+              bind[UserAnswersService].toInstance(mockUserAnswersService)
             )
+            .build()
 
-        val result = route(application, request).value
+        running(application) {
+          val request =
+            FakeRequest(POST, itemShortageOrExcessRoute)
+              .withFormUrlEncodedBody(
+                ("shortageOrExcess", Shortage.toString),
+                ("amount", (item1.quantity - 0.001).toString()),
+                ("additionalInformation", "info")
+              )
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual onwardRoute.url
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual onwardRoute.url
+        }
+      }
+
+      "when Partially refused - no RefusedAmountPage value" in {
+
+        MockUserAnswersService.set().returns(Future.successful(defaultUserAnswers))
+
+        val application =
+          applicationBuilder(userAnswers = Some(defaultUserAnswers
+            .set(RefusingAnyAmountOfItemPage(1), true)
+            .set(AcceptMovementPage, PartiallyRefused)
+          ))
+            .overrides(
+              bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+              bind[UserAnswersService].toInstance(mockUserAnswersService)
+            )
+            .build()
+
+        running(application) {
+          val request =
+            FakeRequest(POST, itemShortageOrExcessRoute)
+              .withFormUrlEncodedBody(
+                ("shortageOrExcess", Shortage.toString),
+                ("amount", (item1.quantity - 0.001).toString()),
+                ("additionalInformation", "info")
+              )
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual onwardRoute.url
+        }
+      }
+
+      "when Partially refused - with a RefusedAmountPage value" in {
+
+        MockUserAnswersService.set().returns(Future.successful(defaultUserAnswers))
+
+        val application =
+          applicationBuilder(userAnswers = Some(defaultUserAnswers
+            .set(RefusingAnyAmountOfItemPage(1), true)
+            .set(AcceptMovementPage, PartiallyRefused)
+            .set(RefusedAmountPage(1), BigDecimal(1))
+          ))
+            .overrides(
+              bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+              bind[UserAnswersService].toInstance(mockUserAnswersService)
+            )
+            .build()
+
+        running(application) {
+          val request =
+            FakeRequest(POST, itemShortageOrExcessRoute)
+              .withFormUrlEncodedBody(
+                ("shortageOrExcess", Shortage.toString),
+                ("amount", (item1.quantity - 1.001).toString()),
+                ("additionalInformation", "info")
+              )
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual onwardRoute.url
+        }
       }
     }
 

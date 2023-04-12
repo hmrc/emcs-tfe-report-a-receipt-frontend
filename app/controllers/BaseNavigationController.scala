@@ -17,15 +17,13 @@
 package controllers
 
 import forms.BaseFormProvider
-import forms.mappings.Mappings
 import models._
 import models.requests.DataRequest
 import navigation.BaseNavigator
 import pages.QuestionPage
 import play.api.data.{Form, FormError}
 import play.api.libs.json.Format
-import play.api.mvc.{AnyContentAsFormUrlEncoded, Call, Result}
-import play.twirl.api.Html
+import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import services.UserAnswersService
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
@@ -66,7 +64,7 @@ trait BaseNavigationController extends BaseController with Logging {
 
 
   def submitAndTrimWhitespaceFromTextarea[PageType](
-                                                     page: QuestionPage[PageType],
+                                                     page: Option[QuestionPage[PageType]],
                                                      formProvider: BaseFormProvider[PageType]
                                                    )(
                                                      formWithErrorsView: Form[PageType] => Future[Result]
@@ -89,7 +87,8 @@ trait BaseNavigationController extends BaseController with Logging {
     } match {
       case Failure(exception) =>
         logger.warn(exception.getMessage)
-        formWithErrorsView(formProvider(page).withError(FormError("more-information", s"$page.error.required")))
+        val requiredText = page.map(value => s"$value.error.required").getOrElse("error.required")
+        formWithErrorsView(formProvider(page).withError(FormError("more-information", requiredText)))
       case Success(value) => value
     }
   }

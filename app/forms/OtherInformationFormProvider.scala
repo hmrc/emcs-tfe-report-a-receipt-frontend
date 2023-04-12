@@ -23,9 +23,11 @@ import play.api.data.Form
 import javax.inject.Inject
 
 class OtherInformationFormProvider @Inject() extends BaseFormProvider[String] with Mappings {
-  def apply(page: QuestionPage[String]): Form[String] =
+  def apply(page: Option[QuestionPage[String]]): Form[String] = {
+    assert(page.isDefined) // only use Some(_) with this FormProvider
+    val p = page.get
     Form(
-      "more-information" -> text(errorKey = s"$page.error.required")
+      "more-information" -> text(errorKey = s"$p.error.required")
         .transform[String](
           _.replace("\n", " ")
             .replace("\r", " ")
@@ -33,8 +35,9 @@ class OtherInformationFormProvider @Inject() extends BaseFormProvider[String] wi
             .trim,
           identity
         )
-        .verifying(maxLength(TEXTAREA_MAX_LENGTH, s"$page.error.length"))
-        .verifying(regexp(ALPHANUMERIC_REGEX, s"$page.error.character"))
-        .verifying(regexpUnlessEmpty(XSS_REGEX, s"$page.error.invalidCharacter"))
+        .verifying(maxLength(TEXTAREA_MAX_LENGTH, s"$p.error.length"))
+        .verifying(regexp(ALPHANUMERIC_REGEX, s"$p.error.character"))
+        .verifying(regexpUnlessEmpty(XSS_REGEX, s"$p.error.invalidCharacter"))
     )
+  }
 }

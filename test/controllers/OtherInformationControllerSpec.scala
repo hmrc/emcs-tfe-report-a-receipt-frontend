@@ -53,7 +53,7 @@ class OtherInformationControllerSpec extends SpecBase with JsonOptionFormatter w
 
     s"for the '$page' page" - {
 
-      val form = formProvider(page)
+      val form = formProvider(Some(page))
 
       "must return OK and the correct view for a GET" in {
 

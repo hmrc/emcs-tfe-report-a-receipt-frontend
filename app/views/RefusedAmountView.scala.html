@@ -37,10 +37,12 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
+        @h1(messages("refusedAmount.heading", messages(s"unitOfMeasure.$unitOfMeasure.long")), Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
+
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(HtmlContent(heading))
+                label = LabelViewModel(Text(messages("refusedAmount.heading", messages(s"unitOfMeasure.$unitOfMeasure.long")))).hidden
             )
             .withWidth(Fixed10)
             .withSuffix(PrefixOrSuffix(
@@ -51,8 +53,4 @@
 
         @saveAndContinue()
     }
-}
-
-@heading = {
-    @h1(messages("refusedAmount.heading", messages(s"unitOfMeasure.$unitOfMeasure.long")), Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
 }

@@ -53,10 +53,15 @@ class RefusedAmountViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.title -> viewMessagesForLanguage.title(unitOfMeasureMessagesForLanguage.kilogramsLong),
           Selectors.h2(1) -> viewMessagesForLanguage.arcSubheading(testArc),
           Selectors.h1 -> viewMessagesForLanguage.heading(unitOfMeasureMessagesForLanguage.kilogramsLong),
+          Selectors.label("value") -> viewMessagesForLanguage.heading(unitOfMeasureMessagesForLanguage.kilogramsLong),
           Selectors.inputSuffix -> unitOfMeasureMessagesForLanguage.kilogramsShort,
           Selectors.button -> viewMessagesForLanguage.saveAndContinue,
           Selectors.secondaryButton -> viewMessagesForLanguage.saveAndReturnToMovement
         ))
+
+        "input label should be visually hidden as same as heading" in {
+          doc.select(Selectors.label("value")).hasClass("govuk-visually-hidden") mustBe true
+        }
       }
     }
   }
@@ -82,6 +87,7 @@ class RefusedAmountViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.title -> viewMessagesForLanguage.title(unitOfMeasureMessagesForLanguage.litres15Long),
           Selectors.h2(1) -> viewMessagesForLanguage.arcSubheading(testArc),
           Selectors.h1 -> viewMessagesForLanguage.heading(unitOfMeasureMessagesForLanguage.litres15Long),
+          Selectors.label("value") -> viewMessagesForLanguage.heading(unitOfMeasureMessagesForLanguage.litres15Long),
           Selectors.inputSuffix -> unitOfMeasureMessagesForLanguage.litres15Short,
           Selectors.button -> viewMessagesForLanguage.saveAndContinue,
           Selectors.secondaryButton -> viewMessagesForLanguage.saveAndReturnToMovement
@@ -111,6 +117,7 @@ class RefusedAmountViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.title -> viewMessagesForLanguage.title(unitOfMeasureMessagesForLanguage.litres20Long),
           Selectors.h2(1) -> viewMessagesForLanguage.arcSubheading(testArc),
           Selectors.h1 -> viewMessagesForLanguage.heading(unitOfMeasureMessagesForLanguage.litres20Long),
+          Selectors.label("value") -> viewMessagesForLanguage.heading(unitOfMeasureMessagesForLanguage.litres20Long),
           Selectors.inputSuffix -> unitOfMeasureMessagesForLanguage.litres20Short,
           Selectors.button -> viewMessagesForLanguage.saveAndContinue,
           Selectors.secondaryButton -> viewMessagesForLanguage.saveAndReturnToMovement
@@ -140,6 +147,7 @@ class RefusedAmountViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.title -> viewMessagesForLanguage.title(unitOfMeasureMessagesForLanguage.thousandsLong),
           Selectors.h2(1) -> viewMessagesForLanguage.arcSubheading(testArc),
           Selectors.h1 -> viewMessagesForLanguage.heading(unitOfMeasureMessagesForLanguage.thousandsLong),
+          Selectors.label("value") -> viewMessagesForLanguage.heading(unitOfMeasureMessagesForLanguage.thousandsLong),
           Selectors.inputSuffix -> unitOfMeasureMessagesForLanguage.thousandsShort,
           Selectors.button -> viewMessagesForLanguage.saveAndContinue,
           Selectors.secondaryButton -> viewMessagesForLanguage.saveAndReturnToMovement

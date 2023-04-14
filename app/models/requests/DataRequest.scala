@@ -16,9 +16,10 @@
 
 package models.requests
 
-import models.UserAnswers
+import models.{ItemModel, UserAnswers}
 import models.response.emcsTfe.MovementItem
 import pages.unsatisfactory.individualItems.SelectItemsPage
+import play.api.libs.json.__
 import play.api.mvc.WrappedRequest
 
 case class DataRequest[A](request: MovementRequest[A], userAnswers: UserAnswers) extends WrappedRequest[A](request) {
@@ -31,4 +32,6 @@ case class DataRequest[A](request: MovementRequest[A], userAnswers: UserAnswers)
     userAnswers.get(SelectItemsPage(idx)).flatMap(reference =>
       request.movementDetails.item(reference)
     )
+
+  def getItemsAdded: Seq[ItemModel] = userAnswers.getList(__ \ "items")(ItemModel.reads)
 }

@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,16 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package models
+@this()
 
-import play.api.libs.json.{Json, Reads}
+@(content: Seq[Html])
 
-case class ItemModel(itemUniqueReference: Int,
-                     checkAnswersItem: Option[Boolean],
-                     itemShortageOrExcess: Option[ItemShortageOrExcessModel])
+<ul class="govuk-list govuk-list--bullet">
+    @content.map { bullet =>
+        <li>@bullet</li>
+    }
+</ul>
 
-object ItemModel {
-  implicit def reads: Reads[ItemModel] = Json.reads
+@{
+ //$COVERAGE-OFF$
 }

@@ -16,6 +16,7 @@
 
 @import models.requests.DataRequest
 @import config.AppConfig
+@import viewmodels.ConfirmationContentHelper
 
 @this(
         layout: templates.Layout,
@@ -25,7 +26,9 @@
         p: components.p,
         strong: components.strong,
         link: components.link,
-        appConfig: AppConfig
+        appConfig: AppConfig,
+        confirmationContentHelper: ConfirmationContentHelper,
+        whatHappensNext: partials.confirmation.WhatHappensNextContent
 )
 
 @(reference: String)(implicit request: DataRequest[_], messages: Messages)
@@ -41,23 +44,21 @@
         }
     }
 
-    @h2(messages("confirmation.next.h2"))
+    @whatHappensNext()
 
-    @p() {
-        @messages("confirmation.next.p1")
-    }
+    @confirmationContentHelper.renderRefusedContent()
 
-    @p() {
-        @messages("confirmation.next.p2")
-    }
+    @confirmationContentHelper.renderShortageContent()
 
-    @p() {
+    @confirmationContentHelper.renderExcessContent()
+
+    @p(classes = "govuk-body govuk-!-margin-top-8") {
         @link(
-            "#",
-            "confirmation.next.p3.link",
-            id = Some("print-page")
+            appConfig.contactHmrcUrl,
+            "confirmation.contactHmrc.link",
+            opensInNewTab = true
         )
-        @messages("confirmation.next.p3.afterLink")
+        @messages("confirmation.contactHmrc.afterLink")
     }
 
     @p(classes = "govuk-body govuk-!-margin-top-8") {

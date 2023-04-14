@@ -38,6 +38,8 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig, configuration: Configu
   val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
   val signOutUrl: String       = configuration.get[String]("urls.signOut")
 
+  val contactHmrcUrl: String   = configuration.get[String]("urls.contactHmrc")
+
   private val feedbackFrontendHost: String = configuration.get[String]("feedback-frontend.host")
   val feedbackFrontendSurveyUrl: String    = s"$feedbackFrontendHost/feedback/$appName"
 

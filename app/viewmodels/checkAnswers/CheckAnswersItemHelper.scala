@@ -21,7 +21,7 @@ import models.UnitOfMeasure.reads
 import models.WrongWithMovement.{BrokenSeals, Damaged, Other}
 import models.requests.DataRequest
 import models.response.emcsTfe.MovementItem
-import models.{CheckMode, NormalMode, WrongWithMovement}
+import models.{CheckMode, NormalMode, ReviewMode, WrongWithMovement}
 import pages.unsatisfactory.individualItems.{ItemDamageInformationPage, ItemOtherInformationPage, ItemSealsInformationPage, WrongWithItemPage}
 import play.api.i18n.Messages
 import play.api.libs.json.Format.GenericFormat
@@ -46,24 +46,26 @@ class CheckAnswersItemHelper @Inject()(
     item.cnCode
   }
 
-  def summaryList(idx: Int, item: MovementItem)(implicit request: DataRequest[_], messages: Messages): SummaryList = {
+  def summaryList(idx: Int, item: MovementItem, onFinalCheckAnswers: Boolean = false)(implicit request: DataRequest[_], messages: Messages): SummaryList = {
+    val additionalLinkIdSignifier = if (onFinalCheckAnswers) s"-item-$idx" else ""
 
     val rows: Seq[SummaryListRow] =
       request.userAnswers.get(WrongWithItemPage(idx)).map {
         answers =>
           Seq(
-            whatWasWrongRow(answers, idx),
-            shortageOrExcessItemSummary.rows(idx, item),
-            damagedItemsInformationRow(idx),
-            brokenSealsInformationRow(idx),
-            otherInformationRow(idx)
+            whatWasWrongRow(answers, idx, additionalLinkIdSignifier),
+            shortageOrExcessItemSummary.rows(idx, item, additionalLinkIdSignifier),
+            damagedItemsInformationRow(idx, additionalLinkIdSignifier),
+            brokenSealsInformationRow(idx, additionalLinkIdSignifier),
+            otherInformationRow(idx, additionalLinkIdSignifier)
           ).flatten
       }.getOrElse(Seq.empty)
 
     SummaryListViewModel(rows = rows)
   }
 
-  private def whatWasWrongRow(answers: Set[WrongWithMovement], idx: Int)(implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] =
+  private def whatWasWrongRow(answers: Set[WrongWithMovement], idx: Int, additionalLinkIdSignifier: String)
+                             (implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] =
     Some(SummaryListRowViewModel(
       key = s"${WrongWithItemPage(idx)}.checkYourAnswers.label",
       value = ValueViewModel(HtmlContent(
@@ -75,13 +77,15 @@ class CheckAnswersItemHelper @Inject()(
         ActionItemViewModel(
           "site.change",
           routes.WrongWithMovementController.loadwrongWithItem(request.userAnswers.ern, request.userAnswers.arc, idx, NormalMode).url,
-          id = WrongWithItemPage(idx)
+          id = WrongWithItemPage(idx) + additionalLinkIdSignifier
         ).withVisuallyHiddenText(messages(s"${WrongWithItemPage(idx)}.checkYourAnswers.change.hidden"))
       )
     ))
 
-  private def brokenSealsInformationRow(idx: Int)(implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] = {
+  private def brokenSealsInformationRow(idx: Int, additionalLinkIdSignifier: String)
+                                       (implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] = {
     if (request.userAnswers.get(WrongWithItemPage(idx)).exists(_.contains(BrokenSeals))) {
+      val mode = if(additionalLinkIdSignifier != "") ReviewMode else CheckMode
       request.userAnswers.get(ItemSealsInformationPage(idx)).map {
         case Some(value) if value != "" =>
           SummaryListRowViewModel(
@@ -90,8 +94,8 @@ class CheckAnswersItemHelper @Inject()(
             actions = Seq(
               ActionItemViewModel(
                 "site.change",
-                routes.MoreInformationController.loadItemSealsInformation(request.userAnswers.ern, request.userAnswers.arc, idx, CheckMode).url,
-                id = ItemSealsInformationPage(idx)
+                routes.MoreInformationController.loadItemSealsInformation(request.userAnswers.ern, request.userAnswers.arc, idx, mode).url,
+                id = ItemSealsInformationPage(idx) + additionalLinkIdSignifier
               ).withVisuallyHiddenText(messages(s"${ItemSealsInformationPage(idx)}.checkYourAnswers.change.hidden"))
             )
           )
@@ -99,7 +103,7 @@ class CheckAnswersItemHelper @Inject()(
           SummaryListRowViewModel(
             key = s"${ItemSealsInformationPage(idx)}.checkYourAnswers.label",
             value = ValueViewModel(HtmlContent(link(
-              link = routes.MoreInformationController.loadItemSealsInformation(request.userAnswers.ern, request.userAnswers.arc, idx, CheckMode).url,
+              link = routes.MoreInformationController.loadItemSealsInformation(request.userAnswers.ern, request.userAnswers.arc, idx, mode).url,
               messageKey = s"${ItemSealsInformationPage(idx)}.checkYourAnswers.addMoreInformation")))
           )
       }
@@ -108,8 +112,10 @@ class CheckAnswersItemHelper @Inject()(
     }
   }
 
-  private def damagedItemsInformationRow(idx: Int)(implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] = {
+  private def damagedItemsInformationRow(idx: Int, additionalLinkIdSignifier: String)
+                                        (implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] = {
     if (request.userAnswers.get(WrongWithItemPage(idx)).exists(_.contains(Damaged))) {
+      val mode = if(additionalLinkIdSignifier != "") ReviewMode else CheckMode
       request.userAnswers.get(ItemDamageInformationPage(idx)).map {
         case Some(value) if value != "" =>
           SummaryListRowViewModel(
@@ -118,8 +124,8 @@ class CheckAnswersItemHelper @Inject()(
             actions = Seq(
               ActionItemViewModel(
                 "site.change",
-                routes.MoreInformationController.loadItemDamageInformation(request.userAnswers.ern, request.userAnswers.arc, idx, CheckMode).url,
-                id = ItemDamageInformationPage(idx)
+                routes.MoreInformationController.loadItemDamageInformation(request.userAnswers.ern, request.userAnswers.arc, idx, mode).url,
+                id = ItemDamageInformationPage(idx) + additionalLinkIdSignifier
               ).withVisuallyHiddenText(messages(s"${ItemDamageInformationPage(idx)}.checkYourAnswers.change.hidden"))
             )
           )
@@ -127,7 +133,7 @@ class CheckAnswersItemHelper @Inject()(
           SummaryListRowViewModel(
             key = s"${ItemDamageInformationPage(idx)}.checkYourAnswers.label",
             value = ValueViewModel(HtmlContent(link(
-              link = routes.MoreInformationController.loadItemDamageInformation(request.userAnswers.ern, request.userAnswers.arc, idx, CheckMode).url,
+              link = routes.MoreInformationController.loadItemDamageInformation(request.userAnswers.ern, request.userAnswers.arc, idx, mode).url,
               messageKey = s"${ItemDamageInformationPage(idx)}.checkYourAnswers.addMoreInformation")))
           )
       }
@@ -136,18 +142,20 @@ class CheckAnswersItemHelper @Inject()(
     }
   }
 
-  private def otherInformationRow(idx: Int)(implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] =
+  private def otherInformationRow(idx: Int, additionalLinkIdSignifier: String)
+                                 (implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] =
     if (request.userAnswers.get(WrongWithItemPage(idx)).exists(_.contains(Other))) {
       request.userAnswers.get(ItemOtherInformationPage(idx)).flatMap {
         case value if value != "" =>
+          val mode = if(additionalLinkIdSignifier != "") ReviewMode else CheckMode
           Some(SummaryListRowViewModel(
             key = s"${ItemOtherInformationPage(idx)}.checkYourAnswers.label",
             value = ValueViewModel(Text(value)),
             actions = Seq(
               ActionItemViewModel(
                 "site.change",
-                routes.OtherInformationController.loadItemOtherInformation(request.userAnswers.ern, request.userAnswers.arc, idx, CheckMode).url,
-                id = ItemOtherInformationPage(idx)
+                routes.OtherInformationController.loadItemOtherInformation(request.userAnswers.ern, request.userAnswers.arc, idx, mode).url,
+                id = ItemOtherInformationPage(idx) + additionalLinkIdSignifier
               ).withVisuallyHiddenText(messages(s"${ItemOtherInformationPage(idx)}.checkYourAnswers.change.hidden"))
             )
           ))

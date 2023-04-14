@@ -46,17 +46,15 @@
      }
 
      @if(itemsToAdd) {
-        @link(
-            addItemLink,
-            "checkYourAnswers.add.item.link",
-            id = Some("add-item")
-        )
+        <p class="govuk-body govuk-!-margin-bottom-9">
+            @link(
+                addItemLink,
+                "checkYourAnswers.add.item.link",
+                id = Some("add-item")
+            )
+        </p>
      }
 
-    <br>
-    <br>
-    <br>
-    <br>
 
 @h2("checkYourAnswers.submit.h2")
 

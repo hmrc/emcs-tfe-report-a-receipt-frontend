@@ -55,7 +55,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency wi
           val view = application.injector.instanceOf[CheckYourAnswersView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(routes.CheckYourAnswersController.onSubmit(testErn, testArc), link, list, itemList, true)(dataRequest(request), messages(application)).toString
+          contentAsString(result) mustEqual view(routes.CheckYourAnswersController.onSubmit(testErn, testArc), link, list, itemList, false)(dataRequest(request), messages(application)).toString
         }
       }
 

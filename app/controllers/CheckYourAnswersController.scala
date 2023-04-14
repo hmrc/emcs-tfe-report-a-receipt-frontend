@@ -51,13 +51,12 @@ class CheckYourAnswersController @Inject()(
               case (item, idx) =>
                 (
                   checkAnswersItemHelper.itemName(item),
-                  checkAnswersItemHelper.summaryList(idx + 1, item)
+                  checkAnswersItemHelper.summaryList(idx + 1, item, true)
                 )
             }
 
           val moreItemsToAdd: Boolean = request.movementDetails.items.size match {
-            case size if(size == 0) => false
-            case size if(size == items.size) => false
+            case size if(size == items.size || items.size == 0) => false
             case _ => true
           }
 

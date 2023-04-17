@@ -688,6 +688,25 @@ class NavigatorSpec extends SpecBase {
       }
     }
 
+    "in review mode" - {
+      "must go to the CheckYourAnswers page" - {
+        Seq(ItemShortageOrExcessPage(1), ItemSealsInformationPage(1), ItemDamageInformationPage(1), ItemOtherInformationPage(1)).foreach {
+          page: QuestionPage[_] =>
+            s"when the previous page is $page" in {
+              navigator.nextPage(page, ReviewMode, emptyUserAnswers) mustBe
+                routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+            }
+        }
+      }
+
+      "must go from a page that doesn't exist in the edit route map to CheckYourAnswers" in {
+
+        case object UnknownPage extends Page
+        navigator.nextPage(UnknownPage, ReviewMode, emptyUserAnswers) mustBe
+          routes.CheckYourAnswersController.onPageLoad(testErn, testArc)
+      }
+    }
+
     "calling the .nextWrongWithMovementOptionToAnswer method" - {
 
       "when all options are selected" - {

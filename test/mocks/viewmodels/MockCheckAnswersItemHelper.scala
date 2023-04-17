@@ -18,7 +18,7 @@ package mocks.viewmodels
 
 import models.requests.DataRequest
 import models.response.emcsTfe.MovementItem
-import org.scalamock.handlers.{CallHandler1, CallHandler4}
+import org.scalamock.handlers.{CallHandler1, CallHandler4, CallHandler5}
 import org.scalamock.scalatest.MockFactory
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
@@ -33,8 +33,8 @@ trait MockCheckAnswersItemHelper extends MockFactory {
     def itemName(): CallHandler1[MovementItem, String] =
       (mockCheckAnswersItemHelper.itemName(_: MovementItem)).expects(*)
 
-    def summaryList(): CallHandler4[Int, MovementItem, DataRequest[_], Messages, SummaryList] =
-      (mockCheckAnswersItemHelper.summaryList(_: Int, _: MovementItem)(_: DataRequest[_], _: Messages))
-        .expects(*, *, *, *)
+    def summaryList(): CallHandler5[Int, MovementItem, Boolean, DataRequest[_], Messages, SummaryList] =
+      (mockCheckAnswersItemHelper.summaryList(_: Int, _: MovementItem, _:Boolean)(_: DataRequest[_], _: Messages))
+        .expects(*, *, *, *, *)
   }
 }

@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers
 
 import controllers.routes
-import models.CheckMode
+import models.{CheckMode, ReviewMode}
 import models.UnitOfMeasure.Kilograms
 import models.WrongWithMovement.ShortageOrExcess
 import models.requests.DataRequest
@@ -34,15 +34,17 @@ import javax.inject.Inject
 
 class ShortageOrExcessItemSummary @Inject()(link: link) {
 
-  def rows(idx: Int, item: MovementItem)(implicit request: DataRequest[_], messages: Messages): Seq[SummaryListRow] = {
+  def rows(idx: Int, item: MovementItem, additionalLinkIdSignifier: String = "")(implicit request: DataRequest[_], messages: Messages): Seq[SummaryListRow] = {
+
     Seq(
-      shortageOrExcessRow(idx),
-      amountOfShortageOrExcessRow(idx, item),
-      shortageOrExcessInformationRow(idx)
+      shortageOrExcessRow(idx, additionalLinkIdSignifier),
+      amountOfShortageOrExcessRow(idx, item, additionalLinkIdSignifier),
+      shortageOrExcessInformationRow(idx, additionalLinkIdSignifier)
     ).flatten
   }
 
-  private def shortageOrExcessRow(idx: Int)(implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] = {
+  private def shortageOrExcessRow(idx: Int, additionalLinkIdSignifier: String)
+                                 (implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] = {
     if (isShortageOrExcess(idx)) {
       request.userAnswers.get(ItemShortageOrExcessPage(idx)).map(
         shortageOrExcess =>
@@ -50,7 +52,7 @@ class ShortageOrExcessItemSummary @Inject()(link: link) {
             key = s"${ItemShortageOrExcessPage(idx)}.checkYourAnswers.shortageOrExcess.label",
             value = ValueViewModel(messages(s"itemShortageOrExcess.shortageOrExcess.${shortageOrExcess.wrongWithItem.toString}")),
             actions = Seq(
-              shortageOrExcessChangeAction(idx, "shortageOrExcess")
+              shortageOrExcessChangeAction(idx, s"shortageOrExcess", additionalLinkIdSignifier)
             )
           )
       )
@@ -59,7 +61,8 @@ class ShortageOrExcessItemSummary @Inject()(link: link) {
     }
   }
 
-  private def amountOfShortageOrExcessRow(idx: Int, item: MovementItem)(implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] = {
+  private def amountOfShortageOrExcessRow(idx: Int, item: MovementItem, additionalLinkIdSignifier: String)
+                                         (implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] = {
     if (isShortageOrExcess(idx)) {
       request.userAnswers.get(ItemShortageOrExcessPage(idx)).map(
         shortageOrExcess =>
@@ -74,7 +77,7 @@ class ShortageOrExcessItemSummary @Inject()(link: link) {
               )
             ),
             actions = Seq(
-              shortageOrExcessChangeAction(idx, "amount")
+              shortageOrExcessChangeAction(idx, s"amount", additionalLinkIdSignifier)
             )
           )
       )
@@ -83,8 +86,10 @@ class ShortageOrExcessItemSummary @Inject()(link: link) {
     }
   }
 
-  private def shortageOrExcessInformationRow(idx: Int)(implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] = {
+  private def shortageOrExcessInformationRow(idx: Int, additionalLinkIdSignifier: String)
+                                            (implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] = {
     if (isShortageOrExcess(idx)) {
+      val mode = if(additionalLinkIdSignifier != "") ReviewMode else CheckMode
       request.userAnswers.get(ItemShortageOrExcessPage(idx)).map(
         shortageOrExcess =>
           shortageOrExcess.additionalInfo match {
@@ -93,14 +98,14 @@ class ShortageOrExcessItemSummary @Inject()(link: link) {
                 key = s"${ItemShortageOrExcessPage(idx)}.checkYourAnswers.additionalInfo.label",
                 value = ValueViewModel(Text(value)),
                 actions = Seq(
-                  shortageOrExcessChangeAction(idx, "additionalInfo")
+                  shortageOrExcessChangeAction(idx, s"additionalInfo", additionalLinkIdSignifier)
                 )
               )
             case _ =>
               SummaryListRowViewModel(
                 key = s"${ItemShortageOrExcessPage(idx)}.checkYourAnswers.additionalInfo.label",
                 value = ValueViewModel(HtmlContent(link(
-                  link = routes.ItemShortageOrExcessController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, idx, CheckMode).url,
+                  link = routes.ItemShortageOrExcessController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, idx, mode).url,
                   messageKey = s"${ItemShortageOrExcessPage(idx)}.checkYourAnswers.addMoreInformation")))
               )
           })
@@ -112,11 +117,13 @@ class ShortageOrExcessItemSummary @Inject()(link: link) {
   private def isShortageOrExcess(idx: Int)(implicit request: DataRequest[_]): Boolean =
     request.userAnswers.get(WrongWithItemPage(idx)).exists(_.contains(ShortageOrExcess))
 
-  private def shortageOrExcessChangeAction(idx: Int, changeLabelPage: String)(implicit request: DataRequest[_], messages: Messages): ActionItem =
+  private def shortageOrExcessChangeAction(idx: Int, changeLabelPage: String, additionalLinkIdSignifier: String)(implicit request: DataRequest[_], messages: Messages): ActionItem = {
+    val mode = if(additionalLinkIdSignifier != "") ReviewMode else CheckMode
     ActionItemViewModel(
       "site.change",
-      routes.ItemShortageOrExcessController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, idx, CheckMode).url,
-      id = s"${ItemShortageOrExcessPage(idx)}-$changeLabelPage"
+      routes.ItemShortageOrExcessController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, idx, mode).url,
+      id = s"${ItemShortageOrExcessPage(idx)}-$changeLabelPage$additionalLinkIdSignifier"
     ).withVisuallyHiddenText(messages(s"${ItemShortageOrExcessPage(idx)}.checkYourAnswers.$changeLabelPage.change.hidden"))
+  }
 
 }

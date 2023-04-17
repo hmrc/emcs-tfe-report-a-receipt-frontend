@@ -200,6 +200,8 @@ checkYourAnswers.movementDetails.h2 = Movement details
 checkYourAnswers.submit.h2 = Now submit your report of receipt
 checkYourAnswers.declaration = By submitting this report of receipt you are confirming that, to the best of your knowledge, the details you are providing are correct.
 checkYourAnswers.submit.button = Submit report of receipt
+checkYourAnswers.itemDetails.h2 = Summary for {0}
+checkYourAnswers.add.item.link = Add another item
 
 checkYourAnswersItem.title = Check your answers for {0}
 checkYourAnswersItem.heading = Check your answers for {0}

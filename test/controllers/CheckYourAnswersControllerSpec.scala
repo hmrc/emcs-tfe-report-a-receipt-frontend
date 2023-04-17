@@ -22,6 +22,7 @@ import navigation.{FakeNavigator, Navigator}
 import play.api.inject
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.CheckAnswersHelper
 import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersView
@@ -32,6 +33,8 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency wi
 
     ".onPageLoad" - {
 
+      val link = routes.SelectItemsController.onPageLoad(testErn, testArc).url
+
       "must return OK and the correct view for a GET" in {
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
@@ -41,6 +44,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency wi
         running(application) {
 
           val list = SummaryListViewModel(Seq.empty)
+          val itemList = Seq.empty[(String, SummaryList)]
 
           MockCheckAnswersHelper.summaryList().returns(list)
 
@@ -51,7 +55,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency wi
           val view = application.injector.instanceOf[CheckYourAnswersView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(routes.CheckYourAnswersController.onSubmit(testErn, testArc), list)(dataRequest(request), messages(application)).toString
+          contentAsString(result) mustEqual view(routes.CheckYourAnswersController.onSubmit(testErn, testArc), link, list, itemList, false)(dataRequest(request), messages(application)).toString
         }
       }
 

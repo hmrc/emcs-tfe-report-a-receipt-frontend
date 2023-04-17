@@ -34,6 +34,6 @@ class GetMovementConnector @Inject()(val http: HttpClient,
   lazy val baseUrl: String = config.emcsTfeBaseUrl
   def getMovement(exciseRegistrationNumber: String, arc: String)
                  (implicit headerCarrier: HeaderCarrier, executionContext: ExecutionContext): Future[Either[ErrorResponse, GetMovementResponse]] =
-    get(s"$baseUrl/movement/$exciseRegistrationNumber/$arc")
+    get(s"$baseUrl/movement/$exciseRegistrationNumber/$arc?forceFetchNew=true")
 
 }

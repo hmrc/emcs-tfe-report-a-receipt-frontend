@@ -56,7 +56,8 @@
         @link(
             appConfig.contactHmrcUrl,
             "confirmation.contactHmrc.link",
-            opensInNewTab = true
+            opensInNewTab = true,
+            id = Some("contactHmrc")
         )
         @messages("confirmation.contactHmrc.afterLink")
     }
@@ -64,7 +65,8 @@
     @p(classes = "govuk-body govuk-!-margin-top-8") {
         @link(
             appConfig.emcsMovementDetailsUrl(request.ern, request.arc),
-            "confirmation.returnToMovement.link"
+            "confirmation.returnToMovement.link",
+            id = Some("returnToMovement")
         )
     }
 
@@ -72,7 +74,8 @@
         @link(
             appConfig.feedbackFrontendSurveyUrl,
             "confirmation.feedback.link",
-            opensInNewTab = true
+            opensInNewTab = true,
+            id = Some("feedbackSurvey")
         )
         @messages("confirmation.feedback.time")
     }

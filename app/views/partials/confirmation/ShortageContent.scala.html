@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,16 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package models
+@this(
+        h3: components.h3,
+        p: components.p
+)
 
-import play.api.libs.json.{Json, Reads}
+@()(implicit messages: Messages)
 
-case class ItemModel(itemUniqueReference: Int,
-                     checkAnswersItem: Option[Boolean],
-                     itemShortageOrExcess: Option[ItemShortageOrExcessModel])
+@h3("confirmation.shortage.h2")
 
-object ItemModel {
-  implicit def reads: Reads[ItemModel] = Json.reads
+@p() {
+    @messages("confirmation.shortage.p1")
+}
+
+@{
+    //$COVERAGE-OFF$
 }

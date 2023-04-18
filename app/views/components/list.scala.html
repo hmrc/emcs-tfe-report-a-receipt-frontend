@@ -19,9 +19,9 @@
 @(content: Seq[Html])
 
 <ul class="govuk-list">
- @content.map { bullet =>
-  <li>@bullet</li>
- }
+    @content.map { bullet =>
+        <li>@bullet</li>
+    }
 </ul>
 
 @{

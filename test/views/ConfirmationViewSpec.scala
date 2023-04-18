@@ -18,9 +18,15 @@ package views
 
 import base.ViewSpecBase
 import fixtures.messages.ConfirmationMessages
+import models.AcceptMovement.{Refused, Satisfactory, Unsatisfactory}
+import models.{ItemShortageOrExcessModel, WrongWithMovement}
+import models.WrongWithMovement.{Excess, Shortage}
 import models.requests.DataRequest
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import pages.AcceptMovementPage
+import pages.unsatisfactory.WrongWithMovementPage
+import pages.unsatisfactory.individualItems.{ItemShortageOrExcessPage, SelectItemsPage}
 import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
@@ -36,24 +42,107 @@ class ConfirmationViewSpec extends ViewSpecBase with ViewBehaviours {
 
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
 
-        implicit val msgs: Messages = messages(app, messagesForLanguage.lang)
-        implicit val request: DataRequest[AnyContentAsEmpty.type] = dataRequest(FakeRequest(), emptyUserAnswers)
+        "when movement was Satisfactory" - {
 
-        val view = app.injector.instanceOf[ConfirmationView]
+          val userAnswers = emptyUserAnswers.set(AcceptMovementPage, Satisfactory)
 
-        implicit val doc: Document = Jsoup.parse(view(testConfirmationReference).toString())
+          implicit val msgs: Messages = messages(app, messagesForLanguage.lang)
+          implicit val request: DataRequest[AnyContentAsEmpty.type] = dataRequest(FakeRequest(), userAnswers)
 
-        behave like pageWithExpectedElementsAndMessages(Seq(
-          Selectors.title -> messagesForLanguage.title,
-          Selectors.h1 -> messagesForLanguage.heading,
-          Selectors.p(1) -> messagesForLanguage.reference(testConfirmationReference),
-          Selectors.h2(1) -> messagesForLanguage.whatNextH2,
-          Selectors.p(2) -> messagesForLanguage.whatNextP1,
-          Selectors.p(3) -> messagesForLanguage.whatNextP2,
-          Selectors.p(4) -> messagesForLanguage.whatNextP3,
-          Selectors.p(5) -> messagesForLanguage.returnToMovement,
-          Selectors.p(6) -> messagesForLanguage.feedback
-        ))
+          val view = app.injector.instanceOf[ConfirmationView]
+
+          implicit val doc: Document = Jsoup.parse(view(testConfirmationReference).toString())
+
+          behave like pageWithExpectedElementsAndMessages(Seq(
+            Selectors.title -> messagesForLanguage.title,
+            Selectors.h1 -> messagesForLanguage.heading,
+            Selectors.p(1) -> messagesForLanguage.reference(testConfirmationReference),
+            Selectors.h2(1) -> messagesForLanguage.whatNextH2,
+            Selectors.p(2) -> messagesForLanguage.whatNextP1,
+            Selectors.p(3) -> messagesForLanguage.whatNextP2,
+            Selectors.p(4) -> messagesForLanguage.contactHmrc,
+            Selectors.p(5) -> messagesForLanguage.returnToMovement,
+            Selectors.p(6) -> messagesForLanguage.feedback
+          ))
+        }
+
+        "when movement was Unsatisfactory and there's a shortage and excess" - {
+
+          val userAnswers = emptyUserAnswers
+            .set(AcceptMovementPage, Unsatisfactory)
+            .set(WrongWithMovementPage, Set[WrongWithMovement](Shortage, Excess))
+
+          implicit val msgs: Messages = messages(app, messagesForLanguage.lang)
+          implicit val request: DataRequest[AnyContentAsEmpty.type] = dataRequest(FakeRequest(), userAnswers)
+
+          val view = app.injector.instanceOf[ConfirmationView]
+
+          implicit val doc: Document = Jsoup.parse(view(testConfirmationReference).toString())
+
+          behave like pageWithExpectedElementsAndMessages(Seq(
+            Selectors.title -> messagesForLanguage.title,
+            Selectors.h1 -> messagesForLanguage.heading,
+            Selectors.p(1) -> messagesForLanguage.reference(testConfirmationReference),
+            Selectors.h2(1) -> messagesForLanguage.whatNextH2,
+            Selectors.p(2) -> messagesForLanguage.whatNextP1,
+            Selectors.p(3) -> messagesForLanguage.whatNextP2,
+            Selectors.h3(1) -> messagesForLanguage.shortageH3,
+            Selectors.p(4) -> messagesForLanguage.shortageP1,
+            Selectors.h3(2) -> messagesForLanguage.excessH3,
+            Selectors.p(5) -> messagesForLanguage.excessP1,
+            Selectors.bullet(1) -> messagesForLanguage.excessSameGoodsBullet1,
+            Selectors.bullet(2) -> messagesForLanguage.excessSameGoodsBullet2,
+            Selectors.p(6) -> messagesForLanguage.excessP2,
+            Selectors.bullet(1, 2) -> messagesForLanguage.excessDifferentGoodsBullet1,
+            Selectors.bullet(2, 2) -> messagesForLanguage.excessDifferentGoodsBullet2,
+            Selectors.p(7) -> messagesForLanguage.contactHmrc,
+            Selectors.p(8) -> messagesForLanguage.returnToMovement,
+            Selectors.p(9) -> messagesForLanguage.feedback
+          ))
+        }
+
+        "when movement was Refused and there's an item shortage and excess" - {
+
+          val userAnswers = emptyUserAnswers
+            .set(AcceptMovementPage, Refused)
+            .set(SelectItemsPage(1), item1.itemUniqueReference)
+            .set(SelectItemsPage(2), item2.itemUniqueReference)
+            .set(ItemShortageOrExcessPage(1), ItemShortageOrExcessModel(Shortage, 10, None))
+            .set(ItemShortageOrExcessPage(2), ItemShortageOrExcessModel(Excess, 10, None))
+
+          implicit val msgs: Messages = messages(app, messagesForLanguage.lang)
+          implicit val request: DataRequest[AnyContentAsEmpty.type] = dataRequest(FakeRequest(), userAnswers)
+
+          val view = app.injector.instanceOf[ConfirmationView]
+
+          implicit val doc: Document = Jsoup.parse(view(testConfirmationReference).toString())
+
+          behave like pageWithExpectedElementsAndMessages(Seq(
+            Selectors.title -> messagesForLanguage.title,
+            Selectors.h1 -> messagesForLanguage.heading,
+            Selectors.p(1) -> messagesForLanguage.reference(testConfirmationReference),
+            Selectors.h2(1) -> messagesForLanguage.whatNextH2,
+            Selectors.p(2) -> messagesForLanguage.whatNextP1,
+            Selectors.p(3) -> messagesForLanguage.whatNextP2,
+            Selectors.h3(1) -> messagesForLanguage.refusedH3,
+            Selectors.p(4) -> messagesForLanguage.refusedP1,
+            Selectors.bullet(1) -> messagesForLanguage.refusedBullet1,
+            Selectors.bullet(2) -> messagesForLanguage.refusedBullet2,
+            Selectors.bullet(3) -> messagesForLanguage.refusedBullet3,
+            Selectors.h3(2) -> messagesForLanguage.shortageH3,
+            Selectors.p(5) -> messagesForLanguage.shortageP1,
+            Selectors.h3(3) -> messagesForLanguage.excessH3,
+            Selectors.p(6) -> messagesForLanguage.excessP1,
+            Selectors.bullet(1, 2) -> messagesForLanguage.excessSameGoodsBullet1,
+            Selectors.bullet(2, 2) -> messagesForLanguage.excessSameGoodsBullet2,
+            Selectors.p(7) -> messagesForLanguage.excessP2,
+            Selectors.bullet(1, 3) -> messagesForLanguage.excessDifferentGoodsBullet1,
+            Selectors.bullet(2, 3) -> messagesForLanguage.excessDifferentGoodsBullet2,
+            Selectors.p(8) -> messagesForLanguage.contactHmrc,
+            Selectors.p(9) -> messagesForLanguage.returnToMovement,
+            Selectors.p(10) -> messagesForLanguage.feedback
+          ))
+        }
       }
     }
   }

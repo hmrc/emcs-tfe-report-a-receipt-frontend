@@ -33,8 +33,11 @@ case class DataRequest[A](request: MovementRequest[A], userAnswers: UserAnswers)
       request.movementDetails.item(reference)
     )
 
+  def getItemsAdded: Seq[ItemModel] =
+    userAnswers.getList(__ \ "items")(ItemModel.reads)
+
   def getAllItemDetails: Seq[MovementItem] =
-    userAnswers.getList(__ \ "items")(ItemModel.reads).flatMap(
+    getItemsAdded.flatMap(
       itemModel =>
         request.movementDetails.item(itemModel.itemUniqueReference)
     )

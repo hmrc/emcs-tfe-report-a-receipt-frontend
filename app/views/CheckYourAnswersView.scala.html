@@ -41,7 +41,7 @@
 
 
      @itemList.map { case (itemName, item) =>
-        @h2(messages("checkYourAnswers.itemDetails.h2", itemName))
+        @h2(messages("checkYourAnswers.itemDetails.h2", itemName), classes = "govuk-heading-m govuk-!-margin-top-9")
         @govukSummaryList(item)
      }
 
@@ -56,7 +56,7 @@
      }
 
 
-@h2("checkYourAnswers.submit.h2")
+@h2("checkYourAnswers.submit.h2", classes = "govuk-heading-m govuk-!-margin-top-9")
 
      @p() {
          @messages("checkYourAnswers.declaration")

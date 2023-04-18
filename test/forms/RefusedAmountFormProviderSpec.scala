@@ -24,7 +24,7 @@ import play.api.i18n.{Messages, MessagesApi}
 
 class RefusedAmountFormProviderSpec extends IntFieldBehaviours with GuiceOneAppPerSuite {
 
-  val itemQuantity: BigDecimal = 9999999999.998
+  val itemQuantity: BigDecimal = 999999999999.998
 
   val fieldName = "value"
   val form = new RefusedAmountFormProvider()(itemQuantity)

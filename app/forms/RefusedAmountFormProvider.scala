@@ -28,7 +28,7 @@ class RefusedAmountFormProvider @Inject() extends Mappings {
         text("refusedAmount.error.required")
           .verifying(
             firstError(
-              maxLength(MAX_LENGTH_15, "refusedAmount.error.maxLength"),
+              decimalMaxLength(MAX_LENGTH_15, "refusedAmount.error.maxLength"),
               regexp(NUMERIC_15_3DP_REGEX, "refusedAmount.error.nonNumeric")
             )
           )

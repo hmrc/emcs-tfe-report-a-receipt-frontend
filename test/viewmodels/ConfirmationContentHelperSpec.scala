@@ -18,11 +18,11 @@ package viewmodels
 
 import base.SpecBase
 import models.AcceptMovement.{PartiallyRefused, Refused, Satisfactory}
-import models.{ItemShortageOrExcessModel, UserAnswers, WrongWithMovement}
 import models.WrongWithMovement.{Excess, Shortage}
+import models.{ItemShortageOrExcessModel, UserAnswers, WrongWithMovement}
 import pages.AcceptMovementPage
 import pages.unsatisfactory.WrongWithMovementPage
-import pages.unsatisfactory.individualItems.{ItemShortageOrExcessPage, SelectItemsPage, WrongWithItemPage}
+import pages.unsatisfactory.individualItems.{ItemShortageOrExcessPage, SelectItemsPage}
 import play.api.i18n.MessagesApi
 import play.api.test.FakeRequest
 import views.html.partials.confirmation.{ExcessContent, RefusedContent, ShortageContent}

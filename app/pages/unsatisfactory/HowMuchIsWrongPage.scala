@@ -20,6 +20,7 @@ import models.HowMuchIsWrong
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 
+//Todo change to allow individual items
 case object HowMuchIsWrongPage extends QuestionPage[HowMuchIsWrong] {
 
   override def path: JsPath = JsPath \ toString

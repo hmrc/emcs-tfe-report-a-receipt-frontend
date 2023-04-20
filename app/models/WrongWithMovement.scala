@@ -28,6 +28,7 @@ sealed trait WrongWithMovement
 
 object WrongWithMovement extends Enumerable.Implicits {
 
+  //todo add how much is wrong
   case object Shortage extends WithName("shortage") with WrongWithMovement
   case object Excess extends WithName("excess") with WrongWithMovement
   case object ShortageOrExcess extends WithName("shortageOrExcess") with WrongWithMovement

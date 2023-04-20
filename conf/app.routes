@@ -161,6 +161,9 @@ GET         /:ern/:arc/item/:idx/how-much-refuse-item                           
 POST        /:ern/:arc/item/:idx/how-much-refuse-item                            controllers.RefusedAmountController.onSubmit(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
 GET         /:ern/:arc/item/:idx/how-much-refuse-item/change                     controllers.RefusedAmountController.onPageLoad(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)
 POST        /:ern/:arc/item/:idx/how-much-refuse-item/change                     controllers.RefusedAmountController.onSubmit(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)
+GET         /:ern/:arc/item/:idx/how-much-refuse-item/change                     controllers.RefusedAmountController.onPageLoad(ern: String, arc: String, idx: Int, mode: Mode = ReviewMode)
+POST        /:ern/:arc/item/:idx/how-much-refuse-item/change                     controllers.RefusedAmountController.onSubmit(ern: String, arc: String, idx: Int, mode: Mode = ReviewMode)
+
 
 GET         /:ern/:arc/item/:idx/check-answers-item                              controllers.CheckYourAnswersItemController.onPageLoad(ern: String, arc: String, idx: Int)
 POST        /:ern/:arc/item/:idx/check-answers-item                              controllers.CheckYourAnswersItemController.onSubmit(ern: String, arc: String, idx: Int)

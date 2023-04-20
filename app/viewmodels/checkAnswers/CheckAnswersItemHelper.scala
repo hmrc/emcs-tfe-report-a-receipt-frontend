@@ -22,6 +22,7 @@ import models.WrongWithMovement.{BrokenSeals, Damaged, Other}
 import models.requests.DataRequest
 import models.response.emcsTfe.MovementItem
 import models.{CheckMode, NormalMode, ReviewMode, WrongWithMovement}
+import pages.unsatisfactory.HowMuchIsWrongPage
 import pages.unsatisfactory.individualItems.{ItemDamageInformationPage, ItemOtherInformationPage, ItemSealsInformationPage, WrongWithItemPage}
 import play.api.i18n.Messages
 import play.api.libs.json.Format.GenericFormat
@@ -53,6 +54,7 @@ class CheckAnswersItemHelper @Inject()(
       request.userAnswers.get(WrongWithItemPage(idx)).map {
         answers =>
           Seq(
+            HowMuchIsWrongRow(additionalLinkIdSignifier),
             whatWasWrongRow(answers, idx, additionalLinkIdSignifier),
             shortageOrExcessItemSummary.rows(idx, item, additionalLinkIdSignifier),
             damagedItemsInformationRow(idx, additionalLinkIdSignifier),
@@ -109,6 +111,35 @@ class CheckAnswersItemHelper @Inject()(
       }
     } else {
       None
+    }
+  }
+
+
+  private def HowMuchIsWrongRow(additionalLinkIdSignifier: String)
+                                       (implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] = {
+    val mode = if(additionalLinkIdSignifier != "") ReviewMode else CheckMode
+    request.userAnswers.get(HowMuchIsWrongPage) match {
+      case Some(value) if value != "" =>
+        Some(SummaryListRowViewModel(
+                  key = s"${HowMuchIsWrongPage}.checkYourAnswers.label",
+                  value = ValueViewModel(Text(value.toString)),
+                  actions = Seq(
+                    ActionItemViewModel(
+                      "site.change",
+                      routes.HowMuchIsWrongController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, mode).url,
+                      id = HowMuchIsWrongPage + additionalLinkIdSignifier
+                    ).withVisuallyHiddenText(messages(s"${HowMuchIsWrongPage}.checkYourAnswers.change.hidden"))
+                  )
+                ))
+      case Some(_) =>
+        Some(
+        SummaryListRowViewModel(
+          key = s"${HowMuchIsWrongPage}.checkYourAnswers.label",
+          value = ValueViewModel(HtmlContent(link(
+            link = routes.HowMuchIsWrongController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, mode).url,
+            messageKey = s"${HowMuchIsWrongPage}.checkYourAnswers.addMoreInformation")))
+        ))
+      case None => None
     }
   }
 

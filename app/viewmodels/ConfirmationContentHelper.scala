@@ -46,8 +46,6 @@ class ConfirmationContentHelper @Inject()(shortageContent: ShortageContent,
     val hasMovementShortage = request.userAnswers.get(WrongWithMovementPage).exists(_.contains(Shortage))
     val hasItemShortage = request.getItemsAdded.exists(_.itemShortageOrExcess.exists(_.wrongWithItem == Shortage))
 
-    println("********************\n" + request.getItemsAdded + "\n*********************")
-
     if(hasMovementShortage || hasItemShortage) {
       Some(shortageContent())
     } else {

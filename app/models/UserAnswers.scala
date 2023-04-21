@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package
-models
+package models
 
+import models.response.emcsTfe.MovementItem
 import play.api.libs.json._
 import queries.{Gettable, Settable}
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
@@ -29,9 +29,32 @@ final case class UserAnswers(internalId: String,
                              data: JsObject = Json.obj(),
                              lastUpdated: Instant = Instant.now) {
 
-  def getList[A](path: JsPath)(implicit rds: Reads[A]): Seq[A] = {
-    path.read[Seq[A]].reads(data).getOrElse(Seq.empty)
-    //TODO update this method?
+  private[models] def itemKeys: Seq[String] = (data \\ "items").flatMap {
+    case JsObject(underlying) => underlying.keys.toSeq
+    case _ => Seq()
+  }.toSeq
+
+  private[models] def get[A](key: String)(implicit reads: Reads[A]): Seq[A] = {
+    data \ "items" \ key match {
+      case JsDefined(value) =>
+        value.validate(reads) match {
+          case JsSuccess(value, _) => Seq(value)
+          case JsError(_) => Seq.empty
+        }
+      case _: JsUndefined => Seq.empty
+    }
+  }
+
+  def itemReferences: Seq[Int] = {
+    itemKeys.flatMap {
+      get(_)(MovementItem.readItemUniqueReference)
+    }.sorted
+  }
+
+  def items: Seq[ItemModel] = {
+    itemKeys.flatMap {
+      get(_)(ItemModel.reads)
+    }.sortBy(_.itemUniqueReference)
   }
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
@@ -72,7 +95,7 @@ object UserAnswers {
         (__ \ "arc").read[String] and
         (__ \ "data").read[JsObject] and
         (__ \ "lastUpdated").read(MongoJavatimeFormats.instantFormat)
-      ) (UserAnswers.apply _)
+      )(UserAnswers.apply _)
   }
 
   val writes: OWrites[UserAnswers] = {
@@ -85,7 +108,7 @@ object UserAnswers {
         (__ \ "arc").write[String] and
         (__ \ "data").write[JsObject] and
         (__ \ "lastUpdated").write(MongoJavatimeFormats.instantFormat)
-      ) (unlift(UserAnswers.unapply))
+      )(unlift(UserAnswers.unapply))
   }
 
   implicit val format: OFormat[UserAnswers] = OFormat(reads, writes)

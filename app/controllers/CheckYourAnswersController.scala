@@ -44,18 +44,17 @@ class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi
     authorisedDataRequest(ern, arc) { implicit request =>
       withAllItems() {
         items =>
-          val uniqueReferenceList = items.map(_.itemUniqueReference)
           val formattedAnswers: Seq[(String, SummaryList)] =
-            items.zip(uniqueReferenceList) map {
-              case (item, idx) =>
+            items map {
+              item =>
                 (
                   checkAnswersItemHelper.itemName(item),
-                  checkAnswersItemHelper.summaryList(idx + 1, item, true)
+                  checkAnswersItemHelper.summaryList(item.itemUniqueReference, item, onFinalCheckAnswers = true)
                 )
             }
 
           val moreItemsToAdd: Boolean =
-            if (request.movementDetails.items.size == items.size || items.isEmpty) false else true
+            (request.movementDetails.items.size != items.size) && items.nonEmpty
 
           Ok(view(routes.CheckYourAnswersController.onSubmit(ern, arc),
             routes.SelectItemsController.onPageLoad(ern, arc).url,

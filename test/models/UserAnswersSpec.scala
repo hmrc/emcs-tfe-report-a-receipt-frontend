@@ -22,7 +22,10 @@
 package models
 
 import base.SpecBase
+import models.WrongWithMovement.Damaged
+import models.response.emcsTfe.MovementItem
 import pages.QuestionPage
+import pages.unsatisfactory.individualItems._
 import play.api.libs.json._
 
 
@@ -322,26 +325,162 @@ class UserAnswersSpec extends SpecBase {
       }
     }
 
-    "when calling .getList[A](path)" - {
+    "when calling .itemReferences" - {
 
-      "must return all the items" in {
+      "must return all the item references" - {
 
-        val withData = emptyUserAnswers.copy(data = Json.obj(
-          "items" -> Json.arr(
-            Json.obj("TestPage" -> "foo"),
-            Json.obj("TestPage" -> "bar"),
-            Json.obj(
-              "TestPage" -> "wizz",
-              "TestPage2" -> "duck"
-            )
+        "when item references are in user answers, and it must be sorted by reference" in {
+
+          val withData = emptyUserAnswers
+            .set(SelectItemsPage(2), 2)
+            .set(WrongWithItemPage(2), Set[WrongWithMovement](Damaged))
+            .set(AddItemDamageInformationPage(2), false)
+            .set(SelectItemsPage(1), 1)
+            .set(WrongWithItemPage(1), Set[WrongWithMovement](Damaged))
+            .set(AddItemDamageInformationPage(1), false)
+
+          withData.itemReferences mustBe Seq(1, 2)
+        }
+      }
+
+      "must return a filtered list" - {
+
+        "when not all item references are in user answers" in {
+
+          val withData = emptyUserAnswers
+            .set(WrongWithItemPage(1), Set[WrongWithMovement](Damaged))
+            .set(AddItemDamageInformationPage(1), false)
+            .set(SelectItemsPage(2), 2)
+            .set(WrongWithItemPage(2), Set[WrongWithMovement](Damaged))
+            .set(AddItemDamageInformationPage(2), false)
+
+          withData.itemReferences mustBe Seq(2)
+        }
+
+        "when no item references are in user answers" in {
+
+          val withData = emptyUserAnswers
+            .set(WrongWithItemPage(1), Set[WrongWithMovement](Damaged))
+            .set(AddItemDamageInformationPage(1), false)
+            .set(WrongWithItemPage(2), Set[WrongWithMovement](Damaged))
+            .set(AddItemDamageInformationPage(2), false)
+
+          withData.itemReferences mustBe Seq()
+        }
+
+        "when user answers is empty" in {
+
+          val withData = emptyUserAnswers
+
+          withData.itemReferences mustBe Seq()
+        }
+      }
+    }
+
+    "when calling .items" - {
+
+      "must return all the items" - {
+
+        "when item references are in user answers, and it must be sorted by reference" in {
+
+          val withData = emptyUserAnswers
+            .set(SelectItemsPage(2), 2)
+            .set(SelectItemsPage(1), 1)
+            .set(CheckAnswersItemPage(1), true)
+            .set(ItemShortageOrExcessPage(1), ItemShortageOrExcessModel(WrongWithMovement.Damaged, 3, Some("info")))
+
+          withData.items mustBe Seq(
+            ItemModel(1, Some(true), Some(ItemShortageOrExcessModel(WrongWithMovement.Damaged, 3, Some("info")))),
+            ItemModel(2, None, None)
           )
-        ))
+        }
+      }
 
-        withData.getList[TestModel](__ \ "items") mustBe Seq(
-          TestModel("foo"),
-          TestModel("bar"),
-          TestModel("wizz", Some("duck"))
-        )
+      "must return a filtered list" - {
+
+        "when not all item references are in user answers" in {
+
+          val withData = emptyUserAnswers
+            .set(SelectItemsPage(2), 2)
+            .set(CheckAnswersItemPage(1), true)
+            .set(ItemShortageOrExcessPage(1), ItemShortageOrExcessModel(WrongWithMovement.Damaged, 3, Some("info")))
+
+          withData.items mustBe Seq(ItemModel(2, None, None))
+        }
+
+        "when no item references are in user answers" in {
+
+          val withData = emptyUserAnswers
+            .set(CheckAnswersItemPage(1), true)
+            .set(ItemShortageOrExcessPage(1), ItemShortageOrExcessModel(WrongWithMovement.Damaged, 3, Some("info")))
+
+          withData.items mustBe Seq()
+        }
+
+        "when user answers is empty" in {
+
+          val withData = emptyUserAnswers
+
+          withData.items mustBe Seq()
+        }
+      }
+    }
+
+    "when calling .itemKeys" - {
+      "must return all keys" - {
+        "when items is an object" in {
+          val input = emptyUserAnswers.copy(data = Json.obj(
+            "items" -> Json.obj(
+              "key1" -> "value1",
+              "key2" -> "value2"
+            )
+          ))
+
+          input.itemKeys mustBe Seq("key1", "key2")
+        }
+      }
+
+      "must return an empty Seq" - {
+        "when items is not an object" in {
+          val input = emptyUserAnswers.copy(data = Json.obj(
+            "items" -> JsArray(Seq(Json.obj(
+              "key1" -> "value1",
+              "key2" -> "value2"
+            )))
+          ))
+
+          input.itemKeys mustBe Seq()
+        }
+      }
+    }
+
+    "when calling .get(key)" - {
+      "must return a value" - {
+        "when value found matches the Reads" in {
+          val input = emptyUserAnswers
+            .set(SelectItemsPage(1), 1)
+            .set(SelectItemsPage(2), 2)
+
+          input.get("item-1")(MovementItem.readItemUniqueReference) mustBe Seq(1)
+        }
+      }
+
+      "must return an empty Seq" - {
+        "when value found doesn't match the Reads" in {
+          val input = emptyUserAnswers
+            .set(CheckAnswersItemPage(1), false)
+            .set(SelectItemsPage(2), 2)
+
+          input.get("item-1")(ItemModel.reads) mustBe Seq()
+        }
+
+        "when no value is found for the inputted key" in {
+          val input = emptyUserAnswers
+            .set(SelectItemsPage(1), 1)
+            .set(SelectItemsPage(2), 2)
+
+          input.get("item-3")(MovementItem.readItemUniqueReference) mustBe Seq()
+        }
       }
     }
   }

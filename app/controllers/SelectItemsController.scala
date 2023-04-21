@@ -23,7 +23,6 @@ import models.{ItemModel, NormalMode}
 import navigation.Navigator
 import pages.unsatisfactory.individualItems.SelectItemsPage
 import play.api.i18n.MessagesApi
-import play.api.libs.json.__
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.UserAnswersService
 import views.html.SelectItemsView
@@ -53,24 +52,16 @@ class SelectItemsController @Inject()(override val messagesApi: MessagesApi,
 
   def addItemToList(ern: String, arc: String, itemUniqueReference: Int): Action[AnyContent] =
     authorisedDataRequestAsync(ern, arc) { implicit request =>
-      val itemsAlreadyAdded = getAddedItemsWithIndex()
-      val itemIdx = itemsAlreadyAdded.find(_._1 == itemUniqueReference) match {
-        case Some((_, idx)) => idx
-        case None => itemsAlreadyAdded.size
-      }
-      saveAndRedirect(SelectItemsPage(itemIdx + 1), itemUniqueReference, NormalMode)
+      saveAndRedirect(SelectItemsPage(itemUniqueReference), itemUniqueReference, NormalMode)
     }
 
-  private def getAddedItemsWithIndex()(implicit request: DataRequest[_]): Seq[(Int, Int)] =
-    request.userAnswers.getList[Int](__ \ "items")(MovementItem.readItemUniqueReference).zipWithIndex
-
   private[controllers] def getFilteredItems(implicit request: DataRequest[_]): Seq[MovementItem] = {
-    val userAnswersUniqueReferences = request.userAnswers.getList(__ \ "items")(MovementItem.readItemUniqueReference)
+    val userAnswersUniqueReferences = request.userAnswers.itemReferences
     if (userAnswersUniqueReferences.isEmpty) {
       request.movementDetails.items
     } else {
       val userAnswerItems: Seq[ItemModel] =
-        request.userAnswers.getList(__ \ "items")(ItemModel.reads)
+        request.userAnswers.items
 
       request.movementDetails.items.filterNot {
         movementDetailsItem =>

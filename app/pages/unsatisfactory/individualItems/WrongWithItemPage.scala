@@ -22,7 +22,7 @@ import play.api.libs.json.{JsPath, __}
 
 case class WrongWithItemPage(idx: Int) extends QuestionPage[Set[WrongWithMovement]] {
 
-  override def path: JsPath = __ \ "items" \ (idx - 1) \ toString
+  override def path: JsPath = __ \ "items" \ s"item-$idx" \ toString
 
   override def toString: String = s"wrongWithItem"
 }

@@ -29,8 +29,10 @@ final case class UserAnswers(internalId: String,
                              data: JsObject = Json.obj(),
                              lastUpdated: Instant = Instant.now) {
 
-  def getList[A](path: JsPath)(implicit rds: Reads[A]): Seq[A] =
+  def getList[A](path: JsPath)(implicit rds: Reads[A]): Seq[A] = {
     path.read[Seq[A]].reads(data).getOrElse(Seq.empty)
+    //TODO update this method?
+  }
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).asOpt.flatten
@@ -47,7 +49,7 @@ final case class UserAnswers(internalId: String,
 
   def removeItem(idx: Int): UserAnswers =
     handleResult {
-      data.removeObject(__ \ "items" \ (idx - 1))
+      data.removeObject(__ \ "items" \ s"item-$idx")
     }
 
   private[models] def handleResult: JsResult[JsObject] => UserAnswers = {

@@ -34,7 +34,7 @@ final case class UserAnswers(internalId: String,
     case _ => Seq()
   }.toSeq
 
-  private[models] def get[A](key: String)(implicit reads: Reads[A]): Seq[A] = {
+  private[models] def getItemWithReads[A](key: String)(reads: Reads[A]): Seq[A] = {
     data \ "items" \ key match {
       case JsDefined(value) =>
         value.validate(reads) match {
@@ -47,13 +47,13 @@ final case class UserAnswers(internalId: String,
 
   def itemReferences: Seq[Int] = {
     itemKeys.flatMap {
-      get(_)(MovementItem.readItemUniqueReference)
+      getItemWithReads(_)(MovementItem.readItemUniqueReference)
     }.sorted
   }
 
   def items: Seq[ItemModel] = {
     itemKeys.flatMap {
-      get(_)(ItemModel.reads)
+      getItemWithReads(_)(ItemModel.reads)
     }.sortBy(_.itemUniqueReference)
   }
 

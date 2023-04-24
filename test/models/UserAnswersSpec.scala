@@ -454,14 +454,14 @@ class UserAnswersSpec extends SpecBase {
       }
     }
 
-    "when calling .get(key)" - {
+    "when calling .getItemWithReads(key)" - {
       "must return a value" - {
         "when value found matches the Reads" in {
           val input = emptyUserAnswers
             .set(SelectItemsPage(1), 1)
             .set(SelectItemsPage(2), 2)
 
-          input.get("item-1")(MovementItem.readItemUniqueReference) mustBe Seq(1)
+          input.getItemWithReads("item-1")(MovementItem.readItemUniqueReference) mustBe Seq(1)
         }
       }
 
@@ -471,7 +471,7 @@ class UserAnswersSpec extends SpecBase {
             .set(CheckAnswersItemPage(1), false)
             .set(SelectItemsPage(2), 2)
 
-          input.get("item-1")(ItemModel.reads) mustBe Seq()
+          input.getItemWithReads("item-1")(ItemModel.reads) mustBe Seq()
         }
 
         "when no value is found for the inputted key" in {
@@ -479,7 +479,7 @@ class UserAnswersSpec extends SpecBase {
             .set(SelectItemsPage(1), 1)
             .set(SelectItemsPage(2), 2)
 
-          input.get("item-3")(MovementItem.readItemUniqueReference) mustBe Seq()
+          input.getItemWithReads("item-3")(MovementItem.readItemUniqueReference) mustBe Seq()
         }
       }
     }

@@ -20,27 +20,25 @@ import controllers.routes
 import models.ItemModel
 import models.requests.DataRequest
 import models.response.emcsTfe.MovementItem
-import play.api.libs.json.__
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 
 class AddedItemsSummary  {
 
   def itemList()(implicit request: DataRequest[_]): Seq[ListItem] = {
-    request.userAnswers.getList[Int](__ \ "items")(MovementItem.readItemUniqueReference).zipWithIndex.flatMap {
-      case (uniqueReference, idx) =>
+    request.userAnswers.itemReferences.flatMap {
+      uniqueReference =>
         request.movementDetails.copy(items = getFilteredItems).item(uniqueReference).map { item =>
-          val pageIdx = idx + 1 // zipWithIndex is zero-indexed so need to + 1 to match what we're doing everywhere else
           ListItem(
             name = item.cnCode,
-            routes.CheckYourAnswersItemController.onPageLoad(request.ern, request.arc, pageIdx).url,
-            routes.RemoveItemController.onPageLoad(request.ern, request.arc, pageIdx).url
+            routes.CheckYourAnswersItemController.onPageLoad(request.ern, request.arc, uniqueReference).url,
+            routes.RemoveItemController.onPageLoad(request.ern, request.arc, uniqueReference).url
           )
         }
     }
   }
 
   private def getFilteredItems(implicit request: DataRequest[_]): Seq[MovementItem] = {
-    val userAnswerItems: Seq[ItemModel] = request.userAnswers.getList(__ \ "items")(ItemModel.reads)
+    val userAnswerItems: Seq[ItemModel] = request.userAnswers.items
 
     request.movementDetails.items.filter {
       movementDetailsItem =>

@@ -18,7 +18,7 @@ package mocks.viewmodels
 
 import models.requests.DataRequest
 import models.response.emcsTfe.MovementItem
-import org.scalamock.handlers.{CallHandler1, CallHandler4, CallHandler5}
+import org.scalamock.handlers.{CallHandler1, CallHandler5}
 import org.scalamock.scalatest.MockFactory
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList

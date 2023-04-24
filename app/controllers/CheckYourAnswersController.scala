@@ -17,11 +17,10 @@
 package controllers
 
 import controllers.actions._
-import models.{ItemModel, NormalMode}
+import models.NormalMode
 import navigation.Navigator
 import pages.CheckAnswersPage
 import play.api.i18n.MessagesApi
-import play.api.libs.json.__
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.{CheckAnswersHelper, CheckAnswersItemHelper}
@@ -29,17 +28,16 @@ import views.html.CheckYourAnswersView
 
 import javax.inject.Inject
 
-class CheckYourAnswersController @Inject()(
-                                            override val messagesApi: MessagesApi,
-                                            override val auth: AuthAction,
-                                            override val withMovement: MovementAction,
-                                            override val getData: DataRetrievalAction,
-                                            override val requireData: DataRequiredAction,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            val navigator: Navigator,
-                                            view: CheckYourAnswersView,
-                                            checkAnswersHelper: CheckAnswersHelper,
-                                            checkAnswersItemHelper: CheckAnswersItemHelper,
+class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi,
+                                           override val auth: AuthAction,
+                                           override val withMovement: MovementAction,
+                                           override val getData: DataRetrievalAction,
+                                           override val requireData: DataRequiredAction,
+                                           val controllerComponents: MessagesControllerComponents,
+                                           val navigator: Navigator,
+                                           view: CheckYourAnswersView,
+                                           checkAnswersHelper: CheckAnswersHelper,
+                                           checkAnswersItemHelper: CheckAnswersItemHelper,
                                           ) extends BaseController with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String): Action[AnyContent] =
@@ -47,18 +45,16 @@ class CheckYourAnswersController @Inject()(
       withAllItems() {
         items =>
           val formattedAnswers: Seq[(String, SummaryList)] =
-            items.zipWithIndex map {
-              case (item, idx) =>
+            items map {
+              item =>
                 (
                   checkAnswersItemHelper.itemName(item),
-                  checkAnswersItemHelper.summaryList(idx + 1, item, true)
+                  checkAnswersItemHelper.summaryList(item.itemUniqueReference, item, onFinalCheckAnswers = true)
                 )
             }
 
-          val moreItemsToAdd: Boolean = request.movementDetails.items.size match {
-            case size if(size == items.size || items.size == 0) => false
-            case _ => true
-          }
+          val moreItemsToAdd: Boolean =
+            (request.movementDetails.items.size != items.size) && items.nonEmpty
 
           Ok(view(routes.CheckYourAnswersController.onSubmit(ern, arc),
             routes.SelectItemsController.onPageLoad(ern, arc).url,

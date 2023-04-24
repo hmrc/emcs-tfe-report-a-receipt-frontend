@@ -26,7 +26,7 @@ import pages.QuestionPage
 import pages.unsatisfactory.HowMuchIsWrongPage
 import pages.unsatisfactory.individualItems.{CheckAnswersItemPage, RemoveItemPage, SelectItemsPage}
 import play.api.inject.bind
-import play.api.libs.json.JsPath
+import play.api.libs.json.{JsObject, JsPath, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -77,13 +77,13 @@ class RemoveItemControllerSpec extends SpecBase with MockUserAnswersService {
 
       "must redirect to the AddedItemsController when valid data is submitted (true) and remove the item" in {
 
-        object ItemsPage extends QuestionPage[Seq[String]] {
+        object ItemsPage extends QuestionPage[JsObject] {
           override def path: JsPath = JsPath \ "items"
         }
 
         val updatedAnswers = emptyUserAnswers
           .set(HowMuchIsWrongPage, IndividualItem)
-          .set(ItemsPage, Seq())
+          .set(ItemsPage, Json.obj())
         MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers)).once()
 
         val application =

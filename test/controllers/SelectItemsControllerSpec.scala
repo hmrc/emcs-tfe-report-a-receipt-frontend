@@ -97,7 +97,7 @@ class SelectItemsControllerSpec extends SpecBase with JsonOptionFormatter with M
 
       "when no items have been added" - {
 
-        "must save the UniqueReference of the item to the array of items and redirect to onward route" in {
+        "must save the UniqueReference of the item to the object of items and redirect to onward route" in {
 
           val updatedAnswers = emptyUserAnswers.set(SelectItemsPage(1), item1.itemUniqueReference)
 
@@ -124,10 +124,10 @@ class SelectItemsControllerSpec extends SpecBase with JsonOptionFormatter with M
 
       "when items have already been added" - {
 
-        "must save the UniqueReference of the item to the next IDX array of items and redirect to onward route" in {
+        "must save the UniqueReference of the item to the object of items and redirect to onward route" in {
 
-          val userAnswers = emptyUserAnswers.set(SelectItemsPage(1), item2.itemUniqueReference)
-          val updatedAnswers = userAnswers.set(SelectItemsPage(2), item1.itemUniqueReference)
+          val userAnswers = emptyUserAnswers.set(SelectItemsPage(2), item2.itemUniqueReference)
+          val updatedAnswers = userAnswers.set(SelectItemsPage(1), item1.itemUniqueReference)
 
           MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
 

@@ -21,7 +21,7 @@ import play.api.libs.json.{JsPath, __}
 
 case class ItemOtherInformationPage(idx: Int) extends QuestionPage[String] {
 
-  override def path: JsPath = __ \ "items" \ (idx - 1) \ toString
+  override def path: JsPath = __ \ "items" \ s"item-$idx" \ toString
 
   override def toString: String = "itemOtherInformation"
 }

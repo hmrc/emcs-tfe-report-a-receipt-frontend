@@ -22,7 +22,7 @@ import play.api.libs.json.{JsPath, __}
 
 case class ItemShortageOrExcessPage(idx: Int) extends QuestionPage[ItemShortageOrExcessModel] {
 
-  override def path: JsPath = __ \ "items" \ (idx - 1) \ toString
+  override def path: JsPath = __ \ "items" \ s"item-$idx" \ toString
 
   override def toString: String = "itemShortageOrExcess"
 }

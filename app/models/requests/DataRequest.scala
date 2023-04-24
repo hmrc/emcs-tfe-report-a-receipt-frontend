@@ -16,29 +16,31 @@
 
 package models.requests
 
+import models.response.emcsTfe.{GetMovementResponse, MovementItem}
 import models.{ItemModel, UserAnswers}
-import models.response.emcsTfe.MovementItem
 import pages.unsatisfactory.individualItems.SelectItemsPage
-import play.api.libs.json.__
 import play.api.mvc.WrappedRequest
 
-case class DataRequest[A](request: MovementRequest[A], userAnswers: UserAnswers) extends WrappedRequest[A](request) {
-  val internalId = request.internalId
-  val ern = request.ern
-  val arc = request.arc
-  val movementDetails = request.movementDetails
+case class DataRequest[A](request: MovementRequest[A],
+                          userAnswers: UserAnswers) extends WrappedRequest[A](request) {
+
+  val internalId: String = request.internalId
+  val ern: String = request.ern
+  val arc: String = request.arc
+  val movementDetails: GetMovementResponse = request.movementDetails
 
   def getItemDetails(idx: Int): Option[MovementItem] =
-    userAnswers.get(SelectItemsPage(idx)).flatMap(reference =>
-      request.movementDetails.item(reference)
-    )
+    userAnswers.get(SelectItemsPage(idx)).flatMap {
+      reference =>
+        request.movementDetails.item(reference)
+    }
 
   def getItemsAdded: Seq[ItemModel] =
-    userAnswers.getList(__ \ "items")(ItemModel.reads)
+    userAnswers.items
 
   def getAllItemDetails: Seq[MovementItem] =
-    getItemsAdded.flatMap(
+    getItemsAdded.flatMap {
       itemModel =>
         request.movementDetails.item(itemModel.itemUniqueReference)
-    )
+    }
 }

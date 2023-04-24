@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package
-models
+package models
 
+import models.response.emcsTfe.MovementItem
 import play.api.libs.json._
 import queries.{Gettable, Settable}
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
@@ -29,8 +29,33 @@ final case class UserAnswers(internalId: String,
                              data: JsObject = Json.obj(),
                              lastUpdated: Instant = Instant.now) {
 
-  def getList[A](path: JsPath)(implicit rds: Reads[A]): Seq[A] =
-    path.read[Seq[A]].reads(data).getOrElse(Seq.empty)
+  private[models] def itemKeys: Seq[String] = (data \\ "items").flatMap {
+    case JsObject(underlying) => underlying.keys.toSeq
+    case _ => Seq()
+  }.toSeq
+
+  private[models] def getItemWithReads[A](key: String)(reads: Reads[A]): Seq[A] = {
+    data \ "items" \ key match {
+      case JsDefined(value) =>
+        value.validate(reads) match {
+          case JsSuccess(value, _) => Seq(value)
+          case JsError(_) => Seq.empty
+        }
+      case _: JsUndefined => Seq.empty
+    }
+  }
+
+  def itemReferences: Seq[Int] = {
+    itemKeys.flatMap {
+      getItemWithReads(_)(MovementItem.readItemUniqueReference)
+    }.sorted
+  }
+
+  def items: Seq[ItemModel] = {
+    itemKeys.flatMap {
+      getItemWithReads(_)(ItemModel.reads)
+    }.sortBy(_.itemUniqueReference)
+  }
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).asOpt.flatten
@@ -47,7 +72,7 @@ final case class UserAnswers(internalId: String,
 
   def removeItem(idx: Int): UserAnswers =
     handleResult {
-      data.removeObject(__ \ "items" \ (idx - 1))
+      data.removeObject(__ \ "items" \ s"item-$idx")
     }
 
   private[models] def handleResult: JsResult[JsObject] => UserAnswers = {
@@ -70,7 +95,7 @@ object UserAnswers {
         (__ \ "arc").read[String] and
         (__ \ "data").read[JsObject] and
         (__ \ "lastUpdated").read(MongoJavatimeFormats.instantFormat)
-      ) (UserAnswers.apply _)
+      )(UserAnswers.apply _)
   }
 
   val writes: OWrites[UserAnswers] = {
@@ -83,7 +108,7 @@ object UserAnswers {
         (__ \ "arc").write[String] and
         (__ \ "data").write[JsObject] and
         (__ \ "lastUpdated").write(MongoJavatimeFormats.instantFormat)
-      ) (unlift(UserAnswers.unapply))
+      )(unlift(UserAnswers.unapply))
   }
 
   implicit val format: OFormat[UserAnswers] = OFormat(reads, writes)

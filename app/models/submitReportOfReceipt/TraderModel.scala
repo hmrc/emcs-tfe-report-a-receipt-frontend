@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-package models
+package models.submitReportOfReceipt
 
-import models.WrongWithMovement.{Excess, Shortage}
 import play.api.libs.json.{Format, Json}
 
-case class ItemShortageOrExcessModel(wrongWithItem: WrongWithMovement,
-                                     amount: BigDecimal,
-                                     additionalInfo: Option[String]) {
+case class TraderModel(traderId: Option[String],
+                       traderName: Option[String],
+                       address: Option[AddressModel],
+                       eoriNumber: Option[String])
 
-  val excessAmount = if(wrongWithItem == Excess) Some(amount) else None
-  val shortageAmount = if(wrongWithItem == Shortage) Some(amount) else None
-}
-
-object ItemShortageOrExcessModel {
-  implicit val format: Format[ItemShortageOrExcessModel] = Json.format
+object TraderModel {
+  implicit val fmt: Format[TraderModel] = Json.format
 }

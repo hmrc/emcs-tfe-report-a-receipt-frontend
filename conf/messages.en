@@ -341,6 +341,9 @@ itemSealsInformation.checkYourAnswers.label = Information about broken seal(s)
 itemSealsInformation.checkYourAnswers.change.hidden = information about broken seal(s)
 itemSealsInformation.checkYourAnswers.addMoreInformation = Enter more information about broken seal(s) (optional)
 
+refusingAnyAmountOfItem.checkYourAnswers.label = Amount refused
+refusingAnyAmountOfItem.checkYourAnswers.addMoreInformation = Refuse an amount of this item (optional)
+
 addedItems.title.singular = You have given information for 1 item
 addedItems.title.plural = You have given information for {0} items
 addedItems.heading.singular = You have given information for 1 item

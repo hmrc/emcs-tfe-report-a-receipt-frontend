@@ -22,8 +22,7 @@ import models.WrongWithMovement.{BrokenSeals, Damaged, Other}
 import models.requests.DataRequest
 import models.response.emcsTfe.MovementItem
 import models.{CheckMode, NormalMode, ReviewMode, WrongWithMovement}
-import pages.unsatisfactory.HowMuchIsWrongPage
-import pages.unsatisfactory.individualItems.{ItemDamageInformationPage, ItemOtherInformationPage, ItemSealsInformationPage, WrongWithItemPage}
+import pages.unsatisfactory.individualItems._
 import play.api.i18n.Messages
 import play.api.libs.json.Format.GenericFormat
 import play.twirl.api.Html
@@ -54,7 +53,7 @@ class CheckAnswersItemHelper @Inject()(
       request.userAnswers.get(WrongWithItemPage(idx)).map {
         answers =>
           Seq(
-            HowMuchIsWrongRow(additionalLinkIdSignifier),
+            howMuchIsWrongRow(idx, additionalLinkIdSignifier),
             whatWasWrongRow(answers, idx, additionalLinkIdSignifier),
             shortageOrExcessItemSummary.rows(idx, item, additionalLinkIdSignifier),
             damagedItemsInformationRow(idx, additionalLinkIdSignifier),
@@ -115,31 +114,34 @@ class CheckAnswersItemHelper @Inject()(
   }
 
 
-  private def HowMuchIsWrongRow(additionalLinkIdSignifier: String)
+  private def howMuchIsWrongRow(idx: Int, additionalLinkIdSignifier: String)
                                        (implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] = {
-    val mode = if(additionalLinkIdSignifier != "") ReviewMode else CheckMode
-    request.userAnswers.get(HowMuchIsWrongPage) match {
-      case Some(value) if value != "" =>
-        Some(SummaryListRowViewModel(
-                  key = s"${HowMuchIsWrongPage}.checkYourAnswers.label",
-                  value = ValueViewModel(Text(value.toString)),
-                  actions = Seq(
-                    ActionItemViewModel(
-                      "site.change",
-                      routes.HowMuchIsWrongController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, mode).url,
-                      id = HowMuchIsWrongPage + additionalLinkIdSignifier
-                    ).withVisuallyHiddenText(messages(s"${HowMuchIsWrongPage}.checkYourAnswers.change.hidden"))
-                  )
-                ))
-      case Some(_) =>
-        Some(
-        SummaryListRowViewModel(
-          key = s"${HowMuchIsWrongPage}.checkYourAnswers.label",
-          value = ValueViewModel(HtmlContent(link(
-            link = routes.HowMuchIsWrongController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, mode).url,
-            messageKey = s"${HowMuchIsWrongPage}.checkYourAnswers.addMoreInformation")))
-        ))
-      case None => None
+
+    if (request.userAnswers.get(RefusingAnyAmountOfItemPage(idx)).nonEmpty & additionalLinkIdSignifier != "") {
+      val mode = if (additionalLinkIdSignifier != "") ReviewMode else CheckMode
+      request.userAnswers.get(RefusingAnyAmountOfItemPage(idx)).map {
+        case false  if request.userAnswers.get(RefusedAmountPage(idx)).isEmpty =>
+          SummaryListRowViewModel(
+            key = s"${RefusingAnyAmountOfItemPage(idx)}.checkYourAnswers.label",
+            value = ValueViewModel(HtmlContent(link(
+              link = routes.RefusedAmountController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, idx, mode).url,
+              messageKey = s"${RefusingAnyAmountOfItemPage(idx)}.checkYourAnswers.addMoreInformation")))
+          )
+        case _ =>
+          SummaryListRowViewModel(
+            key = s"${RefusingAnyAmountOfItemPage(idx)}.checkYourAnswers.label",
+            value = ValueViewModel(Text(request.userAnswers.get(RefusedAmountPage(idx)).get.toString())),
+            actions = Seq(
+              ActionItemViewModel(
+                "site.change",
+                routes.RefusedAmountController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, idx, mode).url,
+                id = RefusingAnyAmountOfItemPage(idx) + additionalLinkIdSignifier
+              ).withVisuallyHiddenText(messages(s"${RefusingAnyAmountOfItemPage(idx)}.checkYourAnswers.change.hidden"))
+            )
+          )
+      }
+    } else {
+      None
     }
   }
 

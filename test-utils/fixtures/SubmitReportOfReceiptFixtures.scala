@@ -17,7 +17,9 @@
 package fixtures
 
 import models.AcceptMovement._
+import models.response.emcsTfe.SubmitReportOfReceiptResponse
 import models.submitReportOfReceipt.SubmitReportOfReceiptModel
+import play.api.libs.json.Json
 
 import java.time.LocalDate
 
@@ -55,5 +57,8 @@ trait SubmitReportOfReceiptFixtures extends BaseFixtures
     individualItems = Seq(),
     otherInformation = None
   )
+
+  val successResponse = SubmitReportOfReceiptResponse(receipt = "ReceiptABCD1234")
+  val successResponseJson = Json.obj("receipt" -> "ReceiptABCD1234")
 
 }

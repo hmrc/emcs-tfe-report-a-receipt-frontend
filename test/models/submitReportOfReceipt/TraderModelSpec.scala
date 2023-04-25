@@ -14,19 +14,28 @@
  * limitations under the License.
  */
 
-package models
+package models.submitReportOfReceipt
 
-import models.WrongWithMovement.{Excess, Shortage}
-import play.api.libs.json.{Format, Json}
+import base.SpecBase
+import fixtures.TraderModelFixtures
+import play.api.libs.json.Json
 
-case class ItemShortageOrExcessModel(wrongWithItem: WrongWithMovement,
-                                     amount: BigDecimal,
-                                     additionalInfo: Option[String]) {
+class TraderModelSpec extends SpecBase with TraderModelFixtures {
 
-  val excessAmount = if(wrongWithItem == Excess) Some(amount) else None
-  val shortageAmount = if(wrongWithItem == Shortage) Some(amount) else None
-}
+  "TraderModel" - {
 
-object ItemShortageOrExcessModel {
-  implicit val format: Format[ItemShortageOrExcessModel] = Json.format
+    "should for the maximum number of fields" - {
+
+      "must serialise and de-serialise to/from JSON" in {
+        Json.toJson(maxTraderModel).as[TraderModel] mustBe maxTraderModel
+      }
+    }
+
+    "should for the minimum number of fields" - {
+
+      "must serialise and de-serialise to/from JSON" in {
+        Json.toJson(minTraderModel).as[TraderModel] mustBe minTraderModel
+      }
+    }
+  }
 }

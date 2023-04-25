@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-package models
+package fixtures
 
-import models.WrongWithMovement.{Excess, Shortage}
-import play.api.libs.json.{Format, Json}
+import models.WrongWithMovement
+import models.submitReportOfReceipt.UnsatisfactoryModel
 
-case class ItemShortageOrExcessModel(wrongWithItem: WrongWithMovement,
-                                     amount: BigDecimal,
-                                     additionalInfo: Option[String]) {
+trait UnsatisfactoryModelFixtures extends BaseFixtures {
 
-  val excessAmount = if(wrongWithItem == Excess) Some(amount) else None
-  val shortageAmount = if(wrongWithItem == Shortage) Some(amount) else None
-}
+  def maxUnsatisfactoryModel(reason: WrongWithMovement) = UnsatisfactoryModel(reason, Some("info"))
 
-object ItemShortageOrExcessModel {
-  implicit val format: Format[ItemShortageOrExcessModel] = Json.format
+  def minUnsatisfactoryModel(reason: WrongWithMovement) = UnsatisfactoryModel(reason, None)
+
 }

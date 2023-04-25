@@ -56,6 +56,10 @@ trait GetMovementResponseFixtures { _: BaseFixtures =>
   )
 
   val getMovementResponseModel: GetMovementResponse = GetMovementResponse(
+    arc = testArc,
+    sequenceNumber = 1,
+    consigneeTrader = None,
+    deliveryPlaceTrader = None,
     localReferenceNumber = "MyLrn",
     eadStatus = "MyEadStatus",
     consignorName = "MyConsignor",
@@ -66,46 +70,48 @@ trait GetMovementResponseFixtures { _: BaseFixtures =>
   )
 
   val getMovementResponseJson: JsValue = Json.obj(
-      "localReferenceNumber" -> "MyLrn",
-      "eadStatus" -> "MyEadStatus",
-      "consignorName" -> "MyConsignor",
-      "dateOfDispatch" -> "2010-03-04",
-      "journeyTime" -> "MyJourneyTime",
-      "items" -> Json.arr(
-        Json.obj(fields =
-          "itemUniqueReference" -> 1,
-          "productCode" -> "W200",
-          "cnCode" -> "22041011",
-          "quantity" -> 500,
-          "grossMass" -> 900,
-          "netMass" -> 375,
-          "alcoholicStrength" -> 12.7,
-          "packaging" -> Json.arr(
-            Json.obj(fields =
-              "typeOfPackage" -> "BX",
-              "quantity" -> 165
-            )
-          )
-        ),
-        Json.obj(fields =
-          "itemUniqueReference" -> 2,
-          "productCode" -> "W300",
-          "cnCode" -> "22041011",
-          "quantity" -> 550,
-          "grossMass" -> 910,
-          "netMass" -> 315,
-          "packaging" -> Json.arr(
-            Json.obj(fields =
-              "typeOfPackage" -> "BX",
-              "quantity" -> 165
-            ),
-            Json.obj(fields =
-              "typeOfPackage" -> "CR",
-              "quantity" -> 12
-            )
+    "arc" -> testArc,
+    "sequenceNumber" -> 1,
+    "localReferenceNumber" -> "MyLrn",
+    "eadStatus" -> "MyEadStatus",
+    "consignorName" -> "MyConsignor",
+    "dateOfDispatch" -> "2010-03-04",
+    "journeyTime" -> "MyJourneyTime",
+    "items" -> Json.arr(
+      Json.obj(fields =
+        "itemUniqueReference" -> 1,
+        "productCode" -> "W200",
+        "cnCode" -> "22041011",
+        "quantity" -> 500,
+        "grossMass" -> 900,
+        "netMass" -> 375,
+        "alcoholicStrength" -> 12.7,
+        "packaging" -> Json.arr(
+          Json.obj(fields =
+            "typeOfPackage" -> "BX",
+            "quantity" -> 165
           )
         )
       ),
-      "numberOfItems" -> 2
+      Json.obj(fields =
+        "itemUniqueReference" -> 2,
+        "productCode" -> "W300",
+        "cnCode" -> "22041011",
+        "quantity" -> 550,
+        "grossMass" -> 910,
+        "netMass" -> 315,
+        "packaging" -> Json.arr(
+          Json.obj(fields =
+            "typeOfPackage" -> "BX",
+            "quantity" -> 165
+          ),
+          Json.obj(fields =
+            "typeOfPackage" -> "CR",
+            "quantity" -> 12
+          )
+        )
+      )
+    ),
+    "numberOfItems" -> 2
   )
 }

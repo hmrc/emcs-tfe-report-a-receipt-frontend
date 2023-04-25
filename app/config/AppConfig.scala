@@ -26,27 +26,27 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 @Singleton
 class AppConfig @Inject()(servicesConfig: ServicesConfig, configuration: Configuration) {
 
-  val host: String    = configuration.get[String]("host")
-  val appName: String = configuration.get[String]("appName")
+  lazy val host: String    = configuration.get[String]("host")
+  lazy val appName: String = configuration.get[String]("appName")
 
-  private val contactHost = configuration.get[String]("contact-frontend.host")
+  private lazy val contactHost = configuration.get[String]("contact-frontend.host")
 
   def betaBannerFeedbackUrl(implicit request: RequestHeader): String =
     s"$contactHost/contact/beta-feedback?service=$appName&backUrl=${SafeRedirectUrl(host + request.uri).encodedUrl}"
 
-  val loginUrl: String         = configuration.get[String]("urls.login")
-  val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
-  val signOutUrl: String       = configuration.get[String]("urls.signOut")
+  lazy val loginUrl: String         = configuration.get[String]("urls.login")
+  lazy val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
+  lazy val signOutUrl: String       = configuration.get[String]("urls.signOut")
 
-  val contactHmrcUrl: String   = configuration.get[String]("urls.contactHmrc")
+  lazy val contactHmrcUrl: String   = configuration.get[String]("urls.contactHmrc")
 
-  private val feedbackFrontendHost: String = configuration.get[String]("feedback-frontend.host")
-  val feedbackFrontendSurveyUrl: String    = s"$feedbackFrontendHost/feedback/$appName"
+  private lazy val feedbackFrontendHost: String = configuration.get[String]("feedback-frontend.host")
+  lazy val feedbackFrontendSurveyUrl: String    = s"$feedbackFrontendHost/feedback/$appName"
 
-  val languageTranslationEnabled: Boolean =
+  lazy val languageTranslationEnabled: Boolean =
     configuration.get[Boolean]("features.welsh-translation")
 
-  val emcsTfeHomeUrl: String = configuration.get[String]("urls.emcsTfeHome")
+  lazy val emcsTfeHomeUrl: String = configuration.get[String]("urls.emcsTfeHome")
   def emcsMovementDetailsUrl(ern: String, arc: String): String =
     configuration.get[String]("urls.emcsTfeMovementDetails") + s"/$ern/$arc"
 
@@ -55,11 +55,11 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig, configuration: Configu
     "cy" -> Lang("cy")
   )
 
-  val timeout: Int   = configuration.get[Int]("timeout-dialog.timeout")
-  val countdown: Int = configuration.get[Int]("timeout-dialog.countdown")
-
-  val cacheTtl: Int = configuration.get[Int]("mongodb.timeToLiveInSeconds")
+  lazy val timeout: Int   = configuration.get[Int]("timeout-dialog.timeout")
+  lazy val countdown: Int = configuration.get[Int]("timeout-dialog.countdown")
 
   private def emcsTfeService: String = servicesConfig.baseUrl("emcs-tfe")
   def emcsTfeBaseUrl: String = s"$emcsTfeService/emcs-tfe"
+
+  def destinationOffice: String = configuration.get[String]("constants.destinationOffice")
 }

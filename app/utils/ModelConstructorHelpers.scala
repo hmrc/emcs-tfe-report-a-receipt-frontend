@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 
-package models
+package utils
 
-import models.WrongWithMovement.{Excess, Shortage}
-import play.api.libs.json.{Format, Json}
+import models.UserAnswers
+import pages.QuestionPage
+import play.api.libs.json.Reads
 
-case class ItemShortageOrExcessModel(wrongWithItem: WrongWithMovement,
-                                     amount: BigDecimal,
-                                     additionalInfo: Option[String]) {
+import scala.util.control.NoStackTrace
 
-  val excessAmount = if(wrongWithItem == Excess) Some(amount) else None
-  val shortageAmount = if(wrongWithItem == Shortage) Some(amount) else None
-}
+trait ModelConstructorHelpers extends Logging {
 
-object ItemShortageOrExcessModel {
-  implicit val format: Format[ItemShortageOrExcessModel] = Json.format
+  def mandatoryPage[A](page: QuestionPage[A])(implicit userAnswers: UserAnswers, rds: Reads[A]): A = userAnswers.get(page) match {
+    case Some(a) => a
+    case None =>
+      logger.error(s"Missing mandatory UserAnswer for page: '$page'")
+      throw MissingMandatoryPage(s"Missing mandatory UserAnswer for page: '$page'")
+  }
+
+  case class MissingMandatoryPage(msg: String) extends Exception(msg) with NoStackTrace
 }

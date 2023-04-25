@@ -14,19 +14,24 @@
  * limitations under the License.
  */
 
-package models
+package fixtures
 
-import models.WrongWithMovement.{Excess, Shortage}
-import play.api.libs.json.{Format, Json}
+import models.submitReportOfReceipt.TraderModel
 
-case class ItemShortageOrExcessModel(wrongWithItem: WrongWithMovement,
-                                     amount: BigDecimal,
-                                     additionalInfo: Option[String]) {
+trait TraderModelFixtures extends BaseFixtures with AddressModelFixtures {
 
-  val excessAmount = if(wrongWithItem == Excess) Some(amount) else None
-  val shortageAmount = if(wrongWithItem == Shortage) Some(amount) else None
-}
+  val maxTraderModel = TraderModel(
+    traderId = Some("id"),
+    traderName = Some("name"),
+    address = Some(maxAddressModel),
+    eoriNumber = Some("eori")
+  )
 
-object ItemShortageOrExcessModel {
-  implicit val format: Format[ItemShortageOrExcessModel] = Json.format
+  val minTraderModel = TraderModel(
+    traderId = None,
+    traderName = None,
+    address = None,
+    eoriNumber = None
+  )
+
 }

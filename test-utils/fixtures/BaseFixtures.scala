@@ -19,7 +19,7 @@ package fixtures
 import models.UserAnswers
 import play.api.mvc.Call
 
-import java.time.Instant
+import java.time.{Instant, LocalDate}
 import java.time.temporal.ChronoUnit
 
 trait BaseFixtures {
@@ -28,6 +28,7 @@ trait BaseFixtures {
   val testInternalId: String = "internalId"
   val testErn: String = "ern"
   val testArc: String = "arc"
+  val testDateOfArrival: LocalDate = LocalDate.now()
   val testConfirmationReference = "UYVQBLMXCYK6HAEBZI7TSWAQ6XDTXFYU"
   val testOnwardRoute = Call("GET", "/foo")
 

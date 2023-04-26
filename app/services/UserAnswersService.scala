@@ -18,11 +18,11 @@ package services
 
 import connectors.emcsTfe.UserAnswersConnector
 import models.UserAnswers
+import models.response.UserAnswersException
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.control.NoStackTrace
 
 @Singleton
 class UserAnswersService @Inject()(userAnswersConnector: UserAnswersConnector)(implicit ec: ExecutionContext) {
@@ -46,5 +46,3 @@ class UserAnswersService @Inject()(userAnswersConnector: UserAnswersConnector)(i
       case Left(_) => throw UserAnswersException(s"Failed to delete UserAnswers from emcs-tfe for ern: '${answers.ern}' & arc: '${answers.arc}'")
     }
 }
-
-case class UserAnswersException(msg: String) extends Exception(msg) with NoStackTrace

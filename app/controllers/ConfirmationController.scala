@@ -16,10 +16,13 @@
 
 package controllers
 
+import config.SessionKeys.SUBMISSION_RECEIPT_REFERENCE
 import controllers.actions._
+import handlers.ErrorHandler
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.Logging
 import views.html.ConfirmationView
 
 import javax.inject.Inject
@@ -31,13 +34,18 @@ class ConfirmationController @Inject()(
                                         override val getData: DataRetrievalAction,
                                         override val requireData: DataRequiredAction,
                                         val controllerComponents: MessagesControllerComponents,
-                                        view: ConfirmationView
-                                      ) extends FrontendBaseController with I18nSupport with AuthActionHelper {
+                                        view: ConfirmationView,
+                                        errorHandler: ErrorHandler
+                                      ) extends FrontendBaseController with I18nSupport with AuthActionHelper with Logging {
 
   def onPageLoad(ern: String, arc: String): Action[AnyContent] =
     authorisedDataRequest(ern, arc) { implicit request =>
-      //TODO: Future story will need to return the actual reference from ChRIS/EMCS-Core
-      val reference = "UYVQBLMXCYK6HAEBZI7TSWAQ6XDTXFYU"
-      Ok(view(reference))
+      request.session.get(SUBMISSION_RECEIPT_REFERENCE) match {
+        case Some(reference) =>
+          Ok(view(reference))
+        case None =>
+          logger.warn("[onPageLoad] Could not retrieve submission receipt reference from Users session")
+          BadRequest(errorHandler.badRequestTemplate)
+      }
     }
 }

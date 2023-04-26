@@ -18,7 +18,7 @@ package connectors.emcsTfe
 
 import base.SpecBase
 import config.AppConfig
-import fixtures.{GetMovementResponseFixtures, SubmitReportOfReceiptFixtures}
+import fixtures.SubmitReportOfReceiptFixtures
 import mocks.connectors.MockHttpClient
 import models.response.JsonValidationError
 import org.scalatest.BeforeAndAfterAll

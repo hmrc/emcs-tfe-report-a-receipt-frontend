@@ -18,7 +18,7 @@ package services
 
 import base.SpecBase
 import mocks.connectors.MockUserAnswersConnector
-import models.response.UnexpectedDownstreamResponseError
+import models.response.{UnexpectedDownstreamResponseError, UserAnswersException}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -56,7 +56,7 @@ class UserAnswersServiceSpec extends SpecBase with MockUserAnswersConnector {
       "when Connector returns failure from downstream" in {
 
         MockUserAnswersConnector.get(testErn, testArc).returns(Future.successful(Left(UnexpectedDownstreamResponseError)))
-        intercept[UserAnswersException](await(testService.get(testErn, testArc))).msg mustBe
+        intercept[UserAnswersException](await(testService.get(testErn, testArc))).getMessage mustBe
           s"Failed to retrieve UserAnswers from emcs-tfe for ern: '$testErn' & arc: '$testArc'"
       }
     }
@@ -78,7 +78,7 @@ class UserAnswersServiceSpec extends SpecBase with MockUserAnswersConnector {
       "when Connector returns failure from downstream" in {
 
         MockUserAnswersConnector.put(emptyUserAnswers).returns(Future.successful(Left(UnexpectedDownstreamResponseError)))
-        intercept[UserAnswersException](await(testService.set(emptyUserAnswers))).msg mustBe
+        intercept[UserAnswersException](await(testService.set(emptyUserAnswers))).getMessage mustBe
           s"Failed to store UserAnswers in emcs-tfe for ern: '$testErn' & arc: '$testArc'"
       }
     }
@@ -100,7 +100,7 @@ class UserAnswersServiceSpec extends SpecBase with MockUserAnswersConnector {
       "when Connector returns failure from downstream" in {
 
         MockUserAnswersConnector.delete(testErn, testArc).returns(Future.successful(Left(UnexpectedDownstreamResponseError)))
-        intercept[UserAnswersException](await(testService.clear(emptyUserAnswers))).msg mustBe
+        intercept[UserAnswersException](await(testService.clear(emptyUserAnswers))).getMessage mustBe
           s"Failed to delete UserAnswers from emcs-tfe for ern: '$testErn' & arc: '$testArc'"
       }
     }

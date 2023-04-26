@@ -25,11 +25,11 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockEmcsTfeConnector extends MockFactory {
+trait MockGetMovementConnector extends MockFactory {
 
   lazy val mockGetMovementConnector: GetMovementConnector = mock[GetMovementConnector]
 
-  object MockEmcsTfeConnector {
+  object MockGetMovementConnector {
 
     def getMovement(ern: String,
                     arc: String): CallHandler4[String, String, HeaderCarrier, ExecutionContext, Future[Either[ErrorResponse, GetMovementResponse]]] =

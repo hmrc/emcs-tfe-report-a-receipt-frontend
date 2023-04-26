@@ -22,7 +22,7 @@ import models.WrongWithMovement.{BrokenSeals, Damaged, Other}
 import models.requests.DataRequest
 import models.response.emcsTfe.MovementItem
 import models.{CheckMode, NormalMode, ReviewMode, WrongWithMovement}
-import pages.unsatisfactory.individualItems.{ItemDamageInformationPage, ItemOtherInformationPage, ItemSealsInformationPage, WrongWithItemPage}
+import pages.unsatisfactory.individualItems._
 import play.api.i18n.Messages
 import play.api.libs.json.Format.GenericFormat
 import play.twirl.api.Html
@@ -53,6 +53,7 @@ class CheckAnswersItemHelper @Inject()(
       request.userAnswers.get(WrongWithItemPage(idx)).map {
         answers =>
           Seq(
+            amountRefusedRow(idx, additionalLinkIdSignifier),
             whatWasWrongRow(answers, idx, additionalLinkIdSignifier),
             shortageOrExcessItemSummary.rows(idx, item, additionalLinkIdSignifier),
             damagedItemsInformationRow(idx, additionalLinkIdSignifier),
@@ -105,6 +106,38 @@ class CheckAnswersItemHelper @Inject()(
             value = ValueViewModel(HtmlContent(link(
               link = routes.MoreInformationController.loadItemSealsInformation(request.userAnswers.ern, request.userAnswers.arc, idx, mode).url,
               messageKey = s"${ItemSealsInformationPage(idx)}.checkYourAnswers.addMoreInformation")))
+          )
+      }
+    } else {
+      None
+    }
+  }
+
+
+  private def amountRefusedRow(idx: Int, additionalLinkIdSignifier: String)
+                                       (implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] = {
+
+    if (request.userAnswers.get(RefusingAnyAmountOfItemPage(idx)).nonEmpty & additionalLinkIdSignifier != "") {
+      val mode = if (additionalLinkIdSignifier != "") ReviewMode else CheckMode
+      request.userAnswers.get(RefusingAnyAmountOfItemPage(idx)).map {
+        case false  if request.userAnswers.get(RefusedAmountPage(idx)).isEmpty =>
+          SummaryListRowViewModel(
+            key = s"${RefusingAnyAmountOfItemPage(idx)}.checkYourAnswers.label",
+            value = ValueViewModel(HtmlContent(link(
+              link = routes.RefusedAmountController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, idx, mode).url,
+              messageKey = s"${RefusingAnyAmountOfItemPage(idx)}.checkYourAnswers.addMoreInformation")))
+          )
+        case _ =>
+          SummaryListRowViewModel(
+            key = s"${RefusingAnyAmountOfItemPage(idx)}.checkYourAnswers.label",
+            value = ValueViewModel(Text(request.userAnswers.get(RefusedAmountPage(idx)).get.toString())),
+            actions = Seq(
+              ActionItemViewModel(
+                "site.change",
+                routes.RefusedAmountController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, idx, mode).url,
+                id = RefusingAnyAmountOfItemPage(idx) + additionalLinkIdSignifier
+              ).withVisuallyHiddenText(messages(s"${RefusingAnyAmountOfItemPage(idx)}.checkYourAnswers.change.hidden"))
+            )
           )
       }
     } else {

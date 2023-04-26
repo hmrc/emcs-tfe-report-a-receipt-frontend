@@ -34,6 +34,7 @@ object WrongWithMovement extends Enumerable.Implicits {
   case object Damaged extends WithName("damaged") with WrongWithMovement
   case object BrokenSeals extends WithName("brokenSeals") with WrongWithMovement
   case object Other extends WithName("other") with WrongWithMovement
+  case object AmountRefused extends WithName("amountRefused") with WrongWithMovement
 
   val values: Seq[WrongWithMovement] = Seq(
     Shortage,

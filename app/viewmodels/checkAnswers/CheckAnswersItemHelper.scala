@@ -53,7 +53,7 @@ class CheckAnswersItemHelper @Inject()(
       request.userAnswers.get(WrongWithItemPage(idx)).map {
         answers =>
           Seq(
-            howMuchIsWrongRow(idx, additionalLinkIdSignifier),
+            amountRefusedRow(idx, additionalLinkIdSignifier),
             whatWasWrongRow(answers, idx, additionalLinkIdSignifier),
             shortageOrExcessItemSummary.rows(idx, item, additionalLinkIdSignifier),
             damagedItemsInformationRow(idx, additionalLinkIdSignifier),
@@ -114,7 +114,7 @@ class CheckAnswersItemHelper @Inject()(
   }
 
 
-  private def howMuchIsWrongRow(idx: Int, additionalLinkIdSignifier: String)
+  private def amountRefusedRow(idx: Int, additionalLinkIdSignifier: String)
                                        (implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] = {
 
     if (request.userAnswers.get(RefusingAnyAmountOfItemPage(idx)).nonEmpty & additionalLinkIdSignifier != "") {

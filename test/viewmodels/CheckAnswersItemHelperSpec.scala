@@ -193,7 +193,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
           ))))
         )
 
-        lazy val howMuchIsWrongRow = SummaryListRow(
+        lazy val refusedAmountRow = SummaryListRow(
           key = s"${RefusingAnyAmountOfItemPage(1)}.checkYourAnswers.label",
           value = ValueViewModel(Text("1")),
           actions = Some(Actions(items = Seq(ActionItem(
@@ -225,7 +225,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
         )
 
         checkAnswersItemHelper.summaryList(1, item1, true) mustBe SummaryList(Seq(
-          howMuchIsWrongRow,
+          refusedAmountRow,
           whatWasWrongReviewRow,
           damagedGoodsInformationRow,
           brokenSealsInformationRow,
@@ -311,7 +311,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
             )))
           )
 
-          lazy val howMuchIsWrongRow = SummaryListRow(
+          lazy val amountRefusedRow = SummaryListRow(
             key = s"${RefusingAnyAmountOfItemPage(1)}.checkYourAnswers.label",
             value = ValueViewModel(HtmlContent(link(
               link = routes.RefusedAmountController.onPageLoad(testErn, testArc, 1, ReviewMode).url,
@@ -342,7 +342,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
 
 
           checkAnswersItemHelper.summaryList(1, item1, true) mustBe SummaryList(Seq(
-            howMuchIsWrongRow,
+            amountRefusedRow,
             whatWasWrongReviewRow,
             damagedGoodsInformationRow,
             brokenSealsInformationRow

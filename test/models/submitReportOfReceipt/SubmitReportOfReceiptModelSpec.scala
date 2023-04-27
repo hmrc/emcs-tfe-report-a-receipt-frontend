@@ -22,6 +22,7 @@ import fixtures.SubmitReportOfReceiptFixtures
 import models.AcceptMovement.{PartiallyRefused, Refused, Satisfactory, Unsatisfactory}
 import models.HowMuchIsWrong.{IndividualItem, TheWholeMovement}
 import models.WrongWithMovement.{BrokenSeals, Damaged, Excess, Other, Shortage, ShortageOrExcess}
+import models.response.MissingMandatoryPage
 import models.{ItemShortageOrExcessModel, WrongWithMovement}
 import org.scalamock.scalatest.MockFactory
 import pages.unsatisfactory.individualItems._

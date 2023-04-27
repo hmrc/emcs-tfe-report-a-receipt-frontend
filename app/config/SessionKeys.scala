@@ -14,19 +14,10 @@
  * limitations under the License.
  */
 
-package utils
+package config
 
-import models.UserAnswers
-import models.response.MissingMandatoryPage
-import pages.QuestionPage
-import play.api.libs.json.Reads
+object SessionKeys {
 
-trait ModelConstructorHelpers extends Logging {
+  val SUBMISSION_RECEIPT_REFERENCE = "SUBMISSION_RECEIPT_REFERENCE"
 
-  def mandatoryPage[A](page: QuestionPage[A])(implicit userAnswers: UserAnswers, rds: Reads[A]): A = userAnswers.get(page) match {
-    case Some(a) => a
-    case None =>
-      logger.error(s"Missing mandatory UserAnswer for page: '$page'")
-      throw MissingMandatoryPage(s"Missing mandatory UserAnswer for page: '$page'")
-  }
 }

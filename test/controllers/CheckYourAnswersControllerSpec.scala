@@ -17,29 +17,51 @@
 package controllers
 
 import base.SpecBase
+import fixtures.SubmitReportOfReceiptFixtures
+import handlers.ErrorHandler
+import mocks.services.MockSubmitReportOfReceiptService
 import mocks.viewmodels.MockCheckAnswersHelper
+import models.AcceptMovement.Satisfactory
+import models.UserAnswers
+import models.response.{MissingMandatoryPage, SubmitReportOfReceiptException}
 import navigation.{FakeNavigator, Navigator}
+import pages.{AcceptMovementPage, DateOfArrivalPage}
 import play.api.inject
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.SubmitReportOfReceiptService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.CheckAnswersHelper
 import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersView
 
-class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency with MockCheckAnswersHelper {
+import scala.concurrent.Future
+
+class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency with MockCheckAnswersHelper
+  with MockSubmitReportOfReceiptService with SubmitReportOfReceiptFixtures {
+
+  class Fixture(userAnswers: Option[UserAnswers]) {
+    val application =
+      applicationBuilder(userAnswers)
+        .overrides(
+          inject.bind[CheckAnswersHelper].toInstance(mockCheckAnswersHelper),
+          inject.bind[Navigator].toInstance(new FakeNavigator(testOnwardRoute)),
+          inject.bind[SubmitReportOfReceiptService].toInstance(mockSubmitReportOfReceiptService)
+        )
+        .build()
+
+    lazy val errorHandler = application.injector.instanceOf[ErrorHandler]
+    val view = application.injector.instanceOf[CheckYourAnswersView]
+  }
 
   "Check Your Answers Controller" - {
 
     ".onPageLoad" - {
 
+      def request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad(testErn, testArc).url)
       val link = routes.SelectItemsController.onPageLoad(testErn, testArc).url
 
-      "must return OK and the correct view for a GET" in {
-
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(inject.bind[CheckAnswersHelper].toInstance(mockCheckAnswersHelper))
-          .build()
+      "must return OK and the correct view for a GET" in new Fixture(Some(emptyUserAnswers)) {
 
         running(application) {
 
@@ -48,51 +70,84 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency wi
 
           MockCheckAnswersHelper.summaryList().returns(list)
 
-          val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad(testErn, testArc).url)
-
           val result = route(application, request).value
 
-          val view = application.injector.instanceOf[CheckYourAnswersView]
-
-          status(result) mustEqual OK
-          contentAsString(result) mustEqual view(routes.CheckYourAnswersController.onSubmit(testErn, testArc), link, list, itemList, false)(dataRequest(request), messages(application)).toString
+          status(result) mustBe OK
+          contentAsString(result) mustBe view(routes.CheckYourAnswersController.onSubmit(testErn, testArc), link, list, itemList, false)(dataRequest(request), messages(application)).toString
         }
       }
 
-      "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
-        val application = applicationBuilder(userAnswers = None).build()
+      "must redirect to Journey Recovery for a GET if no existing data is found" in new Fixture(None) {
 
         running(application) {
-          val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad(testErn, testArc).url)
 
           val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result).value mustBe routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }
 
     ".onSubmit" - {
 
-      "must redirect to the onward route" in {
+      def request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit(testErn, testArc).url)
 
-        val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers))
-            .overrides(
-              inject.bind[Navigator].toInstance(new FakeNavigator(testOnwardRoute))
-            )
-            .build()
+      "when valid data exists so the submission can be generated" - {
 
-        running(application) {
+        val userAnswers = emptyUserAnswers
+          .set(DateOfArrivalPage, testDateOfArrival)
+          .set(AcceptMovementPage, Satisfactory)
 
-          val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit(testErn, testArc).url)
+        "when the submission is successful" - {
 
-          val result = route(application, request).value
+          "must redirect to the onward route" in new Fixture(Some(userAnswers)) {
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual testOnwardRoute.url
+            running(application) {
+
+              MockSubmitReportOfReceiptService.submit(testErn, testArc, getMovementResponseModel, userAnswers)
+                .returns(Future.successful(successResponse))
+
+              val result = route(application, request).value
+
+              status(result) mustBe SEE_OTHER
+              redirectLocation(result).value mustBe testOnwardRoute.url
+            }
+          }
+        }
+
+        "when the submission fails" - {
+
+          "must render an ISE" in new Fixture(Some(userAnswers)) {
+
+            running(application) {
+
+              MockSubmitReportOfReceiptService.submit(testErn, testArc, getMovementResponseModel, userAnswers)
+                .returns(Future.failed(SubmitReportOfReceiptException("bang")))
+
+              val result = route(application, request).value
+
+              status(result) mustBe INTERNAL_SERVER_ERROR
+              contentAsString(result) mustBe errorHandler.internalServerErrorTemplate(request).toString()
+            }
+          }
+        }
+      }
+
+      "when invalid data exists so the submission can NOT be generated" - {
+
+        "must return BadRequest" in new Fixture(Some(emptyUserAnswers)) {
+
+          running(application) {
+
+            MockSubmitReportOfReceiptService.submit(testErn, testArc, getMovementResponseModel, emptyUserAnswers)
+              .returns(Future.failed(MissingMandatoryPage("bang")))
+
+            val result = route(application, request).value
+
+            status(result) mustBe BAD_REQUEST
+            contentAsString(result) mustBe errorHandler.badRequestTemplate(request).toString()
+          }
         }
       }
     }

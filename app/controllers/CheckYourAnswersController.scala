@@ -16,12 +16,16 @@
 
 package controllers
 
+import config.SessionKeys.SUBMISSION_RECEIPT_REFERENCE
 import controllers.actions._
+import handlers.ErrorHandler
 import models.NormalMode
+import models.response.MissingMandatoryPage
 import navigation.Navigator
 import pages.CheckAnswersPage
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SubmitReportOfReceiptService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.{CheckAnswersHelper, CheckAnswersItemHelper}
 import views.html.CheckYourAnswersView
@@ -38,6 +42,8 @@ class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi
                                            view: CheckYourAnswersView,
                                            checkAnswersHelper: CheckAnswersHelper,
                                            checkAnswersItemHelper: CheckAnswersItemHelper,
+                                           submitReportOfReceiptService: SubmitReportOfReceiptService,
+                                           errorHandler: ErrorHandler
                                           ) extends BaseController with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String): Action[AnyContent] =
@@ -66,7 +72,15 @@ class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi
     }
 
   def onSubmit(ern: String, arc: String): Action[AnyContent] =
-    authorisedDataRequest(ern, arc) { implicit request =>
-      Redirect(navigator.nextPage(CheckAnswersPage, NormalMode, request.userAnswers))
+    authorisedDataRequestAsync(ern, arc) { implicit request =>
+      submitReportOfReceiptService.submit(ern, arc).map { response =>
+        Redirect(navigator.nextPage(CheckAnswersPage, NormalMode, request.userAnswers))
+          .addingToSession(SUBMISSION_RECEIPT_REFERENCE -> response.receipt)
+      } recover {
+        case _: MissingMandatoryPage =>
+          BadRequest(errorHandler.badRequestTemplate)
+        case _ =>
+          InternalServerError(errorHandler.internalServerErrorTemplate)
+      }
     }
 }

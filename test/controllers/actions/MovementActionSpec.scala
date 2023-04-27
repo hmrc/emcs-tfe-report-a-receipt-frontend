@@ -18,7 +18,7 @@ package controllers.actions
 
 import base.SpecBase
 import handlers.ErrorHandler
-import mocks.connectors.MockEmcsTfeConnector
+import mocks.connectors.MockGetMovementConnector
 import models.requests.{MovementRequest, UserRequest}
 import models.response.{ErrorResponse, JsonValidationError}
 import models.response.emcsTfe.GetMovementResponse
@@ -35,7 +35,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class MovementActionSpec extends SpecBase with MockitoSugar with MockEmcsTfeConnector with BeforeAndAfterAll {
+class MovementActionSpec extends SpecBase with MockitoSugar with MockGetMovementConnector with BeforeAndAfterAll {
 
   lazy val app = applicationBuilder(userAnswers = None).build()
   implicit val hc = HeaderCarrier()
@@ -58,7 +58,7 @@ class MovementActionSpec extends SpecBase with MockitoSugar with MockEmcsTfeConn
 
   class Harness(connectorResponse: Either[ErrorResponse, GetMovementResponse]) {
 
-    MockEmcsTfeConnector.getMovement(testErn, testArc).returns(Future.successful(connectorResponse))
+    MockGetMovementConnector.getMovement(testErn, testArc).returns(Future.successful(connectorResponse))
 
     val result = movementAction(testArc).invokeBlock(request, { movementRequest: MovementRequest[_] =>
       Future.successful(Ok(Json.toJson(movementRequest.movementDetails)))

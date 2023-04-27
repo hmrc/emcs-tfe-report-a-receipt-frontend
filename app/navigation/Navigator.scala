@@ -149,6 +149,8 @@ class Navigator @Inject()() extends BaseNavigator {
   private[navigation] val checkRouteMap: Page => UserAnswers => Call = {
     case ItemShortageOrExcessPage(idx) =>
       (userAnswers: UserAnswers) => routes.CheckYourAnswersItemController.onPageLoad(userAnswers.ern, userAnswers.arc, idx)
+    case RefusedAmountPage(idx) =>
+      (userAnswers: UserAnswers) => routes.CheckYourAnswersItemController.onPageLoad(userAnswers.ern, userAnswers.arc, idx)
     case ItemSealsInformationPage(idx) =>
       (userAnswers: UserAnswers) => routes.CheckYourAnswersItemController.onPageLoad(userAnswers.ern, userAnswers.arc, idx)
     case ItemDamageInformationPage(idx) =>
@@ -160,14 +162,6 @@ class Navigator @Inject()() extends BaseNavigator {
   }
 
   private[navigation] val reviewRouteMap: Page => UserAnswers => Call = {
-    case ItemShortageOrExcessPage(_) =>
-      (userAnswers: UserAnswers) => routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)
-    case ItemSealsInformationPage(_) =>
-      (userAnswers: UserAnswers) => routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)
-    case ItemDamageInformationPage(_) =>
-      (userAnswers: UserAnswers) => routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)
-    case ItemOtherInformationPage(_) =>
-      (userAnswers: UserAnswers) => routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)
     case _ =>
       (userAnswers: UserAnswers) => routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)
   }
@@ -180,20 +174,6 @@ class Navigator @Inject()() extends BaseNavigator {
     case ReviewMode =>
       reviewRouteMap(page)(userAnswers)
 
-  }
-
-  private[navigation] def nextWrongWithMovementOptionToAnswer(selectedOptions: Set[WrongWithMovement],
-                                                              lastOption: Option[WrongWithMovement] = None,
-                                                              checkboxOptions: Seq[WrongWithMovement] = WrongWithMovement.values): Option[WrongWithMovement] = {
-    val orderedSetOfOptions = checkboxOptions.filter(selectedOptions.contains)
-    lastOption match {
-      case Some(value) if orderedSetOfOptions.lastOption.contains(value) =>
-        None
-      case Some(value) =>
-        Some(orderedSetOfOptions(orderedSetOfOptions.indexOf(value) + 1))
-      case None =>
-        orderedSetOfOptions.headOption
-    }
   }
 
   private[navigation] def redirectToNextWrongMovementPage(lastOptionAnswered: Option[WrongWithMovement] = None)(implicit userAnswers: UserAnswers): Call =
@@ -236,4 +216,18 @@ class Navigator @Inject()() extends BaseNavigator {
       case _ =>
         routes.WrongWithMovementController.loadwrongWithItem(userAnswers.ern, userAnswers.arc, page.idx, NormalMode)
     }
+
+  private[navigation] def nextWrongWithMovementOptionToAnswer(selectedOptions: Set[WrongWithMovement],
+                                                              lastOption: Option[WrongWithMovement] = None,
+                                                              checkboxOptions: Seq[WrongWithMovement] = WrongWithMovement.values): Option[WrongWithMovement] = {
+    val orderedSetOfOptions = checkboxOptions.filter(selectedOptions.contains)
+    lastOption match {
+      case Some(value) if orderedSetOfOptions.lastOption.contains(value) =>
+        None
+      case Some(value) =>
+        Some(orderedSetOfOptions(orderedSetOfOptions.indexOf(value) + 1))
+      case None =>
+        orderedSetOfOptions.headOption
+    }
+  }
 }

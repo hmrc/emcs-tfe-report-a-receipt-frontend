@@ -117,10 +117,10 @@ class CheckAnswersItemHelper @Inject()(
   private def amountRefusedRow(idx: Int, additionalLinkIdSignifier: String)
                                        (implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] = {
 
-    if (request.userAnswers.get(RefusingAnyAmountOfItemPage(idx)).nonEmpty & additionalLinkIdSignifier != "") {
+    if (request.userAnswers.get(RefusingAnyAmountOfItemPage(idx)).nonEmpty) {
       val mode = if (additionalLinkIdSignifier != "") ReviewMode else CheckMode
       request.userAnswers.get(RefusingAnyAmountOfItemPage(idx)).map {
-        case false if request.userAnswers.get(RefusedAmountPage(idx)).isEmpty =>
+       case _ if request.userAnswers.get(RefusedAmountPage(idx)).isEmpty =>
           SummaryListRowViewModel(
             key = s"${RefusingAnyAmountOfItemPage(idx)}.checkYourAnswers.label",
             value = ValueViewModel(HtmlContent(link(

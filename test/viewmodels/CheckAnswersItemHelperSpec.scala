@@ -114,6 +114,17 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
 
           MockShortageOrExcessItemSummary.rows().returns(Seq())
 
+          lazy val refusedAmountRow = SummaryListRow(
+            key = s"${RefusingAnyAmountOfItemPage(1)}.checkYourAnswers.label",
+            value = ValueViewModel(Text(s"1 $kilogramsLong")),
+            actions = Some(Actions(items = Seq(ActionItem(
+              href = routes.RefusedAmountController.onPageLoad(testErn, testArc, 1, CheckMode).url,
+              content = msgs("site.change"),
+              visuallyHiddenText = Some(msgs(s"${RefusingAnyAmountOfItemPage(1)}.checkYourAnswers.change.hidden")),
+              attributes = Map("id" -> s"${RefusingAnyAmountOfItemPage(1)}")
+            ))))
+          )
+
           lazy val damagedGoodsInformationRow = SummaryListRow(
             key = s"${ItemDamageInformationPage(1)}.checkYourAnswers.label",
             value = ValueViewModel(Text("value")),
@@ -148,6 +159,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
           )
 
           checkAnswersItemHelper.summaryList(1, item1) mustBe SummaryList(Seq(
+            refusedAmountRow,
             whatWasWrongRow,
             damagedGoodsInformationRow,
             brokenSealsInformationRow,
@@ -269,8 +281,17 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
               messageKey = s"${ItemSealsInformationPage(1)}.checkYourAnswers.addMoreInformation"
             )))
           )
+          lazy val amountRefusedRow = SummaryListRow(
+            key = s"${RefusingAnyAmountOfItemPage(1)}.checkYourAnswers.label",
+            value = ValueViewModel(HtmlContent(link(
+              link = routes.RefusedAmountController.onPageLoad(testErn, testArc, 1, CheckMode).url,
+              messageKey = s"${RefusingAnyAmountOfItemPage(1)}.checkYourAnswers.addMoreInformation"
+            )))
+          )
+
 
           checkAnswersItemHelper.summaryList(1, item1) mustBe SummaryList(Seq(
+            amountRefusedRow,
             whatWasWrongRow,
             damagedGoodsInformationRow,
             brokenSealsInformationRow

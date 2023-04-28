@@ -116,7 +116,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
 
           lazy val refusedAmountRow = SummaryListRow(
             key = s"${RefusingAnyAmountOfItemPage(1)}.checkYourAnswers.label",
-            value = ValueViewModel(Text("1")),
+            value = ValueViewModel(Text(s"1 $kilogramsLong")),
             actions = Some(Actions(items = Seq(ActionItem(
               href = routes.RefusedAmountController.onPageLoad(testErn, testArc, 1, CheckMode).url,
               content = msgs("site.change"),

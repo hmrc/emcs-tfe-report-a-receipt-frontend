@@ -17,8 +17,8 @@
 package viewmodels.checkAnswers
 
 import controllers.routes
-import models.UnitOfMeasure.reads
-import models.WrongWithMovement.{BrokenSeals, Damaged, Other}
+import models.UnitOfMeasure.{Kilograms, reads}
+import models.WrongWithMovement.{AmountRefused, BrokenSeals, Damaged, Other}
 import models.requests.DataRequest
 import models.response.emcsTfe.MovementItem
 import models.{CheckMode, NormalMode, ReviewMode, WrongWithMovement}
@@ -120,7 +120,7 @@ class CheckAnswersItemHelper @Inject()(
     if (request.userAnswers.get(RefusingAnyAmountOfItemPage(idx)).nonEmpty) {
       val mode = if (additionalLinkIdSignifier != "") ReviewMode else CheckMode
       request.userAnswers.get(RefusingAnyAmountOfItemPage(idx)).map {
-        case _ if request.userAnswers.get(RefusedAmountPage(idx)).isEmpty =>
+       case _ if request.userAnswers.get(RefusedAmountPage(idx)).isEmpty =>
           SummaryListRowViewModel(
             key = s"${RefusingAnyAmountOfItemPage(idx)}.checkYourAnswers.label",
             value = ValueViewModel(HtmlContent(link(
@@ -130,7 +130,14 @@ class CheckAnswersItemHelper @Inject()(
         case _ =>
           SummaryListRowViewModel(
             key = s"${RefusingAnyAmountOfItemPage(idx)}.checkYourAnswers.label",
-            value = ValueViewModel(Text(request.userAnswers.get(RefusedAmountPage(idx)).get.toString())),
+            //TODO: Hardcoded to kg, should be determined from the reference data based on the CN Code in future story
+            value = ValueViewModel(
+              messages(
+                s"${RefusingAnyAmountOfItemPage(idx)}.checkYourAnswers.amount.value",
+                request.userAnswers.get(RefusedAmountPage(idx)).get.toString(),
+                messages(s"unitOfMeasure.$Kilograms.long")
+              )
+            ),
             actions = Seq(
               ActionItemViewModel(
                 "site.change",

@@ -18,6 +18,7 @@ package viewmodels
 
 import base.SpecBase
 import controllers.routes
+import fixtures.messages.UnitOfMeasureMessages.English.kilogramsLong
 import mocks.viewmodels._
 import models.WrongWithMovement.{BrokenSeals, Damaged, Other, ShortageOrExcess}
 import models.requests.DataRequest
@@ -207,7 +208,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
 
         lazy val refusedAmountRow = SummaryListRow(
           key = s"${RefusingAnyAmountOfItemPage(1)}.checkYourAnswers.label",
-          value = ValueViewModel(Text("1")),
+          value = ValueViewModel(Text(s"1 $kilogramsLong")),
           actions = Some(Actions(items = Seq(ActionItem(
             href = routes.RefusedAmountController.onPageLoad(testErn, testArc, 1, ReviewMode).url,
             content = msgs("site.change"),

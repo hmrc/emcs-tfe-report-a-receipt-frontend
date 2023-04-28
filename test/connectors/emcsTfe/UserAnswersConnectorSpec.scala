@@ -27,17 +27,9 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class UserAnswersConnectorSpec extends SpecBase with Status with MimeTypes with HeaderNames with MockHttpClient with BeforeAndAfterAll {
+class UserAnswersConnectorSpec extends SpecBase with Status with MimeTypes with HeaderNames with MockHttpClient {
 
   lazy val app = applicationBuilder(userAnswers = None).build()
-
-  override def beforeAll(): Unit = {
-    Play.start(app)
-  }
-
-  override def afterAll(): Unit = {
-    Play.stop(app)
-  }
 
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
   implicit lazy val ec: ExecutionContext = app.injector.instanceOf[ExecutionContext]

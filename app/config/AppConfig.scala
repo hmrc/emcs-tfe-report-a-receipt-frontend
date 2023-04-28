@@ -59,7 +59,9 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig, configuration: Configu
   lazy val countdown: Int = configuration.get[Int]("timeout-dialog.countdown")
 
   private def emcsTfeService: String = servicesConfig.baseUrl("emcs-tfe")
+  private def userAllowListService: String = servicesConfig.baseUrl("user-allow-list")
   def emcsTfeBaseUrl: String = s"$emcsTfeService/emcs-tfe"
+  def userAllowListBaseUrl: String = s"$userAllowListService/user-allow-list"
 
   def destinationOffice: String = configuration.get[String]("constants.destinationOffice")
 }

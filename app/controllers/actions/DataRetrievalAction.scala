@@ -30,10 +30,7 @@ class DataRetrievalActionImpl @Inject()(val userAnswersService: UserAnswersServi
 
   override protected def transform[A](request: MovementRequest[A]): Future[OptionalDataRequest[A]] = {
 
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(
-      session = request.session,
-      request = request
-    )
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     userAnswersService.get(request.ern, request.arc).map {
       OptionalDataRequest(request, _)

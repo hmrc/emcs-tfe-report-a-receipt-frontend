@@ -14,43 +14,45 @@
  * limitations under the License.
  */
 
-package connectors.emcsTfe
+package connectors.userAllowList
 
 import base.SpecBase
 import config.AppConfig
-import fixtures.SubmitReportOfReceiptFixtures
+import fixtures.GetMovementResponseFixtures
 import mocks.connectors.MockHttpClient
-import models.response.JsonValidationError
+import models.requests.CheckUserAllowListRequest
+import models.response.UnexpectedDownstreamResponseError
 import org.scalatest.BeforeAndAfterAll
-import play.api.Play
 import play.api.http.{HeaderNames, MimeTypes, Status}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SubmitReportOfReceiptConnectorSpec extends SpecBase
-  with Status with MimeTypes with HeaderNames with MockHttpClient with SubmitReportOfReceiptFixtures {
+class UserAllowListConnectorSpec extends SpecBase
+  with Status with MimeTypes with HeaderNames with MockHttpClient with BeforeAndAfterAll with GetMovementResponseFixtures {
 
   lazy val app = applicationBuilder(userAnswers = None).build()
 
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
   implicit lazy val ec: ExecutionContext = app.injector.instanceOf[ExecutionContext]
+
   lazy val appConfig = app.injector.instanceOf[AppConfig]
+  lazy val connector = new UserAllowListConnector(mockHttpClient, appConfig)
 
-  lazy val connector = new SubmitReportOfReceiptConnector(mockHttpClient, appConfig)
-
-  "submit" - {
+  "check" - {
 
     "should return a successful response" - {
 
       "when downstream call is successful" in {
 
-        MockHttpClient.post(
-          url = s"${appConfig.emcsTfeBaseUrl}/report-of-receipt/ern/arc",
-          body = maxSubmitReportOfReceiptModel
-        ).returns(Future.successful(Right(successResponse)))
+        val checkRequest = CheckUserAllowListRequest(testErn)
 
-        connector.submit(exciseRegistrationNumber = "ern", maxSubmitReportOfReceiptModel).futureValue mustBe Right(successResponse)
+        MockHttpClient.post(
+          url = s"${appConfig.userAllowListBaseUrl}/reportOfReceipt/check",
+          body = checkRequest
+        ).returns(Future.successful(Right(true)))
+
+        connector.check(checkRequest).futureValue mustBe Right(true)
       }
     }
 
@@ -58,12 +60,14 @@ class SubmitReportOfReceiptConnectorSpec extends SpecBase
 
       "when downstream call fails" in {
 
-        MockHttpClient.post(
-          url = s"${appConfig.emcsTfeBaseUrl}/report-of-receipt/ern/arc",
-          body = maxSubmitReportOfReceiptModel
-        ).returns(Future.successful(Left(JsonValidationError)))
+        val checkRequest = CheckUserAllowListRequest(testErn)
 
-        connector.submit(exciseRegistrationNumber = "ern", maxSubmitReportOfReceiptModel).futureValue mustBe Left(JsonValidationError)
+        MockHttpClient.post(
+          url = s"${appConfig.userAllowListBaseUrl}/reportOfReceipt/check",
+          body = checkRequest
+        ).returns(Future.successful(Left(UnexpectedDownstreamResponseError)))
+
+        connector.check(checkRequest).futureValue mustBe Left(UnexpectedDownstreamResponseError)
       }
     }
   }

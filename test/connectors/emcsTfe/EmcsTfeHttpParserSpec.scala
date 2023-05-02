@@ -28,8 +28,6 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 class EmcsTfeHttpParserSpec extends SpecBase
   with Status with MimeTypes with HeaderNames with MockHttpClient with GetMovementResponseFixtures {
 
-  lazy implicit val hc: HeaderCarrier = HeaderCarrier()
-
   lazy val httpParser = new EmcsTfeHttpParser[GetMovementResponse] {
     override implicit val reads: Reads[GetMovementResponse] = GetMovementResponse.format
     override def http: HttpClient = mockHttpClient

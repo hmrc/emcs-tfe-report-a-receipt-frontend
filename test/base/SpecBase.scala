@@ -52,6 +52,7 @@ trait SpecBase
     new GuiceApplicationBuilder()
       .overrides(
         bind[AuthAction].to[FakeAuthAction],
+        bind[UserAllowListAction].to[FakeUserAllowListAction],
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers)),
         bind[MovementAction].toInstance(new FakeMovementAction(getMovementResponseModel))
       )

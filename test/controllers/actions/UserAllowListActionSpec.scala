@@ -21,8 +21,9 @@ import config.AppConfig
 import handlers.ErrorHandler
 import mocks.connectors.MockUserAllowListConnector
 import models.requests.{CheckUserAllowListRequest, UserRequest}
-import models.response.ErrorResponse
+import models.response.{ErrorResponse, UnexpectedDownstreamResponseError}
 import org.scalamock.scalatest.MockFactory
+import play.api.mvc.Result
 import play.api.mvc.Results.Ok
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -55,7 +56,7 @@ class UserAllowListActionSpec extends SpecBase with MockFactory with MockUserAll
         .returns(Future.successful(connectorResponse))
     }
 
-    val result = userAllowListAction.invokeBlock(request, { _: UserRequest[_] =>
+    val result: Future[Result] = userAllowListAction.invokeBlock(request, { _: UserRequest[_] =>
       Future.successful(Ok)
     })
   }
@@ -76,6 +77,12 @@ class UserAllowListActionSpec extends SpecBase with MockFactory with MockUserAll
         "must execute the supplied block" in new Harness(enabled = true, connectorResponse = Right(false)) {
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.UnauthorisedController.onPageLoad().url)
+        }
+      }
+
+      "when the connector returns a Left" - {
+        "must execute the supplied block" in new Harness(enabled = true, connectorResponse = Left(UnexpectedDownstreamResponseError)) {
+          status(result) mustBe INTERNAL_SERVER_ERROR
         }
       }
     }

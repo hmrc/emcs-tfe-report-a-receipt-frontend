@@ -19,7 +19,7 @@ package connectors.userAllowList
 import base.SpecBase
 import models.response.UnexpectedDownstreamResponseError
 import play.api.http.Status
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.HttpResponse
 
 class UserAllowListHttpParserSpec extends SpecBase with UserAllowListHttpParser {
 

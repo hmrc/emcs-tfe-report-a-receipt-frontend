@@ -23,7 +23,7 @@ import models.response.emcsTfe.GetMovementResponse
 import models.response.{JsonValidationError, UnexpectedDownstreamResponseError}
 import play.api.http.{HeaderNames, MimeTypes, Status}
 import play.api.libs.json.{Json, Reads}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.{HttpClient, HttpResponse}
 
 class EmcsTfeHttpParserSpec extends SpecBase
   with Status with MimeTypes with HeaderNames with MockHttpClient with GetMovementResponseFixtures {

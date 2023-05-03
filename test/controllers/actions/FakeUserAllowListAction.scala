@@ -14,22 +14,17 @@
  * limitations under the License.
  */
 
-/*
- * Copyright 2022 HM Revenue & Customs
- *
- */
+package controllers.actions
 
-package models.requests
+import fixtures.BaseFixtures
+import models.requests.UserRequest
+import play.api.mvc._
 
-import base.SpecBase
-import play.api.libs.json.Json
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
+class FakeUserAllowListAction @Inject()() extends UserAllowListAction with BaseFixtures {
+  override protected def refine[A](request: UserRequest[A]): Future[Either[Result, UserRequest[A]]] = Future.successful(Right(request))
 
-class CheckUserAllowListRequestSpec extends SpecBase {
-
-  "CheckUserAllowListRequest" - {
-    "should write to json" in {
-      Json.toJson(CheckUserAllowListRequest(testErn)) mustBe Json.obj("value" -> testErn)
-    }
-  }
+  override protected def executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 }

@@ -20,8 +20,6 @@ import base.SpecBase
 import config.AppConfig
 import mocks.connectors.MockHttpClient
 import models.response.{JsonValidationError, UnexpectedDownstreamResponseError}
-import org.scalatest.BeforeAndAfterAll
-import play.api.Play
 import play.api.http.{HeaderNames, MimeTypes, Status}
 import uk.gov.hmrc.http.HeaderCarrier
 

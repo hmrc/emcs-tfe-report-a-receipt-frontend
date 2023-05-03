@@ -64,4 +64,6 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig, configuration: Configu
   def userAllowListBaseUrl: String = s"$userAllowListService/user-allow-list"
 
   def destinationOffice: String = configuration.get[String]("constants.destinationOffice")
+
+  def allowListEnabled: Boolean = configuration.get[Boolean]("features.allowListEnabled")
 }

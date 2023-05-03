@@ -50,11 +50,7 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector,
 
       override def invokeBlock[A](request: Request[A], block: UserRequest[A] => Future[Result]): Future[Result] = {
 
-        implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(
-          session = request.session,
-          request = request
-        )
-
+        implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
         implicit val req = request
 
         authorised().retrieve(Retrievals.affinityGroup and Retrievals.allEnrolments and Retrievals.internalId and Retrievals.credentials) {

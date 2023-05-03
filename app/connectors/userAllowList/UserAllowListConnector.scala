@@ -29,10 +29,12 @@ class UserAllowListConnector @Inject()(http: HttpClient,
                                        config: AppConfig) extends UserAllowListHttpParser {
 
   def check(checkRequest: CheckUserAllowListRequest)
-           (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[ErrorResponse, Boolean]] =
+           (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[ErrorResponse, Boolean]] = {
     http.POST[CheckUserAllowListRequest, Either[ErrorResponse, Boolean]](
       url = config.userAllowListBaseUrl + "/reportOfReceipt/check",
-      body = checkRequest
+      body = checkRequest,
+      headers = Seq("Authorization" -> config.internalAuthToken)
     )(CheckUserAllowListRequest.writes, UserAllowListReads, hc, ec)
+  }
 
 }

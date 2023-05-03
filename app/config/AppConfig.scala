@@ -66,4 +66,6 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig, configuration: Configu
   def destinationOffice: String = configuration.get[String]("constants.destinationOffice")
 
   def allowListEnabled: Boolean = configuration.get[Boolean]("features.allowListEnabled")
+
+  def internalAuthToken: String = configuration.getOptional[String]("internal-auth.token").getOrElse("N/A")
 }

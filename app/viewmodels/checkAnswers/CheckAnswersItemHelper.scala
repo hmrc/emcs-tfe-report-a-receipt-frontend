@@ -18,7 +18,7 @@ package viewmodels.checkAnswers
 
 import controllers.routes
 import models.UnitOfMeasure.{Kilograms, reads}
-import models.WrongWithMovement.{AmountRefused, BrokenSeals, Damaged, Other}
+import models.WrongWithMovement.{BrokenSeals, Damaged, Other}
 import models.requests.DataRequest
 import models.response.emcsTfe.MovementItem
 import models.{CheckMode, NormalMode, ReviewMode, WrongWithMovement}

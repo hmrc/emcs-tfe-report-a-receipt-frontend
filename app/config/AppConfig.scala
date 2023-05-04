@@ -67,5 +67,5 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig, configuration: Configu
 
   def allowListEnabled: Boolean = configuration.get[Boolean]("features.allowListEnabled")
 
-  def internalAuthToken: String = configuration.getOptional[String]("internal-auth.token").getOrElse("N/A")
+  def internalAuthToken: String = configuration.get[String]("internal-auth.token")
 }

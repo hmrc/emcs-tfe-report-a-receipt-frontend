@@ -18,7 +18,7 @@ package connectors.userAllowList
 
 import config.AppConfig
 import models.requests.CheckUserAllowListRequest
-import models.response.ErrorResponse
+import models.response.{ErrorResponse, UnexpectedDownstreamResponseError}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import javax.inject.{Inject, Singleton}
@@ -35,6 +35,10 @@ class UserAllowListConnector @Inject()(http: HttpClient,
       body = checkRequest,
       headers = Seq("Authorization" -> config.internalAuthToken)
     )(CheckUserAllowListRequest.writes, UserAllowListReads, hc, ec)
+  }.recover {
+    error =>
+      logger.warn(s"[check] Unexpected error from user-allow-list: ${error.getClass} ${error.getMessage}")
+      Left(UnexpectedDownstreamResponseError)
   }
 
 }

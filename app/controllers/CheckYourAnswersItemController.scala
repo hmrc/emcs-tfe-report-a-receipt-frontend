@@ -22,7 +22,7 @@ import navigation.Navigator
 import pages.unsatisfactory.individualItems.CheckAnswersItemPage
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.UserAnswersService
+import services.{GetCnCodeInformationService, UserAnswersService}
 import viewmodels.checkAnswers.CheckAnswersItemHelper
 import views.html.CheckYourAnswersItemView
 
@@ -39,18 +39,24 @@ class CheckYourAnswersItemController @Inject()(
                                             val navigator: Navigator,
                                             view: CheckYourAnswersItemView,
                                             checkAnswersItemHelper: CheckAnswersItemHelper,
+                                            getCnCodeInformationService: GetCnCodeInformationService,
                                             val userAnswersService: UserAnswersService
                                           ) extends BaseNavigationController with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String, idx: Int): Action[AnyContent] =
-    authorisedDataRequest(ern, arc) { implicit request =>
-      withItem(idx) {
+    authorisedDataRequestAsync(ern, arc) { implicit request =>
+      withItemAsync(idx) {
         item =>
-          Ok(view(
-            submitAction = routes.CheckYourAnswersItemController.onSubmit(ern, arc, idx),
-            itemName = checkAnswersItemHelper.itemName(item),
-            list = checkAnswersItemHelper.summaryList(idx, item)
-          ))
+          getCnCodeInformationService.get(Seq(item)).map {
+            serviceResult =>
+              val unitOfMeasure = serviceResult.head._2.unitOfMeasureCode.toUnitOfMeasure
+
+              Ok(view(
+                submitAction = routes.CheckYourAnswersItemController.onSubmit(ern, arc, idx),
+                itemName = checkAnswersItemHelper.itemName(item),
+                list = checkAnswersItemHelper.summaryList(idx, unitOfMeasure)
+              ))
+          }
       }
     }
 

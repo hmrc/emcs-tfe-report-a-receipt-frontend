@@ -24,7 +24,7 @@ import navigation.Navigator
 import pages.unsatisfactory.individualItems.SelectItemsPage
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.UserAnswersService
+import services.{GetCnCodeInformationService, UserAnswersService}
 import views.html.SelectItemsView
 
 import javax.inject.Inject
@@ -39,6 +39,7 @@ class SelectItemsController @Inject()(override val messagesApi: MessagesApi,
                                       override val getData: DataRetrievalAction,
                                       override val requireData: DataRequiredAction,
                                       val controllerComponents: MessagesControllerComponents,
+                                      getCnCodeInformationService: GetCnCodeInformationService,
                                       view: SelectItemsView
                                      ) extends BaseNavigationController with AuthActionHelper {
 
@@ -48,7 +49,9 @@ class SelectItemsController @Inject()(override val messagesApi: MessagesApi,
       if (filteredItems.isEmpty) {
         Future.successful(Redirect(routes.AddedItemsController.onPageLoad(ern, arc)))
       } else {
-        Future.successful(Ok(view(filteredItems)))
+        getCnCodeInformationService.get(filteredItems).map {
+          serviceResult => Ok(view(serviceResult))
+        }
       }
     }
 

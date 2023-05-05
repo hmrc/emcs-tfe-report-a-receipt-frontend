@@ -44,6 +44,8 @@ trait BaseController extends FrontendBaseController with I18nSupport with Enumer
 
   def withAllItems()(f: Seq[MovementItem] => Result)(implicit request: DataRequest[_]): Result = f(request.getAllItemDetails)
 
+  def withAllItemsAsync()(f: Seq[MovementItem] => Future[Result])(implicit request: DataRequest[_]): Future[Result] = f(request.getAllItemDetails)
+
   def withItemAsync(idx: Int)(f: MovementItem => Future[Result])(implicit request: DataRequest[_]): Future[Result] =
     request.getItemDetails(idx) match {
       case Some(item) => f(item)

@@ -283,6 +283,7 @@ selectItems.table.heading.alcohol = Alcohol
 selectItems.table.heading.packaging = Packaging
 selectItems.table.row.alcohol = {0}%
 selectItems.table.row.alcohol.na = N/A
+selectItems.table.row.quantity = {0} {1}
 
 itemShortageOrExcess.title = Tell us about the shortage or excess
 itemShortageOrExcess.heading = Tell us about the shortage or excess

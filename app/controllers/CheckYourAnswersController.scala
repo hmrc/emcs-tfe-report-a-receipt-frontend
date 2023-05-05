@@ -25,7 +25,7 @@ import navigation.Navigator
 import pages.CheckAnswersPage
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.SubmitReportOfReceiptService
+import services.{GetCnCodeInformationService, SubmitReportOfReceiptService}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.{CheckAnswersHelper, CheckAnswersItemHelper}
 import views.html.CheckYourAnswersView
@@ -44,31 +44,39 @@ class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi
                                            checkAnswersHelper: CheckAnswersHelper,
                                            checkAnswersItemHelper: CheckAnswersItemHelper,
                                            submitReportOfReceiptService: SubmitReportOfReceiptService,
+                                           getCnCodeInformationService: GetCnCodeInformationService,
                                            errorHandler: ErrorHandler
                                           ) extends BaseController with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String): Action[AnyContent] =
-    authorisedDataRequest(ern, arc) { implicit request =>
-      withAllItems() {
+    authorisedDataRequestAsync(ern, arc) { implicit request =>
+      withAllItemsAsync() {
         items =>
-          val formattedAnswers: Seq[(String, SummaryList)] =
-            items map {
-              item =>
-                (
-                  checkAnswersItemHelper.itemName(item),
-                  checkAnswersItemHelper.summaryList(item.itemUniqueReference, item, onFinalCheckAnswers = true)
-                )
-            }
+          getCnCodeInformationService.get(items).map {
+            serviceResult =>
+              val formattedAnswers: Seq[(String, SummaryList)] =
+                serviceResult map {
+                  case (item, cnCodeInformation) =>
+                    (
+                      checkAnswersItemHelper.itemName(item),
+                      checkAnswersItemHelper.summaryList(
+                        idx = item.itemUniqueReference,
+                        unitOfMeasure = cnCodeInformation.unitOfMeasureCode.toUnitOfMeasure,
+                        onFinalCheckAnswers = true
+                      )
+                    )
+                }
 
-          val moreItemsToAdd: Boolean =
-            (request.movementDetails.items.size != items.size) && items.nonEmpty
+              val moreItemsToAdd: Boolean =
+                (request.movementDetails.items.size != items.size) && items.nonEmpty
 
-          Ok(view(routes.CheckYourAnswersController.onSubmit(ern, arc),
-            routes.SelectItemsController.onPageLoad(ern, arc).url,
-            checkAnswersHelper.summaryList(),
-            formattedAnswers,
-            moreItemsToAdd,
-          ))
+              Ok(view(routes.CheckYourAnswersController.onSubmit(ern, arc),
+                routes.SelectItemsController.onPageLoad(ern, arc).url,
+                checkAnswersHelper.summaryList(),
+                formattedAnswers,
+                moreItemsToAdd,
+              ))
+          }
       }
     }
 

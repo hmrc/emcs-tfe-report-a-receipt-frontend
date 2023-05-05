@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers
 
 import controllers.routes
-import models.{CheckMode, ReviewMode}
+import models.{CheckMode, ReviewMode, UnitOfMeasure}
 import models.UnitOfMeasure.Kilograms
 import models.WrongWithMovement.ShortageOrExcess
 import models.requests.DataRequest
@@ -34,11 +34,12 @@ import javax.inject.Inject
 
 class ShortageOrExcessItemSummary @Inject()(link: link) {
 
-  def rows(idx: Int, item: MovementItem, additionalLinkIdSignifier: String = "")(implicit request: DataRequest[_], messages: Messages): Seq[SummaryListRow] = {
+  def rows(idx: Int, unitOfMeasure: UnitOfMeasure, additionalLinkIdSignifier: String = "")
+          (implicit request: DataRequest[_], messages: Messages): Seq[SummaryListRow] = {
 
     Seq(
       shortageOrExcessRow(idx, additionalLinkIdSignifier),
-      amountOfShortageOrExcessRow(idx, item, additionalLinkIdSignifier),
+      amountOfShortageOrExcessRow(idx, unitOfMeasure, additionalLinkIdSignifier),
       shortageOrExcessInformationRow(idx, additionalLinkIdSignifier)
     ).flatten
   }
@@ -61,19 +62,18 @@ class ShortageOrExcessItemSummary @Inject()(link: link) {
     }
   }
 
-  private def amountOfShortageOrExcessRow(idx: Int, item: MovementItem, additionalLinkIdSignifier: String)
+  private def amountOfShortageOrExcessRow(idx: Int, unitOfMeasure: UnitOfMeasure, additionalLinkIdSignifier: String)
                                          (implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] = {
     if (isShortageOrExcess(idx)) {
       request.userAnswers.get(ItemShortageOrExcessPage(idx)).map(
         shortageOrExcess =>
           SummaryListRowViewModel(
             key = s"${ItemShortageOrExcessPage(idx)}.checkYourAnswers.amount.label",
-            //TODO: Hardcoded to kg, should be determined from the reference data based on the CN Code in future story
             value = ValueViewModel(
               messages(
                 s"${ItemShortageOrExcessPage(idx)}.checkYourAnswers.amount.value",
                 shortageOrExcess.amount.toString,
-                messages(s"unitOfMeasure.$Kilograms.long")
+                messages(s"unitOfMeasure.$unitOfMeasure.long")
               )
             ),
             actions = Seq(

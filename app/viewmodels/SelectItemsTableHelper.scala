@@ -18,6 +18,7 @@ package viewmodels
 
 import models.requests.DataRequest
 import models.response.emcsTfe.MovementItem
+import models.response.referenceData.CnCodeInformation
 import play.api.i18n.Messages
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
@@ -35,32 +36,38 @@ class SelectItemsTableHelper @Inject()(link: link, list: list) {
     HeadCell(Text(messages("selectItems.table.heading.packaging")))
   ))
 
-  private[viewmodels] def dataRows(ern: String, arc: String, items: Seq[MovementItem])(implicit messages: Messages): Seq[Seq[TableRow]] = items.map { item =>
-    Seq(
-      TableRow(
-        content = HtmlContent(link(
-          link = controllers.routes.SelectItemsController.addItemToList(ern, arc, item.itemUniqueReference).url,
-          messageKey = item.cnCode
-        ))
-      ),
-      TableRow(
-        content = Text(item.quantity.toString())
-      ),
-      TableRow(
-        content = Text(item.alcoholicStrength match {
-          case Some(strength) => messages("selectItems.table.row.alcohol", strength)
-          case None => messages("selectItems.table.row.alcohol.na")
-        })
-      ),
-      TableRow(
-        content = HtmlContent(list(item.packaging.map(pckg =>
-          Html(pckg.quantity.toString() + " x " + pckg.typeOfPackage)
-        )))
-      )
-    )
-  }
+  private[viewmodels] def dataRows(ern: String, arc: String, items: Seq[(MovementItem, CnCodeInformation)])(implicit messages: Messages): Seq[Seq[TableRow]] =
+    items.map {
+      case (item, cnCodeInformation) =>
+        Seq(
+          TableRow(
+            content = HtmlContent(link(
+              link = controllers.routes.SelectItemsController.addItemToList(ern, arc, item.itemUniqueReference).url,
+              messageKey = cnCodeInformation.cnCodeDescription
+            ))
+          ),
+          TableRow(
+            content = Text(messages(
+              "selectItems.table.row.quantity",
+              item.quantity.toString(),
+              messages(s"unitOfMeasure.${cnCodeInformation.unitOfMeasureCode.toUnitOfMeasure}.long")
+            ))
+          ),
+          TableRow(
+            content = Text(item.alcoholicStrength match {
+              case Some(strength) => messages("selectItems.table.row.alcohol", strength)
+              case None => messages("selectItems.table.row.alcohol.na")
+            })
+          ),
+          TableRow(
+            content = HtmlContent(list(item.packaging.map(pckg =>
+              Html(pckg.quantity.toString() + " x " + pckg.typeOfPackage)
+            )))
+          )
+        )
+    }
 
-  def constructTable(movements: Seq[MovementItem])(implicit messages: Messages, request: DataRequest[_]): Table =
+  def constructTable(movements: Seq[(MovementItem, CnCodeInformation)])(implicit messages: Messages, request: DataRequest[_]): Table =
     Table(
       firstCellIsHeader = true,
       rows = dataRows(request.ern, request.arc, movements),

@@ -18,6 +18,7 @@
 @import viewmodels.SelectItemsTableHelper
 @import views.html.components.{h1, table}
 @import models.response.emcsTfe.MovementItem
+@import models.response.referenceData.CnCodeInformation
 
 @this(
         layout: templates.Layout,
@@ -27,7 +28,7 @@
         helper: SelectItemsTableHelper
 )
 
-@(items: Seq[MovementItem])(implicit request: DataRequest[_], messages: Messages)
+@(items: Seq[(MovementItem, CnCodeInformation)])(implicit request: DataRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("selectItems.title")), fullWidthContent = true) {
 

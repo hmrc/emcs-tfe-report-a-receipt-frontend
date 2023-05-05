@@ -24,7 +24,7 @@ import navigation.Navigator
 import pages.unsatisfactory.individualItems.AddedItemsPage
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.UserAnswersService
+import services.{GetCnCodeInformationService, UserAnswersService}
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 import viewmodels.AddedItemsSummary
 import views.html.AddedItemsView
@@ -43,6 +43,7 @@ class AddedItemsController @Inject()(
                                       view: AddedItemsView,
                                       formProvider: AddAnotherItemFormProvider,
                                       addedItemsSummary: AddedItemsSummary,
+                                      getCnCodeInformationService: GetCnCodeInformationService,
                                       override val userAnswersService: UserAnswersService,
                                       override val navigator: Navigator,
                                     ) extends BaseNavigationController with AuthActionHelper {
@@ -50,6 +51,9 @@ class AddedItemsController @Inject()(
   def onPageLoad(ern: String, arc: String): Action[AnyContent] =
     authorisedDataRequestAsync(ern, arc) { implicit request =>
       withAddedItems(ern, arc) { items =>
+        getCnCodeInformationService.get(items).map {
+
+        }
         val form = if (items.size < request.movementDetails.items.size) Some(formProvider()) else None
         Future.successful(Ok(view(form, items, routes.AddedItemsController.onSubmit(ern, arc))))
       }
@@ -71,6 +75,9 @@ class AddedItemsController @Inject()(
           onwardRedirect(ern, arc)
       }
     }
+
+  //TODO: not done tests for controllers yet
+  //TODO: covered Check Answers Item page, Select Item page, Item Shortage or Excess page. Need to do the rest
 
   private def withAddedItems(ern: String, arc: String)(f: Seq[ListItem] => Future[Result])(implicit request: DataRequest[_]): Future[Result] =
     addedItemsSummary.itemList() match {

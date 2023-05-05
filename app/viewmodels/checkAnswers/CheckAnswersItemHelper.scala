@@ -21,7 +21,7 @@ import models.UnitOfMeasure.{Kilograms, reads}
 import models.WrongWithMovement.{BrokenSeals, Damaged, Other}
 import models.requests.DataRequest
 import models.response.emcsTfe.MovementItem
-import models.{CheckMode, NormalMode, ReviewMode, WrongWithMovement}
+import models.{CheckMode, NormalMode, ReviewMode, UnitOfMeasure, WrongWithMovement}
 import pages.unsatisfactory.individualItems._
 import play.api.i18n.Messages
 import play.api.libs.json.Format.GenericFormat
@@ -46,7 +46,8 @@ class CheckAnswersItemHelper @Inject()(
     item.cnCode
   }
 
-  def summaryList(idx: Int, item: MovementItem, onFinalCheckAnswers: Boolean = false)(implicit request: DataRequest[_], messages: Messages): SummaryList = {
+  def summaryList(idx: Int, unitOfMeasure: UnitOfMeasure, onFinalCheckAnswers: Boolean = false)
+                 (implicit request: DataRequest[_], messages: Messages): SummaryList = {
     val additionalLinkIdSignifier = if (onFinalCheckAnswers) s"-item-$idx" else ""
 
     val rows: Seq[SummaryListRow] =
@@ -55,7 +56,7 @@ class CheckAnswersItemHelper @Inject()(
           Seq(
             amountRefusedRow(idx, additionalLinkIdSignifier),
             whatWasWrongRow(answers, idx, additionalLinkIdSignifier),
-            shortageOrExcessItemSummary.rows(idx, item, additionalLinkIdSignifier),
+            shortageOrExcessItemSummary.rows(idx, unitOfMeasure, additionalLinkIdSignifier),
             damagedItemsInformationRow(idx, additionalLinkIdSignifier),
             brokenSealsInformationRow(idx, additionalLinkIdSignifier),
             otherInformationRow(idx, additionalLinkIdSignifier)
@@ -86,7 +87,7 @@ class CheckAnswersItemHelper @Inject()(
   private def brokenSealsInformationRow(idx: Int, additionalLinkIdSignifier: String)
                                        (implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] = {
     if (request.userAnswers.get(WrongWithItemPage(idx)).exists(_.contains(BrokenSeals))) {
-      val mode = if(additionalLinkIdSignifier != "") ReviewMode else CheckMode
+      val mode = if (additionalLinkIdSignifier != "") ReviewMode else CheckMode
       request.userAnswers.get(ItemSealsInformationPage(idx)).map {
         case Some(value) if value != "" =>
           SummaryListRowViewModel(
@@ -115,12 +116,12 @@ class CheckAnswersItemHelper @Inject()(
 
 
   private def amountRefusedRow(idx: Int, additionalLinkIdSignifier: String)
-                                       (implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] = {
+                              (implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] = {
 
     if (request.userAnswers.get(RefusingAnyAmountOfItemPage(idx)).nonEmpty) {
       val mode = if (additionalLinkIdSignifier != "") ReviewMode else CheckMode
       request.userAnswers.get(RefusingAnyAmountOfItemPage(idx)).map {
-       case _ if request.userAnswers.get(RefusedAmountPage(idx)).isEmpty =>
+        case _ if request.userAnswers.get(RefusedAmountPage(idx)).isEmpty =>
           SummaryListRowViewModel(
             key = s"${RefusingAnyAmountOfItemPage(idx)}.checkYourAnswers.label",
             value = ValueViewModel(HtmlContent(link(
@@ -155,7 +156,7 @@ class CheckAnswersItemHelper @Inject()(
   private def damagedItemsInformationRow(idx: Int, additionalLinkIdSignifier: String)
                                         (implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] = {
     if (request.userAnswers.get(WrongWithItemPage(idx)).exists(_.contains(Damaged))) {
-      val mode = if(additionalLinkIdSignifier != "") ReviewMode else CheckMode
+      val mode = if (additionalLinkIdSignifier != "") ReviewMode else CheckMode
       request.userAnswers.get(ItemDamageInformationPage(idx)).map {
         case Some(value) if value != "" =>
           SummaryListRowViewModel(
@@ -187,7 +188,7 @@ class CheckAnswersItemHelper @Inject()(
     if (request.userAnswers.get(WrongWithItemPage(idx)).exists(_.contains(Other))) {
       request.userAnswers.get(ItemOtherInformationPage(idx)).flatMap {
         case value if value != "" =>
-          val mode = if(additionalLinkIdSignifier != "") ReviewMode else CheckMode
+          val mode = if (additionalLinkIdSignifier != "") ReviewMode else CheckMode
           Some(SummaryListRowViewModel(
             key = s"${ItemOtherInformationPage(idx)}.checkYourAnswers.label",
             value = ValueViewModel(Text(value)),

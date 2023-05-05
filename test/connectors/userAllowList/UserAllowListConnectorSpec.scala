@@ -48,7 +48,7 @@ class UserAllowListConnectorSpec extends SpecBase
         val checkRequest = CheckUserAllowListRequest(testErn)
 
         MockHttpClient.post(
-          url = s"${appConfig.userAllowListBaseUrl}/reportOfReceipt/check",
+          url = s"${appConfig.userAllowListBaseUrl}/emcs-tfe/reportOfReceipt/check",
           body = checkRequest
         ).returns(Future.successful(Right(true)))
 
@@ -63,7 +63,7 @@ class UserAllowListConnectorSpec extends SpecBase
         val checkRequest = CheckUserAllowListRequest(testErn)
 
         MockHttpClient.post(
-          url = s"${appConfig.userAllowListBaseUrl}/reportOfReceipt/check",
+          url = s"${appConfig.userAllowListBaseUrl}/emcs-tfe/reportOfReceipt/check",
           body = checkRequest
         ).returns(Future.successful(Left(UnexpectedDownstreamResponseError)))
 

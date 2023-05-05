@@ -45,8 +45,9 @@ class UserAllowListConnectorISpec
 
   ".check" - {
 
+    val service = "emcs-tfe"
     val feature = "reportOfReceipt"
-    val url = s"/user-allow-list/$feature/check"
+    val url = s"/user-allow-list/$service/$feature/check"
     val request = CheckUserAllowListRequest("value")
 
     "must return true when the server responds OK" in {

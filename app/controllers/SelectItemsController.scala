@@ -28,6 +28,7 @@ import services.UserAnswersService
 import views.html.SelectItemsView
 
 import javax.inject.Inject
+import scala.concurrent.Future
 
 class SelectItemsController @Inject()(override val messagesApi: MessagesApi,
                                       override val userAnswersService: UserAnswersService,
@@ -42,12 +43,12 @@ class SelectItemsController @Inject()(override val messagesApi: MessagesApi,
                                      ) extends BaseNavigationController with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String): Action[AnyContent] =
-    authorisedDataRequest(ern, arc) { implicit request =>
-      val filteredItems = getFilteredItems(request)
+    authorisedDataRequestAsync(ern, arc) { implicit request =>
+      val filteredItems: Seq[MovementItem] = getFilteredItems(request)
       if (filteredItems.isEmpty) {
-        Redirect(routes.AddedItemsController.onPageLoad(ern, arc))
+        Future.successful(Redirect(routes.AddedItemsController.onPageLoad(ern, arc)))
       } else {
-        Ok(view(filteredItems))
+        Future.successful(Ok(view(filteredItems)))
       }
     }
 

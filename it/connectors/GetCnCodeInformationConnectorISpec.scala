@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.http.Fault
 import connectors.referenceData.GetCnCodeInformationConnector
 import generators.ModelGenerators
+import models.ReferenceDataUnitOfMeasure
 import models.requests.CnCodeInformationRequest
 import models.response.referenceData.{CnCodeInformation, CnCodeInformationResponse}
 import models.response.{JsonValidationError, UnexpectedDownstreamResponseError}
@@ -65,7 +66,10 @@ class GetCnCodeInformationConnectorISpec
       )
 
       connector.getCnCodeInformation(request).futureValue mustBe Right(CnCodeInformationResponse(data = Map(
-        "24029000" -> CnCodeInformation(cnCodeDescription = "Cigars, cheroots, cigarillos and cigarettes not containing tobacco", unitOfMeasureCode = 1)
+        "24029000" -> CnCodeInformation(
+          cnCodeDescription = "Cigars, cheroots, cigarillos and cigarettes not containing tobacco",
+          unitOfMeasureCode = ReferenceDataUnitOfMeasure.`1`
+        )
       )))
     }
 

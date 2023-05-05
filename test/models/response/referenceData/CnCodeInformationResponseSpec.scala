@@ -17,6 +17,7 @@
 package models.response.referenceData
 
 import base.SpecBase
+import models.ReferenceDataUnitOfMeasure
 import play.api.libs.json.{JsArray, JsResultException, JsString, Json}
 
 class CnCodeInformationResponseSpec extends SpecBase {
@@ -30,7 +31,7 @@ class CnCodeInformationResponseSpec extends SpecBase {
           )
         ).as[CnCodeInformationResponse] mustBe CnCodeInformationResponse(data = Map("24029000" -> CnCodeInformation(
           cnCodeDescription = "Cigars, cheroots, cigarillos and cigarettes not containing tobacco",
-          unitOfMeasureCode = 1
+          unitOfMeasureCode = ReferenceDataUnitOfMeasure.`1`
         )))
       }
     }
@@ -48,7 +49,8 @@ class CnCodeInformationResponseSpec extends SpecBase {
             "unitOfMeasureCode" -> 1
           )))
         ).as[CnCodeInformationResponse])
-        result.errors.toString must include("error.expected.jsobject")
+        result.errors.toString must include("/unitOfMeasureCode")
+        result.errors.toString must include("/cnCodeDescription")
       }
     }
   }

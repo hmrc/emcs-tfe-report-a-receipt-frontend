@@ -18,14 +18,17 @@ package controllers
 
 import base.SpecBase
 import forms.AddAnotherItemFormProvider
+import mocks.services.MockGetCnCodeInformationService
 import models.NormalMode
 import pages.unsatisfactory.individualItems.{CheckAnswersItemPage, SelectItemsPage}
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.GetCnCodeInformationService
 import viewmodels.AddedItemsSummary
 import views.html.AddedItemsView
 
-class AddedItemsControllerSpec extends SpecBase {
+class AddedItemsControllerSpec extends SpecBase with MockGetCnCodeInformationService {
 
   lazy val form = new AddAnotherItemFormProvider()()
   lazy val itemListSummary = new AddedItemsSummary()
@@ -38,7 +41,9 @@ class AddedItemsControllerSpec extends SpecBase {
 
         "when no items have been added" in {
 
-          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService))
+            .build()
 
           running(application) {
             val request = FakeRequest(GET, routes.AddedItemsController.onPageLoad(testErn, testArc).url)
@@ -54,7 +59,9 @@ class AddedItemsControllerSpec extends SpecBase {
           val userAnswers = emptyUserAnswers
             .set(SelectItemsPage(1), item1.itemUniqueReference)
 
-          val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+          val application = applicationBuilder(userAnswers = Some(userAnswers))
+            .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService))
+            .build()
 
           running(application) {
             val request = FakeRequest(GET, routes.AddedItemsController.onPageLoad(testErn, testArc).url)
@@ -74,7 +81,9 @@ class AddedItemsControllerSpec extends SpecBase {
             .set(SelectItemsPage(1), item1.itemUniqueReference)
             .set(CheckAnswersItemPage(1), true)
 
-          val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+          val application = applicationBuilder(userAnswers = Some(userAnswers))
+            .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService))
+            .build()
 
           running(application) {
             val request = FakeRequest(GET, routes.AddedItemsController.onPageLoad(testErn, testArc).url)
@@ -104,7 +113,9 @@ class AddedItemsControllerSpec extends SpecBase {
               .set(SelectItemsPage(2), item2.itemUniqueReference)
               .set(CheckAnswersItemPage(2), true)
 
-          val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+          val application = applicationBuilder(userAnswers = Some(userAnswers))
+            .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService))
+            .build()
 
           running(application) {
             val request = FakeRequest(GET, routes.AddedItemsController.onPageLoad(testErn, testArc).url)
@@ -130,7 +141,9 @@ class AddedItemsControllerSpec extends SpecBase {
 
         "must redirect to the SelectItems page" in {
 
-          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService))
+            .build()
 
           running(application) {
             val request = FakeRequest(POST, routes.AddedItemsController.onSubmit(testErn, testArc).url)
@@ -151,7 +164,10 @@ class AddedItemsControllerSpec extends SpecBase {
             val userAnswers = emptyUserAnswers
               .set(SelectItemsPage(1), item1.itemUniqueReference)
               .set(CheckAnswersItemPage(1), true)
-            val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+            val application = applicationBuilder(userAnswers = Some(userAnswers))
+              .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService))
+              .build()
 
             running(application) {
               val request = FakeRequest(POST, routes.AddedItemsController.onSubmit(testErn, testArc).url)

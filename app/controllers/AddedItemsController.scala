@@ -18,14 +18,13 @@ package controllers
 
 import controllers.actions._
 import forms.AddAnotherItemFormProvider
-import models.NormalMode
 import models.requests.DataRequest
+import models.{ListItemWithProductCode, NormalMode}
 import navigation.Navigator
 import pages.unsatisfactory.individualItems.AddedItemsPage
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.{GetCnCodeInformationService, UserAnswersService}
-import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 import viewmodels.AddedItemsSummary
 import views.html.AddedItemsView
 
@@ -50,12 +49,12 @@ class AddedItemsController @Inject()(
 
   def onPageLoad(ern: String, arc: String): Action[AnyContent] =
     authorisedDataRequestAsync(ern, arc) { implicit request =>
-      withAddedItems(ern, arc) { items =>
-        getCnCodeInformationService.get(items).map {
-
+      withAddedItems(ern, arc) {
+        getCnCodeInformationService.getCnCodeInformationWithListItems(_).flatMap {
+          serviceResult =>
+            val form = if (serviceResult.size < request.movementDetails.items.size) Some(formProvider()) else None
+            Future.successful(Ok(view(form, serviceResult, routes.AddedItemsController.onSubmit(ern, arc))))
         }
-        val form = if (items.size < request.movementDetails.items.size) Some(formProvider()) else None
-        Future.successful(Ok(view(form, items, routes.AddedItemsController.onSubmit(ern, arc))))
       }
     }
 
@@ -65,7 +64,10 @@ class AddedItemsController @Inject()(
         case items if items.size < request.movementDetails.items.size =>
           formProvider().bindFromRequest().fold(
             formWithErrors => {
-              Future.successful(BadRequest(view(Some(formWithErrors), items, routes.AddedItemsController.onSubmit(ern, arc))))
+              getCnCodeInformationService.getCnCodeInformationWithListItems(items).flatMap {
+                serviceResult =>
+                  Future.successful(BadRequest(view(Some(formWithErrors), serviceResult, routes.AddedItemsController.onSubmit(ern, arc))))
+              }
             }, {
               case true => addAnotherItemRedirect(ern, arc)
               case _ => onwardRedirect(ern, arc)
@@ -76,10 +78,7 @@ class AddedItemsController @Inject()(
       }
     }
 
-  //TODO: not done tests for controllers yet
-  //TODO: covered Check Answers Item page, Select Item page, Item Shortage or Excess page. Need to do the rest
-
-  private def withAddedItems(ern: String, arc: String)(f: Seq[ListItem] => Future[Result])(implicit request: DataRequest[_]): Future[Result] =
+  private def withAddedItems(ern: String, arc: String)(f: Seq[ListItemWithProductCode] => Future[Result])(implicit request: DataRequest[_]): Future[Result] =
     addedItemsSummary.itemList() match {
       case items if items.isEmpty => Future.successful(Redirect(routes.SelectItemsController.onPageLoad(ern, arc)))
       case items => f(items)

@@ -17,19 +17,19 @@
 package viewmodels
 
 import controllers.routes
-import models.ItemModel
 import models.requests.DataRequest
 import models.response.emcsTfe.MovementItem
-import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
+import models.{ItemModel, ListItemWithProductCode}
 
 class AddedItemsSummary  {
 
-  def itemList()(implicit request: DataRequest[_]): Seq[ListItem] = {
+  def itemList()(implicit request: DataRequest[_]): Seq[ListItemWithProductCode] = {
     request.userAnswers.itemReferences.flatMap {
       uniqueReference =>
         request.movementDetails.copy(items = getFilteredItems).item(uniqueReference).map { item =>
-          ListItem(
-            name = item.cnCode,
+          ListItemWithProductCode(
+            cnCode = item.cnCode,
+            productCode = item.productCode,
             routes.CheckYourAnswersItemController.onPageLoad(request.ern, request.arc, uniqueReference).url,
             routes.RemoveItemController.onPageLoad(request.ern, request.arc, uniqueReference).url
           )

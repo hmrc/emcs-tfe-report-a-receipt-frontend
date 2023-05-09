@@ -15,8 +15,8 @@
  *@
 
 @import models.requests.DataRequest
-@import models.response.emcsTfe.MovementItem
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
+@import models.response.referenceData.CnCodeInformation
+@import models.ListItemWithProductCode
 
 @this(
         layout: templates.Layout,
@@ -29,7 +29,7 @@
         saveAndContinue: components.saveAndContinue
 )
 
-@(form: Option[Form[Boolean]], items: Seq[ListItem], action: Call)(implicit request: DataRequest[_], messages: Messages)
+@(form: Option[Form[Boolean]], items: Seq[(ListItemWithProductCode, CnCodeInformation)], action: Call)(implicit request: DataRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages(pluralSingular("addedItems.title", items.size)))) {
 

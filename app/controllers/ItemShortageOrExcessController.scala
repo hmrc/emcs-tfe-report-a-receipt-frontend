@@ -19,7 +19,6 @@ package controllers
 import controllers.actions._
 import forms.ItemShortageOrExcessFormProvider
 import models.AcceptMovement.PartiallyRefused
-import models.UnitOfMeasure.Kilograms
 import models.WrongWithMovement.Shortage
 import models.requests.DataRequest
 import models.response.emcsTfe.MovementItem
@@ -55,7 +54,7 @@ class ItemShortageOrExcessController @Inject()(
   def onPageLoad(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
     authorisedDataRequestAsync(ern, arc) { implicit request =>
       withItemAsync(idx) { item =>
-        getCnCodeInformationService.get(Seq(item)).map {
+        getCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item)).map {
           serviceResult =>
             val unitOfMeasure = serviceResult.head._2.unitOfMeasureCode.toUnitOfMeasure
             Ok(renderView(fillForm(ItemShortageOrExcessPage(idx), formProvider()), ern, arc, idx, mode, unitOfMeasure))
@@ -66,7 +65,7 @@ class ItemShortageOrExcessController @Inject()(
   def onSubmit(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
     authorisedDataRequestAsync(ern, arc) { implicit request =>
       withItemAsync(idx) { item =>
-        getCnCodeInformationService.get(Seq(item)).flatMap {
+        getCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item)).flatMap {
           serviceResult =>
             val unitOfMeasure = serviceResult.head._2.unitOfMeasureCode.toUnitOfMeasure
             submitAndTrimWhitespaceFromTextarea(Some(ItemShortageOrExcessPage(idx)), formProvider)(

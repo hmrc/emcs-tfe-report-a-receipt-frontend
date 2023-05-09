@@ -31,6 +31,7 @@ import viewmodels.checkAnswers.{CheckAnswersHelper, CheckAnswersItemHelper}
 import views.html.CheckYourAnswersView
 
 import javax.inject.Inject
+import scala.concurrent.Future
 
 class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi,
                                            override val auth: AuthAction,
@@ -52,21 +53,29 @@ class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi
     authorisedDataRequestAsync(ern, arc) { implicit request =>
       withAllItemsAsync() {
         items =>
-          getCnCodeInformationService.get(items).map {
-            serviceResult =>
-              val formattedAnswers: Seq[(String, SummaryList)] =
-                serviceResult map {
-                  case (item, cnCodeInformation) =>
-                    (
-                      checkAnswersItemHelper.itemName(item),
-                      checkAnswersItemHelper.summaryList(
-                        idx = item.itemUniqueReference,
-                        unitOfMeasure = cnCodeInformation.unitOfMeasureCode.toUnitOfMeasure,
-                        onFinalCheckAnswers = true
+          val formattedAnswersFuture: Future[Seq[(String, SummaryList)]] = {
+            if (items.nonEmpty) {
+              getCnCodeInformationService.getCnCodeInformationWithMovementItems(items).map {
+                serviceResult =>
+                  serviceResult map {
+                    case (item, cnCodeInformation) =>
+                      (
+                        cnCodeInformation.cnCodeDescription,
+                        checkAnswersItemHelper.summaryList(
+                          idx = item.itemUniqueReference,
+                          unitOfMeasure = cnCodeInformation.unitOfMeasureCode.toUnitOfMeasure,
+                          onFinalCheckAnswers = true
+                        )
                       )
-                    )
-                }
+                  }
+              }
+            } else {
+              Future.successful(Seq())
+            }
+          }
 
+          formattedAnswersFuture.map {
+            formattedAnswers =>
               val moreItemsToAdd: Boolean =
                 (request.movementDetails.items.size != items.size) && items.nonEmpty
 

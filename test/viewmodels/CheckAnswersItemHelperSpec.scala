@@ -99,13 +99,6 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
 
   "CheckAnswersItemHelperHelper" - {
 
-    "itemName" - {
-      "return the item's name based on the cnCode" in new Test {
-        // TODO: update with actual name
-        checkAnswersItemHelper.itemName(item1) mustBe "22041011"
-      }
-    }
-
     "being rendered" - {
 
       "must return a filled-in SummaryList" - {

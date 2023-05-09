@@ -47,13 +47,13 @@ class CheckYourAnswersItemController @Inject()(
     authorisedDataRequestAsync(ern, arc) { implicit request =>
       withItemAsync(idx) {
         item =>
-          getCnCodeInformationService.get(Seq(item)).map {
+          getCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item)).map {
             serviceResult =>
               val unitOfMeasure = serviceResult.head._2.unitOfMeasureCode.toUnitOfMeasure
 
               Ok(view(
                 submitAction = routes.CheckYourAnswersItemController.onSubmit(ern, arc, idx),
-                itemName = checkAnswersItemHelper.itemName(item),
+                itemName = serviceResult.head._2.cnCodeDescription,
                 list = checkAnswersItemHelper.summaryList(idx, unitOfMeasure)
               ))
           }

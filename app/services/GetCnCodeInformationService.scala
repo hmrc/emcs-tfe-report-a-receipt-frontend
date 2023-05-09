@@ -17,6 +17,7 @@
 package services
 
 import connectors.referenceData.GetCnCodeInformationConnector
+import models.ListItemWithProductCode
 import models.requests.CnCodeInformationRequest
 import models.response.ReferenceDataException
 import models.response.emcsTfe.MovementItem
@@ -30,10 +31,10 @@ import scala.concurrent.{ExecutionContext, Future}
 class GetCnCodeInformationService @Inject()(connector: GetCnCodeInformationConnector)
                                            (implicit ec: ExecutionContext) {
 
-  def get(items: Seq[MovementItem])(implicit hc: HeaderCarrier): Future[Seq[(MovementItem, CnCodeInformation)]] = {
-    connector.getCnCodeInformation(generateRequestModel(items)).map {
+  def getCnCodeInformationWithMovementItems(items: Seq[MovementItem])(implicit hc: HeaderCarrier): Future[Seq[(MovementItem, CnCodeInformation)]] = {
+    connector.getCnCodeInformation(generateRequestModelFromMovementItem(items)).map {
       case Right(response) =>
-        matchItemsWithReferenceDataValues(response, items).map {
+        matchMovementItemsWithReferenceDataValues(response, items).map {
           case (item, Some(information)) => (item, information)
           case (item, _) => throw ReferenceDataException(s"Failed to match item with CN Code information: $item")
         }
@@ -41,13 +42,45 @@ class GetCnCodeInformationService @Inject()(connector: GetCnCodeInformationConne
     }
   }
 
-  private def generateRequestModel(items: Seq[MovementItem]): CnCodeInformationRequest = {
+  def getCnCodeInformationWithListItems(items: Seq[ListItemWithProductCode])(implicit hc: HeaderCarrier): Future[Seq[(ListItemWithProductCode, CnCodeInformation)]] = {
+    connector.getCnCodeInformation(generateRequestModelFromListItem(items)).map {
+      case Right(response) =>
+        matchListItemsWithReferenceDataValues(response, items).map {
+          case (item, Some(information)) => (item, information)
+          case (item, _) => throw ReferenceDataException(s"Failed to match item with CN Code information: $item")
+        }
+      case Left(errorResponse) => throw ReferenceDataException(s"Failed to retrieve CN Code information: $errorResponse")
+    }
+  }
+
+  private def generateRequestModelFromMovementItem(items: Seq[MovementItem]): CnCodeInformationRequest = {
     val productCodes = items.map(_.productCode)
     val cnCodes = items.map(_.cnCode)
     CnCodeInformationRequest(productCodeList = productCodes, cnCodeList = cnCodes)
   }
 
-  private def matchItemsWithReferenceDataValues(response: CnCodeInformationResponse, items: Seq[MovementItem]): Seq[(MovementItem, Option[CnCodeInformation])] = {
+  private def generateRequestModelFromListItem(items: Seq[ListItemWithProductCode]): CnCodeInformationRequest = {
+    val productCodes = items.map(_.productCode)
+    val cnCodes = items.map(_.cnCode)
+    CnCodeInformationRequest(productCodeList = productCodes, cnCodeList = cnCodes)
+  }
+
+  private def matchMovementItemsWithReferenceDataValues(
+                                                         response: CnCodeInformationResponse,
+                                                         items: Seq[MovementItem]
+                                                       ): Seq[(MovementItem, Option[CnCodeInformation])] = {
+    val data = response.data
+    items.map {
+      case movementItem if data.contains(movementItem.cnCode) =>
+        (movementItem, Some(data(movementItem.cnCode)))
+      case movementItem => (movementItem, None)
+    }
+  }
+
+  private def matchListItemsWithReferenceDataValues(
+                                                     response: CnCodeInformationResponse,
+                                                     items: Seq[ListItemWithProductCode]
+                                                   ): Seq[(ListItemWithProductCode, Option[CnCodeInformation])] = {
     val data = response.data
     items.map {
       case movementItem if data.contains(movementItem.cnCode) =>

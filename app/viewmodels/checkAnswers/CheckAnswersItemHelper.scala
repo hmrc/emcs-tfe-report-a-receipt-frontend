@@ -17,10 +17,9 @@
 package viewmodels.checkAnswers
 
 import controllers.routes
-import models.UnitOfMeasure.{Kilograms, reads}
+import models.UnitOfMeasure.reads
 import models.WrongWithMovement.{BrokenSeals, Damaged, Other}
 import models.requests.DataRequest
-import models.response.emcsTfe.MovementItem
 import models.{CheckMode, NormalMode, ReviewMode, UnitOfMeasure, WrongWithMovement}
 import pages.unsatisfactory.individualItems._
 import play.api.i18n.Messages
@@ -41,11 +40,6 @@ class CheckAnswersItemHelper @Inject()(
                                         link: link
                                       ) extends JsonOptionFormatter {
 
-  def itemName(item: MovementItem): String = {
-    // TODO: replace with real description once we've hooked into the reference data
-    item.cnCode
-  }
-
   def summaryList(idx: Int, unitOfMeasure: UnitOfMeasure, onFinalCheckAnswers: Boolean = false)
                  (implicit request: DataRequest[_], messages: Messages): SummaryList = {
     val additionalLinkIdSignifier = if (onFinalCheckAnswers) s"-item-$idx" else ""
@@ -54,7 +48,7 @@ class CheckAnswersItemHelper @Inject()(
       request.userAnswers.get(WrongWithItemPage(idx)).map {
         answers =>
           Seq(
-            amountRefusedRow(idx, additionalLinkIdSignifier),
+            amountRefusedRow(idx, unitOfMeasure, additionalLinkIdSignifier),
             whatWasWrongRow(answers, idx, additionalLinkIdSignifier),
             shortageOrExcessItemSummary.rows(idx, unitOfMeasure, additionalLinkIdSignifier),
             damagedItemsInformationRow(idx, additionalLinkIdSignifier),
@@ -115,7 +109,7 @@ class CheckAnswersItemHelper @Inject()(
   }
 
 
-  private def amountRefusedRow(idx: Int, additionalLinkIdSignifier: String)
+  private def amountRefusedRow(idx: Int, unitOfMeasure: UnitOfMeasure, additionalLinkIdSignifier: String)
                               (implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] = {
 
     if (request.userAnswers.get(RefusingAnyAmountOfItemPage(idx)).nonEmpty) {
@@ -131,12 +125,11 @@ class CheckAnswersItemHelper @Inject()(
         case _ =>
           SummaryListRowViewModel(
             key = s"${RefusingAnyAmountOfItemPage(idx)}.checkYourAnswers.label",
-            //TODO: Hardcoded to kg, should be determined from the reference data based on the CN Code in future story
             value = ValueViewModel(
               messages(
                 s"${RefusingAnyAmountOfItemPage(idx)}.checkYourAnswers.amount.value",
                 request.userAnswers.get(RefusedAmountPage(idx)).get.toString(),
-                messages(s"unitOfMeasure.$Kilograms.long")
+                messages(s"unitOfMeasure.$unitOfMeasure.long")
               )
             ),
             actions = Seq(

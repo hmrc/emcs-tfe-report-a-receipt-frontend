@@ -17,11 +17,9 @@
 package viewmodels.checkAnswers
 
 import controllers.routes
-import models.{CheckMode, ReviewMode, UnitOfMeasure}
-import models.UnitOfMeasure.Kilograms
 import models.WrongWithMovement.ShortageOrExcess
 import models.requests.DataRequest
-import models.response.emcsTfe.MovementItem
+import models.{CheckMode, ReviewMode, UnitOfMeasure}
 import pages.unsatisfactory.individualItems.{ItemShortageOrExcessPage, WrongWithItemPage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}

@@ -19,35 +19,42 @@ package controllers
 import controllers.actions._
 import forms.RefusedAmountFormProvider
 import models.Mode
-import models.UnitOfMeasure.Kilograms
 import navigation.Navigator
 import pages.unsatisfactory.individualItems.RefusedAmountPage
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.UserAnswersService
+import services.{GetCnCodeInformationService, UserAnswersService}
 import views.html.RefusedAmountView
 
 import javax.inject.Inject
-import scala.concurrent.Future
 
 class RefusedAmountController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       override val userAnswersService: UserAnswersService,
-                                       override val navigator: Navigator,
-                                       override val auth: AuthAction,
-                                       override val userAllowList: UserAllowListAction,
-                                       override val withMovement: MovementAction,
-                                       override val getData: DataRetrievalAction,
-                                       override val requireData: DataRequiredAction,
-                                       formProvider: RefusedAmountFormProvider,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       view: RefusedAmountView
-                                     ) extends BaseNavigationController with AuthActionHelper {
+                                         override val messagesApi: MessagesApi,
+                                         override val userAnswersService: UserAnswersService,
+                                         override val navigator: Navigator,
+                                         override val auth: AuthAction,
+                                         override val userAllowList: UserAllowListAction,
+                                         override val withMovement: MovementAction,
+                                         override val getData: DataRetrievalAction,
+                                         override val requireData: DataRequiredAction,
+                                         formProvider: RefusedAmountFormProvider,
+                                         val controllerComponents: MessagesControllerComponents,
+                                         getCnCodeInformationService: GetCnCodeInformationService,
+                                         view: RefusedAmountView
+                                       ) extends BaseNavigationController with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
-    authorisedDataRequest(ern, arc) { implicit request =>
-      withItem(idx) { item =>
-        Ok(view(fillForm(RefusedAmountPage(idx), formProvider(item.quantity)), routes.RefusedAmountController.onSubmit(ern, arc, idx, mode), Kilograms))
+    authorisedDataRequestAsync(ern, arc) { implicit request =>
+      withItemAsync(idx) { item =>
+        getCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item)).map {
+          serviceResult =>
+            val (item, cnCodeInformation) = serviceResult.head
+            Ok(view(
+              fillForm(RefusedAmountPage(idx), formProvider(item.quantity)),
+              routes.RefusedAmountController.onSubmit(ern, arc, idx, mode),
+              cnCodeInformation.unitOfMeasureCode.toUnitOfMeasure
+            ))
+        }
       }
     }
 
@@ -55,8 +62,17 @@ class RefusedAmountController @Inject()(
     authorisedDataRequestAsync(ern, arc) { implicit request =>
       withItemAsync(idx) { item =>
         formProvider(item.quantity).bindFromRequest().fold(
-          formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, routes.RefusedAmountController.onSubmit(ern, arc, idx, mode), Kilograms))),
+          formWithErrors => {
+            getCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item)).map {
+              serviceResult =>
+                val (_, cnCodeInformation) = serviceResult.head
+                BadRequest(view(
+                  formWithErrors,
+                  routes.RefusedAmountController.onSubmit(ern, arc, idx, mode),
+                  cnCodeInformation.unitOfMeasureCode.toUnitOfMeasure
+                ))
+            }
+          },
           value =>
             saveAndRedirect(RefusedAmountPage(idx), value, mode)
         )

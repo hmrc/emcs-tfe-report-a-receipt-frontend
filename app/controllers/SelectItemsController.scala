@@ -49,7 +49,7 @@ class SelectItemsController @Inject()(override val messagesApi: MessagesApi,
       if (filteredItems.isEmpty) {
         Future.successful(Redirect(routes.AddedItemsController.onPageLoad(ern, arc)))
       } else {
-        getCnCodeInformationService.get(filteredItems).map {
+        getCnCodeInformationService.getCnCodeInformationWithMovementItems(filteredItems).map {
           serviceResult => Ok(view(serviceResult))
         }
       }

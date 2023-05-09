@@ -16,9 +16,9 @@
 
 package viewmodels.checkAnswers
 
-import models.AcceptMovement.Unsatisfactory
-import models.CheckMode
-import models.WrongWithMovement.{BrokenSeals, Damaged, Shortage, Excess, Other}
+import models.AcceptMovement.{Refused, Unsatisfactory}
+import models.{AcceptMovement, CheckMode}
+import models.WrongWithMovement.{BrokenSeals, Damaged, Excess, Other, Shortage}
 import models.requests.DataRequest
 import pages.unsatisfactory._
 import pages.{AcceptMovementPage, MoreInformationPage}
@@ -42,8 +42,9 @@ class CheckAnswersHelper @Inject()(acceptMovementSummary: AcceptMovementSummary,
       acceptMovementSummary.row()
     ).flatten
 
-    val unsatisfactoryRows =
-      if (request.userAnswers.get(AcceptMovementPage).contains(Unsatisfactory)) {
+    val wrongRows = {
+      val wrongWithMovementAcceptedStatuses: Set[AcceptMovement] = Set(Unsatisfactory, Refused)
+      if (request.userAnswers.get(AcceptMovementPage).exists(wrongWithMovementAcceptedStatuses.contains)) {
         Seq(
           howMuchIsWrongSummary.row(),
           wrongWithMovementSummary.row(),
@@ -56,9 +57,10 @@ class CheckAnswersHelper @Inject()(acceptMovementSummary: AcceptMovementSummary,
       } else {
         Seq()
       }
+    }
 
     SummaryListViewModel(
-      rows = commonRows ++ unsatisfactoryRows :+
+      rows = commonRows ++ wrongRows :+
         moreInformationSummary.row(
           page = MoreInformationPage,
           changeAction = controllers.routes.MoreInformationController.loadMoreInformation(request.ern, request.arc, CheckMode)

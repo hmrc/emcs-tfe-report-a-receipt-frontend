@@ -33,7 +33,7 @@ class UserAllowListConnector @Inject()(http: HttpClient,
     val headerCarrierWithInternalAuthToken = hc.copy(authorization = Some(Authorization(config.internalAuthToken)))
 
     http.POST[CheckUserAllowListRequest, Either[ErrorResponse, Boolean]](
-      url = config.userAllowListBaseUrl + "/reportOfReceipt/check",
+      url = config.userAllowListBaseUrl + "/emcs-tfe/reportOfReceipt/check",
       body = checkRequest
     )(CheckUserAllowListRequest.writes, UserAllowListReads, headerCarrierWithInternalAuthToken, ec)
   }.recover {

@@ -16,8 +16,8 @@
 
 package mocks.viewmodels
 
+import models.UnitOfMeasure
 import models.requests.DataRequest
-import models.response.emcsTfe.MovementItem
 import org.scalamock.handlers.CallHandler5
 import org.scalamock.scalatest.MockFactory
 import play.api.i18n.Messages
@@ -30,8 +30,8 @@ trait MockShortageOrExcessItemSummary extends MockFactory {
 
   object MockShortageOrExcessItemSummary {
 
-    def rows(): CallHandler5[Int, MovementItem, String, DataRequest[_], Messages, Seq[SummaryListRow]] =
-      (mockShortageOrExcessItemSummary.rows(_: Int, _: MovementItem, _:String)(_: DataRequest[_], _: Messages))
+    def rows(): CallHandler5[Int, UnitOfMeasure, String, DataRequest[_], Messages, Seq[SummaryListRow]] =
+      (mockShortageOrExcessItemSummary.rows(_: Int, _: UnitOfMeasure, _:String)(_: DataRequest[_], _: Messages))
         .expects(*, *, *, *, *)
   }
 }

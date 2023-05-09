@@ -37,7 +37,7 @@ class GetCnCodeInformationServiceSpec extends SpecBase with MockGetCnCodeInforma
 
   val request = CnCodeInformationRequest(productCodeList = Seq("T400"), cnCodeList = Seq("24029000"))
   val movementItems = Seq(MovementItem(1, "T400", "24029000", 1, 1, 1, None, Seq()))
-  val listItems = Seq(ListItemWithProductCode("24029000", "T400", "", ""))
+  val listItems = Seq(ListItemWithProductCode(productCode = "T400", cnCode = "24029000", changeUrl = "", removeUrl = ""))
 
   ".getCnCodeInformationWithMovementItems" - {
 
@@ -129,9 +129,9 @@ class GetCnCodeInformationServiceSpec extends SpecBase with MockGetCnCodeInforma
       "when not all items match something from the Connector" in {
         val request = CnCodeInformationRequest(productCodeList = Seq("T400", "T401", "T402"), cnCodeList = Seq("24029000", "24029001", "24029002"))
         val items = Seq(
-          MovementItem(1, "T400", "24029000", 1, 1, 1, None, Seq()),
-          MovementItem(1, "T401", "24029001", 1, 1, 1, None, Seq()),
-          MovementItem(1, "T402", "24029002", 1, 1, 1, None, Seq())
+          ListItemWithProductCode("T400", "24029000", "", ""),
+          ListItemWithProductCode("T401", "24029001", "", ""),
+          ListItemWithProductCode("T402", "24029002", "", "")
         )
 
 
@@ -146,7 +146,7 @@ class GetCnCodeInformationServiceSpec extends SpecBase with MockGetCnCodeInforma
           )
         )))))
 
-        val result = intercept[ReferenceDataException](await(testService.getCnCodeInformationWithListItems(listItems)(hc)))
+        val result = intercept[ReferenceDataException](await(testService.getCnCodeInformationWithListItems(items)(hc)))
 
         result.getMessage must include(s"Failed to match item with CN Code information")
       }

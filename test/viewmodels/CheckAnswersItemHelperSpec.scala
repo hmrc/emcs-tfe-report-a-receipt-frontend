@@ -20,10 +20,11 @@ import base.SpecBase
 import controllers.routes
 import fixtures.messages.UnitOfMeasureMessages.English.kilogramsLong
 import mocks.viewmodels._
+import models.UnitOfMeasure.Kilograms
 import models.WrongWithMovement.{BrokenSeals, Damaged, Other, ShortageOrExcess}
 import models.requests.DataRequest
 import models.{CheckMode, NormalMode, ReviewMode, WrongWithMovement}
-import pages.unsatisfactory.individualItems.{ItemDamageInformationPage, ItemOtherInformationPage, ItemSealsInformationPage, RefusedAmountPage, RefusingAnyAmountOfItemPage, WrongWithItemPage}
+import pages.unsatisfactory.individualItems._
 import play.api.Application
 import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
@@ -61,7 +62,6 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
     def refusingAnyAmountOfItemPageValue: Boolean = true
 
     def refusedAmountPageValue: BigDecimal = BigDecimal(1)
-
 
 
     implicit def request: DataRequest[AnyContentAsEmpty.type] = dataRequest(
@@ -151,7 +151,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
             ))))
           )
 
-          checkAnswersItemHelper.summaryList(1, item1) mustBe SummaryList(Seq(
+          checkAnswersItemHelper.summaryList(1, Kilograms) mustBe SummaryList(Seq(
             refusedAmountRow,
             whatWasWrongRow,
             damagedGoodsInformationRow,
@@ -230,7 +230,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
           ))))
         )
 
-        checkAnswersItemHelper.summaryList(1, item1, true) mustBe SummaryList(Seq(
+        checkAnswersItemHelper.summaryList(1, Kilograms, onFinalCheckAnswers = true) mustBe SummaryList(Seq(
           refusedAmountRow,
           whatWasWrongReviewRow,
           damagedGoodsInformationRow,
@@ -283,7 +283,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
           )
 
 
-          checkAnswersItemHelper.summaryList(1, item1) mustBe SummaryList(Seq(
+          checkAnswersItemHelper.summaryList(1, Kilograms) mustBe SummaryList(Seq(
             amountRefusedRow,
             whatWasWrongRow,
             damagedGoodsInformationRow,
@@ -355,8 +355,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
           )
 
 
-
-          checkAnswersItemHelper.summaryList(1, item1, true) mustBe SummaryList(Seq(
+          checkAnswersItemHelper.summaryList(1, Kilograms, true) mustBe SummaryList(Seq(
             amountRefusedRow,
             whatWasWrongReviewRow,
             damagedGoodsInformationRow,
@@ -398,7 +397,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
             )))
           )
 
-          checkAnswersItemHelper.summaryList(1, item1) mustBe SummaryList(Seq(
+          checkAnswersItemHelper.summaryList(1, Kilograms) mustBe SummaryList(Seq(
             whatWasWrongRow,
             damagedGoodsInformationRow,
             brokenSealsInformationRow
@@ -414,7 +413,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
             emptyUserAnswers
           )
 
-          checkAnswersItemHelper.summaryList(1, item1) mustBe SummaryList(Seq())
+          checkAnswersItemHelper.summaryList(1, Kilograms) mustBe SummaryList(Seq())
         }
 
       }
@@ -434,7 +433,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
 
           MockShortageOrExcessItemSummary.rows().returns(Seq())
 
-          checkAnswersItemHelper.summaryList(1, item1) mustBe
+          checkAnswersItemHelper.summaryList(1, Kilograms) mustBe
             SummaryList(Seq(whatWasWrongRow.copy(value = ValueViewModel(HtmlContent(list(Seq()))))))
         }
       }

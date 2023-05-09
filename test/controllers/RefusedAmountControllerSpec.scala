@@ -18,24 +18,28 @@ package controllers
 
 import base.SpecBase
 import forms.RefusedAmountFormProvider
-import mocks.services.MockUserAnswersService
+import mocks.services.{MockGetCnCodeInformationService, MockUserAnswersService}
 import models.NormalMode
+import models.ReferenceDataUnitOfMeasure.`1`
 import models.UnitOfMeasure.Kilograms
+import models.response.referenceData.CnCodeInformation
 import navigation.{FakeNavigator, Navigator}
 import pages.unsatisfactory.individualItems.{RefusedAmountPage, SelectItemsPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.UserAnswersService
+import services.{GetCnCodeInformationService, UserAnswersService}
 import views.html.RefusedAmountView
 
 import scala.concurrent.Future
 
-class RefusedAmountControllerSpec extends SpecBase with MockUserAnswersService {
+class RefusedAmountControllerSpec extends SpecBase with MockUserAnswersService with MockGetCnCodeInformationService {
 
   val formProvider = new RefusedAmountFormProvider()
   val form = formProvider(itemQuantity = 10)
+
+  lazy val url = "testurl"
 
   def onwardRoute = Call("GET", "/foo")
 
@@ -49,7 +53,13 @@ class RefusedAmountControllerSpec extends SpecBase with MockUserAnswersService {
     "must return OK and the correct view for a GET" in {
 
       val userAnswers = emptyUserAnswers.set(SelectItemsPage(1), 1)
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService))
+        .build()
+
+      MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
+        (item1, CnCodeInformation("", `1`))
+      )))
 
       running(application) {
         val request = FakeRequest(GET, refusedAmountRoute)
@@ -69,7 +79,13 @@ class RefusedAmountControllerSpec extends SpecBase with MockUserAnswersService {
         .set(SelectItemsPage(1), 1)
         .set(RefusedAmountPage(1), validAnswer)
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService))
+        .build()
+
+      MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
+        (item1, CnCodeInformation("", `1`))
+      )))
 
       running(application) {
         val request = FakeRequest(GET, refusedAmountRoute)
@@ -93,7 +109,8 @@ class RefusedAmountControllerSpec extends SpecBase with MockUserAnswersService {
         applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(
             bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[UserAnswersService].toInstance(mockUserAnswersService)
+            bind[UserAnswersService].toInstance(mockUserAnswersService),
+            bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService)
           )
           .build()
 
@@ -112,7 +129,13 @@ class RefusedAmountControllerSpec extends SpecBase with MockUserAnswersService {
     "must return a Bad Request and errors when invalid data is submitted" in {
 
       val userAnswers = emptyUserAnswers.set(SelectItemsPage(1), 1)
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService))
+        .build()
+
+      MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
+        (item1, CnCodeInformation("", `1`))
+      )))
 
       running(application) {
         val request =
@@ -132,7 +155,9 @@ class RefusedAmountControllerSpec extends SpecBase with MockUserAnswersService {
 
     "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = None)
+        .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService))
+        .build()
 
       running(application) {
         val request = FakeRequest(GET, refusedAmountRoute)
@@ -146,7 +171,9 @@ class RefusedAmountControllerSpec extends SpecBase with MockUserAnswersService {
 
     "must redirect to Journey Recovery for a POST if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = None)
+        .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService))
+        .build()
 
       running(application) {
         val request =

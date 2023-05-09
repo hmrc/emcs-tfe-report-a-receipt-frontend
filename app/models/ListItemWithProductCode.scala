@@ -17,8 +17,8 @@
 package models
 
 case class ListItemWithProductCode(
-                                    cnCode: String,
                                     productCode: String,
+                                    cnCode: String,
                                     changeUrl: String,
                                     removeUrl: String
                                   )

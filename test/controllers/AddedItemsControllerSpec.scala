@@ -19,7 +19,9 @@ package controllers
 import base.SpecBase
 import forms.AddAnotherItemFormProvider
 import mocks.services.MockGetCnCodeInformationService
-import models.NormalMode
+import models.ReferenceDataUnitOfMeasure.`1`
+import models.response.referenceData.CnCodeInformation
+import models.{ListItemWithProductCode, NormalMode}
 import pages.unsatisfactory.individualItems.{CheckAnswersItemPage, SelectItemsPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -28,10 +30,14 @@ import services.GetCnCodeInformationService
 import viewmodels.AddedItemsSummary
 import views.html.AddedItemsView
 
+import scala.concurrent.Future
+
 class AddedItemsControllerSpec extends SpecBase with MockGetCnCodeInformationService {
 
   lazy val form = new AddAnotherItemFormProvider()()
   lazy val itemListSummary = new AddedItemsSummary()
+
+  lazy val url = "testurl"
 
   "AddedItems Controller" - {
 
@@ -85,6 +91,13 @@ class AddedItemsControllerSpec extends SpecBase with MockGetCnCodeInformationSer
             .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService))
             .build()
 
+          val serviceResponse: Seq[(ListItemWithProductCode, CnCodeInformation)] =
+            Seq((ListItemWithProductCode(productCode = item1.productCode, cnCode = item1.cnCode, changeUrl = url, removeUrl = url), CnCodeInformation("", `1`)))
+
+          MockGetCnCodeInformationService.getCnCodeInformationWithListItems(Seq(
+            ListItemWithProductCode(productCode = item1.productCode, cnCode = item1.cnCode, changeUrl = url, removeUrl = url)
+          )).returns(Future.successful(serviceResponse))
+
           running(application) {
             val request = FakeRequest(GET, routes.AddedItemsController.onPageLoad(testErn, testArc).url)
             val view = application.injector.instanceOf[AddedItemsView]
@@ -95,7 +108,7 @@ class AddedItemsControllerSpec extends SpecBase with MockGetCnCodeInformationSer
             status(result) mustEqual OK
             contentAsString(result) mustEqual view(
               form = Some(form),
-              items = itemListSummary.itemList(),
+              items = serviceResponse,
               action = routes.AddedItemsController.onSubmit(testErn, testArc))(req, messages(application)
             ).toString
           }
@@ -117,6 +130,17 @@ class AddedItemsControllerSpec extends SpecBase with MockGetCnCodeInformationSer
             .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService))
             .build()
 
+          val serviceResponse: Seq[(ListItemWithProductCode, CnCodeInformation)] =
+            Seq(
+              (ListItemWithProductCode(productCode = item1.productCode, cnCode = item1.cnCode, changeUrl = url, removeUrl = url), CnCodeInformation("", `1`)),
+              (ListItemWithProductCode(productCode = item2.productCode, cnCode = item2.cnCode, changeUrl = url, removeUrl = url), CnCodeInformation("", `1`))
+            )
+
+          MockGetCnCodeInformationService.getCnCodeInformationWithListItems(Seq(
+            ListItemWithProductCode(productCode = item1.productCode, cnCode = item1.cnCode, changeUrl = url, removeUrl = url),
+            ListItemWithProductCode(productCode = item2.productCode, cnCode = item2.cnCode, changeUrl = url, removeUrl = url),
+          )).returns(Future.successful(serviceResponse))
+
           running(application) {
             val request = FakeRequest(GET, routes.AddedItemsController.onPageLoad(testErn, testArc).url)
             val view = application.injector.instanceOf[AddedItemsView]
@@ -127,7 +151,7 @@ class AddedItemsControllerSpec extends SpecBase with MockGetCnCodeInformationSer
             status(result) mustEqual OK
             contentAsString(result) mustEqual view(
               form = None,
-              items = itemListSummary.itemList(),
+              items = serviceResponse,
               action = routes.AddedItemsController.onSubmit(testErn, testArc))(req, messages(application)
             ).toString
           }
@@ -169,6 +193,13 @@ class AddedItemsControllerSpec extends SpecBase with MockGetCnCodeInformationSer
               .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService))
               .build()
 
+            val serviceResponse: Seq[(ListItemWithProductCode, CnCodeInformation)] =
+              Seq((ListItemWithProductCode(productCode = item1.productCode, cnCode = item1.cnCode, changeUrl = url, removeUrl = url), CnCodeInformation("", `1`)))
+
+            MockGetCnCodeInformationService.getCnCodeInformationWithListItems(Seq(
+              ListItemWithProductCode(productCode = item1.productCode, cnCode = item1.cnCode, changeUrl = url, removeUrl = url)
+            )).returns(Future.successful(serviceResponse))
+
             running(application) {
               val request = FakeRequest(POST, routes.AddedItemsController.onSubmit(testErn, testArc).url)
               val result = route(application, request).value
@@ -180,7 +211,7 @@ class AddedItemsControllerSpec extends SpecBase with MockGetCnCodeInformationSer
               status(result) mustEqual BAD_REQUEST
               contentAsString(result) mustEqual view(
                 form = Some(boundForm),
-                items = itemListSummary.itemList(),
+                items = serviceResponse,
                 action = routes.AddedItemsController.onSubmit(testErn, testArc))(req, messages(application)
               ).toString
             }

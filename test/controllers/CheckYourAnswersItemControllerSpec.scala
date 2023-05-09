@@ -17,24 +17,30 @@
 package controllers
 
 import base.SpecBase
-import mocks.services.MockUserAnswersService
+import mocks.services.{MockGetCnCodeInformationService, MockUserAnswersService}
 import mocks.viewmodels.MockCheckAnswersItemHelper
+import models.ReferenceDataUnitOfMeasure.`1`
 import models.WrongWithMovement
 import models.WrongWithMovement.Damaged
+import models.response.referenceData.CnCodeInformation
 import navigation.{FakeNavigator, Navigator}
 import pages.unsatisfactory.individualItems.{AddItemDamageInformationPage, CheckAnswersItemPage, SelectItemsPage, WrongWithItemPage}
 import play.api.inject
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.UserAnswersService
+import services.{GetCnCodeInformationService, UserAnswersService}
 import viewmodels.checkAnswers.CheckAnswersItemHelper
 import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersItemView
 
 import scala.concurrent.Future
 
-class CheckYourAnswersItemControllerSpec extends SpecBase with SummaryListFluency with MockCheckAnswersItemHelper with MockUserAnswersService {
+class CheckYourAnswersItemControllerSpec extends SpecBase
+  with SummaryListFluency
+  with MockCheckAnswersItemHelper
+  with MockUserAnswersService
+  with MockGetCnCodeInformationService {
 
   private lazy val userAnswers = emptyUserAnswers
     .set(SelectItemsPage(1), 1)
@@ -48,15 +54,21 @@ class CheckYourAnswersItemControllerSpec extends SpecBase with SummaryListFluenc
       "must return OK and the correct view for a GET" in {
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
-          .overrides(inject.bind[CheckAnswersItemHelper].toInstance(mockCheckAnswersItemHelper))
+          .overrides(
+            inject.bind[CheckAnswersItemHelper].toInstance(mockCheckAnswersItemHelper),
+            inject.bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService)
+          )
           .build()
+
+        MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
+          (item1, CnCodeInformation("name", `1`))
+        )))
 
         running(application) {
 
           val list = SummaryListViewModel(Seq.empty)
 
           MockCheckAnswersItemHelper.summaryList().returns(list)
-          MockCheckAnswersItemHelper.itemName().returns("name")
 
           val request = FakeRequest(GET, routes.CheckYourAnswersItemController.onPageLoad(testErn, testArc, 1).url)
 
@@ -75,7 +87,9 @@ class CheckYourAnswersItemControllerSpec extends SpecBase with SummaryListFluenc
 
       "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
-        val application = applicationBuilder(userAnswers = None).build()
+        val application = applicationBuilder(userAnswers = None)
+          .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService))
+          .build()
 
         running(application) {
           val request = FakeRequest(GET, routes.CheckYourAnswersItemController.onPageLoad(testErn, testArc, 1).url)
@@ -89,7 +103,9 @@ class CheckYourAnswersItemControllerSpec extends SpecBase with SummaryListFluenc
 
       "must redirect to Journey Recovery for a GET if no item is found in userAnswers" in {
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService))
+          .build()
 
         running(application) {
           val request = FakeRequest(GET, routes.CheckYourAnswersItemController.onPageLoad(testErn, testArc, 1).url)
@@ -114,7 +130,8 @@ class CheckYourAnswersItemControllerSpec extends SpecBase with SummaryListFluenc
           applicationBuilder(userAnswers = Some(userAnswers))
             .overrides(
               inject.bind[Navigator].toInstance(new FakeNavigator(testOnwardRoute)),
-              bind[UserAnswersService].toInstance(mockUserAnswersService)
+              inject.bind[UserAnswersService].toInstance(mockUserAnswersService),
+              inject.bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService)
             )
             .build()
 
@@ -131,7 +148,9 @@ class CheckYourAnswersItemControllerSpec extends SpecBase with SummaryListFluenc
 
       "must redirect to Journey Recovery for a POST if no existing data is found" in {
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService))
+          .build()
 
         running(application) {
           val request = FakeRequest(POST, routes.CheckYourAnswersItemController.onSubmit(testErn, testArc, 1).url)

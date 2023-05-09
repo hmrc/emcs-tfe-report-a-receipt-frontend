@@ -16,11 +16,10 @@
 
 package mocks.services
 
-import models.{ListItemWithProductCode, UserAnswers}
-import models.requests.DataRequest
-import models.response.emcsTfe.{GetMovementResponse, MovementItem, SubmitReportOfReceiptResponse}
+import models.ListItemWithProductCode
+import models.response.emcsTfe.MovementItem
 import models.response.referenceData.CnCodeInformation
-import org.scalamock.handlers.{CallHandler2, CallHandler4}
+import org.scalamock.handlers.CallHandler2
 import org.scalamock.scalatest.MockFactory
 import services.GetCnCodeInformationService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -33,14 +32,20 @@ trait MockGetCnCodeInformationService extends MockFactory {
 
   object MockGetCnCodeInformationService {
 
-    private type Output[A] = CallHandler2[Seq[A], HeaderCarrier, Future[Seq[(A, CnCodeInformation)]]]
+    type Output[A] = CallHandler2[Seq[A], HeaderCarrier, Future[Seq[(A, CnCodeInformation)]]]
 
     def getCnCodeInformationWithMovementItems(items: Seq[MovementItem]): Output[MovementItem] =
       (mockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(_: Seq[MovementItem])(_: HeaderCarrier))
-        .expects(items, *)
+        .expects(where {
+          (_items: Seq[MovementItem], _) =>
+            (_items.map(_.cnCode) == items.map(_.cnCode)) && (_items.map(_.productCode) == items.map(_.productCode))
+        })
 
     def getCnCodeInformationWithListItems(items: Seq[ListItemWithProductCode]): Output[ListItemWithProductCode] =
       (mockGetCnCodeInformationService.getCnCodeInformationWithListItems(_: Seq[ListItemWithProductCode])(_: HeaderCarrier))
-        .expects(items, *)
+        .expects(where {
+          (_items: Seq[ListItemWithProductCode], _) =>
+            (_items.map(_.cnCode) == items.map(_.cnCode)) && (_items.map(_.productCode) == items.map(_.productCode))
+        })
   }
 }

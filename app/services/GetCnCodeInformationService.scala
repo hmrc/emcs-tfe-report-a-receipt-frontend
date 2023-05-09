@@ -31,7 +31,9 @@ import scala.concurrent.{ExecutionContext, Future}
 class GetCnCodeInformationService @Inject()(connector: GetCnCodeInformationConnector)
                                            (implicit ec: ExecutionContext) {
 
-  def getCnCodeInformationWithMovementItems(items: Seq[MovementItem])(implicit hc: HeaderCarrier): Future[Seq[(MovementItem, CnCodeInformation)]] = {
+  type ServiceOutcome[A] = Future[Seq[(A, CnCodeInformation)]]
+
+  def getCnCodeInformationWithMovementItems(items: Seq[MovementItem])(implicit hc: HeaderCarrier): ServiceOutcome[MovementItem] = {
     connector.getCnCodeInformation(generateRequestModelFromMovementItem(items)).map {
       case Right(response) =>
         matchMovementItemsWithReferenceDataValues(response, items).map {
@@ -42,7 +44,7 @@ class GetCnCodeInformationService @Inject()(connector: GetCnCodeInformationConne
     }
   }
 
-  def getCnCodeInformationWithListItems(items: Seq[ListItemWithProductCode])(implicit hc: HeaderCarrier): Future[Seq[(ListItemWithProductCode, CnCodeInformation)]] = {
+  def getCnCodeInformationWithListItems(items: Seq[ListItemWithProductCode])(implicit hc: HeaderCarrier): ServiceOutcome[ListItemWithProductCode] = {
     connector.getCnCodeInformation(generateRequestModelFromListItem(items)).map {
       case Right(response) =>
         matchListItemsWithReferenceDataValues(response, items).map {

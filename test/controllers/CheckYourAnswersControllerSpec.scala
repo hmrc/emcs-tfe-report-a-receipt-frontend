@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import fixtures.SubmitReportOfReceiptFixtures
 import handlers.ErrorHandler
-import mocks.services.MockSubmitReportOfReceiptService
+import mocks.services.{MockGetCnCodeInformationService, MockSubmitReportOfReceiptService}
 import mocks.viewmodels.MockCheckAnswersHelper
 import models.AcceptMovement.Satisfactory
 import models.UserAnswers
@@ -29,7 +29,7 @@ import pages.{AcceptMovementPage, DateOfArrivalPage}
 import play.api.inject
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.SubmitReportOfReceiptService
+import services.{GetCnCodeInformationService, SubmitReportOfReceiptService}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.CheckAnswersHelper
 import viewmodels.govuk.SummaryListFluency
@@ -37,7 +37,7 @@ import views.html.CheckYourAnswersView
 
 import scala.concurrent.Future
 
-class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency with MockCheckAnswersHelper
+class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency with MockCheckAnswersHelper with MockGetCnCodeInformationService
   with MockSubmitReportOfReceiptService with SubmitReportOfReceiptFixtures {
 
   class Fixture(userAnswers: Option[UserAnswers]) {
@@ -46,7 +46,8 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency wi
         .overrides(
           inject.bind[CheckAnswersHelper].toInstance(mockCheckAnswersHelper),
           inject.bind[Navigator].toInstance(new FakeNavigator(testOnwardRoute)),
-          inject.bind[SubmitReportOfReceiptService].toInstance(mockSubmitReportOfReceiptService)
+          inject.bind[SubmitReportOfReceiptService].toInstance(mockSubmitReportOfReceiptService),
+          inject.bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService)
         )
         .build()
 

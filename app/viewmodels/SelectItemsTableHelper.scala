@@ -50,7 +50,7 @@ class SelectItemsTableHelper @Inject()(link: link, list: list) {
             content = Text(messages(
               "selectItems.table.row.quantity",
               item.quantity.toString(),
-              messages(s"unitOfMeasure.${cnCodeInformation.unitOfMeasureCode.toUnitOfMeasure}.long")
+              messages(s"unitOfMeasure.${cnCodeInformation.unitOfMeasureCode.toUnitOfMeasure}.short")
             ))
           ),
           TableRow(

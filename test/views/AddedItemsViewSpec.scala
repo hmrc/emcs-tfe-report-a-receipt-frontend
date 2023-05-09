@@ -19,7 +19,9 @@ package views
 import base.ViewSpecBase
 import fixtures.messages.AddedItemsMessages
 import forms.AddAnotherItemFormProvider
+import models.ReferenceDataUnitOfMeasure.`1`
 import models.requests.DataRequest
+import models.response.referenceData.CnCodeInformation
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import pages.unsatisfactory.individualItems.{CheckAnswersItemPage, SelectItemsPage}
@@ -57,13 +59,20 @@ class AddedItemsViewSpec extends ViewSpecBase with ViewBehaviours {
 
           val view = app.injector.instanceOf[AddedItemsView]
 
-          implicit val doc: Document = Jsoup.parse(view(Some(form), listHelper.itemList(), testOnwardRoute).toString())
+          implicit val doc: Document = Jsoup.parse(view(
+            Some(form),
+            listHelper
+              .itemList()
+              .zipWithIndex
+              .map { case (l, i) => (l, CnCodeInformation(s"testdata${i + 1}", `1`)) },
+            testOnwardRoute
+          ).toString())
 
           behave like pageWithExpectedElementsAndMessages(Seq(
             Selectors.title -> messagesForLanguage.titleSingular,
             Selectors.h1 -> messagesForLanguage.headingSingular,
             Selectors.button -> messagesForLanguage.saveAndContinue,
-            Selectors.itemCnCode(1) -> item1.cnCode,
+            Selectors.itemCnCode(1) -> "testdata1",
             Selectors.itemChangeLink(1) -> messagesForLanguage.change,
             Selectors.itemRemoveLink(1) -> messagesForLanguage.remove,
             Selectors.radioButton(1) -> messagesForLanguage.yes,
@@ -85,16 +94,23 @@ class AddedItemsViewSpec extends ViewSpecBase with ViewBehaviours {
 
           val view = app.injector.instanceOf[AddedItemsView]
 
-          implicit val doc: Document = Jsoup.parse(view(None, listHelper.itemList(), testOnwardRoute).toString())
+          implicit val doc: Document = Jsoup.parse(view(
+            None,
+            listHelper
+              .itemList()
+              .zipWithIndex
+              .map { case (l, i) => (l, CnCodeInformation(s"testdata${i + 1}", `1`)) },
+            testOnwardRoute
+          ).toString())
 
           behave like pageWithExpectedElementsAndMessages(Seq(
             Selectors.title -> messagesForLanguage.titlePlural(2),
             Selectors.h1 -> messagesForLanguage.headingPlural(2),
             Selectors.button -> messagesForLanguage.saveAndContinue,
-            Selectors.itemCnCode(1) -> item1.cnCode,
+            Selectors.itemCnCode(1) -> "testdata1",
             Selectors.itemChangeLink(1) -> messagesForLanguage.change,
             Selectors.itemRemoveLink(1) -> messagesForLanguage.remove,
-            Selectors.itemCnCode(2) -> item1.cnCode,
+            Selectors.itemCnCode(2) -> "testdata2",
             Selectors.itemChangeLink(2) -> messagesForLanguage.change,
             Selectors.itemRemoveLink(2) -> messagesForLanguage.remove,
             Selectors.secondaryButton -> messagesForLanguage.saveAndReturnToMovement

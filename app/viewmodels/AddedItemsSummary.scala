@@ -28,10 +28,10 @@ class AddedItemsSummary  {
       uniqueReference =>
         request.movementDetails.copy(items = getFilteredItems).item(uniqueReference).map { item =>
           ListItemWithProductCode(
-            cnCode = item.cnCode,
             productCode = item.productCode,
-            routes.CheckYourAnswersItemController.onPageLoad(request.ern, request.arc, uniqueReference).url,
-            routes.RemoveItemController.onPageLoad(request.ern, request.arc, uniqueReference).url
+            cnCode = item.cnCode,
+            changeUrl = routes.CheckYourAnswersItemController.onPageLoad(request.ern, request.arc, uniqueReference).url,
+            removeUrl = routes.RemoveItemController.onPageLoad(request.ern, request.arc, uniqueReference).url
           )
         }
     }

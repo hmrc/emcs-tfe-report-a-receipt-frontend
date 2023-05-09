@@ -115,7 +115,7 @@ class ShortageOrExcessItemSummarySpec extends SpecBase {
                   )))
                 )
 
-                shortageOrExcessItemSummary.rows(1, item1) mustBe Seq(
+                shortageOrExcessItemSummary.rows(1, Kilograms) mustBe Seq(
                   shortageOrExcessRow,
                   amountOfShortageOrExcessRow,
                   shortageOrExcessInformationRow
@@ -133,7 +133,7 @@ class ShortageOrExcessItemSummarySpec extends SpecBase {
               "when additionalInfo is an empty String" in new Test {
                 override def additionalInfo: Option[String] = Some("")
 
-                shortageOrExcessItemSummary.rows(1, item1) mustBe Seq(
+                shortageOrExcessItemSummary.rows(1, Kilograms) mustBe Seq(
                   shortageOrExcessRow,
                   amountOfShortageOrExcessRow,
                   shortageOrExcessInformationRow
@@ -142,7 +142,7 @@ class ShortageOrExcessItemSummarySpec extends SpecBase {
               "when additionalInfo is None" in new Test {
                 override def additionalInfo: Option[String] = None
 
-                shortageOrExcessItemSummary.rows(1, item1) mustBe Seq(
+                shortageOrExcessItemSummary.rows(1, Kilograms) mustBe Seq(
                   shortageOrExcessRow,
                   amountOfShortageOrExcessRow,
                   shortageOrExcessInformationRow
@@ -158,7 +158,7 @@ class ShortageOrExcessItemSummarySpec extends SpecBase {
       "returns an empty Seq" in new Test {
         override def answers: UserAnswers = emptyUserAnswers
 
-        shortageOrExcessItemSummary.rows(1, item1) mustBe Seq()
+        shortageOrExcessItemSummary.rows(1, Kilograms) mustBe Seq()
       }
     }
   }

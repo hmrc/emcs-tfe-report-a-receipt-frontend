@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-package connectors.referenceData
+package connectors.packagingTypes
 
 import connectors.BaseConnectorUtils
-import models.requests.CnCodeInformationRequest
-import models.response.referenceData.CnCodeInformationResponse
-import models.response.{ErrorResponse, JsonValidationError, UnexpectedDownstreamResponseError}
+import models.requests.PackagingTypesRequest
+import models.response.{ErrorResponse, JsonValidationError, PackagingTypesResponse, UnexpectedDownstreamResponseError}
 import play.api.http.Status.OK
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait ReferenceDataHttpParser extends BaseConnectorUtils[CnCodeInformationResponse] {
+trait PackagingTypesHttpParser extends BaseConnectorUtils[PackagingTypesResponse] {
 
-  implicit val reads: Reads[CnCodeInformationResponse] = CnCodeInformationResponse.reads
+
+  implicit val reads: Reads[PackagingTypesResponse] = PackagingTypesResponse.reads
 
   def http: HttpClient
 
-  implicit object ReferenceDataReads extends HttpReads[Either[ErrorResponse, CnCodeInformationResponse]] {
-    override def read(method: String, url: String, response: HttpResponse): Either[ErrorResponse, CnCodeInformationResponse] = {
+  implicit object PackagingTypesReads extends HttpReads[Either[ErrorResponse, PackagingTypesResponse]] {
+    override def read(method: String, url: String, response: HttpResponse): Either[ErrorResponse, PackagingTypesResponse] = {
       response.status match {
         case OK =>
           response.validateJson match {
@@ -49,6 +49,6 @@ trait ReferenceDataHttpParser extends BaseConnectorUtils[CnCodeInformationRespon
     }
   }
 
-  def post(url: String, body: CnCodeInformationRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext, writes: Writes[CnCodeInformationRequest]): Future[Either[ErrorResponse, CnCodeInformationResponse]] =
-    http.POST[CnCodeInformationRequest, Either[ErrorResponse, CnCodeInformationResponse]](url, body)(writes, ReferenceDataReads, hc, ec)
+  def post(url: String, body: PackagingTypesRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext, writes: Writes[PackagingTypesRequest]): Future[Either[ErrorResponse, PackagingTypesResponse]] =
+    http.POST[PackagingTypesRequest, Either[ErrorResponse, PackagingTypesResponse]](url, body)(writes, PackagingTypesReads, hc, ec)
 }

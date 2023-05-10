@@ -14,34 +14,32 @@
  * limitations under the License.
  */
 
-package connectors.referenceData
+package connectors.packagingTypes
 
 import config.AppConfig
-import models.requests.CnCodeInformationRequest
-import models.response.referenceData.CnCodeInformationResponse
-import models.response.{ErrorResponse, JsonValidationError, UnexpectedDownstreamResponseError}
+import models.requests.PackagingTypesRequest
+import models.response.{ErrorResponse, JsonValidationError, PackagingTypesResponse, UnexpectedDownstreamResponseError}
 import play.api.libs.json.JsResultException
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-@Singleton
-class GetCnCodeInformationConnector @Inject()(val http: HttpClient,
-                                              config: AppConfig) extends ReferenceDataHttpParser {
+class GetPackagingTypesConnector @Inject()(val http: HttpClient,
+                                           config: AppConfig) extends PackagingTypesHttpParser {
 
   lazy val baseUrl: String = config.referenceDataBaseUrl
 
-  def getCnCodeInformation(request: CnCodeInformationRequest)
+  def getPackagingTypes(request: PackagingTypesRequest)
                           (implicit headerCarrier: HeaderCarrier,
-                           executionContext: ExecutionContext): Future[Either[ErrorResponse, CnCodeInformationResponse]] = {
-    post(baseUrl + "/oracle/cn-code-information", request)
+                           executionContext: ExecutionContext): Future[Either[ErrorResponse, PackagingTypesResponse]] = {
+    post(baseUrl + "/oracle/packaging-types", request)
       .recover {
         case JsResultException(errors) =>
-          logger.warn(s"[getCnCodeInformation] Bad JSON response from emcs-tfe-reference-data: " + errors)
+          logger.warn(s"[getPackagingTypes] Bad JSON response from emcs-tfe-reference-data: " + errors)
           Left(JsonValidationError)
         case error =>
-          logger.warn(s"[getCnCodeInformation] Unexpected error from reference-data: ${error.getClass} ${error.getMessage}")
+          logger.warn(s"[getPackagingTypes] Unexpected error from reference-data: ${error.getClass} ${error.getMessage}")
           Left(UnexpectedDownstreamResponseError)
       }
   }

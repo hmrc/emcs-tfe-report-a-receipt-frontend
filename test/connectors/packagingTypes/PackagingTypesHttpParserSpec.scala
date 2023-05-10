@@ -14,45 +14,37 @@
  * limitations under the License.
  */
 
-package connectors.referenceData
+package connectors.packagingTypes
 
 import base.SpecBase
 import fixtures.GetMovementResponseFixtures
 import mocks.connectors.MockHttpClient
-import models.ReferenceDataUnitOfMeasure.`1`
-import models.response.referenceData.{CnCodeInformation, CnCodeInformationResponse}
-import models.response.{JsonValidationError, UnexpectedDownstreamResponseError}
+import models.response.{JsonValidationError, PackagingTypesResponse, UnexpectedDownstreamResponseError}
 import play.api.http.{HeaderNames, MimeTypes, Status}
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.{HttpClient, HttpResponse}
 
-class ReferenceDataHttpParserSpec extends SpecBase
+class PackagingTypesHttpParserSpec extends SpecBase
   with Status with MimeTypes with HeaderNames with MockHttpClient with GetMovementResponseFixtures {
 
-  lazy val httpParser = new ReferenceDataHttpParser {
+  lazy val httpParser = new PackagingTypesHttpParser {
     override def http: HttpClient = mockHttpClient
   }
 
-  "ReferenceDataReads.read(method: String, url: String, response: HttpResponse)" - {
+  "PackagingTypesReads.read(method: String, url: String, response: HttpResponse)" - {
 
     "should return a successful response" - {
 
       "when valid JSON is returned that can be parsed to the model" in {
 
-        val cnCodeInformation = Map("24029000" -> CnCodeInformation(
-          cnCodeDescription = "Cigars, cheroots, cigarillos and cigarettes not containing tobacco",
-          unitOfMeasureCode = `1`
-        ))
+        val packagingTypes = Map("TN" -> "Tin")
 
-        val cnCodeInformationJson = Json.obj("24029000" -> Json.obj(
-          "cnCodeDescription" -> "Cigars, cheroots, cigarillos and cigarettes not containing tobacco",
-          "unitOfMeasureCode" -> 1
-        ))
+        val packagingTypesJson = Json.toJson(packagingTypes)
 
-        val httpResponse = HttpResponse(Status.OK, cnCodeInformationJson, Map())
+        val httpResponse = HttpResponse(Status.OK, packagingTypesJson, Map())
 
-        httpParser.ReferenceDataReads.read("POST", "/oracle/cn-code-information", httpResponse) mustBe Right(
-          CnCodeInformationResponse(cnCodeInformation)
+        httpParser.PackagingTypesReads.read("POST", "/oracle/packaging-types", httpResponse) mustBe Right(
+          PackagingTypesResponse(packagingTypes)
         )
       }
     }
@@ -63,7 +55,7 @@ class ReferenceDataHttpParserSpec extends SpecBase
 
         val httpResponse = HttpResponse(Status.INTERNAL_SERVER_ERROR, Json.obj(), Map())
 
-        httpParser.ReferenceDataReads.read("POST", "/oracle/cn-code-information", httpResponse) mustBe Left(UnexpectedDownstreamResponseError)
+        httpParser.PackagingTypesReads.read("POST", "/oracle/packaging-types", httpResponse) mustBe Left(UnexpectedDownstreamResponseError)
       }
     }
 
@@ -73,14 +65,14 @@ class ReferenceDataHttpParserSpec extends SpecBase
 
         val httpResponse = HttpResponse(Status.OK, "", Map())
 
-        httpParser.ReferenceDataReads.read("POST", "/oracle/cn-code-information", httpResponse) mustBe Left(JsonValidationError)
+        httpParser.PackagingTypesReads.read("POST", "/oracle/packaging-types", httpResponse) mustBe Left(JsonValidationError)
       }
 
       s"when response contains JSON but can't be deserialized to model" in {
 
         val httpResponse = HttpResponse(Status.OK, Json.arr(), Map())
 
-        httpParser.ReferenceDataReads.read("POST", "/oracle/cn-code-information", httpResponse) mustBe Left(JsonValidationError)
+        httpParser.PackagingTypesReads.read("POST", "/oracle/packaging-types", httpResponse) mustBe Left(JsonValidationError)
       }
     }
   }

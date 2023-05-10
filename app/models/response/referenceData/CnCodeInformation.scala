@@ -18,7 +18,7 @@ package models.response.referenceData
 
 import models.ReferenceDataUnitOfMeasure
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Reads}
+import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
 case class CnCodeInformation(cnCodeDescription: String, unitOfMeasureCode: ReferenceDataUnitOfMeasure)
 
@@ -27,4 +27,6 @@ object CnCodeInformation {
     (JsPath \ "cnCodeDescription").read[String] and
       (JsPath \ "unitOfMeasureCode").read[Int].map(value => ReferenceDataUnitOfMeasure.enumerable.withName(value.toString).get)
   )(CnCodeInformation.apply _)
+
+  implicit val writes: OWrites[CnCodeInformation] = Json.writes
 }

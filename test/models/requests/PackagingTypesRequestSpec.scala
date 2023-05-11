@@ -16,10 +16,13 @@
 
 package models.requests
 
-import play.api.libs.json.{Json, Writes}
+import base.SpecBase
+import play.api.libs.json.{JsArray, JsString, Json}
 
-case class PackagingTypesRequest(packagingTypes: Seq[String])
-
-object PackagingTypesRequest {
-  implicit val writes: Writes[PackagingTypesRequest] = (o: PackagingTypesRequest) => Json.toJson(o.packagingTypes)
+class PackagingTypesRequestSpec extends SpecBase {
+  "writes" - {
+    "must write a model to JSON" in {
+      Json.toJson(PackagingTypesRequest(Seq("a", "b", "c"))) mustBe JsArray(Seq("a", "b", "c").map(JsString))
+    }
+  }
 }

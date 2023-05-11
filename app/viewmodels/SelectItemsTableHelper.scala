@@ -44,7 +44,8 @@ class SelectItemsTableHelper @Inject()(link: link, list: list) {
             content = HtmlContent(link(
               link = controllers.routes.SelectItemsController.addItemToList(ern, arc, item.itemUniqueReference).url,
               messageKey = cnCodeInformation.cnCodeDescription
-            ))
+            )),
+            classes = "govuk-!-width-one-half"
           ),
           TableRow(
             content = Text(messages(

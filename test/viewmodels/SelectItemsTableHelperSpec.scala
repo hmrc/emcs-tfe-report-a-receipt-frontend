@@ -39,11 +39,11 @@ class SelectItemsTableHelperSpec extends SpecBase {
         lazy val link = app.injector.instanceOf[link]
         lazy val list = app.injector.instanceOf[list]
 
-        lazy val acceptMovementSummary = new SelectItemsTableHelper(link, list)
+        lazy val selectItemsTableHelper = new SelectItemsTableHelper(link, list)
 
         "should render the correct header rows" in {
 
-          acceptMovementSummary.headerRow mustBe Some(Seq(
+          selectItemsTableHelper.headerRow mustBe Some(Seq(
             HeadCell(Text(langMessages.tableHeadDescription)),
             HeadCell(Text(langMessages.tableHeadQuantity)),
             HeadCell(Text(langMessages.tableHeadAlcohol)),
@@ -53,7 +53,7 @@ class SelectItemsTableHelperSpec extends SpecBase {
 
         "should render the correct data rows" in {
 
-          acceptMovementSummary.dataRows(
+          selectItemsTableHelper.dataRows(
             ern = testErn,
             arc = testArc,
             items = Seq(item1, item2).zipWithIndex.map { case (l, i) => (l, CnCodeInformation(s"testdata${i + 1}", `1`)) }
@@ -63,7 +63,8 @@ class SelectItemsTableHelperSpec extends SpecBase {
                 content = HtmlContent(link(
                   link = controllers.routes.SelectItemsController.addItemToList(testErn, testArc, item1.itemUniqueReference).url,
                   messageKey = "testdata1"
-                ))
+                )),
+                classes = "govuk-!-width-one-half"
               ),
               TableRow(
                 content = Text(item1.quantity.toString() + " kg")
@@ -82,7 +83,8 @@ class SelectItemsTableHelperSpec extends SpecBase {
                 content = HtmlContent(link(
                   link = controllers.routes.SelectItemsController.addItemToList(testErn, testArc, item2.itemUniqueReference).url,
                   messageKey = "testdata2"
-                ))
+                )),
+                classes = "govuk-!-width-one-half"
               ),
               TableRow(
                 content = Text(item2.quantity.toString() + " kg")

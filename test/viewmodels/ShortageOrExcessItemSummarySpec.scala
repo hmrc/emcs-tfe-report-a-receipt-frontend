@@ -91,12 +91,10 @@ class ShortageOrExcessItemSummarySpec extends SpecBase {
 
     "when WrongWithItemPage contains ShortageOrExcess" - {
       Seq(
-        // TODO: add more units when reference data is called in a future story
-        // this should be derived from the provided cnCode
         Kilograms,
-        //        Litres15,
-        //        Litres20,
-        //        Thousands,
+                Litres15,
+                Litres20,
+                Thousands,
       ).foreach {
         unitOfMeasure =>
           s"when the unit of measure is $unitOfMeasure" - {
@@ -115,7 +113,7 @@ class ShortageOrExcessItemSummarySpec extends SpecBase {
                   )))
                 )
 
-                shortageOrExcessItemSummary.rows(1, Kilograms) mustBe Seq(
+                shortageOrExcessItemSummary.rows(1, unitOfMeasure) mustBe Seq(
                   shortageOrExcessRow,
                   amountOfShortageOrExcessRow,
                   shortageOrExcessInformationRow

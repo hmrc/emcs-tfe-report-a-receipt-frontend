@@ -19,10 +19,9 @@ package services
 import base.SpecBase
 import fixtures.GetMovementResponseFixtures
 import mocks.connectors.MockGetPackagingTypesConnector
-import models.ReferenceDataUnitOfMeasure
 import models.requests.PackagingTypesRequest
 import models.response.emcsTfe.{MovementItem, Packaging}
-import models.response.{PackagingTypesException, PackagingTypesResponse, ReferenceDataException, UnexpectedDownstreamResponseError}
+import models.response.{PackagingTypesException, PackagingTypesResponse, UnexpectedDownstreamResponseError}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.http.HeaderCarrier
 

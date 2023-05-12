@@ -17,21 +17,28 @@
 package controllers
 
 import base.SpecBase
-import mocks.services.MockUserAnswersService
+import mocks.services.{MockGetCnCodeInformationService, MockGetPackagingTypesService, MockUserAnswersService}
+import models.ReferenceDataUnitOfMeasure.`1`
 import models.WrongWithMovement
 import models.WrongWithMovement.Damaged
+import models.response.emcsTfe.Packaging
+import models.response.referenceData.CnCodeInformation
 import navigation.{FakeNavigator, Navigator}
 import pages.unsatisfactory.individualItems.{AddItemDamageInformationPage, CheckAnswersItemPage, SelectItemsPage, WrongWithItemPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.UserAnswersService
+import services.{GetCnCodeInformationService, GetPackagingTypesService, UserAnswersService}
 import utils.JsonOptionFormatter
 import views.html.SelectItemsView
 
 import scala.concurrent.Future
 
-class SelectItemsControllerSpec extends SpecBase with JsonOptionFormatter with MockUserAnswersService {
+class SelectItemsControllerSpec extends SpecBase
+  with JsonOptionFormatter
+  with MockUserAnswersService
+  with MockGetCnCodeInformationService
+  with MockGetPackagingTypesService {
 
   lazy val loadListUrl: String = routes.SelectItemsController.onPageLoad(testErn, testArc).url
   lazy val addItemUrl: String = routes.SelectItemsController.addItemToList(testErn, testArc, item1.itemUniqueReference).url
@@ -42,7 +49,26 @@ class SelectItemsControllerSpec extends SpecBase with JsonOptionFormatter with M
 
       "must return OK and the correct view for a GET" in {
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(
+            bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService),
+            bind[GetPackagingTypesService].toInstance(mockGetPackagingTypesService)
+          )
+          .build()
+
+        val updatedBoxPackage: Packaging = boxPackage.copy(typeOfPackage = "Box")
+
+        val updatedCratePackage: Packaging = cratePackage.copy(typeOfPackage = "Crate")
+
+        MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1, item2)).returns(Future.successful(Seq(
+          (item1, CnCodeInformation("", `1`)),
+          (item2, CnCodeInformation("", `1`))
+        )))
+
+        MockGetPackagingTypesService.getPackagingTypes(Seq(item1, item2)).returns(Future.successful(Seq(
+          item1.copy(packaging = Seq(updatedBoxPackage)),
+          item2.copy(packaging = Seq(updatedBoxPackage, updatedCratePackage))
+        )))
 
         running(application) {
           val request = FakeRequest(GET, loadListUrl)
@@ -52,7 +78,7 @@ class SelectItemsControllerSpec extends SpecBase with JsonOptionFormatter with M
           val view = application.injector.instanceOf[SelectItemsView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(Seq(item1, item2))(dataRequest(request), messages(application)).toString
+          contentAsString(result) mustEqual view(Seq(item1, item2).map(l => (l, CnCodeInformation("", `1`))))(dataRequest(request), messages(application)).toString
         }
       }
 
@@ -65,7 +91,9 @@ class SelectItemsControllerSpec extends SpecBase with JsonOptionFormatter with M
               .set(CheckAnswersItemPage(1), true)
               .set(SelectItemsPage(2), 2)
               .set(CheckAnswersItemPage(2), true)
-          )).build()
+          ))
+            .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService))
+            .build()
 
           running(application) {
             val request = FakeRequest(GET, loadListUrl)
@@ -80,7 +108,9 @@ class SelectItemsControllerSpec extends SpecBase with JsonOptionFormatter with M
 
       "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
-        val application = applicationBuilder(userAnswers = None).build()
+        val application = applicationBuilder(userAnswers = None)
+          .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService))
+          .build()
 
         running(application) {
           val request = FakeRequest(GET, loadListUrl)
@@ -107,7 +137,8 @@ class SelectItemsControllerSpec extends SpecBase with JsonOptionFormatter with M
             applicationBuilder(userAnswers = Some(emptyUserAnswers))
               .overrides(
                 bind[Navigator].toInstance(new FakeNavigator(testOnwardRoute)),
-                bind[UserAnswersService].toInstance(mockUserAnswersService)
+                bind[UserAnswersService].toInstance(mockUserAnswersService),
+                bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService)
               )
               .build()
 
@@ -135,7 +166,8 @@ class SelectItemsControllerSpec extends SpecBase with JsonOptionFormatter with M
             applicationBuilder(userAnswers = Some(userAnswers))
               .overrides(
                 bind[Navigator].toInstance(new FakeNavigator(testOnwardRoute)),
-                bind[UserAnswersService].toInstance(mockUserAnswersService)
+                bind[UserAnswersService].toInstance(mockUserAnswersService),
+                bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService)
               )
               .build()
 
@@ -164,7 +196,8 @@ class SelectItemsControllerSpec extends SpecBase with JsonOptionFormatter with M
             applicationBuilder(userAnswers = Some(userAnswers))
               .overrides(
                 bind[Navigator].toInstance(new FakeNavigator(testOnwardRoute)),
-                bind[UserAnswersService].toInstance(mockUserAnswersService)
+                bind[UserAnswersService].toInstance(mockUserAnswersService),
+                bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService)
               )
               .build()
 
@@ -181,7 +214,9 @@ class SelectItemsControllerSpec extends SpecBase with JsonOptionFormatter with M
 
       "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
-        val application = applicationBuilder(userAnswers = None).build()
+        val application = applicationBuilder(userAnswers = None)
+          .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService))
+          .build()
 
         running(application) {
           val request = FakeRequest(GET, loadListUrl)

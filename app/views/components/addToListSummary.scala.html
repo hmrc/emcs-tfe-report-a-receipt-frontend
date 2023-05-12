@@ -14,28 +14,28 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
+@import models.response.referenceData.CnCodeInformation
 
 @this()
 
-@(items: Seq[ListItem])(implicit messages: Messages)
+@(items: Seq[(ListItemWithProductCode, CnCodeInformation)])(implicit messages: Messages)
 
 <div class="govuk-form-group">
- <dl class="govuk-summary-list hmrc-list-with-actions hmrc-list-with-actions--short">
+ <dl class="govuk-summary-list hmrc-list-with-actions">
   @items.map { item =>
    <div class="govuk-summary-list__row">
     <dt class="govuk-summary-list__key govuk-!-font-weight-regular hmrc-summary-list__key">
-     @item.name
+     @item._2.cnCodeDescription
     </dt>
     <dd class="govuk-summary-list__actions hmrc-summary-list__actions">
      <ul class="govuk-summary-list__actions-list">
       <li class="govuk-summary-list__actions-list-item">
-       <a class="govuk-link" href="@item.changeUrl">
+       <a class="govuk-link" href="@item._1.changeUrl">
         @messages("site.change")
        </a>
       </li>
       <li class="govuk-summary-list__actions-list-item">
-       <a class="govuk-link" href="@item.removeUrl">
+       <a class="govuk-link" href="@item._1.removeUrl">
         @messages("site.remove")
        </a>
       </li>

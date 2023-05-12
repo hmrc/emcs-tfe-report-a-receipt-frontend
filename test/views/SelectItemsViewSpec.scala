@@ -18,7 +18,9 @@ package views
 
 import base.ViewSpecBase
 import fixtures.messages.SelectItemsMessages
+import models.ReferenceDataUnitOfMeasure.`1`
 import models.requests.DataRequest
+import models.response.referenceData.CnCodeInformation
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.i18n.Messages
@@ -41,7 +43,11 @@ class SelectItemsViewSpec extends ViewSpecBase with ViewBehaviours {
 
         val view = app.injector.instanceOf[SelectItemsView]
 
-        implicit val doc: Document = Jsoup.parse(view(Seq(item1, item2)).toString())
+        implicit val doc: Document = Jsoup.parse(view(
+          Seq(item1, item2)
+            .zipWithIndex
+            .map { case (l, i) => (l, CnCodeInformation(s"testdata${i + 1}", `1`)) }
+        ).toString())
 
         behave like pageWithExpectedElementsAndMessages(Seq(
           Selectors.title -> messagesForLanguage.title,
@@ -51,11 +57,11 @@ class SelectItemsViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.tableHeader(2) -> messagesForLanguage.tableHeadQuantity,
           Selectors.tableHeader(3) -> messagesForLanguage.tableHeadAlcohol,
           Selectors.tableHeader(4) -> messagesForLanguage.tableHeadPackaging,
-          Selectors.tableRow(1, 1) -> item1.cnCode,
-          Selectors.tableRow(1, 2) -> item1.quantity.toString(),
+          Selectors.tableRow(1, 1) -> "testdata1",
+          Selectors.tableRow(1, 2) -> (item1.quantity.toString() + " kg"),
           Selectors.tableRow(1, 3) -> messagesForLanguage.alcoholRow(item1.alcoholicStrength),
-          Selectors.tableRow(2, 1) -> item2.cnCode,
-          Selectors.tableRow(2, 2) -> item2.quantity.toString(),
+          Selectors.tableRow(2, 1) -> "testdata2",
+          Selectors.tableRow(2, 2) -> (item2.quantity.toString() + " kg"),
           Selectors.tableRow(2, 3) -> messagesForLanguage.alcoholRow(item2.alcoholicStrength)
         ))
       }

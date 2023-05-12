@@ -17,11 +17,10 @@
 package viewmodels.checkAnswers
 
 import controllers.routes
-import models.UnitOfMeasure.{Kilograms, reads}
+import models.UnitOfMeasure.reads
 import models.WrongWithMovement.{BrokenSeals, Damaged, Other}
 import models.requests.DataRequest
-import models.response.emcsTfe.MovementItem
-import models.{CheckMode, NormalMode, ReviewMode, WrongWithMovement}
+import models.{CheckMode, NormalMode, ReviewMode, UnitOfMeasure, WrongWithMovement}
 import pages.unsatisfactory.individualItems._
 import play.api.i18n.Messages
 import play.api.libs.json.Format.GenericFormat
@@ -41,21 +40,17 @@ class CheckAnswersItemHelper @Inject()(
                                         link: link
                                       ) extends JsonOptionFormatter {
 
-  def itemName(item: MovementItem): String = {
-    // TODO: replace with real description once we've hooked into the reference data
-    item.cnCode
-  }
-
-  def summaryList(idx: Int, item: MovementItem, onFinalCheckAnswers: Boolean = false)(implicit request: DataRequest[_], messages: Messages): SummaryList = {
+  def summaryList(idx: Int, unitOfMeasure: UnitOfMeasure, onFinalCheckAnswers: Boolean = false)
+                 (implicit request: DataRequest[_], messages: Messages): SummaryList = {
     val additionalLinkIdSignifier = if (onFinalCheckAnswers) s"-item-$idx" else ""
 
     val rows: Seq[SummaryListRow] =
       request.userAnswers.get(WrongWithItemPage(idx)).map {
         answers =>
           Seq(
-            amountRefusedRow(idx, additionalLinkIdSignifier),
+            amountRefusedRow(idx, unitOfMeasure, additionalLinkIdSignifier),
             whatWasWrongRow(answers, idx, additionalLinkIdSignifier),
-            shortageOrExcessItemSummary.rows(idx, item, additionalLinkIdSignifier),
+            shortageOrExcessItemSummary.rows(idx, unitOfMeasure, additionalLinkIdSignifier),
             damagedItemsInformationRow(idx, additionalLinkIdSignifier),
             brokenSealsInformationRow(idx, additionalLinkIdSignifier),
             otherInformationRow(idx, additionalLinkIdSignifier)
@@ -86,7 +81,7 @@ class CheckAnswersItemHelper @Inject()(
   private def brokenSealsInformationRow(idx: Int, additionalLinkIdSignifier: String)
                                        (implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] = {
     if (request.userAnswers.get(WrongWithItemPage(idx)).exists(_.contains(BrokenSeals))) {
-      val mode = if(additionalLinkIdSignifier != "") ReviewMode else CheckMode
+      val mode = if (additionalLinkIdSignifier != "") ReviewMode else CheckMode
       request.userAnswers.get(ItemSealsInformationPage(idx)).map {
         case Some(value) if value != "" =>
           SummaryListRowViewModel(
@@ -114,13 +109,13 @@ class CheckAnswersItemHelper @Inject()(
   }
 
 
-  private def amountRefusedRow(idx: Int, additionalLinkIdSignifier: String)
-                                       (implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] = {
+  private def amountRefusedRow(idx: Int, unitOfMeasure: UnitOfMeasure, additionalLinkIdSignifier: String)
+                              (implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] = {
 
     if (request.userAnswers.get(RefusingAnyAmountOfItemPage(idx)).nonEmpty) {
       val mode = if (additionalLinkIdSignifier != "") ReviewMode else CheckMode
       request.userAnswers.get(RefusingAnyAmountOfItemPage(idx)).map {
-       case _ if request.userAnswers.get(RefusedAmountPage(idx)).isEmpty =>
+        case _ if request.userAnswers.get(RefusedAmountPage(idx)).isEmpty =>
           SummaryListRowViewModel(
             key = s"${RefusingAnyAmountOfItemPage(idx)}.checkYourAnswers.label",
             value = ValueViewModel(HtmlContent(link(
@@ -130,12 +125,11 @@ class CheckAnswersItemHelper @Inject()(
         case _ =>
           SummaryListRowViewModel(
             key = s"${RefusingAnyAmountOfItemPage(idx)}.checkYourAnswers.label",
-            //TODO: Hardcoded to kg, should be determined from the reference data based on the CN Code in future story
             value = ValueViewModel(
               messages(
                 s"${RefusingAnyAmountOfItemPage(idx)}.checkYourAnswers.amount.value",
                 request.userAnswers.get(RefusedAmountPage(idx)).get.toString(),
-                messages(s"unitOfMeasure.$Kilograms.long")
+                messages(s"unitOfMeasure.$unitOfMeasure.long")
               )
             ),
             actions = Seq(
@@ -155,7 +149,7 @@ class CheckAnswersItemHelper @Inject()(
   private def damagedItemsInformationRow(idx: Int, additionalLinkIdSignifier: String)
                                         (implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] = {
     if (request.userAnswers.get(WrongWithItemPage(idx)).exists(_.contains(Damaged))) {
-      val mode = if(additionalLinkIdSignifier != "") ReviewMode else CheckMode
+      val mode = if (additionalLinkIdSignifier != "") ReviewMode else CheckMode
       request.userAnswers.get(ItemDamageInformationPage(idx)).map {
         case Some(value) if value != "" =>
           SummaryListRowViewModel(
@@ -187,7 +181,7 @@ class CheckAnswersItemHelper @Inject()(
     if (request.userAnswers.get(WrongWithItemPage(idx)).exists(_.contains(Other))) {
       request.userAnswers.get(ItemOtherInformationPage(idx)).flatMap {
         case value if value != "" =>
-          val mode = if(additionalLinkIdSignifier != "") ReviewMode else CheckMode
+          val mode = if (additionalLinkIdSignifier != "") ReviewMode else CheckMode
           Some(SummaryListRowViewModel(
             key = s"${ItemOtherInformationPage(idx)}.checkYourAnswers.label",
             value = ValueViewModel(Text(value)),

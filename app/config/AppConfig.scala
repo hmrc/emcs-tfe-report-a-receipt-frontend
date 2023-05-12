@@ -60,8 +60,10 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig, configuration: Configu
 
   private def emcsTfeService: String = servicesConfig.baseUrl("emcs-tfe")
   private def userAllowListService: String = servicesConfig.baseUrl("user-allow-list")
+  private def referenceDataService: String = servicesConfig.baseUrl("reference-data")
   def emcsTfeBaseUrl: String = s"$emcsTfeService/emcs-tfe"
   def userAllowListBaseUrl: String = s"$userAllowListService/user-allow-list"
+  def referenceDataBaseUrl: String = s"$referenceDataService/emcs-tfe-reference-data"
 
   def destinationOffice: String = configuration.get[String]("constants.destinationOffice")
 

@@ -18,6 +18,8 @@ package viewmodels
 
 import base.SpecBase
 import fixtures.messages.SelectItemsMessages
+import models.ReferenceDataUnitOfMeasure.`1`
+import models.response.referenceData.CnCodeInformation
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.{HeadCell, TableRow}
@@ -37,30 +39,35 @@ class SelectItemsTableHelperSpec extends SpecBase {
         lazy val link = app.injector.instanceOf[link]
         lazy val list = app.injector.instanceOf[list]
 
-        lazy val acceptMovementSummary = new SelectItemsTableHelper(link, list)
+        lazy val selectItemsTableHelper = new SelectItemsTableHelper(link, list)
 
         "should render the correct header rows" in {
 
-          acceptMovementSummary.headerRow mustBe Some(Seq(
+          selectItemsTableHelper.headerRow mustBe Some(Seq(
             HeadCell(Text(langMessages.tableHeadDescription)),
-              HeadCell(Text(langMessages.tableHeadQuantity)),
-              HeadCell(Text(langMessages.tableHeadAlcohol)),
-              HeadCell(Text(langMessages.tableHeadPackaging))
+            HeadCell(Text(langMessages.tableHeadQuantity)),
+            HeadCell(Text(langMessages.tableHeadAlcohol)),
+            HeadCell(Text(langMessages.tableHeadPackaging))
           ))
         }
 
         "should render the correct data rows" in {
 
-          acceptMovementSummary.dataRows(testErn, testArc, Seq(item1, item2)) mustBe Seq(
+          selectItemsTableHelper.dataRows(
+            ern = testErn,
+            arc = testArc,
+            items = Seq(item1, item2).zipWithIndex.map { case (l, i) => (l, CnCodeInformation(s"testdata${i + 1}", `1`)) }
+          ) mustBe Seq(
             Seq(
               TableRow(
                 content = HtmlContent(link(
                   link = controllers.routes.SelectItemsController.addItemToList(testErn, testArc, item1.itemUniqueReference).url,
-                  messageKey = item1.cnCode
-                ))
+                  messageKey = "testdata1"
+                )),
+                classes = "govuk-!-width-one-half"
               ),
               TableRow(
-                content = Text(item1.quantity.toString())
+                content = Text(item1.quantity.toString() + " kg")
               ),
               TableRow(
                 content = Text(langMessages.alcoholRow(item1.alcoholicStrength))
@@ -75,11 +82,12 @@ class SelectItemsTableHelperSpec extends SpecBase {
               TableRow(
                 content = HtmlContent(link(
                   link = controllers.routes.SelectItemsController.addItemToList(testErn, testArc, item2.itemUniqueReference).url,
-                  messageKey = item2.cnCode
-                ))
+                  messageKey = "testdata2"
+                )),
+                classes = "govuk-!-width-one-half"
               ),
               TableRow(
-                content = Text(item2.quantity.toString())
+                content = Text(item2.quantity.toString() + " kg")
               ),
               TableRow(
                 content = Text(langMessages.alcoholRow(item2.alcoholicStrength))

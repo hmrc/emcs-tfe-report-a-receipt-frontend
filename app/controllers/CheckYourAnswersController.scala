@@ -25,12 +25,13 @@ import navigation.Navigator
 import pages.CheckAnswersPage
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.SubmitReportOfReceiptService
+import services.{GetCnCodeInformationService, SubmitReportOfReceiptService}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.{CheckAnswersHelper, CheckAnswersItemHelper}
 import views.html.CheckYourAnswersView
 
 import javax.inject.Inject
+import scala.concurrent.Future
 
 class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi,
                                            override val auth: AuthAction,
@@ -44,31 +45,47 @@ class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi
                                            checkAnswersHelper: CheckAnswersHelper,
                                            checkAnswersItemHelper: CheckAnswersItemHelper,
                                            submitReportOfReceiptService: SubmitReportOfReceiptService,
+                                           getCnCodeInformationService: GetCnCodeInformationService,
                                            errorHandler: ErrorHandler
                                           ) extends BaseController with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String): Action[AnyContent] =
-    authorisedDataRequest(ern, arc) { implicit request =>
-      withAllItems() {
+    authorisedDataRequestAsync(ern, arc) { implicit request =>
+      withAllItemsAsync() {
         items =>
-          val formattedAnswers: Seq[(String, SummaryList)] =
-            items map {
-              item =>
-                (
-                  checkAnswersItemHelper.itemName(item),
-                  checkAnswersItemHelper.summaryList(item.itemUniqueReference, item, onFinalCheckAnswers = true)
-                )
+          val formattedAnswersFuture: Future[Seq[(String, SummaryList)]] = {
+            if (items.nonEmpty) {
+              getCnCodeInformationService.getCnCodeInformationWithMovementItems(items).map {
+                serviceResult =>
+                  serviceResult map {
+                    case (item, cnCodeInformation) =>
+                      (
+                        cnCodeInformation.cnCodeDescription,
+                        checkAnswersItemHelper.summaryList(
+                          idx = item.itemUniqueReference,
+                          unitOfMeasure = cnCodeInformation.unitOfMeasureCode.toUnitOfMeasure,
+                          onFinalCheckAnswers = true
+                        )
+                      )
+                  }
+              }
+            } else {
+              Future.successful(Seq())
             }
+          }
 
-          val moreItemsToAdd: Boolean =
-            (request.movementDetails.items.size != items.size) && items.nonEmpty
+          formattedAnswersFuture.map {
+            formattedAnswers =>
+              val moreItemsToAdd: Boolean =
+                (request.movementDetails.items.size != items.size) && items.nonEmpty
 
-          Ok(view(routes.CheckYourAnswersController.onSubmit(ern, arc),
-            routes.SelectItemsController.onPageLoad(ern, arc).url,
-            checkAnswersHelper.summaryList(),
-            formattedAnswers,
-            moreItemsToAdd,
-          ))
+              Ok(view(routes.CheckYourAnswersController.onSubmit(ern, arc),
+                routes.SelectItemsController.onPageLoad(ern, arc).url,
+                checkAnswersHelper.summaryList(),
+                formattedAnswers,
+                moreItemsToAdd,
+              ))
+          }
       }
     }
 

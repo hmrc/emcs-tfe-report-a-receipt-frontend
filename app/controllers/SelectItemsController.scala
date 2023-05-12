@@ -24,10 +24,11 @@ import navigation.Navigator
 import pages.unsatisfactory.individualItems.SelectItemsPage
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.UserAnswersService
+import services.{GetCnCodeInformationService, GetPackagingTypesService, UserAnswersService}
 import views.html.SelectItemsView
 
 import javax.inject.Inject
+import scala.concurrent.Future
 
 class SelectItemsController @Inject()(override val messagesApi: MessagesApi,
                                       override val userAnswersService: UserAnswersService,
@@ -38,16 +39,22 @@ class SelectItemsController @Inject()(override val messagesApi: MessagesApi,
                                       override val getData: DataRetrievalAction,
                                       override val requireData: DataRequiredAction,
                                       val controllerComponents: MessagesControllerComponents,
+                                      getCnCodeInformationService: GetCnCodeInformationService,
+                                      getPackagingTypesService: GetPackagingTypesService,
                                       view: SelectItemsView
                                      ) extends BaseNavigationController with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String): Action[AnyContent] =
-    authorisedDataRequest(ern, arc) { implicit request =>
-      val filteredItems = getFilteredItems(request)
+    authorisedDataRequestAsync(ern, arc) { implicit request =>
+      val filteredItems: Seq[MovementItem] = getFilteredItems(request)
       if (filteredItems.isEmpty) {
-        Redirect(routes.AddedItemsController.onPageLoad(ern, arc))
+        Future.successful(Redirect(routes.AddedItemsController.onPageLoad(ern, arc)))
       } else {
-        Ok(view(filteredItems))
+        getPackagingTypesService.getPackagingTypes(filteredItems).flatMap {
+          getCnCodeInformationService.getCnCodeInformationWithMovementItems(_).map {
+            serviceResult => Ok(view(serviceResult))
+          }
+        }
       }
     }
 

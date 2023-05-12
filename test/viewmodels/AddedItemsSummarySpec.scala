@@ -18,9 +18,9 @@ package viewmodels
 
 import base.SpecBase
 import controllers.routes
+import models.ListItemWithProductCode
 import pages.unsatisfactory.individualItems.{CheckAnswersItemPage, SelectItemsPage}
 import play.api.test.FakeRequest
-import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 
 class AddedItemsSummarySpec extends SpecBase {
 
@@ -28,7 +28,7 @@ class AddedItemsSummarySpec extends SpecBase {
 
     lazy val acceptMovementSummary = new AddedItemsSummary()
 
-    "should return the expected sequence of ListItem models" in {
+    "should return the expected sequence of ListItemWithProductCode models" in {
 
       val answers = emptyUserAnswers
         .set(SelectItemsPage(1), item1.itemUniqueReference)
@@ -39,15 +39,17 @@ class AddedItemsSummarySpec extends SpecBase {
       implicit val req = dataRequest(FakeRequest(), answers)
 
       acceptMovementSummary.itemList() mustBe Seq(
-        ListItem(
-          item1.cnCode,
-          routes.CheckYourAnswersItemController.onPageLoad(answers.ern, answers.arc, 1).url,
-          routes.RemoveItemController.onPageLoad(answers.ern, answers.arc, 1).url
+        ListItemWithProductCode(
+          productCode = item1.productCode,
+          cnCode = item1.cnCode,
+          changeUrl = routes.CheckYourAnswersItemController.onPageLoad(answers.ern, answers.arc, 1).url,
+          removeUrl = routes.RemoveItemController.onPageLoad(answers.ern, answers.arc, 1).url
         ),
-        ListItem(
-          item2.cnCode,
-          routes.CheckYourAnswersItemController.onPageLoad(answers.ern, answers.arc, 2).url,
-          routes.RemoveItemController.onPageLoad(answers.ern, answers.arc, 2).url
+        ListItemWithProductCode(
+          productCode = item2.productCode,
+          cnCode = item2.cnCode,
+          changeUrl = routes.CheckYourAnswersItemController.onPageLoad(answers.ern, answers.arc, 2).url,
+          removeUrl = routes.RemoveItemController.onPageLoad(answers.ern, answers.arc, 2).url
         )
       )
     }
@@ -63,10 +65,11 @@ class AddedItemsSummarySpec extends SpecBase {
         implicit val req = dataRequest(FakeRequest(), answers)
 
         acceptMovementSummary.itemList() mustBe Seq(
-          ListItem(
-            item2.cnCode,
-            routes.CheckYourAnswersItemController.onPageLoad(answers.ern, answers.arc, 2).url,
-            routes.RemoveItemController.onPageLoad(answers.ern, answers.arc, 2).url
+          ListItemWithProductCode(
+            productCode = item2.productCode,
+            cnCode = item2.cnCode,
+            changeUrl = routes.CheckYourAnswersItemController.onPageLoad(answers.ern, answers.arc, 2).url,
+            removeUrl = routes.RemoveItemController.onPageLoad(answers.ern, answers.arc, 2).url
           )
         )
       }

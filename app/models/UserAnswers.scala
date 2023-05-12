@@ -17,6 +17,7 @@
 package models
 
 import models.response.emcsTfe.MovementItem
+import pages.QuestionPage
 import play.api.libs.json._
 import queries.{Gettable, Settable}
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
@@ -43,6 +44,20 @@ final case class UserAnswers(internalId: String,
         }
       case _: JsUndefined => Seq.empty
     }
+  }
+
+  def filterForPages(pages: Seq[QuestionPage[_]]): UserAnswers = {
+    val pagesWithAnswersInData: Seq[(String, Json.JsValueWrapper)] = pages.flatMap {
+      page =>
+        data \ page match {
+          case JsDefined(value) => Some(page.toString -> Json.toJsFieldJsValueWrapper(value))
+          case _: JsUndefined => None
+        }
+    }
+
+    val newAnswers = Json.obj(pagesWithAnswersInData: _*)
+
+    this.copy(data = newAnswers)
   }
 
   def itemReferences: Seq[Int] = {

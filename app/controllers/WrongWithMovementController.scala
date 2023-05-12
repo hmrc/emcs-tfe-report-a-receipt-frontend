@@ -18,11 +18,11 @@ package controllers
 
 import controllers.actions._
 import forms.WrongWithMovementFormProvider
-import models.{Mode, WrongWithMovement}
+import models.{Mode, UserAnswers, WrongWithMovement}
 import navigation.Navigator
-import pages.QuestionPage
-import pages.unsatisfactory.WrongWithMovementPage
 import pages.unsatisfactory.individualItems.WrongWithItemPage
+import pages.unsatisfactory.{HowMuchIsWrongPage, WrongWithMovementPage}
+import pages.{AcceptMovementPage, DateOfArrivalPage, QuestionPage}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.UserAnswersService
@@ -43,17 +43,49 @@ class WrongWithMovementController @Inject()(
                                              formProvider: WrongWithMovementFormProvider,
                                              val controllerComponents: MessagesControllerComponents,
                                              view: WrongWithMovementView
-                                     ) extends BaseNavigationController with AuthActionHelper {
+                                           ) extends BaseNavigationController with AuthActionHelper {
 
   def loadWrongWithMovement(ern: String, arc: String, mode: Mode): Action[AnyContent] =
     onPageLoad(WrongWithMovementPage, ern, arc, routes.WrongWithMovementController.submitWrongWithMovement(ern, arc, mode))
-  def submitWrongWithMovement(ern: String, arc: String, mode: Mode): Action[AnyContent] =
-    onSubmit(WrongWithMovementPage, ern, arc, mode, routes.WrongWithMovementController.submitWrongWithMovement(ern, arc, mode))
+
+  def submitWrongWithMovement(ern: String, arc: String, mode: Mode): Action[AnyContent] = {
+    authorisedDataRequestAsync(ern, arc) { implicit request =>
+      formProvider(WrongWithMovementPage).bindFromRequest().fold(
+        formWithErrors =>
+          Future.successful(BadRequest(view(
+            WrongWithMovementPage,
+            formWithErrors,
+            routes.WrongWithMovementController.submitWrongWithMovement(ern, arc, mode)
+          ))),
+        value => {
+          val newUserAnswers: UserAnswers = request.userAnswers.filterForPages(Seq(
+            DateOfArrivalPage,
+            AcceptMovementPage,
+            HowMuchIsWrongPage
+          ))
+          saveAndRedirect(WrongWithMovementPage, value, newUserAnswers, mode)
+        }
+      )
+    }
+  }
 
   def loadwrongWithItem(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
     onPageLoad(WrongWithItemPage(idx), ern, arc, routes.WrongWithMovementController.submitwrongWithItem(ern, arc, idx, mode))
-  def submitwrongWithItem(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
-    onSubmit(WrongWithItemPage(idx), ern, arc, mode, routes.WrongWithMovementController.submitwrongWithItem(ern, arc, idx, mode))
+
+  def submitwrongWithItem(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] = {
+    authorisedDataRequestAsync(ern, arc) { implicit request =>
+      formProvider(WrongWithItemPage(idx)).bindFromRequest().fold(
+        formWithErrors =>
+          Future.successful(BadRequest(view(
+            WrongWithItemPage(idx),
+            formWithErrors,
+            routes.WrongWithMovementController.submitwrongWithItem(ern, arc, idx, mode)
+          ))),
+        value =>
+          saveAndRedirect(WrongWithItemPage(idx), value, mode)
+      )
+    }
+  }
 
   private def onPageLoad(page: QuestionPage[Set[WrongWithMovement]],
                          ern: String,
@@ -61,19 +93,5 @@ class WrongWithMovementController @Inject()(
                          action: Call): Action[AnyContent] =
     authorisedDataRequest(ern, arc) { implicit request =>
       Ok(view(page, fillForm(page, formProvider(page)), action))
-    }
-
-  private def onSubmit(page: QuestionPage[Set[WrongWithMovement]],
-                       ern: String,
-                       arc: String,
-                       mode: Mode,
-                       action: Call): Action[AnyContent] =
-    authorisedDataRequestAsync(ern, arc) { implicit request =>
-      formProvider(page).bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(page, formWithErrors, action))),
-        value =>
-          saveAndRedirect(page, value, mode)
-      )
     }
 }

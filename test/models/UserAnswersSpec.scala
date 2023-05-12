@@ -24,9 +24,12 @@ package models
 import base.SpecBase
 import models.WrongWithMovement.Damaged
 import models.response.emcsTfe.MovementItem
-import pages.QuestionPage
+import pages.unsatisfactory.{ExcessInformationPage, HowMuchIsWrongPage, WrongWithMovementPage}
+import pages.{DateOfArrivalPage, MoreInformationPage, QuestionPage}
 import pages.unsatisfactory.individualItems._
 import play.api.libs.json._
+
+import java.time.LocalDate
 
 
 class UserAnswersSpec extends SpecBase {
@@ -481,6 +484,32 @@ class UserAnswersSpec extends SpecBase {
 
           input.getItemWithReads("item-3")(MovementItem.readItemUniqueReference) mustBe Seq()
         }
+      }
+    }
+
+    "when calling .filterForPages" - {
+      val baseUserAnswers = UserAnswers(internalId = "my id", ern = "my ern", arc = "my arc")
+      "must only return pages in the supplied Seq" in {
+        val existingUserAnswers = baseUserAnswers
+          .set(DateOfArrivalPage, LocalDate.MIN)
+          .set(HowMuchIsWrongPage, HowMuchIsWrong.TheWholeMovement)
+          .set(MoreInformationPage, Some("more info"))
+
+        existingUserAnswers.filterForPages(Seq(DateOfArrivalPage, MoreInformationPage)) mustBe {
+          baseUserAnswers.copy(data = Json.obj(
+            DateOfArrivalPage.toString -> LocalDate.MIN,
+            MoreInformationPage.toString -> "more info"
+          ))
+        }
+      }
+
+      "must return an empty Seq if none of the supplied pages are in UserAnswers" in {
+        val existingUserAnswers = baseUserAnswers
+          .set(DateOfArrivalPage, LocalDate.MIN)
+          .set(HowMuchIsWrongPage, HowMuchIsWrong.TheWholeMovement)
+          .set(MoreInformationPage, Some("more info"))
+
+        existingUserAnswers.filterForPages(Seq(ExcessInformationPage)) mustBe baseUserAnswers
       }
     }
   }

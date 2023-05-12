@@ -22,7 +22,7 @@ import mocks.services.MockUserAnswersService
 import models.{NormalMode, WrongWithMovement}
 import navigation.{FakeNavigator, Navigator}
 import pages.unsatisfactory.WrongWithMovementPage
-import pages.unsatisfactory.individualItems.WrongWithItemPage
+import pages.unsatisfactory.individualItems.{SelectItemsPage, WrongWithItemPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -41,8 +41,8 @@ class WrongWithMovementControllerSpec extends SpecBase with MockUserAnswersServi
   lazy val wrongWithMovementRoute: String = routes.WrongWithMovementController.loadWrongWithMovement(testErn, testArc, NormalMode).url
   lazy val wrongWithMovementSubmitAction: Call = routes.WrongWithMovementController.submitWrongWithMovement(testErn, testArc, NormalMode)
 
-  def wrongWithItemRoute(idx: Int): String = routes.WrongWithMovementController.loadwrongWithItem(testErn, testArc, idx, NormalMode).url
-  def wrongWithItemSubmitAction(idx: Int): Call = routes.WrongWithMovementController.submitwrongWithItem(testErn, testArc, idx, NormalMode)
+  def wrongWithItemRoute(idx: Int): String = routes.WrongWithMovementController.loadWrongWithItem(testErn, testArc, idx, NormalMode).url
+  def wrongWithItemSubmitAction(idx: Int): Call = routes.WrongWithMovementController.submitWrongWithItem(testErn, testArc, idx, NormalMode)
 
   "WrongWithMovement Controller" - {
 
@@ -92,7 +92,13 @@ class WrongWithMovementControllerSpec extends SpecBase with MockUserAnswersServi
 
         "must redirect to the next page when valid data is submitted" in {
 
-          val updatedAnswers = emptyUserAnswers.set(page, Set(WrongWithMovement.values.head))
+          val updatedAnswers = if(page == WrongWithMovementPage) {
+            emptyUserAnswers.set(page, Set(WrongWithMovement.values.head))
+          } else {
+            emptyUserAnswers
+              .set(page, Set(WrongWithMovement.values.head))
+              .set(SelectItemsPage(1), 1)
+          }
           MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
 
           val application =

@@ -24,9 +24,9 @@ package models
 import base.SpecBase
 import models.WrongWithMovement.Damaged
 import models.response.emcsTfe.MovementItem
-import pages.unsatisfactory.{ExcessInformationPage, HowMuchIsWrongPage, WrongWithMovementPage}
-import pages.{DateOfArrivalPage, MoreInformationPage, QuestionPage}
 import pages.unsatisfactory.individualItems._
+import pages.unsatisfactory.{ExcessInformationPage, HowMuchIsWrongPage}
+import pages.{DateOfArrivalPage, MoreInformationPage, QuestionPage}
 import play.api.libs.json._
 
 import java.time.LocalDate

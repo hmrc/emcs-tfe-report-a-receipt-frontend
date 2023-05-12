@@ -52,7 +52,7 @@ class Navigator @Inject()() extends BaseNavigator {
       (userAnswers: UserAnswers) =>
         userAnswers.get(AcceptMovementPage) match {
           case Some(PartiallyRefused) => routes.RefusingAnyAmountOfItemController.onPageLoad(userAnswers.ern, userAnswers.arc, idx, NormalMode)
-          case _ => routes.WrongWithMovementController.loadwrongWithItem(userAnswers.ern, userAnswers.arc, idx, NormalMode)
+          case _ => routes.WrongWithMovementController.loadWrongWithItem(userAnswers.ern, userAnswers.arc, idx, NormalMode)
         }
     case RefusingAnyAmountOfItemPage(idx) =>
       (userAnswers: UserAnswers) =>
@@ -60,10 +60,10 @@ class Navigator @Inject()() extends BaseNavigator {
           case Some(true) =>
             routes.RefusedAmountController.onPageLoad(userAnswers.ern, userAnswers.arc, idx, NormalMode)
           case _ =>
-            routes.WrongWithMovementController.loadwrongWithItem(userAnswers.ern, userAnswers.arc, idx, NormalMode)
+            routes.WrongWithMovementController.loadWrongWithItem(userAnswers.ern, userAnswers.arc, idx, NormalMode)
         }
     case RefusedAmountPage(idx) =>
-      (userAnswers: UserAnswers) => routes.WrongWithMovementController.loadwrongWithItem(userAnswers.ern, userAnswers.arc, idx, NormalMode)
+      (userAnswers: UserAnswers) => routes.WrongWithMovementController.loadWrongWithItem(userAnswers.ern, userAnswers.arc, idx, NormalMode)
     case WrongWithMovementPage =>
       (userAnswers: UserAnswers) => redirectToNextWrongMovementPage()(userAnswers)
     case wrongWithItemPage: WrongWithItemPage =>
@@ -214,7 +214,7 @@ class Navigator @Inject()() extends BaseNavigator {
             routes.CheckYourAnswersItemController.onPageLoad(userAnswers.ern, userAnswers.arc, page.idx)
         }
       case _ =>
-        routes.WrongWithMovementController.loadwrongWithItem(userAnswers.ern, userAnswers.arc, page.idx, NormalMode)
+        routes.WrongWithMovementController.loadWrongWithItem(userAnswers.ern, userAnswers.arc, page.idx, NormalMode)
     }
 
   private[navigation] def nextWrongWithMovementOptionToAnswer(selectedOptions: Set[WrongWithMovement],

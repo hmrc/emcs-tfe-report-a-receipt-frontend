@@ -88,7 +88,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
         ))
       ),
       actions = Some(Actions(items = Seq(ActionItem(
-        href = routes.WrongWithMovementController.loadwrongWithItem(testErn, testArc, 1, NormalMode).url,
+        href = routes.WrongWithMovementController.loadWrongWithItem(testErn, testArc, 1, NormalMode).url,
         content = msgs("site.change"),
         visuallyHiddenText = Some(msgs(s"${WrongWithItemPage(1)}.checkYourAnswers.change.hidden")),
         attributes = Map("id" -> s"${WrongWithItemPage(1)}")
@@ -223,7 +223,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
             ))
           ),
           actions = Some(Actions(items = Seq(ActionItem(
-            href = routes.WrongWithMovementController.loadwrongWithItem(testErn, testArc, 1, NormalMode).url,
+            href = routes.WrongWithMovementController.loadWrongWithItem(testErn, testArc, 1, NormalMode).url,
             content = msgs("site.change"),
             visuallyHiddenText = Some(msgs(s"${WrongWithItemPage(1)}.checkYourAnswers.change.hidden")),
             attributes = Map("id" -> s"${WrongWithItemPage(1)}-item-1")
@@ -347,7 +347,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
               ))
             ),
             actions = Some(Actions(items = Seq(ActionItem(
-              href = routes.WrongWithMovementController.loadwrongWithItem(testErn, testArc, 1, NormalMode).url,
+              href = routes.WrongWithMovementController.loadWrongWithItem(testErn, testArc, 1, NormalMode).url,
               content = msgs("site.change"),
               visuallyHiddenText = Some(msgs(s"${WrongWithItemPage(1)}.checkYourAnswers.change.hidden")),
               attributes = Map("id" -> s"${WrongWithItemPage(1)}-item-1")

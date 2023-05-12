@@ -54,8 +54,11 @@ class RefusingAnyAmountOfItemController @Inject()(override val messagesApi: Mess
       formProvider().bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, routes.RefusingAnyAmountOfItemController.onSubmit(ern, arc, idx, mode)))),
-        value =>
-          saveAndRedirect(RefusingAnyAmountOfItemPage(idx), value, mode)
+        value => {
+          val newUserAnswers = request.userAnswers.resetItem(idx)
+
+          saveAndRedirect(RefusingAnyAmountOfItemPage(idx), value, newUserAnswers, mode)
+        }
       )
     }
 }

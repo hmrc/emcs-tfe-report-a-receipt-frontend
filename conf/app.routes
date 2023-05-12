@@ -101,12 +101,12 @@ POST        /:ern/:arc/what-wrong-movement/change                               
 GET         /:ern/:arc/select-items-give-information                             controllers.SelectItemsController.onPageLoad(ern: String, arc: String)
 GET         /:ern/:arc/select-items-give-information/:uniqueItemReference        controllers.SelectItemsController.addItemToList(ern: String, arc: String, uniqueItemReference: Int)
 
-GET         /:ern/:arc/item/:idx/what-wrong-item                                 controllers.WrongWithMovementController.loadwrongWithItem(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
-POST        /:ern/:arc/item/:idx/what-wrong-item                                 controllers.WrongWithMovementController.submitwrongWithItem(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
-GET         /:ern/:arc/item/:idx/what-wrong-item/change                          controllers.WrongWithMovementController.loadwrongWithItem(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)
-POST        /:ern/:arc/item/:idx/what-wrong-item/change                          controllers.WrongWithMovementController.submitwrongWithItem(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)
-GET         /:ern/:arc/item/:idx/what-wrong-item/review                          controllers.WrongWithMovementController.loadwrongWithItem(ern: String, arc: String, idx: Int, mode: Mode = ReviewMode)
-POST        /:ern/:arc/item/:idx/what-wrong-item/review                          controllers.WrongWithMovementController.submitwrongWithItem(ern: String, arc: String, idx: Int, mode: Mode = ReviewMode)
+GET         /:ern/:arc/item/:idx/what-wrong-item                                 controllers.WrongWithMovementController.loadWrongWithItem(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
+POST        /:ern/:arc/item/:idx/what-wrong-item                                 controllers.WrongWithMovementController.submitWrongWithItem(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
+GET         /:ern/:arc/item/:idx/what-wrong-item/change                          controllers.WrongWithMovementController.loadWrongWithItem(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)
+POST        /:ern/:arc/item/:idx/what-wrong-item/change                          controllers.WrongWithMovementController.submitWrongWithItem(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)
+GET         /:ern/:arc/item/:idx/what-wrong-item/review                          controllers.WrongWithMovementController.loadWrongWithItem(ern: String, arc: String, idx: Int, mode: Mode = ReviewMode)
+POST        /:ern/:arc/item/:idx/what-wrong-item/review                          controllers.WrongWithMovementController.submitWrongWithItem(ern: String, arc: String, idx: Int, mode: Mode = ReviewMode)
 
 GET         /:ern/:arc/item/:idx/about-shortage-excess                           controllers.ItemShortageOrExcessController.onPageLoad(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
 POST        /:ern/:arc/item/:idx/about-shortage-excess                           controllers.ItemShortageOrExcessController.onSubmit(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)

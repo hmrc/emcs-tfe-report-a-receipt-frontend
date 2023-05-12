@@ -18,11 +18,11 @@ package controllers
 
 import controllers.actions._
 import forms.WrongWithMovementFormProvider
-import models.{Mode, UserAnswers, WrongWithMovement}
+import models.{Mode, WrongWithMovement}
 import navigation.Navigator
-import pages.unsatisfactory.individualItems.WrongWithItemPage
-import pages.unsatisfactory.{HowMuchIsWrongPage, WrongWithMovementPage}
-import pages.{AcceptMovementPage, DateOfArrivalPage, QuestionPage}
+import pages._
+import pages.unsatisfactory._
+import pages.unsatisfactory.individualItems._
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.UserAnswersService
@@ -57,32 +57,74 @@ class WrongWithMovementController @Inject()(
             formWithErrors,
             routes.WrongWithMovementController.submitWrongWithMovement(ern, arc, mode)
           ))),
-        value => {
-          val newUserAnswers: UserAnswers = request.userAnswers.filterForPages(Seq(
-            DateOfArrivalPage,
-            AcceptMovementPage,
-            HowMuchIsWrongPage
-          ))
-          saveAndRedirect(WrongWithMovementPage, value, newUserAnswers, mode)
+        (values: Set[WrongWithMovement]) => {
+
+          val allOptionsNotChecked: Seq[WrongWithMovement] = WrongWithMovement.values.filterNot(values.contains)
+
+          val newUserAnswers = allOptionsNotChecked.foldLeft(request.userAnswers) {
+            case (answers, WrongWithMovement.Shortage) =>
+              answers
+                .remove(AddShortageInformationPage)
+                .remove(ShortageInformationPage)
+            case (answers, WrongWithMovement.Excess) =>
+              answers
+                .remove(AddExcessInformationPage)
+                .remove(ExcessInformationPage)
+            case (answers, WrongWithMovement.Damaged) =>
+              answers
+                .remove(AddDamageInformationPage)
+                .remove(DamageInformationPage)
+            case (answers, WrongWithMovement.BrokenSeals) =>
+              answers
+                .remove(AddSealsInformationPage)
+                .remove(SealsInformationPage)
+            case (answers, WrongWithMovement.Other) =>
+              answers
+                .remove(OtherInformationPage)
+            case (answers, _) => answers
+          }
+
+          saveAndRedirect(WrongWithMovementPage, values, newUserAnswers, mode)
         }
       )
     }
   }
 
-  def loadwrongWithItem(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
-    onPageLoad(WrongWithItemPage(idx), ern, arc, routes.WrongWithMovementController.submitwrongWithItem(ern, arc, idx, mode))
+  def loadWrongWithItem(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
+    onPageLoad(WrongWithItemPage(idx), ern, arc, routes.WrongWithMovementController.submitWrongWithItem(ern, arc, idx, mode))
 
-  def submitwrongWithItem(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] = {
+  def submitWrongWithItem(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] = {
     authorisedDataRequestAsync(ern, arc) { implicit request =>
       formProvider(WrongWithItemPage(idx)).bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(
             WrongWithItemPage(idx),
             formWithErrors,
-            routes.WrongWithMovementController.submitwrongWithItem(ern, arc, idx, mode)
+            routes.WrongWithMovementController.submitWrongWithItem(ern, arc, idx, mode)
           ))),
-        value =>
-          saveAndRedirect(WrongWithItemPage(idx), value, mode)
+        (values: Set[WrongWithMovement]) => {
+
+          val allOptionsNotChecked: Seq[WrongWithMovement] = WrongWithMovement.values.filterNot(values.contains)
+
+          val newUserAnswers = allOptionsNotChecked.foldLeft(request.userAnswers) {
+            case (answers, WrongWithMovement.ShortageOrExcess) =>
+              answers
+                .remove(ItemShortageOrExcessPage(idx))
+            case (answers, WrongWithMovement.Damaged) =>
+              answers
+                .remove(AddItemDamageInformationPage(idx))
+                .remove(ItemDamageInformationPage(idx))
+            case (answers, WrongWithMovement.BrokenSeals) =>
+              answers
+                .remove(AddItemSealsInformationPage(idx))
+                .remove(ItemSealsInformationPage(idx))
+            case (answers, WrongWithMovement.Other) =>
+              answers
+                .remove(ItemOtherInformationPage(idx))
+            case (answers, _) => answers
+          }
+          saveAndRedirect(WrongWithItemPage(idx), values, newUserAnswers, mode)
+        }
       )
     }
   }

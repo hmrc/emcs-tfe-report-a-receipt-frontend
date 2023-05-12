@@ -18,6 +18,7 @@ package models
 
 import models.response.emcsTfe.MovementItem
 import pages.QuestionPage
+import pages.unsatisfactory.individualItems.SelectItemsPage
 import play.api.libs.json._
 import queries.{Gettable, Settable}
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
@@ -30,11 +31,20 @@ final case class UserAnswers(internalId: String,
                              data: JsObject = Json.obj(),
                              lastUpdated: Instant = Instant.now) {
 
+  /**
+   * @return all item unique references which have answers against them
+   */
   private[models] def itemKeys: Seq[String] = (data \\ "items").flatMap {
     case JsObject(underlying) => underlying.keys.toSeq
     case _ => Seq()
   }.toSeq
 
+  /**
+   * @param key an item's unique reference
+   * @param reads
+   * @tparam A
+   * @return a Seq[A] when an A is present in data, and a Seq.empty when it isn't
+   */
   private[models] def getItemWithReads[A](key: String)(reads: Reads[A]): Seq[A] = {
     data \ "items" \ key match {
       case JsDefined(value) =>
@@ -46,6 +56,10 @@ final case class UserAnswers(internalId: String,
     }
   }
 
+  /**
+   * @param pages a Seq of pages you want to leave in UserAnswers
+   * @return this UserAnswers, where any pages not in the `pages` parameter are filtered out
+   */
   def filterForPages(pages: Seq[QuestionPage[_]]): UserAnswers = {
     val pagesWithAnswersInData: Seq[(String, Json.JsValueWrapper)] = pages.flatMap {
       page =>
@@ -59,6 +73,15 @@ final case class UserAnswers(internalId: String,
 
     this.copy(data = newAnswers)
   }
+
+  /**
+   * @param idx an item's unique reference
+   * @return this UserAnswers, where an item is removed with only the itemUniqueReference key left against that item
+   */
+  def resetItem(idx: Int): UserAnswers =
+    this
+      .removeItem(idx)
+      .set(SelectItemsPage(idx), idx)
 
   def itemReferences: Seq[Int] = {
     itemKeys.flatMap {

@@ -1,10 +1,9 @@
 package connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, equalTo, equalToJson, get, urlEqualTo}
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, equalTo, get, urlEqualTo}
 import com.github.tomakehurst.wiremock.http.Fault
 import connectors.emcsTfe.GetMovementConnector
 import generators.ModelGenerators
-import models.requests.CheckUserAllowListRequest
 import models.response.UnexpectedDownstreamResponseError
 import models.response.emcsTfe.{GetMovementResponse, MovementItem, Packaging}
 import org.scalatest.{EitherValues, OptionValues}
@@ -141,16 +140,15 @@ class GetMovementConnectorISpec  extends AnyFreeSpec
 
   ".getMovement" - {
 
-    val url = s"/movement/$exciseRegistrationNumber/$arc?forceFetchNew=true"
-    val request = CheckUserAllowListRequest("value")
+    val body = Json.toJson(getMovementResponseJson)
+
+    val url = s"/emcs-tfe/movement/ern/arc?forceFetchNew=true"
 
     "must return true when the server responds OK" in {
 
       server.stubFor(
         get(urlEqualTo(url))
-          .withHeader(AUTHORIZATION, equalTo("token"))
-          .withRequestBody(equalToJson(Json.stringify(getMovementResponseJson)))
-          .willReturn(aResponse().withStatus(OK))
+          .willReturn(aResponse().withStatus(OK).withBody(Json.stringify(body)))
       )
 
       connector.getMovement(exciseRegistrationNumber, arc).futureValue mustBe Right(getMovementResponseModel)
@@ -161,7 +159,6 @@ class GetMovementConnectorISpec  extends AnyFreeSpec
       server.stubFor(
         get(urlEqualTo(url))
           .withHeader(AUTHORIZATION, equalTo("token"))
-          .withRequestBody(equalToJson(Json.stringify(Json.toJson(request))))
           .willReturn(aResponse().withStatus(NOT_FOUND))
       )
 
@@ -173,7 +170,6 @@ class GetMovementConnectorISpec  extends AnyFreeSpec
       server.stubFor(
         get(urlEqualTo(url))
           .withHeader(AUTHORIZATION, equalTo("token"))
-          .withRequestBody(equalToJson(Json.stringify(Json.toJson(request))))
           .willReturn(aResponse().withStatus(INTERNAL_SERVER_ERROR))
       )
 
@@ -185,7 +181,6 @@ class GetMovementConnectorISpec  extends AnyFreeSpec
       server.stubFor(
         get(urlEqualTo(url))
           .withHeader(AUTHORIZATION, equalTo("token"))
-          .withRequestBody(equalToJson(Json.stringify(Json.toJson(request))))
           .willReturn(aResponse().withFault(Fault.RANDOM_DATA_THEN_CLOSE))
       )
 

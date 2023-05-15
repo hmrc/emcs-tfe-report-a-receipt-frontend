@@ -1,11 +1,10 @@
 package connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, equalTo, equalToJson, get, put, delete, urlEqualTo}
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, delete, equalTo, equalToJson, get, put, urlEqualTo}
 import com.github.tomakehurst.wiremock.http.Fault
 import connectors.emcsTfe.UserAnswersConnector
 import generators.ModelGenerators
 import models.UserAnswers
-import models.requests.CheckUserAllowListRequest
 import models.response.UnexpectedDownstreamResponseError
 import org.scalatest.{EitherValues, OptionValues}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -13,7 +12,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
-import play.api.http.Status.{INTERNAL_SERVER_ERROR, NOT_FOUND, OK}
+import play.api.http.Status.{INTERNAL_SERVER_ERROR, NOT_FOUND, NO_CONTENT, OK}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.Helpers.AUTHORIZATION
@@ -53,12 +52,11 @@ class UserAnswersConnectorISpec  extends AnyFreeSpec
       )
       .build()
 
-  val url = s"/user-answers/report-receipt/$testErn/$testArc"
+  val url = s"/emcs-tfe/user-answers/report-receipt/ern/arc"
 
   private lazy val connector: UserAnswersConnector = app.injector.instanceOf[UserAnswersConnector]
 
   ".get" - {
-    val request = CheckUserAllowListRequest("value")
     val response = aResponse().withBody(Json.stringify(Json.toJson(emptyUserAnswers)))
     "must return true when the server responds OK" in {
 
@@ -75,7 +73,6 @@ class UserAnswersConnectorISpec  extends AnyFreeSpec
       server.stubFor(
         get(urlEqualTo(url))
           .withHeader(AUTHORIZATION, equalTo("token"))
-          .withRequestBody(equalToJson(Json.stringify(Json.toJson(request))))
           .willReturn(aResponse().withStatus(NOT_FOUND))
       )
 
@@ -87,7 +84,6 @@ class UserAnswersConnectorISpec  extends AnyFreeSpec
       server.stubFor(
         get(urlEqualTo(url))
           .withHeader(AUTHORIZATION, equalTo("token"))
-          .withRequestBody(equalToJson(Json.stringify(Json.toJson(request))))
           .willReturn(aResponse().withStatus(INTERNAL_SERVER_ERROR))
       )
 
@@ -99,7 +95,6 @@ class UserAnswersConnectorISpec  extends AnyFreeSpec
       server.stubFor(
         get(urlEqualTo(url))
           .withHeader(AUTHORIZATION, equalTo("token"))
-          .withRequestBody(equalToJson(Json.stringify(Json.toJson(request))))
           .willReturn(aResponse().withFault(Fault.RANDOM_DATA_THEN_CLOSE))
       )
 
@@ -108,15 +103,14 @@ class UserAnswersConnectorISpec  extends AnyFreeSpec
   }
 
   ".put" - {
-    val request = CheckUserAllowListRequest("value")
+    val body = Json.toJson(emptyUserAnswers)
 
     "must return true when the server responds OK" in {
 
       server.stubFor(
         put(urlEqualTo(url))
-          .withHeader(AUTHORIZATION, equalTo("token"))
-          .withRequestBody(equalToJson(Json.stringify(Json.toJson(emptyUserAnswers))))
-          .willReturn(aResponse().withStatus(OK))
+          .withRequestBody(equalToJson(Json.stringify(body)))
+          .willReturn(aResponse().withStatus(OK).withBody(Json.stringify(body)))
       )
 
       connector.put(emptyUserAnswers).futureValue mustBe Right(emptyUserAnswers)
@@ -126,8 +120,7 @@ class UserAnswersConnectorISpec  extends AnyFreeSpec
 
       server.stubFor(
         put(urlEqualTo(url))
-          .withHeader(AUTHORIZATION, equalTo("token"))
-          .withRequestBody(equalToJson(Json.stringify(Json.toJson(request))))
+          .withRequestBody(equalToJson(Json.stringify(body)))
           .willReturn(aResponse().withStatus(NOT_FOUND))
       )
 
@@ -138,8 +131,7 @@ class UserAnswersConnectorISpec  extends AnyFreeSpec
 
       server.stubFor(
         put(urlEqualTo(url))
-          .withHeader(AUTHORIZATION, equalTo("token"))
-          .withRequestBody(equalToJson(Json.stringify(Json.toJson(request))))
+          .withRequestBody(equalToJson(Json.stringify(body)))
           .willReturn(aResponse().withStatus(INTERNAL_SERVER_ERROR))
       )
 
@@ -151,7 +143,7 @@ class UserAnswersConnectorISpec  extends AnyFreeSpec
       server.stubFor(
         put(urlEqualTo(url))
           .withHeader(AUTHORIZATION, equalTo("token"))
-          .withRequestBody(equalToJson(Json.stringify(Json.toJson(request))))
+          .withRequestBody(equalToJson(Json.stringify(body)))
           .willReturn(aResponse().withFault(Fault.RANDOM_DATA_THEN_CLOSE))
       )
 
@@ -160,15 +152,12 @@ class UserAnswersConnectorISpec  extends AnyFreeSpec
   }
 
   ".delete" - {
-    val request = CheckUserAllowListRequest("value")
 
     "must return true when the server responds OK" in {
 
       server.stubFor(
         delete(urlEqualTo(url))
-          .withHeader(AUTHORIZATION, equalTo("token"))
-          .withRequestBody(equalToJson(Json.stringify(Json.toJson(request))))
-          .willReturn(aResponse().withStatus(OK))
+          .willReturn(aResponse().withStatus(NO_CONTENT))
       )
 
       connector.delete(testErn, testArc).futureValue mustBe Right(true)
@@ -178,8 +167,6 @@ class UserAnswersConnectorISpec  extends AnyFreeSpec
 
       server.stubFor(
         delete(urlEqualTo(url))
-          .withHeader(AUTHORIZATION, equalTo("token"))
-          .withRequestBody(equalToJson(Json.stringify(Json.toJson(request))))
           .willReturn(aResponse().withStatus(NOT_FOUND))
       )
 
@@ -190,8 +177,6 @@ class UserAnswersConnectorISpec  extends AnyFreeSpec
 
       server.stubFor(
         delete(urlEqualTo(url))
-          .withHeader(AUTHORIZATION, equalTo("token"))
-          .withRequestBody(equalToJson(Json.stringify(Json.toJson(request))))
           .willReturn(aResponse().withStatus(INTERNAL_SERVER_ERROR))
       )
 
@@ -203,7 +188,6 @@ class UserAnswersConnectorISpec  extends AnyFreeSpec
       server.stubFor(
         delete(urlEqualTo(url))
           .withHeader(AUTHORIZATION, equalTo("token"))
-          .withRequestBody(equalToJson(Json.stringify(Json.toJson(request))))
           .willReturn(aResponse().withFault(Fault.RANDOM_DATA_THEN_CLOSE))
       )
 

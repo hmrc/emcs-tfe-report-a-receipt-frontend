@@ -5,7 +5,6 @@ import com.github.tomakehurst.wiremock.http.Fault
 import connectors.emcsTfe.SubmitReportOfReceiptConnector
 import fixtures.SubmitReportOfReceiptFixtures
 import generators.ModelGenerators
-import models.requests.CheckUserAllowListRequest
 import models.response.UnexpectedDownstreamResponseError
 import org.scalatest.{EitherValues, OptionValues}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -45,18 +44,18 @@ class SubmitReportOfReceiptConnectorISpec extends AnyFreeSpec
 
   ".submit" - {
 
-    val url = s"/report-of-receipt/ern/arc"
-    val request = CheckUserAllowListRequest("value")
+    val url = s"/emcs-tfe/report-of-receipt/ern/arc"
+    val body = Json.toJson(successResponseJson)
 
     "must return true when the server responds OK" in {
 
       server.stubFor(
         post(urlEqualTo(url))
           .withRequestBody(equalToJson(Json.stringify(Json.toJson(maxSubmitReportOfReceiptModel))))
-          .willReturn(aResponse().withStatus(OK))
+          .willReturn(aResponse().withStatus(OK).withBody(Json.stringify(body)))
       )
 
-      connector.submit("ern", maxSubmitReportOfReceiptModel).futureValue mustBe Right(true)
+      connector.submit("ern", maxSubmitReportOfReceiptModel).futureValue mustBe Right(successResponse)
     }
 
     "must return false when the server responds NOT_FOUND" in {
@@ -64,11 +63,11 @@ class SubmitReportOfReceiptConnectorISpec extends AnyFreeSpec
       server.stubFor(
         post(urlEqualTo(url))
           .withHeader(AUTHORIZATION, equalTo("token"))
-          .withRequestBody(equalToJson(Json.stringify(Json.toJson(request))))
+          .withRequestBody(equalToJson(Json.stringify(Json.toJson(body))))
           .willReturn(aResponse().withStatus(NOT_FOUND))
       )
 
-      connector.submit("ern", maxSubmitReportOfReceiptModel).futureValue mustBe Right(false)
+      connector.submit("ern", maxSubmitReportOfReceiptModel).futureValue mustBe Left(UnexpectedDownstreamResponseError)
     }
 
     "must fail when the server responds with any other status" in {
@@ -76,7 +75,7 @@ class SubmitReportOfReceiptConnectorISpec extends AnyFreeSpec
       server.stubFor(
         post(urlEqualTo(url))
           .withHeader(AUTHORIZATION, equalTo("token"))
-          .withRequestBody(equalToJson(Json.stringify(Json.toJson(request))))
+          .withRequestBody(equalToJson(Json.stringify(Json.toJson(body))))
           .willReturn(aResponse().withStatus(INTERNAL_SERVER_ERROR))
       )
 
@@ -88,7 +87,7 @@ class SubmitReportOfReceiptConnectorISpec extends AnyFreeSpec
       server.stubFor(
         post(urlEqualTo(url))
           .withHeader(AUTHORIZATION, equalTo("token"))
-          .withRequestBody(equalToJson(Json.stringify(Json.toJson(request))))
+          .withRequestBody(equalToJson(Json.stringify(Json.toJson(body))))
           .willReturn(aResponse().withFault(Fault.RANDOM_DATA_THEN_CLOSE))
       )
 

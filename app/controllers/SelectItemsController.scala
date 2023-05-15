@@ -68,14 +68,12 @@ class SelectItemsController @Inject()(override val messagesApi: MessagesApi,
     if (userAnswersUniqueReferences.isEmpty) {
       request.movementDetails.items
     } else {
-      val userAnswerItems: Seq[ItemModel] =
-        request.userAnswers.items
+      val completedItems: Seq[ItemModel] =
+        request.userAnswers.completedItems
 
       request.movementDetails.items.filterNot {
         movementDetailsItem =>
-          userAnswerItems
-            .find(_.itemUniqueReference == movementDetailsItem.itemUniqueReference)
-            .exists(_.checkAnswersItem.contains(true))
+          completedItems.exists(_.itemUniqueReference == movementDetailsItem.itemUniqueReference)
       }
     }
   }

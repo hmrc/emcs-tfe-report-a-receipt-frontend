@@ -429,6 +429,49 @@ class UserAnswersSpec extends SpecBase {
       }
     }
 
+    "when calling .completedItems" - {
+
+      "must return all the completed items" - {
+
+        "when item references are in user answers, and there CheckAnswersItemPage(idx) is true" in {
+
+          val withData = emptyUserAnswers
+            .set(SelectItemsPage(2), 2)
+            .set(SelectItemsPage(1), 1)
+            .set(CheckAnswersItemPage(1), true)
+            .set(ItemShortageOrExcessPage(1), ItemShortageOrExcessModel(WrongWithMovement.Damaged, 3, Some("info")))
+
+          withData.completedItems mustBe Seq(
+            ItemModel(1, Some(true), Some(ItemShortageOrExcessModel(WrongWithMovement.Damaged, 3, Some("info"))))
+          )
+        }
+      }
+
+      "must return a filtered list" - {
+
+        "when not all items are completed" in {
+
+          val withData = emptyUserAnswers
+            // item 1 has CheckAnswersItemPage = true
+            .set(SelectItemsPage(1), 1)
+            .set(CheckAnswersItemPage(1), true)
+            .set(ItemShortageOrExcessPage(1), ItemShortageOrExcessModel(WrongWithMovement.Damaged, 3, Some("info")))
+            // item 2 has no CheckAnswersItemPage
+            .set(SelectItemsPage(2), 2)
+            .set(ItemShortageOrExcessPage(2), ItemShortageOrExcessModel(WrongWithMovement.Damaged, 3, Some("info")))
+            // item 3 has CheckAnswersItemPage = false
+            .set(SelectItemsPage(3), 3)
+            .set(CheckAnswersItemPage(3), false)
+            .set(ItemShortageOrExcessPage(3), ItemShortageOrExcessModel(WrongWithMovement.Damaged, 3, Some("info")))
+
+          withData.completedItems mustBe Seq(
+            // only item 1 is returned
+            ItemModel(1, Some(true), Some(ItemShortageOrExcessModel(WrongWithMovement.Damaged, 3, Some("info"))))
+          )
+        }
+      }
+    }
+
     "when calling .itemKeys" - {
       "must return all keys" - {
         "when items is an object" in {

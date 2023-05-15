@@ -42,7 +42,8 @@ trait BaseController extends FrontendBaseController with I18nSupport with Enumer
       case None => Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url)
     }
 
-  def withAllItemsAsync()(f: Seq[MovementItem] => Future[Result])(implicit request: DataRequest[_]): Future[Result] = f(request.getAllItemDetails)
+  def withAllCompletedItemsAsync()(f: Seq[MovementItem] => Future[Result])(implicit request: DataRequest[_]): Future[Result] =
+    f(request.getAllCompletedItemDetails)
 
   def withItemAsync(idx: Int)(f: MovementItem => Future[Result])(implicit request: DataRequest[_]): Future[Result] =
     request.getItemDetails(idx) match {

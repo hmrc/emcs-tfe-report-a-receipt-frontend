@@ -16,8 +16,8 @@
 
 package models.requests
 
+import models.UserAnswers
 import models.response.emcsTfe.{GetMovementResponse, MovementItem}
-import models.{ItemModel, UserAnswers}
 import pages.unsatisfactory.individualItems.SelectItemsPage
 import play.api.mvc.WrappedRequest
 
@@ -35,11 +35,8 @@ case class DataRequest[A](request: MovementRequest[A],
         request.movementDetails.item(reference)
     }
 
-  def getItemsAdded: Seq[ItemModel] =
-    userAnswers.items
-
-  def getAllItemDetails: Seq[MovementItem] =
-    getItemsAdded.flatMap {
+  def getAllCompletedItemDetails: Seq[MovementItem] =
+    userAnswers.completedItems.flatMap {
       itemModel =>
         request.movementDetails.item(itemModel.itemUniqueReference)
     }

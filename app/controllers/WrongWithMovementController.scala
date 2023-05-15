@@ -104,7 +104,7 @@ class WrongWithMovementController @Inject()(
           ))),
         (values: Set[WrongWithMovement]) => {
 
-          val allOptionsNotChecked: Seq[WrongWithMovement] = WrongWithMovement.values.filterNot(values.contains)
+          val allOptionsNotChecked: Seq[WrongWithMovement] = WrongWithMovement.individualItemValues.filterNot(values.contains)
 
           val newUserAnswers = allOptionsNotChecked.foldLeft(request.userAnswers) {
             case (answers, WrongWithMovement.ShortageOrExcess) =>

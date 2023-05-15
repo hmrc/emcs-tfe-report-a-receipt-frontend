@@ -19,8 +19,9 @@ package controllers
 import base.SpecBase
 import forms.WrongWithMovementFormProvider
 import mocks.services.MockUserAnswersService
-import models.{NormalMode, WrongWithMovement}
+import models.{NormalMode, UserAnswers, WrongWithMovement}
 import navigation.{FakeNavigator, Navigator}
+import pages.QuestionPage
 import pages.unsatisfactory.WrongWithMovementPage
 import pages.unsatisfactory.individualItems.{SelectItemsPage, WrongWithItemPage}
 import play.api.inject.bind
@@ -42,14 +43,17 @@ class WrongWithMovementControllerSpec extends SpecBase with MockUserAnswersServi
   lazy val wrongWithMovementSubmitAction: Call = routes.WrongWithMovementController.submitWrongWithMovement(testErn, testArc, NormalMode)
 
   def wrongWithItemRoute(idx: Int): String = routes.WrongWithMovementController.loadWrongWithItem(testErn, testArc, idx, NormalMode).url
+
   def wrongWithItemSubmitAction(idx: Int): Call = routes.WrongWithMovementController.submitWrongWithItem(testErn, testArc, idx, NormalMode)
 
   "WrongWithMovement Controller" - {
 
-    Seq(
+    val options: Seq[(QuestionPage[Set[WrongWithMovement]], String, Call)] = Seq(
       (WrongWithMovementPage, wrongWithMovementRoute, wrongWithMovementSubmitAction),
       (WrongWithItemPage(1), wrongWithItemRoute(1), wrongWithItemSubmitAction(1))
-    ) foreach { case (page, url, submitAction) =>
+    )
+
+    options.foreach { case (page, url, submitAction) =>
 
       s"for the '$page' page" - {
 
@@ -90,34 +94,70 @@ class WrongWithMovementControllerSpec extends SpecBase with MockUserAnswersServi
           }
         }
 
-        "must redirect to the next page when valid data is submitted" in {
+        "must redirect to the next page when valid data is submitted" - {
 
-          val updatedAnswers = if(page == WrongWithMovementPage) {
-            emptyUserAnswers.set(page, Set(WrongWithMovement.values.head))
-          } else {
-            emptyUserAnswers
-              .set(page, Set(WrongWithMovement.values.head))
-              .set(SelectItemsPage(1), 1)
-          }
-          MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
-
-          val application =
-            applicationBuilder(userAnswers = Some(emptyUserAnswers))
-              .overrides(
-                bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-                bind[UserAnswersService].toInstance(mockUserAnswersService)
+          val options: Set[WrongWithMovement] =
+            if (page == WrongWithMovementPage) {
+              Set(
+                WrongWithMovement.Shortage,
+                WrongWithMovement.Excess,
+                WrongWithMovement.Damaged,
+                WrongWithMovement.BrokenSeals,
+                WrongWithMovement.Other,
               )
-              .build()
+            } else {
+              Set(
+                WrongWithMovement.ShortageOrExcess,
+                WrongWithMovement.Damaged,
+                WrongWithMovement.BrokenSeals,
+                WrongWithMovement.Other,
+              )
+            }
 
-          running(application) {
-            val request =
-              FakeRequest(POST, url)
-                .withFormUrlEncodedBody(("value[0]", WrongWithMovement.values.head.toString))
+          options.foreach {
+            option =>
+              s"and only keep option $option when $option is selected" in {
 
-            val result = route(application, request).value
+                // startingAnswers has more pages than updatedAnswers to prove that ones which aren't used are filtered out
+                val startingAnswers: UserAnswers =
+                  if (page == WrongWithMovementPage) {
+                    emptyUserAnswers
+                      .set(page, options)
+                  } else {
+                    emptyUserAnswers
+                      .set(page, options)
+                      .set(SelectItemsPage(1), 1)
+                  }
 
-            status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustEqual onwardRoute.url
+                val updatedAnswers: UserAnswers =
+                  if (page == WrongWithMovementPage) {
+                    emptyUserAnswers.set(page, Set(option))
+                  } else {
+                    emptyUserAnswers
+                      .set(page, Set(option))
+                      .set(SelectItemsPage(1), 1)
+                  }
+                MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
+
+                val application =
+                  applicationBuilder(userAnswers = Some(startingAnswers))
+                    .overrides(
+                      bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+                      bind[UserAnswersService].toInstance(mockUserAnswersService)
+                    )
+                    .build()
+
+                running(application) {
+                  val request =
+                    FakeRequest(POST, url)
+                      .withFormUrlEncodedBody(("value[0]", option.toString))
+
+                  val result = route(application, request).value
+
+                  status(result) mustEqual SEE_OTHER
+                  redirectLocation(result).value mustEqual onwardRoute.url
+                }
+              }
           }
         }
 

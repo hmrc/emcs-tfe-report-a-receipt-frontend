@@ -60,7 +60,9 @@ class SelectItemsController @Inject()(override val messagesApi: MessagesApi,
 
   def addItemToList(ern: String, arc: String, itemUniqueReference: Int): Action[AnyContent] =
     authorisedDataRequestAsync(ern, arc) { implicit request =>
-      saveAndRedirect(SelectItemsPage(itemUniqueReference), itemUniqueReference, NormalMode)
+      // remove any previously entered data before adding an item to the list
+      val newUserAnswers = request.userAnswers.removeItem(itemUniqueReference)
+      saveAndRedirect(SelectItemsPage(itemUniqueReference), itemUniqueReference, newUserAnswers, NormalMode)
     }
 
   private[controllers] def getFilteredItems(implicit request: DataRequest[_]): Seq[MovementItem] = {

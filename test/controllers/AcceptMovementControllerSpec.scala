@@ -76,28 +76,54 @@ class AcceptMovementControllerSpec extends SpecBase with MockUserAnswersService 
       }
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must redirect to the next page when valid data is submitted" - {
 
-      val updatedAnswers = emptyUserAnswers.set(AcceptMovementPage, AcceptMovement.values.head)
-      MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
+      "and delete the rest of the answers when the input answer isn't the same as the current answer" in {
+        val updatedAnswers = emptyUserAnswers.set(AcceptMovementPage, AcceptMovement.values.head)
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[UserAnswersService].toInstance(mockUserAnswersService)
-          )
-          .build()
+        MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
 
-      running(application) {
-        val request =
-          FakeRequest(POST, acceptMovementRoute)
-            .withFormUrlEncodedBody(("value", AcceptMovement.values.head.toString))
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswers.set(AcceptMovementPage, AcceptMovement.values.last)))
+            .overrides(
+              bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+              bind[UserAnswersService].toInstance(mockUserAnswersService)
+            )
+            .build()
 
-        val result = route(application, request).value
+        running(application) {
+          val request =
+            FakeRequest(POST, acceptMovementRoute)
+              .withFormUrlEncodedBody(("value", AcceptMovement.values.head.toString))
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual onwardRoute.url
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual onwardRoute.url
+        }
+      }
+
+      "and not delete the rest of the answers when the input answer is the same as the current answer" in {
+        MockUserAnswersService.set().never()
+
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswers.set(AcceptMovementPage, AcceptMovement.values.head)))
+            .overrides(
+              bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+              bind[UserAnswersService].toInstance(mockUserAnswersService)
+            )
+            .build()
+
+        running(application) {
+          val request =
+            FakeRequest(POST, acceptMovementRoute)
+              .withFormUrlEncodedBody(("value", AcceptMovement.values.head.toString))
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual onwardRoute.url
+        }
       }
     }
 

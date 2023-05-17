@@ -55,10 +55,11 @@ class HowMuchIsWrongController @Inject()(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value => {
-          val newUserAnswers: UserAnswers = request.userAnswers.filterForPages(Seq(
-            DateOfArrivalPage,
-            AcceptMovementPage
-          ))
+          val newUserAnswers: UserAnswers = cleanseUserAnswersIfValueHasChanged(
+            page = HowMuchIsWrongPage,
+            newAnswer = value,
+            cleansingFunction = request.userAnswers.filterForPages(Seq(DateOfArrivalPage, AcceptMovementPage))
+          )
           saveAndRedirect(HowMuchIsWrongPage, value, newUserAnswers, mode)
         }
       )

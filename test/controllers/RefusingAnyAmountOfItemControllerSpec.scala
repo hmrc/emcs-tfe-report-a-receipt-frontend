@@ -21,7 +21,7 @@ import forms.RefusingAnyAmountOfItemFormProvider
 import mocks.services.MockUserAnswersService
 import models.NormalMode
 import navigation.{FakeNavigator, Navigator}
-import pages.unsatisfactory.individualItems.RefusingAnyAmountOfItemPage
+import pages.unsatisfactory.individualItems.{RefusingAnyAmountOfItemPage, SelectItemsPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -77,27 +77,57 @@ class RefusingAnyAmountOfItemControllerSpec extends SpecBase with MockUserAnswer
       }
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must redirect to the next page when valid data is submitted" - {
 
-      MockUserAnswersService.set().returns(Future.successful(emptyUserAnswers))
+      "and delete the rest of the answers when the input answer isn't the same as the current answer" in {
+        val updatedAnswers = emptyUserAnswers
+          .set(SelectItemsPage(1), 1)
+          .set(RefusingAnyAmountOfItemPage(1), true)
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[UserAnswersService].toInstance(mockUserAnswersService)
-          )
-          .build()
+          MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
 
-      running(application) {
-        val request =
-          FakeRequest(POST, refusingAnyAmountOfItemRoute)
-            .withFormUrlEncodedBody(("value", "true"))
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswers.set(RefusingAnyAmountOfItemPage(1), false)))
+            .overrides(
+              bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+              bind[UserAnswersService].toInstance(mockUserAnswersService)
+            )
+            .build()
 
-        val result = route(application, request).value
+        running(application) {
+          val request =
+            FakeRequest(POST, refusingAnyAmountOfItemRoute)
+              .withFormUrlEncodedBody(("value", "true"))
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual onwardRoute.url
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual onwardRoute.url
+        }
+      }
+
+      "and not delete the rest of the answers when the input answer is the same as the current answer" in {
+
+        MockUserAnswersService.set().never()
+
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswers.set(RefusingAnyAmountOfItemPage(1), true)))
+            .overrides(
+              bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+              bind[UserAnswersService].toInstance(mockUserAnswersService)
+            )
+            .build()
+
+        running(application) {
+          val request =
+            FakeRequest(POST, refusingAnyAmountOfItemRoute)
+              .withFormUrlEncodedBody(("value", "true"))
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual onwardRoute.url
+        }
       }
     }
 

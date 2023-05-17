@@ -54,9 +54,11 @@ class AcceptMovementController @Inject()(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value => {
-          val newUserAnswers: UserAnswers = request.userAnswers.filterForPages(Seq(
-            DateOfArrivalPage
-          ))
+          val newUserAnswers: UserAnswers = cleanseUserAnswersIfValueHasChanged(
+            page = AcceptMovementPage,
+            newAnswer = value,
+            cleansingFunction = request.userAnswers.filterForPages(Seq(DateOfArrivalPage))
+          )
           saveAndRedirect(AcceptMovementPage, value, newUserAnswers, mode)
         }
       )

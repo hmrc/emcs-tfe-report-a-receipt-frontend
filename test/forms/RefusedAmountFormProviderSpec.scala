@@ -27,7 +27,7 @@ class RefusedAmountFormProviderSpec extends IntFieldBehaviours with GuiceOneAppP
   val itemQuantity: BigDecimal = 999999999999.998
 
   val fieldName = "value"
-  val form = new RefusedAmountFormProvider()(itemQuantity)
+  val form = new RefusedAmountFormProvider()(itemQuantity, None)
 
   ".value" - {
 
@@ -40,12 +40,24 @@ class RefusedAmountFormProviderSpec extends IntFieldBehaviours with GuiceOneAppP
       )
     }
 
-    "must return the too large error when the amount exceeds the item quantity" in {
+    "must return the too large error when the amount exceeds the item quantity (and there's no shortage amount)" in {
 
       val boundForm = form.bind(Map(fieldName -> (itemQuantity + 0.001).toString))
 
       boundForm.errors mustBe Seq(
         FormError(fieldName, "refusedAmount.error.tooLarge", Seq(itemQuantity))
+      )
+    }
+
+    "must return the too large error when the amount exceeds the item quantity (and there's a shortage amount taken into consideration)" in {
+
+      val shortageAmount = 0.01
+      val form = new RefusedAmountFormProvider()(itemQuantity, Some(shortageAmount))
+
+      val boundForm = form.bind(Map(fieldName -> itemQuantity.toString))
+
+      boundForm.errors mustBe Seq(
+        FormError(fieldName, "refusedAmount.error.tooLarge", Seq(itemQuantity - shortageAmount))
       )
     }
 
@@ -67,11 +79,21 @@ class RefusedAmountFormProviderSpec extends IntFieldBehaviours with GuiceOneAppP
       )
     }
 
-    "must accept a value equal to the quantity" in {
+    "must accept a value equal to the quantity (no shortage)" in {
 
       val boundForm = form.bind(Map(fieldName -> itemQuantity.toString))
 
       boundForm.value mustBe Some(itemQuantity)
+    }
+
+    "must accept a value equal to the quantity minus shortage" in {
+
+      val shortageAmount = 0.01
+      val form = new RefusedAmountFormProvider()(itemQuantity, Some(shortageAmount))
+
+      val boundForm = form.bind(Map(fieldName -> (itemQuantity - shortageAmount).toString))
+
+      boundForm.value mustBe Some(itemQuantity - shortageAmount)
     }
 
     "must accept a value less than the item quantity" in {

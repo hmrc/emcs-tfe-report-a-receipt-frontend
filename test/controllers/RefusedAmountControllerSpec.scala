@@ -37,7 +37,7 @@ import scala.concurrent.Future
 class RefusedAmountControllerSpec extends SpecBase with MockUserAnswersService with MockGetCnCodeInformationService {
 
   val formProvider = new RefusedAmountFormProvider()
-  val form = formProvider(itemQuantity = 10)
+  val form = formProvider(itemQuantity = 10, None)
 
   lazy val url = "testurl"
 

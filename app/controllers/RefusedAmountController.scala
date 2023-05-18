@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.RefusedAmountFormProvider
 import models.Mode
 import navigation.Navigator
-import pages.unsatisfactory.individualItems.RefusedAmountPage
+import pages.unsatisfactory.individualItems.{ItemShortageOrExcessPage, RefusedAmountPage}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{GetCnCodeInformationService, UserAnswersService}
@@ -49,8 +49,9 @@ class RefusedAmountController @Inject()(
         getCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item)).map {
           serviceResult =>
             val (item, cnCodeInformation) = serviceResult.head
+            val shortageAmount = request.userAnswers.get(ItemShortageOrExcessPage(item.itemUniqueReference)).flatMap(_.shortageAmount)
             Ok(view(
-              fillForm(RefusedAmountPage(idx), formProvider(item.quantity)),
+              fillForm(RefusedAmountPage(idx), formProvider(item.quantity, shortageAmount)),
               routes.RefusedAmountController.onSubmit(ern, arc, idx, mode),
               cnCodeInformation.unitOfMeasureCode.toUnitOfMeasure
             ))
@@ -61,7 +62,8 @@ class RefusedAmountController @Inject()(
   def onSubmit(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
     authorisedDataRequestAsync(ern, arc) { implicit request =>
       withItemAsync(idx) { item =>
-        formProvider(item.quantity).bindFromRequest().fold(
+        val shortageAmount = request.userAnswers.get(ItemShortageOrExcessPage(item.itemUniqueReference)).flatMap(_.shortageAmount)
+        formProvider(item.quantity, shortageAmount).bindFromRequest().fold(
           formWithErrors => {
             getCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item)).map {
               serviceResult =>

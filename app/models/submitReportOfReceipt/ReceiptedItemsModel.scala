@@ -51,56 +51,64 @@ object ReceiptedItemsModel extends JsonOptionFormatter {
     case _ => userAnswers.get(OtherInformationPage)
   }
 
-  def apply(movementDetails: GetMovementResponse)(implicit userAnswers: UserAnswers): Seq[ReceiptedItemsModel] = {
-    userAnswers.get(HowMuchIsWrongPage) match {
-      case Some(TheWholeMovement) =>
-        movementDetails.items.map { item =>
+  private def wholeMovementApply(movementDetails: GetMovementResponse)(implicit userAnswers: UserAnswers): Seq[ReceiptedItemsModel] = {
+    movementDetails.items.map { item =>
+      ReceiptedItemsModel(
+        eadBodyUniqueReference = item.itemUniqueReference,
+        productCode = item.productCode,
+        excessAmount = None,
+        shortageAmount = None,
+        refusedAmount = None,
+        unsatisfactoryReasons = userAnswers.get(WrongWithMovementPage).fold[Seq[UnsatisfactoryModel]](Seq())(_.map { wrongWith =>
+          UnsatisfactoryModel(
+            reason = wrongWith,
+            additionalInformation = getOptionalReason(wrongWith)
+          )
+        }.toSeq.sortBy(_.reason.toString))
+      )
+    }
+  }
+
+  private def individualItemsApply(movementDetails: GetMovementResponse)(implicit userAnswers: UserAnswers): Seq[ReceiptedItemsModel] = {
+    userAnswers
+      .completedItems
+      .flatMap { item =>
+        movementDetails.item(item.itemUniqueReference).map { itemDetails =>
+          val shortageOrExcess = userAnswers.get(ItemShortageOrExcessPage(item.itemUniqueReference))
           ReceiptedItemsModel(
             eadBodyUniqueReference = item.itemUniqueReference,
-            productCode = item.productCode,
-            excessAmount = None,
-            shortageAmount = None,
-            refusedAmount = None,
-            unsatisfactoryReasons = userAnswers.get(WrongWithMovementPage).fold[Seq[UnsatisfactoryModel]](Seq())(_.map { wrongWith =>
-              UnsatisfactoryModel(
-                reason = wrongWith,
-                additionalInformation = getOptionalReason(wrongWith)
-              )
-            }.toSeq.sortBy(_.reason.toString))
-          )
-        }
-      case _ =>
-        userAnswers.items.flatMap { item =>
-          movementDetails.item(item.itemUniqueReference).map { itemDetails =>
-            val shortageOrExcess = userAnswers.get(ItemShortageOrExcessPage(item.itemUniqueReference))
-            ReceiptedItemsModel(
-              eadBodyUniqueReference = item.itemUniqueReference,
-              productCode = itemDetails.productCode,
-              excessAmount = shortageOrExcess.flatMap(_.excessAmount),
-              shortageAmount = shortageOrExcess.flatMap(_.shortageAmount),
-              refusedAmount = userAnswers.get(RefusedAmountPage(item.itemUniqueReference)),
-              unsatisfactoryReasons = userAnswers.get(WrongWithItemPage(item.itemUniqueReference)).fold[Seq[UnsatisfactoryModel]](Seq())(
-                _.flatMap { wrongWith =>
-                  if (wrongWith == ShortageOrExcess) {
-                    shortageOrExcess.map { model =>
-                      UnsatisfactoryModel(
-                        reason = model.wrongWithItem,
-                        additionalInformation = getOptionalItemReason(item.itemUniqueReference, wrongWith)
-                      )
-                    }
-                  } else {
-                    Some(
-                      UnsatisfactoryModel(
-                        reason = wrongWith,
-                        additionalInformation = getOptionalItemReason(item.itemUniqueReference, wrongWith)
-                      )
+            productCode = itemDetails.productCode,
+            excessAmount = shortageOrExcess.flatMap(_.excessAmount),
+            shortageAmount = shortageOrExcess.flatMap(_.shortageAmount),
+            refusedAmount = userAnswers.get(RefusedAmountPage(item.itemUniqueReference)),
+            unsatisfactoryReasons = userAnswers.get(WrongWithItemPage(item.itemUniqueReference)).fold[Seq[UnsatisfactoryModel]](Seq())(
+              _.flatMap { wrongWith =>
+                if (wrongWith == ShortageOrExcess) {
+                  shortageOrExcess.map { model =>
+                    UnsatisfactoryModel(
+                      reason = model.wrongWithItem,
+                      additionalInformation = getOptionalItemReason(item.itemUniqueReference, wrongWith)
                     )
                   }
-                }.toSeq.sortBy(_.reason.toString)
-              )
+                } else {
+                  Some(
+                    UnsatisfactoryModel(
+                      reason = wrongWith,
+                      additionalInformation = getOptionalItemReason(item.itemUniqueReference, wrongWith)
+                    )
+                  )
+                }
+              }.toSeq.sortBy(_.reason.toString)
             )
-          }
+          )
         }
+      }
+  }
+
+  def apply(movementDetails: GetMovementResponse)(implicit userAnswers: UserAnswers): Seq[ReceiptedItemsModel] = {
+    userAnswers.get(HowMuchIsWrongPage) match {
+      case Some(TheWholeMovement) => wholeMovementApply(movementDetails)
+      case _ => individualItemsApply(movementDetails)
     }
   }
 }

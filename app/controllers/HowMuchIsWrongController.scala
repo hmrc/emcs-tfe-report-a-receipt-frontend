@@ -18,15 +18,16 @@ package controllers
 
 import controllers.actions._
 import forms.HowMuchIsWrongFormProvider
-import javax.inject.Inject
-import models.Mode
+import models.{Mode, UserAnswers}
 import navigation.Navigator
 import pages.unsatisfactory.HowMuchIsWrongPage
+import pages.{AcceptMovementPage, DateOfArrivalPage}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.UserAnswersService
 import views.html.HowMuchIsWrongView
 
+import javax.inject.Inject
 import scala.concurrent.Future
 
 class HowMuchIsWrongController @Inject()(
@@ -41,7 +42,7 @@ class HowMuchIsWrongController @Inject()(
                                           formProvider: HowMuchIsWrongFormProvider,
                                           val controllerComponents: MessagesControllerComponents,
                                           view: HowMuchIsWrongView
-                                     ) extends BaseNavigationController with AuthActionHelper {
+                                        ) extends BaseNavigationController with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String, mode: Mode): Action[AnyContent] =
     authorisedDataRequest(ern, arc) { implicit request =>
@@ -53,8 +54,14 @@ class HowMuchIsWrongController @Inject()(
       formProvider().bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
-        value =>
-          saveAndRedirect(HowMuchIsWrongPage, value, mode)
+        value => {
+          val newUserAnswers: UserAnswers = cleanseUserAnswersIfValueHasChanged(
+            page = HowMuchIsWrongPage,
+            newAnswer = value,
+            cleansingFunction = request.userAnswers.filterForPages(Seq(DateOfArrivalPage, AcceptMovementPage))
+          )
+          saveAndRedirect(HowMuchIsWrongPage, value, newUserAnswers, mode)
+        }
       )
     }
 }

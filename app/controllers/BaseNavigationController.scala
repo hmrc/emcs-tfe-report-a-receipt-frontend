@@ -22,7 +22,7 @@ import models.requests.DataRequest
 import navigation.BaseNavigator
 import pages.QuestionPage
 import play.api.data.{Form, FormError}
-import play.api.libs.json.Format
+import play.api.libs.json.{Format, Reads}
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import services.UserAnswersService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -90,6 +90,15 @@ trait BaseNavigationController extends BaseController with Logging {
         val requiredText = page.map(value => s"$value.error.required").getOrElse("error.required")
         formWithErrorsView(formProvider(page).withError(FormError("more-information", requiredText)))
       case Success(value) => value
+    }
+  }
+
+  def cleanseUserAnswersIfValueHasChanged[T](page: QuestionPage[T],
+                                             newAnswer: T,
+                                             cleansingFunction: => UserAnswers)(implicit request: DataRequest[_], reads: Reads[T]): UserAnswers = {
+    request.userAnswers.get(page) match {
+      case Some(answer) if answer != newAnswer => cleansingFunction
+      case _ => request.userAnswers
     }
   }
 }

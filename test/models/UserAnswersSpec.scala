@@ -24,9 +24,12 @@ package models
 import base.SpecBase
 import models.WrongWithMovement.Damaged
 import models.response.emcsTfe.MovementItem
-import pages.QuestionPage
 import pages.unsatisfactory.individualItems._
+import pages.unsatisfactory.{ExcessInformationPage, HowMuchIsWrongPage}
+import pages.{DateOfArrivalPage, MoreInformationPage, QuestionPage}
 import play.api.libs.json._
+
+import java.time.LocalDate
 
 
 class UserAnswersSpec extends SpecBase {
@@ -426,6 +429,49 @@ class UserAnswersSpec extends SpecBase {
       }
     }
 
+    "when calling .completedItems" - {
+
+      "must return all the completed items" - {
+
+        "when item references are in user answers, and there CheckAnswersItemPage(idx) is true" in {
+
+          val withData = emptyUserAnswers
+            .set(SelectItemsPage(2), 2)
+            .set(SelectItemsPage(1), 1)
+            .set(CheckAnswersItemPage(1), true)
+            .set(ItemShortageOrExcessPage(1), ItemShortageOrExcessModel(WrongWithMovement.Damaged, 3, Some("info")))
+
+          withData.completedItems mustBe Seq(
+            ItemModel(1, Some(true), Some(ItemShortageOrExcessModel(WrongWithMovement.Damaged, 3, Some("info"))))
+          )
+        }
+      }
+
+      "must return a filtered list" - {
+
+        "when not all items are completed" in {
+
+          val withData = emptyUserAnswers
+            // item 1 has CheckAnswersItemPage = true
+            .set(SelectItemsPage(1), 1)
+            .set(CheckAnswersItemPage(1), true)
+            .set(ItemShortageOrExcessPage(1), ItemShortageOrExcessModel(WrongWithMovement.Damaged, 3, Some("info")))
+            // item 2 has no CheckAnswersItemPage
+            .set(SelectItemsPage(2), 2)
+            .set(ItemShortageOrExcessPage(2), ItemShortageOrExcessModel(WrongWithMovement.Damaged, 3, Some("info")))
+            // item 3 has CheckAnswersItemPage = false
+            .set(SelectItemsPage(3), 3)
+            .set(CheckAnswersItemPage(3), false)
+            .set(ItemShortageOrExcessPage(3), ItemShortageOrExcessModel(WrongWithMovement.Damaged, 3, Some("info")))
+
+          withData.completedItems mustBe Seq(
+            // only item 1 is returned
+            ItemModel(1, Some(true), Some(ItemShortageOrExcessModel(WrongWithMovement.Damaged, 3, Some("info"))))
+          )
+        }
+      }
+    }
+
     "when calling .itemKeys" - {
       "must return all keys" - {
         "when items is an object" in {
@@ -481,6 +527,32 @@ class UserAnswersSpec extends SpecBase {
 
           input.getItemWithReads("item-3")(MovementItem.readItemUniqueReference) mustBe Seq()
         }
+      }
+    }
+
+    "when calling .filterForPages" - {
+      val baseUserAnswers = UserAnswers(internalId = "my id", ern = "my ern", arc = "my arc")
+      "must only return pages in the supplied Seq" in {
+        val existingUserAnswers = baseUserAnswers
+          .set(DateOfArrivalPage, LocalDate.MIN)
+          .set(HowMuchIsWrongPage, HowMuchIsWrong.TheWholeMovement)
+          .set(MoreInformationPage, Some("more info"))
+
+        existingUserAnswers.filterForPages(Seq(DateOfArrivalPage, MoreInformationPage)) mustBe {
+          baseUserAnswers.copy(data = Json.obj(
+            DateOfArrivalPage.toString -> LocalDate.MIN,
+            MoreInformationPage.toString -> "more info"
+          ))
+        }
+      }
+
+      "must return an empty Seq if none of the supplied pages are in UserAnswers" in {
+        val existingUserAnswers = baseUserAnswers
+          .set(DateOfArrivalPage, LocalDate.MIN)
+          .set(HowMuchIsWrongPage, HowMuchIsWrong.TheWholeMovement)
+          .set(MoreInformationPage, Some("more info"))
+
+        existingUserAnswers.filterForPages(Seq(ExcessInformationPage)) mustBe baseUserAnswers
       }
     }
   }

@@ -23,6 +23,6 @@ sealed trait Query {
   def path: JsPath
 }
 
-trait Gettable[A] extends Query
+trait Gettable[+A] extends Query
 
-trait Settable[A] extends Query
+trait Settable[+A] extends Query

@@ -60,7 +60,9 @@ class SelectItemsController @Inject()(override val messagesApi: MessagesApi,
 
   def addItemToList(ern: String, arc: String, itemUniqueReference: Int): Action[AnyContent] =
     authorisedDataRequestAsync(ern, arc) { implicit request =>
-      saveAndRedirect(SelectItemsPage(itemUniqueReference), itemUniqueReference, NormalMode)
+      // remove any previously entered data before adding an item to the list
+      val newUserAnswers = request.userAnswers.removeItem(itemUniqueReference)
+      saveAndRedirect(SelectItemsPage(itemUniqueReference), itemUniqueReference, newUserAnswers, NormalMode)
     }
 
   private[controllers] def getFilteredItems(implicit request: DataRequest[_]): Seq[MovementItem] = {
@@ -68,14 +70,12 @@ class SelectItemsController @Inject()(override val messagesApi: MessagesApi,
     if (userAnswersUniqueReferences.isEmpty) {
       request.movementDetails.items
     } else {
-      val userAnswerItems: Seq[ItemModel] =
-        request.userAnswers.items
+      val completedItems: Seq[ItemModel] =
+        request.userAnswers.completedItems
 
       request.movementDetails.items.filterNot {
         movementDetailsItem =>
-          userAnswerItems
-            .find(_.itemUniqueReference == movementDetailsItem.itemUniqueReference)
-            .exists(_.checkAnswersItem.contains(true))
+          completedItems.exists(_.itemUniqueReference == movementDetailsItem.itemUniqueReference)
       }
     }
   }

@@ -38,13 +38,11 @@ class AddedItemsSummary  {
   }
 
   private def getFilteredItems(implicit request: DataRequest[_]): Seq[MovementItem] = {
-    val userAnswerItems: Seq[ItemModel] = request.userAnswers.items
+    val completedItems: Seq[ItemModel] = request.userAnswers.completedItems
 
     request.movementDetails.items.filter {
       movementDetailsItem =>
-        userAnswerItems
-          .find(_.itemUniqueReference == movementDetailsItem.itemUniqueReference)
-          .exists(_.checkAnswersItem.contains(true))
+        completedItems.exists(_.itemUniqueReference == movementDetailsItem.itemUniqueReference)
     }
   }
 }

@@ -51,13 +51,13 @@ class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi
 
   def onPageLoad(ern: String, arc: String): Action[AnyContent] =
     authorisedDataRequestAsync(ern, arc) { implicit request =>
-      withAllItemsAsync() {
+      withAllCompletedItemsAsync() {
         items =>
           val formattedAnswersFuture: Future[Seq[(String, SummaryList)]] = {
             if (items.nonEmpty) {
               getCnCodeInformationService.getCnCodeInformationWithMovementItems(items).map {
                 serviceResult =>
-                  serviceResult map {
+                  serviceResult.map {
                     case (item, cnCodeInformation) =>
                       (
                         cnCodeInformation.cnCodeDescription,

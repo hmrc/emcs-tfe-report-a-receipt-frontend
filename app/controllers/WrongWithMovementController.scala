@@ -18,11 +18,11 @@ package controllers
 
 import controllers.actions._
 import forms.WrongWithMovementFormProvider
-import models.{Mode, WrongWithMovement}
+import models.{Mode, UserAnswers, WrongWithMovement}
 import navigation.Navigator
-import pages.QuestionPage
-import pages.unsatisfactory.WrongWithMovementPage
-import pages.unsatisfactory.individualItems.WrongWithItemPage
+import pages._
+import pages.unsatisfactory._
+import pages.unsatisfactory.individualItems._
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.UserAnswersService
@@ -43,17 +43,103 @@ class WrongWithMovementController @Inject()(
                                              formProvider: WrongWithMovementFormProvider,
                                              val controllerComponents: MessagesControllerComponents,
                                              view: WrongWithMovementView
-                                     ) extends BaseNavigationController with AuthActionHelper {
+                                           ) extends BaseNavigationController with AuthActionHelper {
 
   def loadWrongWithMovement(ern: String, arc: String, mode: Mode): Action[AnyContent] =
     onPageLoad(WrongWithMovementPage, ern, arc, routes.WrongWithMovementController.submitWrongWithMovement(ern, arc, mode))
-  def submitWrongWithMovement(ern: String, arc: String, mode: Mode): Action[AnyContent] =
-    onSubmit(WrongWithMovementPage, ern, arc, mode, routes.WrongWithMovementController.submitWrongWithMovement(ern, arc, mode))
 
-  def loadwrongWithItem(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
-    onPageLoad(WrongWithItemPage(idx), ern, arc, routes.WrongWithMovementController.submitwrongWithItem(ern, arc, idx, mode))
-  def submitwrongWithItem(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
-    onSubmit(WrongWithItemPage(idx), ern, arc, mode, routes.WrongWithMovementController.submitwrongWithItem(ern, arc, idx, mode))
+  def submitWrongWithMovement(ern: String, arc: String, mode: Mode): Action[AnyContent] = {
+    authorisedDataRequestAsync(ern, arc) { implicit request =>
+      formProvider(WrongWithMovementPage).bindFromRequest().fold(
+        formWithErrors =>
+          Future.successful(BadRequest(view(
+            WrongWithMovementPage,
+            formWithErrors,
+            routes.WrongWithMovementController.submitWrongWithMovement(ern, arc, mode)
+          ))),
+        (values: Set[WrongWithMovement]) => {
+
+          val newUserAnswers: UserAnswers = cleanseUserAnswersIfValueHasChanged(
+            page = WrongWithMovementPage,
+            newAnswer = values,
+            cleansingFunction = {
+              val allOptionsNotChecked: Seq[WrongWithMovement] = WrongWithMovement.values.filterNot(values.contains)
+
+              allOptionsNotChecked.foldLeft(request.userAnswers) {
+                case (answers, WrongWithMovement.Shortage) =>
+                  answers
+                    .remove(AddShortageInformationPage)
+                    .remove(ShortageInformationPage)
+                case (answers, WrongWithMovement.Excess) =>
+                  answers
+                    .remove(AddExcessInformationPage)
+                    .remove(ExcessInformationPage)
+                case (answers, WrongWithMovement.Damaged) =>
+                  answers
+                    .remove(AddDamageInformationPage)
+                    .remove(DamageInformationPage)
+                case (answers, WrongWithMovement.BrokenSeals) =>
+                  answers
+                    .remove(AddSealsInformationPage)
+                    .remove(SealsInformationPage)
+                case (answers, WrongWithMovement.Other) =>
+                  answers
+                    .remove(OtherInformationPage)
+                case (answers, _) => answers
+              }
+            }
+          )
+
+          saveAndRedirect(WrongWithMovementPage, values, newUserAnswers, mode)
+        }
+      )
+    }
+  }
+
+  def loadWrongWithItem(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
+    onPageLoad(WrongWithItemPage(idx), ern, arc, routes.WrongWithMovementController.submitWrongWithItem(ern, arc, idx, mode))
+
+  def submitWrongWithItem(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] = {
+    authorisedDataRequestAsync(ern, arc) { implicit request =>
+      formProvider(WrongWithItemPage(idx)).bindFromRequest().fold(
+        formWithErrors =>
+          Future.successful(BadRequest(view(
+            WrongWithItemPage(idx),
+            formWithErrors,
+            routes.WrongWithMovementController.submitWrongWithItem(ern, arc, idx, mode)
+          ))),
+        (values: Set[WrongWithMovement]) => {
+
+          val newUserAnswers: UserAnswers = cleanseUserAnswersIfValueHasChanged(
+            page = WrongWithItemPage(idx),
+            newAnswer = values,
+            cleansingFunction = {
+              val allOptionsNotChecked: Seq[WrongWithMovement] = WrongWithMovement.individualItemValues.filterNot(values.contains)
+
+              allOptionsNotChecked.foldLeft(request.userAnswers) {
+                case (answers, WrongWithMovement.ShortageOrExcess) =>
+                  answers
+                    .remove(ItemShortageOrExcessPage(idx))
+                case (answers, WrongWithMovement.Damaged) =>
+                  answers
+                    .remove(AddItemDamageInformationPage(idx))
+                    .remove(ItemDamageInformationPage(idx))
+                case (answers, WrongWithMovement.BrokenSeals) =>
+                  answers
+                    .remove(AddItemSealsInformationPage(idx))
+                    .remove(ItemSealsInformationPage(idx))
+                case (answers, WrongWithMovement.Other) =>
+                  answers
+                    .remove(ItemOtherInformationPage(idx))
+                case (answers, _) => answers
+              }
+            }
+          )
+          saveAndRedirect(WrongWithItemPage(idx), values, newUserAnswers, mode)
+        }
+      )
+    }
+  }
 
   private def onPageLoad(page: QuestionPage[Set[WrongWithMovement]],
                          ern: String,
@@ -61,19 +147,5 @@ class WrongWithMovementController @Inject()(
                          action: Call): Action[AnyContent] =
     authorisedDataRequest(ern, arc) { implicit request =>
       Ok(view(page, fillForm(page, formProvider(page)), action))
-    }
-
-  private def onSubmit(page: QuestionPage[Set[WrongWithMovement]],
-                       ern: String,
-                       arc: String,
-                       mode: Mode,
-                       action: Call): Action[AnyContent] =
-    authorisedDataRequestAsync(ern, arc) { implicit request =>
-      formProvider(page).bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(page, formWithErrors, action))),
-        value =>
-          saveAndRedirect(page, value, mode)
-      )
     }
 }

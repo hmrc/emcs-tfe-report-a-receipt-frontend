@@ -44,7 +44,7 @@ class ConfirmationContentHelper @Inject()(shortageContent: ShortageContent,
   def renderShortageContent()(implicit request: DataRequest[_], messages: Messages): Option[HtmlFormat.Appendable] = {
 
     val hasMovementShortage = request.userAnswers.get(WrongWithMovementPage).exists(_.contains(Shortage))
-    val hasItemShortage = request.getItemsAdded.exists(_.itemShortageOrExcess.exists(_.wrongWithItem == Shortage))
+    val hasItemShortage = request.userAnswers.items.exists(_.itemShortageOrExcess.exists(_.wrongWithItem == Shortage))
 
     if(hasMovementShortage || hasItemShortage) {
       Some(shortageContent())
@@ -55,7 +55,7 @@ class ConfirmationContentHelper @Inject()(shortageContent: ShortageContent,
 
   def renderExcessContent()(implicit request: DataRequest[_], messages: Messages): Option[HtmlFormat.Appendable] = {
     val hasMovementExcess = request.userAnswers.get(WrongWithMovementPage).exists(_.contains(Excess))
-    val hasItemExcess = request.getItemsAdded.exists(_.itemShortageOrExcess.exists(_.wrongWithItem == Excess))
+    val hasItemExcess = request.userAnswers.items.exists(_.itemShortageOrExcess.exists(_.wrongWithItem == Excess))
     if (hasMovementExcess || hasItemExcess) {
       Some(excessContent())
     } else {

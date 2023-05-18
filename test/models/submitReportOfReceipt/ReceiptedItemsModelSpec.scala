@@ -184,6 +184,7 @@ class ReceiptedItemsModelSpec extends SpecBase with ReceiptedItemsModelFixtures 
                 .set(ItemDamageInformationPage(item1.itemUniqueReference), Some("Damage"))
                 .set(ItemSealsInformationPage(item1.itemUniqueReference), Some("BrokenSeals"))
                 .set(ItemOtherInformationPage(item1.itemUniqueReference), "Other")
+                .set(CheckAnswersItemPage(item1.itemUniqueReference), true)
                 // <== Item 1 Ends
                 // -----------------
                 // Item 2 Starts ==>
@@ -198,6 +199,7 @@ class ReceiptedItemsModelSpec extends SpecBase with ReceiptedItemsModelFixtures 
                   additionalInfo = Some("Excess")
                 ))
                 .set(ItemSealsInformationPage(item2.itemUniqueReference), Some("BrokenSeals"))
+                .set(CheckAnswersItemPage(item2.itemUniqueReference), true)
 
             val items = ReceiptedItemsModel(getMovementResponseModel)(userAnswers)
 
@@ -271,12 +273,14 @@ class ReceiptedItemsModelSpec extends SpecBase with ReceiptedItemsModelFixtures 
                   additionalInfo = Some("Shortage")
                 ))
                 .set(ItemDamageInformationPage(item1.itemUniqueReference), Some("Damage"))
+                .set(CheckAnswersItemPage(item1.itemUniqueReference), true)
                 // <== Item 1 Ends
                 // -----------------
                 // Item 2 Starts ==>
                 .set(SelectItemsPage(item2.itemUniqueReference), item2.itemUniqueReference)
                 .set(WrongWithItemPage(item2.itemUniqueReference), Set[WrongWithMovement](BrokenSeals))
                 .set(ItemSealsInformationPage(item2.itemUniqueReference), Some("BrokenSeals"))
+                .set(CheckAnswersItemPage(item2.itemUniqueReference), true)
 
             val items = ReceiptedItemsModel(getMovementResponseModel)(userAnswers)
 

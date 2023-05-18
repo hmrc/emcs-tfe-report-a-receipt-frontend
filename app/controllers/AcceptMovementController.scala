@@ -18,9 +18,9 @@ package controllers
 
 import controllers.actions._
 import forms.AcceptMovementFormProvider
-import models.Mode
+import models.{Mode, UserAnswers}
 import navigation.Navigator
-import pages.AcceptMovementPage
+import pages.{AcceptMovementPage, DateOfArrivalPage}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.UserAnswersService
@@ -41,7 +41,7 @@ class AcceptMovementController @Inject()(
                                           formProvider: AcceptMovementFormProvider,
                                           val controllerComponents: MessagesControllerComponents,
                                           view: AcceptMovementView
-                                     ) extends BaseNavigationController with AuthActionHelper {
+                                        ) extends BaseNavigationController with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String, mode: Mode): Action[AnyContent] =
     authorisedDataRequest(ern, arc) { implicit request =>
@@ -53,8 +53,14 @@ class AcceptMovementController @Inject()(
       formProvider().bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
-        value =>
-          saveAndRedirect(AcceptMovementPage, value, mode)
+        value => {
+          val newUserAnswers: UserAnswers = cleanseUserAnswersIfValueHasChanged(
+            page = AcceptMovementPage,
+            newAnswer = value,
+            cleansingFunction = request.userAnswers.filterForPages(Seq(DateOfArrivalPage))
+          )
+          saveAndRedirect(AcceptMovementPage, value, newUserAnswers, mode)
+        }
       )
     }
 }

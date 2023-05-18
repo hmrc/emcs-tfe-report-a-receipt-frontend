@@ -72,7 +72,7 @@ class CheckAnswersItemHelper @Inject()(
       actions = Seq(
         ActionItemViewModel(
           "site.change",
-          routes.WrongWithMovementController.loadwrongWithItem(request.userAnswers.ern, request.userAnswers.arc, idx, NormalMode).url,
+          routes.WrongWithMovementController.loadWrongWithItem(request.userAnswers.ern, request.userAnswers.arc, idx, NormalMode).url,
           id = WrongWithItemPage(idx) + additionalLinkIdSignifier
         ).withVisuallyHiddenText(messages(s"${WrongWithItemPage(idx)}.checkYourAnswers.change.hidden"))
       )

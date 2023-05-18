@@ -184,13 +184,21 @@ class SelectItemsControllerSpec extends SpecBase
 
       "when adding the same item again" - {
 
-        "must redirect to onward route without saving any data to the backend as it's unchanged" in {
+        "must redirect to onward route and remove previous answers for that item" in {
 
           val userAnswers = emptyUserAnswers
             .set(SelectItemsPage(1), item1.itemUniqueReference)
+            .set(WrongWithItemPage(1), Set(WrongWithMovement.individualItemValues.head))
             .set(SelectItemsPage(2), item2.itemUniqueReference)
 
-          MockUserAnswersService.set().never()
+          MockUserAnswersService
+            .set(emptyUserAnswers
+              .set(SelectItemsPage(1), item1.itemUniqueReference)
+              .set(SelectItemsPage(2), item2.itemUniqueReference))
+            .returns(Future.successful(emptyUserAnswers
+              .set(SelectItemsPage(1), item1.itemUniqueReference)
+              .set(SelectItemsPage(2), item2.itemUniqueReference))
+            )
 
           val application =
             applicationBuilder(userAnswers = Some(userAnswers))

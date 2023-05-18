@@ -44,7 +44,7 @@ class RefusedAmountViewSpec extends ViewSpecBase with ViewBehaviours {
         implicit val msgs: Messages = messages(app, viewMessagesForLanguage.lang)
         implicit val request: DataRequest[AnyContentAsEmpty.type] = dataRequest(FakeRequest(), emptyUserAnswers)
 
-        val form = app.injector.instanceOf[RefusedAmountFormProvider].apply(itemQuantity = 20)
+        val form = app.injector.instanceOf[RefusedAmountFormProvider].apply(itemQuantity = 20, None)
         val view = app.injector.instanceOf[RefusedAmountView]
 
         implicit val doc: Document = Jsoup.parse(view(form, testOnwardRoute, Kilograms).toString())
@@ -78,7 +78,7 @@ class RefusedAmountViewSpec extends ViewSpecBase with ViewBehaviours {
         implicit val msgs: Messages = messages(app, viewMessagesForLanguage.lang)
         implicit val request: DataRequest[AnyContentAsEmpty.type] = dataRequest(FakeRequest(), emptyUserAnswers)
 
-        val form = app.injector.instanceOf[RefusedAmountFormProvider].apply(itemQuantity = 20)
+        val form = app.injector.instanceOf[RefusedAmountFormProvider].apply(itemQuantity = 20, None)
         val view = app.injector.instanceOf[RefusedAmountView]
 
         implicit val doc: Document = Jsoup.parse(view(form, testOnwardRoute, Litres15).toString())
@@ -108,7 +108,7 @@ class RefusedAmountViewSpec extends ViewSpecBase with ViewBehaviours {
         implicit val msgs: Messages = messages(app, viewMessagesForLanguage.lang)
         implicit val request: DataRequest[AnyContentAsEmpty.type] = dataRequest(FakeRequest(), emptyUserAnswers)
 
-        val form = app.injector.instanceOf[RefusedAmountFormProvider].apply(itemQuantity = 20)
+        val form = app.injector.instanceOf[RefusedAmountFormProvider].apply(itemQuantity = 20, None)
         val view = app.injector.instanceOf[RefusedAmountView]
 
         implicit val doc: Document = Jsoup.parse(view(form, testOnwardRoute, Litres20).toString())
@@ -138,7 +138,7 @@ class RefusedAmountViewSpec extends ViewSpecBase with ViewBehaviours {
         implicit val msgs: Messages = messages(app, viewMessagesForLanguage.lang)
         implicit val request: DataRequest[AnyContentAsEmpty.type] = dataRequest(FakeRequest(), emptyUserAnswers)
 
-        val form = app.injector.instanceOf[RefusedAmountFormProvider].apply(itemQuantity = 20)
+        val form = app.injector.instanceOf[RefusedAmountFormProvider].apply(itemQuantity = 20, None)
         val view = app.injector.instanceOf[RefusedAmountView]
 
         implicit val doc: Document = Jsoup.parse(view(form, testOnwardRoute, Thousands).toString())

@@ -22,7 +22,7 @@ import play.api.data.Form
 
 class RefusedAmountFormProvider @Inject() extends Mappings {
 
-  def apply(itemQuantity: BigDecimal): Form[BigDecimal] =
+  def apply(itemQuantity: BigDecimal, shortageAmount: Option[BigDecimal]): Form[BigDecimal] =
     Form(
       "value" ->
         text("refusedAmount.error.required")
@@ -33,6 +33,6 @@ class RefusedAmountFormProvider @Inject() extends Mappings {
             )
           )
           .transform[BigDecimal](BigDecimal(_), _.toString())
-          .verifying(decimalMaxAmount(itemQuantity, "refusedAmount.error.tooLarge"))
+          .verifying(decimalMaxAmount(itemQuantity - shortageAmount.getOrElse(0), "refusedAmount.error.tooLarge"))
     )
 }

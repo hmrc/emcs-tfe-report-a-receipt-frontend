@@ -23,6 +23,9 @@ import pages.unsatisfactory.{HowMuchIsWrongPage, WrongWithMovementPage}
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryContinueDraftPage: Arbitrary[ContinueDraftPage.type] =
+    Arbitrary(ContinueDraftPage)
+
   implicit lazy val arbitraryRefusedAmountPage: Arbitrary[RefusedAmountPage] =
     Arbitrary(RefusedAmountPage(1))
 

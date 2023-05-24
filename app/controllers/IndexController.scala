@@ -17,27 +17,53 @@
 package controllers
 
 import controllers.actions.{AuthAction, DataRetrievalAction, MovementAction}
-import models.{NormalMode, UserAnswers}
+import forms.ContinueDraftFormProvider
+import models.{Mode, NormalMode, UserAnswers}
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.UserAnswersService
+import uk.gov.hmrc.http.HeaderCarrier
+import views.html.ContinueDraftView
 
 import javax.inject.Inject
+import scala.concurrent.Future
 
 class IndexController @Inject()(override val messagesApi: MessagesApi,
                                 val userAnswersService: UserAnswersService,
                                 val controllerComponents: MessagesControllerComponents,
                                 authAction: AuthAction,
                                 withMovement: MovementAction,
-                                getData: DataRetrievalAction) extends BaseController {
+                                getData: DataRetrievalAction,
+                                formProvider: ContinueDraftFormProvider,
+                                view: ContinueDraftView) extends BaseController {
 
-  def onPageLoad(ern: String, arc: String): Action[AnyContent] = (authAction(ern) andThen withMovement(arc) andThen getData).async { implicit request =>
-    val userAnswers = request.userAnswers match {
-      case Some(answers) => answers
-      case _ => UserAnswers(request.internalId, request.ern, request.arc)
+  def onPageLoad(ern: String, arc: String): Action[AnyContent] =
+    (authAction(ern) andThen withMovement(arc) andThen getData).async { implicit request =>
+      request.userAnswers match {
+        case Some(ans) if ans.data.fields.nonEmpty =>
+          Future.successful(Ok(view(formProvider(), ern, arc)))
+        case _ =>
+          initialiseAndRedirect(UserAnswers(request.internalId, request.ern, request.arc))
+      }
     }
-    userAnswersService.set(userAnswers).map { _ =>
-      Redirect(routes.DateOfArrivalController.onPageLoad(ern, arc, NormalMode))
+
+  def onSubmit(ern: String, arc: String): Action[AnyContent] =
+    (authAction(ern) andThen withMovement(arc) andThen getData).async { implicit request =>
+      formProvider().bindFromRequest().fold(
+        formWithErrors =>
+          Future.successful(BadRequest(view(formWithErrors, ern, arc))),
+        continueDraft => {
+          val userAnswers = request.userAnswers match {
+            case Some(answers) if continueDraft => answers
+            case _ => UserAnswers(request.internalId, request.ern, request.arc)
+          }
+          initialiseAndRedirect(userAnswers)
+        }
+      )
     }
-  }
+
+  private def initialiseAndRedirect(answers: UserAnswers)(implicit hc: HeaderCarrier): Future[Result] =
+    userAnswersService.set(answers).map { _ =>
+      Redirect(routes.DateOfArrivalController.onPageLoad(answers.ern, answers.arc, NormalMode))
+    }
 }

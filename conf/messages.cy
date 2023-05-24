@@ -367,3 +367,9 @@ refusedAmount.error.nonNumeric = The amount you are refusing must be a number, l
 refusedAmount.error.required = Enter the amount you are refusing
 refusedAmount.error.tooLarge = The amount you are refusing must be {0} or fewer
 refusedAmount.error.maxLength = The amount you are refusing must be {0} characters or less
+
+continueDraft.title = continueDraft
+continueDraft.heading = continueDraft
+continueDraft.checkYourAnswersLabel = continueDraft
+continueDraft.error.required = Select yes if continueDraft
+continueDraft.change.hidden = ContinueDraft

@@ -17,6 +17,7 @@ GET         /account/signed-out                                                 
 GET         /unauthorised                                                        controllers.UnauthorisedController.onPageLoad()
 
 GET         /:ern/:arc                                                           controllers.IndexController.onPageLoad(ern: String, arc: String)
+POST        /:ern/:arc                                                           controllers.IndexController.onSubmit(ern: String, arc: String)
 
 GET         /:ern/:arc/when-receive-movement                                     controllers.DateOfArrivalController.onPageLoad(ern: String, arc: String, mode: Mode = NormalMode)
 POST        /:ern/:arc/when-receive-movement                                     controllers.DateOfArrivalController.onSubmit(ern: String, arc: String, mode: Mode = NormalMode)

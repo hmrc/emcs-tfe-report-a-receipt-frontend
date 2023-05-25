@@ -22,15 +22,12 @@ import mocks.services.MockUserAnswersService
 import models.NormalMode
 import models.requests.OptionalDataRequest
 import pages.DateOfArrivalPage
-import play.api.i18n.Messages
 import play.api.inject.bind
-import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.UserAnswersService
 import views.html.ContinueDraftView
 
-import java.time.LocalDate
 import scala.concurrent.Future
 
 class IndexControllerSpec extends SpecBase with MockUserAnswersService {
@@ -86,6 +83,37 @@ class IndexControllerSpec extends SpecBase with MockUserAnswersService {
     }
 
     ".onSubmit()" - {
+
+      "when user has NOT selected an option" - {
+
+        "must render the page with Errors" in {
+
+          val userAnswers = emptyUserAnswers.set(DateOfArrivalPage, testDateOfArrival)
+
+          val application = applicationBuilder(userAnswers = Some(userAnswers)).overrides(
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          ).build()
+
+          val view = application.injector.instanceOf[ContinueDraftView]
+          val form = application.injector.instanceOf[ContinueDraftFormProvider].apply()
+
+          running(application) {
+
+            val request = FakeRequest(POST, routes.IndexController.onPageLoad(testErn, testArc).url)
+              .withFormUrlEncodedBody(("value", ""))
+
+            implicit val msgs = messages(application)
+            implicit val optDataRequest: OptionalDataRequest[_] = optionalDataRequest(request, Some(userAnswers))
+
+            val boundForm = form.bind(Map("value" -> ""))
+
+            val result = route(application, request).value
+
+            status(result) mustEqual BAD_REQUEST
+            contentAsString(result) mustBe view(boundForm, routes.IndexController.onSubmit(testErn, testArc)).toString()
+          }
+        }
+      }
 
       "when user has selected to continueDraft" - {
 

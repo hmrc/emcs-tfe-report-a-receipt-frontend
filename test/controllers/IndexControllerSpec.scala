@@ -17,12 +17,16 @@
 package controllers
 
 import base.SpecBase
+import forms.ContinueDraftFormProvider
 import mocks.services.MockUserAnswersService
 import models.NormalMode
+import models.requests.OptionalDataRequest
+import pages.DateOfArrivalPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.UserAnswersService
+import views.html.ContinueDraftView
 
 import scala.concurrent.Future
 
@@ -30,44 +34,134 @@ class IndexControllerSpec extends SpecBase with MockUserAnswersService {
 
   "Index Controller" - {
 
-    "when existing UserAnswers don't exist" - {
+    ".onPageLoad()" - {
 
-      "must Initialise the UserAnswers and redirect to DateOfArrival" in {
+      "when existing UserAnswers don't exist" - {
 
-        MockUserAnswersService.set().returns(Future.successful(emptyUserAnswers))
+        "must Initialise the UserAnswers and redirect to DateOfArrival" in {
 
-        val application = applicationBuilder(userAnswers = None).overrides(
-          bind[UserAnswersService].toInstance(mockUserAnswersService)
-        ).build()
+          MockUserAnswersService.set(emptyUserAnswers).returns(Future.successful(emptyUserAnswers))
 
-        running(application) {
-          val request = FakeRequest(GET, routes.IndexController.onPageLoad(testErn, testArc).url)
+          val application = applicationBuilder(userAnswers = None).overrides(
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          ).build()
 
-          val result = route(application, request).value
+          running(application) {
+            val request = FakeRequest(GET, routes.IndexController.onPageLoad(testErn, testArc).url)
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.DateOfArrivalController.onPageLoad(testErn, testArc, NormalMode).url)
+            val result = route(application, request).value
+
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result) mustBe Some(routes.DateOfArrivalController.onPageLoad(testErn, testArc, NormalMode).url)
+          }
+        }
+      }
+
+      "when existing UserAnswers exist" - {
+
+        "must render the Continue Draft view" in {
+
+          val userAnswers = emptyUserAnswers.set(DateOfArrivalPage, testDateOfArrival)
+          val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+          val view = application.injector.instanceOf[ContinueDraftView]
+          val form = application.injector.instanceOf[ContinueDraftFormProvider].apply()
+
+          running(application) {
+
+            val request = FakeRequest(GET, routes.IndexController.onPageLoad(testErn, testArc).url)
+
+            implicit val msgs = messages(application)
+            implicit val optDataRequest: OptionalDataRequest[_] = optionalDataRequest(request, Some(userAnswers))
+
+            val result = route(application, request).value
+
+            status(result) mustEqual OK
+            contentAsString(result) mustBe view(form, routes.IndexController.onSubmit(testErn, testArc)).toString()
+          }
         }
       }
     }
 
-    "when existing UserAnswers exist" - {
+    ".onSubmit()" - {
 
-      "must use the existing answers and redirect to DateOfArrival" in {
+      "when user has NOT selected an option" - {
 
-        MockUserAnswersService.set(emptyUserAnswers).returns(Future.successful(emptyUserAnswers))
+        "must render the page with Errors" in {
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(
-          bind[UserAnswersService].toInstance(mockUserAnswersService)
-        ).build()
+          val userAnswers = emptyUserAnswers.set(DateOfArrivalPage, testDateOfArrival)
 
-        running(application) {
-          val request = FakeRequest(GET, routes.IndexController.onPageLoad(testErn, testArc).url)
+          val application = applicationBuilder(userAnswers = Some(userAnswers)).overrides(
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          ).build()
 
-          val result = route(application, request).value
+          val view = application.injector.instanceOf[ContinueDraftView]
+          val form = application.injector.instanceOf[ContinueDraftFormProvider].apply()
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.DateOfArrivalController.onPageLoad(testErn, testArc, NormalMode).url)
+          running(application) {
+
+            val request = FakeRequest(POST, routes.IndexController.onPageLoad(testErn, testArc).url)
+              .withFormUrlEncodedBody(("value", ""))
+
+            implicit val msgs = messages(application)
+            implicit val optDataRequest: OptionalDataRequest[_] = optionalDataRequest(request, Some(userAnswers))
+
+            val boundForm = form.bind(Map("value" -> ""))
+
+            val result = route(application, request).value
+
+            status(result) mustEqual BAD_REQUEST
+            contentAsString(result) mustBe view(boundForm, routes.IndexController.onSubmit(testErn, testArc)).toString()
+          }
+        }
+      }
+
+      "when user has selected to continueDraft" - {
+
+        "must re-use the UserAnswers and redirect to DateOfArrival" in {
+
+          val userAnswers = emptyUserAnswers.set(DateOfArrivalPage, testDateOfArrival)
+
+          MockUserAnswersService.set(userAnswers).returns(Future.successful(userAnswers))
+
+          val application = applicationBuilder(userAnswers = Some(userAnswers)).overrides(
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          ).build()
+
+          running(application) {
+
+            val request = FakeRequest(POST, routes.IndexController.onPageLoad(testErn, testArc).url)
+              .withFormUrlEncodedBody(("value", "true"))
+
+            val result = route(application, request).value
+
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result) mustBe Some(routes.DateOfArrivalController.onPageLoad(testErn, testArc, NormalMode).url)
+          }
+        }
+      }
+
+      "when user has selected to startAgain" - {
+
+        "must re-initialise the UserAnswers and redirect to DateOfArrival" in {
+
+          val userAnswers = emptyUserAnswers.set(DateOfArrivalPage, testDateOfArrival)
+
+          MockUserAnswersService.set(emptyUserAnswers).returns(Future.successful(emptyUserAnswers))
+
+          val application = applicationBuilder(userAnswers = Some(userAnswers)).overrides(
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          ).build()
+
+          running(application) {
+
+            val request = FakeRequest(POST, routes.IndexController.onPageLoad(testErn, testArc).url)
+              .withFormUrlEncodedBody(("value", "false"))
+
+            val result = route(application, request).value
+
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result) mustBe Some(routes.DateOfArrivalController.onPageLoad(testErn, testArc, NormalMode).url)
+          }
         }
       }
     }

@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import mocks.services.MockUserAnswersService
 import models.{NormalMode, UserAnswers, WrongWithMovement}
-import navigation.{BaseNavigator, FakeNavigator, Navigator}
+import navigation.{BaseNavigator, FakeNavigator}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import pages.QuestionPage
 import pages.unsatisfactory.WrongWithMovementPage

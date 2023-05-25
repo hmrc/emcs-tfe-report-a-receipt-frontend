@@ -19,7 +19,7 @@ package base
 import controllers.actions._
 import fixtures.{BaseFixtures, GetMovementResponseFixtures}
 import models.UserAnswers
-import models.requests.{DataRequest, MovementRequest, UserRequest}
+import models.requests.{DataRequest, MovementRequest, OptionalDataRequest, UserRequest}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -44,6 +44,9 @@ trait SpecBase
   def messagesApi(app: Application): MessagesApi = app.injector.instanceOf[MessagesApi]
   def messages(app: Application): Messages = messagesApi(app).preferred(FakeRequest())
   def messages(app: Application, lang: Lang): Messages = messagesApi(app).preferred(Seq(lang))
+
+  def optionalDataRequest[A](request: Request[A], answers: Option[UserAnswers] = None): OptionalDataRequest[A] =
+    OptionalDataRequest(MovementRequest(UserRequest(request, testErn, testInternalId, testCredId), testArc, getMovementResponseModel), answers)
 
   def dataRequest[A](request: Request[A], answers: UserAnswers = emptyUserAnswers): DataRequest[A] =
     DataRequest(MovementRequest(UserRequest(request, testErn, testInternalId, testCredId), testArc, getMovementResponseModel), answers)

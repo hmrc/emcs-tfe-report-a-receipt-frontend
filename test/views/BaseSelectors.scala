@@ -23,6 +23,7 @@ trait BaseSelectors {
   def h2(i: Int) = s"main h2:nth-of-type($i)"
   def h3(i: Int) = s"main h3:nth-of-type($i)"
   val p: Int => String = i => s"main p:nth-of-type($i)"
+  val inset: Int => String = i => s"main div.govuk-inset-text:nth-of-type($i)"
   val link: Int => String = i => s"main a:nth-of-type($i)"
   def bullet(i: Int, ul: Int = 1) = s"main ul.govuk-list--bullet:nth-of-type($ul) li:nth-of-type($i)"
   val hint: String = "main .govuk-hint"

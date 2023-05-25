@@ -18,7 +18,7 @@ package controllers
 
 import controllers.actions.{AuthAction, DataRetrievalAction, MovementAction}
 import forms.ContinueDraftFormProvider
-import models.{Mode, NormalMode, UserAnswers}
+import models.{NormalMode, UserAnswers}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.UserAnswersService
@@ -41,7 +41,7 @@ class IndexController @Inject()(override val messagesApi: MessagesApi,
     (authAction(ern) andThen withMovement(arc) andThen getData).async { implicit request =>
       request.userAnswers match {
         case Some(ans) if ans.data.fields.nonEmpty =>
-          Future.successful(Ok(view(formProvider(), ern, arc)))
+          Future.successful(Ok(view(formProvider(), routes.IndexController.onSubmit(ern, arc))))
         case _ =>
           initialiseAndRedirect(UserAnswers(request.internalId, request.ern, request.arc))
       }
@@ -51,7 +51,7 @@ class IndexController @Inject()(override val messagesApi: MessagesApi,
     (authAction(ern) andThen withMovement(arc) andThen getData).async { implicit request =>
       formProvider().bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, ern, arc))),
+          Future.successful(BadRequest(view(formWithErrors, routes.IndexController.onSubmit(ern, arc)))),
         continueDraft => {
           val userAnswers = request.userAnswers match {
             case Some(answers) if continueDraft => answers

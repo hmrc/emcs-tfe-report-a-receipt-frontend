@@ -30,7 +30,6 @@ trait UserAnswersGenerator extends TryValues with BaseFixtures {
   self: Generators =>
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
-    arbitrary[(ContinueDraftPage.type, JsValue)] ::
     arbitrary[(RefusedAmountPage, JsValue)] ::
     arbitrary[(RefusingAnyAmountOfItemPage, JsValue)] ::
     arbitrary[(ItemDamageInformationPage, JsValue)] ::

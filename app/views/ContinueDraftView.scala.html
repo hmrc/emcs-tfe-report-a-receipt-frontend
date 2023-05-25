@@ -14,6 +14,8 @@
  * limitations under the License.
  *@
 
+@import models.requests.OptionalDataRequest
+
 @this(
         layout: templates.Layout,
         formHelper: FormWithCSRF,
@@ -25,17 +27,17 @@
         inset: components.inset
 )
 
-@(form: Form[_], ern: String, arc: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], postAction: Call)(implicit request: OptionalDataRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("continueDraft.title"))) {
 
-    @formHelper(action = routes.IndexController.onSubmit(ern, arc), 'autoComplete -> "off") {
+    @formHelper(postAction, 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        @h1("continueDraft.heading", Some(messages("arc.subHeading", arc)), "govuk-heading-l")
+        @h1("continueDraft.heading", Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
 
         @p() {
             @messages("continueDraft.p1")

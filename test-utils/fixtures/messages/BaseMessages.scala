@@ -24,6 +24,7 @@ sealed trait BaseMessages { _: i18n =>
   val opensInNewTab: String
   def arcSubheading(arc: String): String
   val lang: Lang
+  val continue: String
   val saveAndContinue: String
   val saveAndReturnToMovement: String
   val day: String
@@ -39,6 +40,7 @@ trait BaseEnglish extends BaseMessages with EN {
   override def title(heading: String) = s"$heading - Excise Movement and Control System - GOV.UK"
   override val opensInNewTab: String = "(opens in new tab)"
   override def arcSubheading(arc: String): String = s"Report of receipt for $arc"
+  override val continue = "Continue"
   override val saveAndContinue = "Save and continue"
   override val saveAndReturnToMovement = "Save and return to movement"
   override val day: String = "Day"
@@ -55,6 +57,7 @@ trait BaseWelsh extends BaseMessages with CY {
   override def title(heading: String) = s"$heading - Excise Movement and Control System - GOV.UK"
   override val opensInNewTab: String = "(opens in new tab)"
   override def arcSubheading(arc: String): String = s"Report of receipt for $arc"
+  override val continue = "Continue"
   override val saveAndContinue = "Save and continue"
   override val saveAndReturnToMovement = "Save and return to movement"
   override val day: String = "Day"

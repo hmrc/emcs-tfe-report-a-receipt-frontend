@@ -368,8 +368,10 @@ refusedAmount.error.required = Enter the amount you are refusing
 refusedAmount.error.tooLarge = The amount you are refusing must be {0} or fewer
 refusedAmount.error.maxLength = The amount you are refusing must be {0} characters or less
 
-continueDraft.title = continueDraft
-continueDraft.heading = continueDraft
-continueDraft.checkYourAnswersLabel = continueDraft
-continueDraft.error.required = Select yes if continueDraft
-continueDraft.change.hidden = ContinueDraft
+continueDraft.title = Do you want to continue with this draft report of receipt?
+continueDraft.heading = Do you want to continue with this draft report of receipt?
+continueDraft.error.required = Select yes if you want to continue with this draft report of receipt
+continueDraft.p1 = A report of receipt is already in progress for this movement. You can continue with this draft, or start a new one.
+continueDraft.indent = If you choose to start a new report of receipt this draft will be deleted.
+continueDraft.continue = Continue with this draft
+continueDraft.startAgain = Start a new report of receipt

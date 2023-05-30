@@ -18,6 +18,7 @@ package services
 
 import config.AppConfig
 import connectors.emcsTfe.SubmitReportOfReceiptConnector
+import models.audit.SubmitReportOfReceiptAuditModel
 import models.requests.DataRequest
 import models.response.SubmitReportOfReceiptException
 import models.response.emcsTfe.SubmitReportOfReceiptResponse
@@ -29,12 +30,21 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SubmitReportOfReceiptService @Inject()(submitReportOfReceiptConnector: SubmitReportOfReceiptConnector,
+                                             auditingService: AuditingService,
                                              appConfig: AppConfig)
                                             (implicit ec: ExecutionContext) {
 
   def submit(ern: String, arc: String)(implicit hc: HeaderCarrier, dataRequest: DataRequest[_]): Future[SubmitReportOfReceiptResponse] = {
 
     val submission = SubmitReportOfReceiptModel(dataRequest.movementDetails)(dataRequest.userAnswers, appConfig)
+
+    auditingService.audit(
+      SubmitReportOfReceiptAuditModel(
+        correlationId = dataRequest.internalId,
+        submission = submission,
+        ern = ern
+      )
+    )
 
     submitReportOfReceiptConnector.submit(ern, submission).map {
       case Right(success) => success

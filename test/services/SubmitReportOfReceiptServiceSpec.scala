@@ -20,7 +20,9 @@ import base.SpecBase
 import config.AppConfig
 import fixtures.SubmitReportOfReceiptFixtures
 import mocks.connectors.MockSubmitReportOfReceiptConnector
+import mocks.services.MockAuditingService
 import models.AcceptMovement._
+import models.audit.SubmitReportOfReceiptAuditModel
 import models.response.{SubmitReportOfReceiptException, UnexpectedDownstreamResponseError}
 import models.submitReportOfReceipt.SubmitReportOfReceiptModel
 import pages._
@@ -30,14 +32,14 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SubmitReportOfReceiptServiceSpec extends SpecBase with MockSubmitReportOfReceiptConnector with SubmitReportOfReceiptFixtures {
+class SubmitReportOfReceiptServiceSpec extends SpecBase with MockSubmitReportOfReceiptConnector with SubmitReportOfReceiptFixtures with MockAuditingService {
 
   lazy val mockAppConfig = mock[AppConfig]
 
   implicit val hc = HeaderCarrier()
   implicit val ec = ExecutionContext.global
 
-  lazy val testService = new SubmitReportOfReceiptService(mockSubmitReportOfReceiptConnector, mockAppConfig)
+  lazy val testService = new SubmitReportOfReceiptService(mockSubmitReportOfReceiptConnector, mockAuditingService, mockAppConfig)
 
   ".submit(ern: String, submission: SubmitReportOfReceiptModel)" - {
 
@@ -54,6 +56,7 @@ class SubmitReportOfReceiptServiceSpec extends SpecBase with MockSubmitReportOfR
         val request = dataRequest(FakeRequest(), userAnswers)
         val submission = SubmitReportOfReceiptModel(getMovementResponseModel)(userAnswers, mockAppConfig)
 
+        MockAuditingService.verifyAudit(SubmitReportOfReceiptAuditModel("internalId", submission, "ern")).noMoreThanOnce()
         MockSubmitReportOfReceiptConnector.submit(testErn, submission).returns(Future.successful(Right(successResponse)))
 
         testService.submit(testErn, testArc)(hc, request).futureValue mustBe successResponse
@@ -73,6 +76,7 @@ class SubmitReportOfReceiptServiceSpec extends SpecBase with MockSubmitReportOfR
         val request = dataRequest(FakeRequest(), userAnswers)
         val submission = SubmitReportOfReceiptModel(getMovementResponseModel)(userAnswers, mockAppConfig)
 
+        MockAuditingService.verifyAudit(SubmitReportOfReceiptAuditModel("internalId", submission, "ern")).noMoreThanOnce()
         MockSubmitReportOfReceiptConnector.submit(testErn, submission).returns(Future.successful(Left(UnexpectedDownstreamResponseError)))
         intercept[SubmitReportOfReceiptException](await(testService.submit(testErn, testArc)(hc, request))).getMessage mustBe
           s"Failed to submit Report of Receipt to emcs-tfe for ern: '$testErn' & arc: '$testArc'"

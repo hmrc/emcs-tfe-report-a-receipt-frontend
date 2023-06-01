@@ -17,7 +17,7 @@
 package navigation
 
 import controllers.routes
-import models.AcceptMovement.{PartiallyRefused, Satisfactory}
+import models.AcceptMovement.{PartiallyRefused, Satisfactory, Unsatisfactory}
 import models.HowMuchIsWrong.TheWholeMovement
 import models.WrongWithMovement.{BrokenSeals, Damaged, Excess, Other, Shortage, ShortageOrExcess}
 import models._
@@ -38,6 +38,7 @@ class Navigator @Inject()() extends BaseNavigator {
       (userAnswers: UserAnswers) =>
         userAnswers.get(AcceptMovementPage) match {
           case Some(Satisfactory) => routes.AddMoreInformationController.loadMoreInformation(userAnswers.ern, userAnswers.arc, NormalMode)
+          case Some(Unsatisfactory) => routes.SelectItemsController.onPageLoad(userAnswers.ern, userAnswers.arc)
           case Some(PartiallyRefused) => routes.SelectItemsController.onPageLoad(userAnswers.ern, userAnswers.arc)
           case _ => routes.HowMuchIsWrongController.onPageLoad(userAnswers.ern, userAnswers.arc, NormalMode)
         }

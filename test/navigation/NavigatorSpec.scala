@@ -64,12 +64,12 @@ class NavigatorSpec extends SpecBase {
 
         s"when the user answers is $Unsatisfactory" - {
 
-          "must go to the How Much Is Wrong page" in {
+          "must go to the SelectItems page" in {
 
             val userAnswers = emptyUserAnswers.set(AcceptMovementPage, Unsatisfactory)
 
             navigator.nextPage(AcceptMovementPage, NormalMode, userAnswers) mustBe
-              routes.HowMuchIsWrongController.onPageLoad(testErn, testArc, NormalMode)
+              routes.SelectItemsController.onPageLoad(testErn, testArc)
           }
         }
 

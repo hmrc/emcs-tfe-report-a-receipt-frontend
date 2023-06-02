@@ -43,6 +43,9 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig, configuration: Configu
   lazy val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
   lazy val signOutUrl: String       = configuration.get[String]("urls.signOut")
 
+  lazy val tradeTariffCommoditiesUrl: String = configuration.get[String]("urls.tradeTariffCommodities")
+  def getUrlForCommodityCode(code: String): String = s"$tradeTariffCommoditiesUrl/${code}00"
+
   lazy val contactHmrcUrl: String   = configuration.get[String]("urls.contactHmrc")
 
   private lazy val feedbackFrontendHost: String = configuration.get[String]("feedback-frontend.host")

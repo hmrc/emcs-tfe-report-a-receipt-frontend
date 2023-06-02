@@ -25,7 +25,14 @@ case class MovementItem(itemUniqueReference: Int,
                         grossMass: BigDecimal,
                         netMass: BigDecimal,
                         alcoholicStrength: Option[BigDecimal],
-                        packaging: Seq[Packaging])
+                        degreePlato: Option[BigDecimal],
+                        designationOfOrigin: Option[String],
+                        sizeOfProducer: Option[String],
+                        commercialDescription: Option[String],
+                        brandNameOfProduct: Option[String],
+                        packaging: Seq[Packaging],
+                        wineProduct: Option[WineProduct]
+                       )
 object MovementItem {
 
   implicit val format: Format[MovementItem] = Json.format

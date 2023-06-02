@@ -14,22 +14,12 @@
  * limitations under the License.
  */
 
-/*
- * Copyright 2022 HM Revenue & Customs
- *
- */
+package models.requests
 
-package models.response.emcsTfe
+import play.api.libs.json.{Json, Writes}
 
-import base.SpecBase
-import play.api.libs.json.{JsSuccess, Json}
+case class WineOperationsRequest(wineOperations: Seq[String])
 
-
-class GetMovementResponseSpec extends SpecBase {
-
-  "GetMovementResponse" - {
-    "should read from json" in {
-      Json.fromJson[GetMovementResponse](getMovementResponseInputJson) mustBe JsSuccess(getMovementResponseModel)
-    }
-  }
+object WineOperationsRequest {
+  implicit val writes: Writes[WineOperationsRequest] = (o: WineOperationsRequest) => Json.toJson(o.wineOperations)
 }

@@ -16,10 +16,8 @@
 
 package mocks.services
 
-import models.UserAnswers
 import models.audit.AuditModel
 import models.requests.DataRequest
-import models.response.emcsTfe.GetMovementResponse
 import org.scalamock.handlers.CallHandler3
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.BeforeAndAfterEach

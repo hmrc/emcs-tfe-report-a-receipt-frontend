@@ -74,7 +74,7 @@ class SelectItemsTableHelperSpec extends SpecBase {
               ),
               TableRow(
                 content = HtmlContent(list(Seq(
-                  Html(boxPackage.quantity.toString() + " x " + boxPackage.typeOfPackage)
+                  Html(boxPackage.quantity.get.toString() + " x " + boxPackage.typeOfPackage)
                 )))
               )
             ),
@@ -94,8 +94,8 @@ class SelectItemsTableHelperSpec extends SpecBase {
               ),
               TableRow(
                 content = HtmlContent(list(Seq(
-                  Html(boxPackage.quantity.toString() + " x " + boxPackage.typeOfPackage),
-                  Html(cratePackage.quantity.toString() + " x " + cratePackage.typeOfPackage)
+                  Html(boxPackage.quantity.get.toString() + " x " + boxPackage.typeOfPackage),
+                  Html(cratePackage.quantity.get.toString() + " x " + cratePackage.typeOfPackage)
                 )))
               )
             )

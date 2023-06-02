@@ -19,7 +19,10 @@ package models.response.emcsTfe
 import play.api.libs.json.{Format, Json}
 
 case class Packaging(typeOfPackage: String,
-                     quantity: BigDecimal)
+                     quantity: Option[BigDecimal],
+                     shippingMarks: Option[String],
+                     identityOfCommercialSeal: Option[String],
+                     sealInformation: Option[String])
 object Packaging {
 
   implicit val format: Format[Packaging] = Json.format

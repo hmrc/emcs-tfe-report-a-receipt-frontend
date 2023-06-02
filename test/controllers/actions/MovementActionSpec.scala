@@ -20,12 +20,11 @@ import base.SpecBase
 import handlers.ErrorHandler
 import mocks.connectors.MockGetMovementConnector
 import models.requests.{MovementRequest, UserRequest}
-import models.response.{ErrorResponse, JsonValidationError}
 import models.response.emcsTfe.GetMovementResponse
+import models.response.{ErrorResponse, JsonValidationError}
 import org.scalatest.BeforeAndAfterAll
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Play
-import play.api.libs.json.Json
 import play.api.mvc.Results.Ok
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -61,7 +60,7 @@ class MovementActionSpec extends SpecBase with MockitoSugar with MockGetMovement
     MockGetMovementConnector.getMovement(testErn, testArc).returns(Future.successful(connectorResponse))
 
     val result = movementAction(testArc).invokeBlock(request, { movementRequest: MovementRequest[_] =>
-      Future.successful(Ok(Json.toJson(movementRequest.movementDetails)))
+      Future.successful(Ok)
     })
   }
 
@@ -72,7 +71,6 @@ class MovementActionSpec extends SpecBase with MockitoSugar with MockGetMovement
       "must execute the supplied block" in new Harness(Right(getMovementResponseModel)) {
 
         status(result) mustBe OK
-        contentAsJson(result) mustBe getMovementResponseJson
       }
     }
 

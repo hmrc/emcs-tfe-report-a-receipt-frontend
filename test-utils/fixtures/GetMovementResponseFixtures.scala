@@ -16,7 +16,8 @@
 
 package fixtures
 
-import models.response.emcsTfe.{GetMovementResponse, MovementItem, Packaging}
+import models.{CategoryOfWine, ReferenceDataCategoryOfWine}
+import models.response.emcsTfe.{GetMovementResponse, MovementItem, Packaging, WineProduct}
 import play.api.libs.json.{JsValue, Json}
 
 import java.time.LocalDate
@@ -25,12 +26,26 @@ trait GetMovementResponseFixtures { _: BaseFixtures =>
 
   val boxPackage = Packaging(
     typeOfPackage = "BX",
-    quantity = 165
+    quantity = Some(165),
+    shippingMarks = Some("marks"),
+    identityOfCommercialSeal = Some("identity"),
+    sealInformation = Some("seal info")
   )
 
   val cratePackage = Packaging(
     typeOfPackage = "CR",
-    quantity = 12
+    quantity = Some(12),
+    shippingMarks = None,
+    identityOfCommercialSeal = None,
+    sealInformation = None
+  )
+
+  val wineProduct = WineProduct(
+    wineProductCategory = CategoryOfWine.WineWithoutPDOPGI.toString,
+    wineGrowingZoneCode = Some("2"),
+    thirdCountryOfOrigin = Some("FR"),
+    otherInformation = Some("Other info"),
+    wineOperations = Some(Seq("4", "11", "9"))
   )
 
   val item1 = MovementItem(
@@ -41,7 +56,13 @@ trait GetMovementResponseFixtures { _: BaseFixtures =>
     grossMass = BigDecimal(900),
     netMass = BigDecimal(375),
     alcoholicStrength = Some(BigDecimal(12.7)),
-    packaging = Seq(boxPackage)
+    degreePlato = Some(1.2),
+    designationOfOrigin = Some("FR"),
+    sizeOfProducer = Some("Huge"),
+    commercialDescription = Some("description"),
+    brandNameOfProduct = Some("Big fancy brand name"),
+    packaging = Seq(boxPackage),
+    wineProduct = Some(wineProduct)
   )
 
   val item2 = MovementItem(
@@ -52,7 +73,13 @@ trait GetMovementResponseFixtures { _: BaseFixtures =>
     grossMass = BigDecimal(910),
     netMass = BigDecimal(315),
     alcoholicStrength = None,
-    packaging = Seq(boxPackage, cratePackage)
+    degreePlato = None,
+    designationOfOrigin = Some("FR"),
+    sizeOfProducer = Some("Huge"),
+    commercialDescription = Some("description"),
+    brandNameOfProduct = Some("Big fancy brand name"),
+    packaging = Seq(boxPackage, cratePackage),
+    wineProduct = Some(wineProduct)
   )
 
   val getMovementResponseModel: GetMovementResponse = GetMovementResponse(
@@ -69,7 +96,7 @@ trait GetMovementResponseFixtures { _: BaseFixtures =>
     numberOfItems = 2
   )
 
-  val getMovementResponseJson: JsValue = Json.obj(
+  val getMovementResponseInputJson: JsValue = Json.obj(
     "arc" -> testArc,
     "sequenceNumber" -> 1,
     "localReferenceNumber" -> "MyLrn",
@@ -86,11 +113,26 @@ trait GetMovementResponseFixtures { _: BaseFixtures =>
         "grossMass" -> 900,
         "netMass" -> 375,
         "alcoholicStrength" -> 12.7,
+        "degreePlato" -> 1.2,
+        "designationOfOrigin" -> "FR",
+        "sizeOfProducer" -> "Huge",
+        "commercialDescription" -> "description",
+        "brandNameOfProduct" -> "Big fancy brand name",
         "packaging" -> Json.arr(
           Json.obj(fields =
             "typeOfPackage" -> "BX",
-            "quantity" -> 165
+            "quantity" -> 165,
+            "shippingMarks" -> "marks",
+            "identityOfCommercialSeal" -> "identity",
+            "sealInformation" -> "seal info"
           )
+        ),
+        "wineProduct" -> Json.obj(fields =
+          "wineProductCategory" -> ReferenceDataCategoryOfWine.`1`.toString,
+          "wineGrowingZoneCode" -> "2",
+          "thirdCountryOfOrigin" -> "FR",
+          "otherInformation" -> "Other info",
+          "wineOperations" -> Seq("4", "11", "9")
         )
       ),
       Json.obj(fields =
@@ -100,15 +142,29 @@ trait GetMovementResponseFixtures { _: BaseFixtures =>
         "quantity" -> 550,
         "grossMass" -> 910,
         "netMass" -> 315,
+        "designationOfOrigin" -> "FR",
+        "sizeOfProducer" -> "Huge",
+        "commercialDescription" -> "description",
+        "brandNameOfProduct" -> "Big fancy brand name",
         "packaging" -> Json.arr(
           Json.obj(fields =
             "typeOfPackage" -> "BX",
-            "quantity" -> 165
+            "quantity" -> 165,
+            "shippingMarks" -> "marks",
+            "identityOfCommercialSeal" -> "identity",
+            "sealInformation" -> "seal info"
           ),
           Json.obj(fields =
             "typeOfPackage" -> "CR",
             "quantity" -> 12
           )
+        ),
+        "wineProduct" -> Json.obj(fields =
+          "wineProductCategory" -> ReferenceDataCategoryOfWine.`1`.toString,
+          "wineGrowingZoneCode" -> "2",
+          "thirdCountryOfOrigin" -> "FR",
+          "otherInformation" -> "Other info",
+          "wineOperations" -> Seq("4", "11", "9")
         )
       )
     ),

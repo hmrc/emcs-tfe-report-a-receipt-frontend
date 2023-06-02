@@ -17,7 +17,7 @@
 package models.response.emcsTfe
 
 import models.submitReportOfReceipt.TraderModel
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.{Json, Reads}
 
 import java.time.LocalDate
 
@@ -38,5 +38,5 @@ case class GetMovementResponse(arc: String,
 }
 
 object GetMovementResponse {
-  implicit val format: Format[GetMovementResponse] = Json.format
+  implicit val reads: Reads[GetMovementResponse] = Json.reads
 }

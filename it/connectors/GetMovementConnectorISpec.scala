@@ -3,22 +3,21 @@ package connectors
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, equalTo, get, urlEqualTo}
 import com.github.tomakehurst.wiremock.http.Fault
 import connectors.emcsTfe.GetMovementConnector
+import fixtures.{BaseFixtures, GetMovementResponseFixtures}
 import generators.ModelGenerators
 import models.response.UnexpectedDownstreamResponseError
-import models.response.emcsTfe.{GetMovementResponse, MovementItem, Packaging}
-import org.scalatest.{EitherValues, OptionValues}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import org.scalatest.{EitherValues, OptionValues}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, NOT_FOUND, OK}
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.Json
 import play.api.test.Helpers.AUTHORIZATION
 import uk.gov.hmrc.http.HeaderCarrier
 
-import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class GetMovementConnectorISpec  extends AnyFreeSpec
@@ -29,102 +28,12 @@ class GetMovementConnectorISpec  extends AnyFreeSpec
   with EitherValues
   with OptionValues
   with MockitoSugar
-  with ModelGenerators {
+  with ModelGenerators
+  with BaseFixtures
+  with GetMovementResponseFixtures {
 
   val exciseRegistrationNumber = "ern"
   val arc = "arc"
-
-  val boxPackage = Packaging(
-    typeOfPackage = "BX",
-    quantity = 165
-  )
-
-  val cratePackage = Packaging(
-    typeOfPackage = "CR",
-    quantity = 12
-  )
-
-  val item1 = MovementItem(
-    itemUniqueReference = 1,
-    productCode = "W200",
-    cnCode = "22041011",
-    quantity = BigDecimal(500),
-    grossMass = BigDecimal(900),
-    netMass = BigDecimal(375),
-    alcoholicStrength = Some(BigDecimal(12.7)),
-    packaging = Seq(boxPackage)
-  )
-
-  val item2 = MovementItem(
-    itemUniqueReference = 2,
-    productCode = "W300",
-    cnCode = "22041011",
-    quantity = BigDecimal(550),
-    grossMass = BigDecimal(910),
-    netMass = BigDecimal(315),
-    alcoholicStrength = None,
-    packaging = Seq(boxPackage, cratePackage)
-  )
-
-  val getMovementResponseModel: GetMovementResponse = GetMovementResponse(
-    arc = arc,
-    sequenceNumber = 1,
-    consigneeTrader = None,
-    deliveryPlaceTrader = None,
-    localReferenceNumber = "MyLrn",
-    eadStatus = "MyEadStatus",
-    consignorName = "MyConsignor",
-    dateOfDispatch = LocalDate.parse("2010-03-04"),
-    journeyTime = "MyJourneyTime",
-    items = Seq(item1, item2),
-    numberOfItems = 2
-  )
-
-  val getMovementResponseJson: JsValue = Json.obj(
-    "arc" -> arc,
-    "sequenceNumber" -> 1,
-    "localReferenceNumber" -> "MyLrn",
-    "eadStatus" -> "MyEadStatus",
-    "consignorName" -> "MyConsignor",
-    "dateOfDispatch" -> "2010-03-04",
-    "journeyTime" -> "MyJourneyTime",
-    "items" -> Json.arr(
-      Json.obj(fields =
-        "itemUniqueReference" -> 1,
-        "productCode" -> "W200",
-        "cnCode" -> "22041011",
-        "quantity" -> 500,
-        "grossMass" -> 900,
-        "netMass" -> 375,
-        "alcoholicStrength" -> 12.7,
-        "packaging" -> Json.arr(
-          Json.obj(fields =
-            "typeOfPackage" -> "BX",
-            "quantity" -> 165
-          )
-        )
-      ),
-      Json.obj(fields =
-        "itemUniqueReference" -> 2,
-        "productCode" -> "W300",
-        "cnCode" -> "22041011",
-        "quantity" -> 550,
-        "grossMass" -> 910,
-        "netMass" -> 315,
-        "packaging" -> Json.arr(
-          Json.obj(fields =
-            "typeOfPackage" -> "BX",
-            "quantity" -> 165
-          ),
-          Json.obj(fields =
-            "typeOfPackage" -> "CR",
-            "quantity" -> 12
-          )
-        )
-      )
-    ),
-    "numberOfItems" -> 2
-  )
 
   implicit private lazy val hc: HeaderCarrier = HeaderCarrier()
 
@@ -140,7 +49,7 @@ class GetMovementConnectorISpec  extends AnyFreeSpec
 
   ".getMovement" - {
 
-    val body = Json.toJson(getMovementResponseJson)
+    val body = Json.toJson(getMovementResponseInputJson)
 
     val url = s"/emcs-tfe/movement/ern/arc?forceFetchNew=true"
 

@@ -34,7 +34,7 @@
     @formHelper(postAction, 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form))
+            @govukErrorSummary(ErrorSummaryViewModel(form, Map("value" -> "continue")))
         }
 
         @h1("continueDraft.heading", Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")

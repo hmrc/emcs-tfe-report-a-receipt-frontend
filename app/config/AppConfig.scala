@@ -16,6 +16,8 @@
 
 package config
 
+import featureswitch.core.config.{FeatureSwitching, ReturnToLegacy, WelshLanguage}
+
 import javax.inject.{Inject, Singleton}
 import play.api.Configuration
 import play.api.i18n.Lang
@@ -24,7 +26,9 @@ import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
-class AppConfig @Inject()(servicesConfig: ServicesConfig, configuration: Configuration) {
+class AppConfig @Inject()(servicesConfig: ServicesConfig, configuration: Configuration) extends FeatureSwitching {
+
+  override lazy val config: AppConfig = this
 
   lazy val host: String    = configuration.get[String]("host")
   lazy val appName: String = configuration.get[String]("appName")
@@ -44,12 +48,22 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig, configuration: Configu
   private lazy val feedbackFrontendHost: String = configuration.get[String]("feedback-frontend.host")
   lazy val feedbackFrontendSurveyUrl: String    = s"$feedbackFrontendHost/feedback/$deskproName"
 
-  lazy val languageTranslationEnabled: Boolean =
-    configuration.get[Boolean]("features.welsh-translation")
+  def languageTranslationEnabled: Boolean = isEnabled(WelshLanguage)
 
-  lazy val emcsTfeHomeUrl: String = configuration.get[String]("urls.emcsTfeHome")
+  def emcsTfeHomeUrl(ern: Option[String]): String = {
+    if(isEnabled(ReturnToLegacy)) {
+      configuration.get[String]("urls.legacy.atAGlance") + ern.fold("")(s"/" + _)
+    } else {
+      configuration.get[String]("urls.emcsTfeHome")
+    }
+  }
+
   def emcsMovementDetailsUrl(ern: String, arc: String): String =
-    configuration.get[String]("urls.emcsTfeMovementDetails") + s"/$ern/$arc"
+    if (isEnabled(ReturnToLegacy)) {
+      configuration.get[String]("urls.legacy.movementHistory").replace(":ern", ern).replace(":arc", arc)
+    } else {
+      configuration.get[String]("urls.emcsTfeMovementDetails") + s"/$ern/$arc"
+    }
 
   def languageMap: Map[String, Lang] = Map(
     "en" -> Lang("en"),
@@ -68,7 +82,9 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig, configuration: Configu
 
   def destinationOffice: String = configuration.get[String]("constants.destinationOffice")
 
-  def allowListEnabled: Boolean = configuration.get[Boolean]("features.allowListEnabled")
-
   def internalAuthToken: String = configuration.get[String]("internal-auth.token")
+
+  def getFeatureSwitchValue(feature: String): Boolean = configuration.get[Boolean](feature)
+
+  lazy val selfUrl: String = servicesConfig.baseUrl("emcs-tfe-report-a-receipt-frontend")
 }

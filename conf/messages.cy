@@ -370,7 +370,7 @@ refusedAmount.error.maxLength = The amount you are refusing must be {0} characte
 
 continueDraft.title = Do you want to continue with this draft report of receipt?
 continueDraft.heading = Do you want to continue with this draft report of receipt?
-continueDraft.error.required = Select yes if you want to continue with this draft report of receipt
+continueDraft.error.required = Select if you want to continue with this draft report of receipt
 continueDraft.p1 = A report of receipt is already in progress for this movement. You can continue with this draft, or start a new one.
 continueDraft.indent = If you choose to start a new report of receipt this draft will be deleted.
 continueDraft.continue = Continue with this draft

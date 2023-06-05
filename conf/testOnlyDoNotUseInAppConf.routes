@@ -11,6 +11,6 @@
 
 # Add all the application routes to the prod.routes file
 
-GET        /emcs-tfe-report-a-receipt/testOnly/construction        testOnly.controllers.UnderConstructionController.onPageLoad()
+GET        /emcs/report-receipt/testOnly/construction        testOnly.controllers.UnderConstructionController.onPageLoad()
 
 ->         /                          prod.Routes

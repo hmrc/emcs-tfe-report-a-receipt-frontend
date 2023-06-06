@@ -45,19 +45,19 @@ class ItemDetailsController @Inject()(
   def onPageLoad(ern: String, arc: String, idx: Int): Action[AnyContent] = {
     authorisedDataRequestAsync(ern, arc) { implicit request =>
       request.movementDetails.item(idx) match {
-        case Some(item) => getPackagingTypesService.getPackagingTypes(Seq(item)).flatMap {
-          getWineOperationsService.getWineOperations(_).flatMap {
-            getCnCodeInformationService.getCnCodeInformationWithMovementItems(_).map {
-              case (item, cnCodeInformation) :: Nil => Ok(view(item, cnCodeInformation))
-              case _ =>
-                logger.warn(s"[ItemDetailsController][onPageLoad] Problem calling getCnCodeInformationWithMovementItems" +
-                  s" with idx: $idx against ERN: $ern and ARC: $arc")
-                Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url)
+        case Some(item) =>
+          getPackagingTypesService.getPackagingTypes(Seq(item)).flatMap {
+            getWineOperationsService.getWineOperations(_).flatMap {
+              getCnCodeInformationService.getCnCodeInformationWithMovementItems(_).map {
+                case (item, cnCodeInformation) :: Nil => Ok(view(item, cnCodeInformation))
+                case _ =>
+                  logger.warn(s"[onPageLoad] Problem retrieving reference data for item idx: $idx against ERN: $ern and ARC: $arc")
+                  Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url)
+              }
             }
           }
-        }
         case None =>
-          logger.warn(s"[ItemDetailsController][onPageLoad] Unable to find item with idx: $idx against ERN: $ern and ARC: $arc")
+          logger.warn(s"[onPageLoad] Unable to find item with idx: $idx against ERN: $ern and ARC: $arc")
           Future.successful(Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url))
       }
     }

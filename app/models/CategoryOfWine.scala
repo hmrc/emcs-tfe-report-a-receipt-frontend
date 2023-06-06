@@ -31,7 +31,7 @@ object CategoryOfWine extends Enumerable.Implicits {
     VarietalWineWithoutPDOPGI,
     WineWithPDOOrPGI,
     ImportedWine,
-    Other,
+    Other
   )
 
   implicit val enumerable: Enumerable[CategoryOfWine] =

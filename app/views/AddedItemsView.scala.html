@@ -28,7 +28,7 @@
         saveAndContinue: components.saveAndContinue
 )
 
-@(form: Option[Form[Boolean]], items: Seq[(ListItemWithProductCode, CnCodeInformation)], action: Call)(implicit request: DataRequest[_], messages: Messages)
+@(form: Option[Form[Boolean]], items: Seq[(ListItemWithProductCode, CnCodeInformation)], allItemsAdded: Boolean, action: Call)(implicit request: DataRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages(pluralSingular("addedItems.title", items.size)))) {
 
@@ -44,14 +44,15 @@
 
         @addToList(items)
 
-        @form.map { form =>
-
-            @govukRadios(
-                RadiosViewModel.yesNo(
-                    field = form("value"),
-                    legend = LegendViewModel(Text(messages("addedItems.addAnother"))).withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")
+        @if(!allItemsAdded) {
+            @form.map { form =>
+                @govukRadios(
+                    RadiosViewModel.yesNo(
+                        field = form("value"),
+                        legend = LegendViewModel(Text(messages("addedItems.addAnother"))).withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")
+                    )
                 )
-            )
+            }
         }
 
         @saveAndContinue()

@@ -18,10 +18,13 @@ package controllers
 
 import controllers.actions._
 import forms.AddAnotherItemFormProvider
+import models.AcceptMovement.PartiallyRefused
 import models.requests.DataRequest
+import models.response.referenceData.CnCodeInformation
 import models.{ListItemWithProductCode, NormalMode}
 import navigation.Navigator
-import pages.unsatisfactory.individualItems.AddedItemsPage
+import pages.AcceptMovementPage
+import pages.unsatisfactory.individualItems.{AddedItemsPage, RefusedAmountPage}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.{GetCnCodeInformationService, UserAnswersService}
@@ -52,29 +55,37 @@ class AddedItemsController @Inject()(
       withAddedItems(ern, arc) {
         getCnCodeInformationService.getCnCodeInformationWithListItems(_).flatMap {
           serviceResult =>
-            val form = if (serviceResult.size < request.movementDetails.items.size) Some(formProvider()) else None
-            Future.successful(Ok(view(form, serviceResult, routes.AddedItemsController.onSubmit(ern, arc))))
+            val allItemsAdded = serviceResult.size == request.movementDetails.items.size
+            Future.successful(Ok(view(Some(formProvider()), serviceResult, allItemsAdded, routes.AddedItemsController.onSubmit(ern, arc))))
         }
       }
     }
 
   def onSubmit(ern: String, arc: String): Action[AnyContent] =
     authorisedDataRequestAsync(ern, arc) { implicit request =>
-      withAddedItems(ern, arc) {
-        case items if items.size < request.movementDetails.items.size =>
-          formProvider().bindFromRequest().fold(
-            formWithErrors => {
-              getCnCodeInformationService.getCnCodeInformationWithListItems(items).flatMap {
-                serviceResult =>
-                  Future.successful(BadRequest(view(Some(formWithErrors), serviceResult, routes.AddedItemsController.onSubmit(ern, arc))))
+
+      val isPartiallyRefused = request.userAnswers.get(AcceptMovementPage).contains(PartiallyRefused)
+
+      withAddedItems(ern, arc) { items =>
+        getCnCodeInformationService.getCnCodeInformationWithListItems(items).flatMap { implicit serviceResult =>
+          val allItemsAdded = serviceResult.size == request.movementDetails.items.size
+          if (allItemsAdded) {
+            onwardRedirect(ern, arc, serviceResult, allItemsAdded, isPartiallyRefused)
+          } else {
+            formProvider().bindFromRequest().fold(
+              formWithErrors => {
+                Future.successful(
+                  BadRequest(view(Some(formWithErrors), serviceResult, allItemsAdded, routes.AddedItemsController.onSubmit(ern, arc)))
+                )
+              },
+              {
+                case true => addAnotherItemRedirect(ern, arc)
+                case _ => onwardRedirect(ern, arc, serviceResult, allItemsAdded, isPartiallyRefused)
               }
-            }, {
-              case true => addAnotherItemRedirect(ern, arc)
-              case _ => onwardRedirect(ern, arc)
-            }
-          )
-        case _ =>
-          onwardRedirect(ern, arc)
+            )
+          }
+
+        }
       }
     }
 
@@ -87,7 +98,31 @@ class AddedItemsController @Inject()(
   private def addAnotherItemRedirect(ern: String, arc: String): Future[Result] =
     Future.successful(Redirect(routes.SelectItemsController.onPageLoad(ern, arc)))
 
-  private def onwardRedirect(ern: String, arc: String)(implicit dataRequest: DataRequest[_]): Future[Result] = {
-    Future.successful(Redirect(navigator.nextPage(AddedItemsPage, NormalMode, dataRequest.userAnswers)))
+  private def onwardRedirect(ern: String,
+                             arc: String,
+                             serviceResult: Seq[(ListItemWithProductCode, CnCodeInformation)],
+                             allItemsAdded: Boolean,
+                             isPartiallyRefused: Boolean)
+                            (implicit request: DataRequest[_]): Future[Result] = {
+
+    def hasAtLeastSomeRefusedAmountOfOneItem()(implicit request: DataRequest[_]): Boolean = {
+      request.userAnswers.itemReferences.map {
+        uniqueReference =>
+          request.userAnswers.get(RefusedAmountPage(uniqueReference)).getOrElse[BigDecimal](0)
+      }.sum > 0
+    }
+
+    if ( !isPartiallyRefused || hasAtLeastSomeRefusedAmountOfOneItem() ) {
+      Future.successful(Redirect(navigator.nextPage(AddedItemsPage, NormalMode, request.userAnswers)))
+    } else {
+      val formWithError = formProvider().withGlobalError("addedItems.error.atLeastOneItem").fill(false)
+
+      Future.successful(
+        BadRequest(
+          view(Some(formWithError), serviceResult, allItemsAdded, routes.AddedItemsController.onSubmit(ern, arc))
+        )
+      )
+    }
   }
+
 }

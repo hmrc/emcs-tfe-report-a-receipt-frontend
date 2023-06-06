@@ -62,7 +62,7 @@ class SelectItemsTableHelper @Inject()(link: link, list: list) {
           ),
           TableRow(
             content = HtmlContent(list(item.packaging.map(pckg =>
-              Html(pckg.quantity.toString() + " x " + pckg.typeOfPackage)
+              Html(pckg.quantity.getOrElse(0).toString() + " x " + pckg.typeOfPackage)
             )))
           )
         )

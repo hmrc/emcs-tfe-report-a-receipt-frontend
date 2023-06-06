@@ -14,22 +14,18 @@
  * limitations under the License.
  */
 
-/*
- * Copyright 2022 HM Revenue & Customs
- *
- */
+package models.response
 
-package models.response.emcsTfe
+import play.api.libs.json.{JsError, JsObject, JsSuccess, Reads}
 
-import base.SpecBase
-import play.api.libs.json.{JsSuccess, Json}
+case class WineOperationsResponse(data: Map[String, String])
 
-
-class GetMovementResponseSpec extends SpecBase {
-
-  "GetMovementResponse" - {
-    "should read from json" in {
-      Json.fromJson[GetMovementResponse](getMovementResponseInputJson) mustBe JsSuccess(getMovementResponseModel)
-    }
+object WineOperationsResponse {
+  implicit val reads: Reads[WineOperationsResponse] = {
+    case JsObject(underlying) => JsSuccess(WineOperationsResponse(underlying.map {
+      case (key, value) => (key, value.as[String])
+    }.toMap))
+    case other =>
+      JsError("Unable to read WineOperationsResponse as a JSON object: " + other.toString())
   }
 }

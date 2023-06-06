@@ -14,34 +14,42 @@
  * limitations under the License.
  */
 
-package connectors.emcsTfe
+package connectors.wineOperations
 
 import base.SpecBase
 import fixtures.GetMovementResponseFixtures
 import mocks.connectors.MockHttpClient
-import models.response.emcsTfe.GetMovementResponse
-import models.response.{JsonValidationError, UnexpectedDownstreamResponseError}
+import models.response.{JsonValidationError, WineOperationsResponse, UnexpectedDownstreamResponseError}
 import play.api.http.{HeaderNames, MimeTypes, Status}
-import play.api.libs.json.{Json, Reads}
+import play.api.libs.json.Json
 import uk.gov.hmrc.http.{HttpClient, HttpResponse}
 
-class EmcsTfeHttpParserSpec extends SpecBase
+class WineOperationsHttpParserSpec extends SpecBase
   with Status with MimeTypes with HeaderNames with MockHttpClient with GetMovementResponseFixtures {
 
-  lazy val httpParser = new EmcsTfeHttpParser[GetMovementResponse] {
-    override implicit val reads: Reads[GetMovementResponse] = GetMovementResponse.reads
+  lazy val httpParser = new WineOperationsHttpParser {
     override def http: HttpClient = mockHttpClient
   }
 
-  "EmcsTfeReads.read(method: String, url: String, response: HttpResponse)" - {
+  "WineOperationsReads.read(method: String, url: String, response: HttpResponse)" - {
 
     "should return a successful response" - {
 
       "when valid JSON is returned that can be parsed to the model" in {
 
-        val httpResponse = HttpResponse(Status.OK, getMovementResponseInputJson, Map())
+        val packagingTypes = Map(
+          "4" -> "The product has been sweetened",
+          "11" -> "The product has been partially dealcoholised",
+          "9" -> "The product has been made using oak chips"
+        )
 
-        httpParser.EmcsTfeReads.read("POST", "/movement/ern/arc", httpResponse) mustBe Right(getMovementResponseModel)
+        val packagingTypesJson = Json.toJson(packagingTypes)
+
+        val httpResponse = HttpResponse(Status.OK, packagingTypesJson, Map())
+
+        httpParser.WineOperationsReads.read("POST", "/oracle/wine-operations", httpResponse) mustBe Right(
+          WineOperationsResponse(packagingTypes)
+        )
       }
     }
 
@@ -51,7 +59,7 @@ class EmcsTfeHttpParserSpec extends SpecBase
 
         val httpResponse = HttpResponse(Status.INTERNAL_SERVER_ERROR, Json.obj(), Map())
 
-        httpParser.EmcsTfeReads.read("POST", "/movement/ern/arc", httpResponse) mustBe Left(UnexpectedDownstreamResponseError)
+        httpParser.WineOperationsReads.read("POST", "/oracle/wine-operations", httpResponse) mustBe Left(UnexpectedDownstreamResponseError)
       }
     }
 
@@ -61,14 +69,14 @@ class EmcsTfeHttpParserSpec extends SpecBase
 
         val httpResponse = HttpResponse(Status.OK, "", Map())
 
-        httpParser.EmcsTfeReads.read("POST", "/movement/ern/arc", httpResponse) mustBe Left(JsonValidationError)
+        httpParser.WineOperationsReads.read("POST", "/oracle/wine-operations", httpResponse) mustBe Left(JsonValidationError)
       }
 
       s"when response contains JSON but can't be deserialized to model" in {
 
-        val httpResponse = HttpResponse(Status.OK, Json.obj(), Map())
+        val httpResponse = HttpResponse(Status.OK, Json.arr(), Map())
 
-        httpParser.EmcsTfeReads.read("POST", "/movement/ern/arc", httpResponse) mustBe Left(JsonValidationError)
+        httpParser.WineOperationsReads.read("POST", "/oracle/wine-operations", httpResponse) mustBe Left(JsonValidationError)
       }
     }
   }

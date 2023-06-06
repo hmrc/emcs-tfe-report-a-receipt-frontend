@@ -102,6 +102,8 @@ POST        /:ern/:arc/what-wrong-movement/change                               
 GET         /:ern/:arc/select-items-give-information                             controllers.SelectItemsController.onPageLoad(ern: String, arc: String)
 GET         /:ern/:arc/select-items-give-information/:uniqueItemReference        controllers.SelectItemsController.addItemToList(ern: String, arc: String, uniqueItemReference: Int)
 
+GET         /:ern/:arc/item/:idx/details                                         controllers.ItemDetailsController.onPageLoad(ern: String, arc: String, idx: Int)
+
 GET         /:ern/:arc/item/:idx/what-wrong-item                                 controllers.WrongWithMovementController.loadWrongWithItem(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
 POST        /:ern/:arc/item/:idx/what-wrong-item                                 controllers.WrongWithMovementController.submitWrongWithItem(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
 GET         /:ern/:arc/item/:idx/what-wrong-item/change                          controllers.WrongWithMovementController.loadWrongWithItem(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)

@@ -18,10 +18,12 @@ package controllers
 
 import controllers.actions._
 import forms.AddAnotherItemFormProvider
+import models.AcceptMovement.PartiallyRefused
 import models.requests.DataRequest
 import models.response.referenceData.CnCodeInformation
 import models.{ListItemWithProductCode, NormalMode}
 import navigation.Navigator
+import pages.AcceptMovementPage
 import pages.unsatisfactory.individualItems.{AddedItemsPage, RefusedAmountPage}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -61,11 +63,14 @@ class AddedItemsController @Inject()(
 
   def onSubmit(ern: String, arc: String): Action[AnyContent] =
     authorisedDataRequestAsync(ern, arc) { implicit request =>
+
+      val isPartiallyRefused = request.userAnswers.get(AcceptMovementPage).contains(PartiallyRefused)
+
       withAddedItems(ern, arc) { items =>
         getCnCodeInformationService.getCnCodeInformationWithListItems(items).flatMap { implicit serviceResult =>
           val allItemsAdded = serviceResult.size == request.movementDetails.items.size
           if (allItemsAdded) {
-            onwardRedirectIfAtLeastSomeOfOneItem(ern, arc, serviceResult, allItemsAdded)
+            onwardRedirect(ern, arc, serviceResult, allItemsAdded, isPartiallyRefused)
           } else {
             formProvider().bindFromRequest().fold(
               formWithErrors => {
@@ -75,7 +80,7 @@ class AddedItemsController @Inject()(
               },
               {
                 case true => addAnotherItemRedirect(ern, arc)
-                case _ => onwardRedirectIfAtLeastSomeOfOneItem(ern, arc, serviceResult, allItemsAdded)
+                case _ => onwardRedirect(ern, arc, serviceResult, allItemsAdded, isPartiallyRefused)
               }
             )
           }
@@ -93,11 +98,12 @@ class AddedItemsController @Inject()(
   private def addAnotherItemRedirect(ern: String, arc: String): Future[Result] =
     Future.successful(Redirect(routes.SelectItemsController.onPageLoad(ern, arc)))
 
-  private def onwardRedirectIfAtLeastSomeOfOneItem(ern: String,
-                                                   arc: String,
-                                                   serviceResult: Seq[(ListItemWithProductCode, CnCodeInformation)],
-                                                   allItemsAdded: Boolean)
-                                                  (implicit request: DataRequest[_]): Future[Result] = {
+  private def onwardRedirect(ern: String,
+                             arc: String,
+                             serviceResult: Seq[(ListItemWithProductCode, CnCodeInformation)],
+                             allItemsAdded: Boolean,
+                             isPartiallyRefused: Boolean)
+                            (implicit request: DataRequest[_]): Future[Result] = {
 
     def hasAtLeastSomeRefusedAmountOfOneItem()(implicit request: DataRequest[_]): Boolean = {
       request.userAnswers.itemReferences.map {
@@ -106,7 +112,7 @@ class AddedItemsController @Inject()(
       }.sum > 0
     }
 
-    if (hasAtLeastSomeRefusedAmountOfOneItem()) {
+    if ( !isPartiallyRefused || hasAtLeastSomeRefusedAmountOfOneItem() ) {
       Future.successful(Redirect(navigator.nextPage(AddedItemsPage, NormalMode, request.userAnswers)))
     } else {
       val formWithError = formProvider().withGlobalError("addedItems.error.atLeastOneItem").fill(false)

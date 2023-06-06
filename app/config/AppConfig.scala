@@ -90,4 +90,6 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig, configuration: Configu
   def getFeatureSwitchValue(feature: String): Boolean = configuration.get[Boolean](feature)
 
   lazy val selfUrl: String = servicesConfig.baseUrl("emcs-tfe-report-a-receipt-frontend")
+
+  lazy val emcsGeneralEnquiriesUrl: String = configuration.get[String]("urls.emcsGeneralEnquiries")
 }

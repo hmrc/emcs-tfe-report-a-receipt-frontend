@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
-package config
+package pages
 
-object SessionKeys {
+import play.api.libs.json.JsPath
 
-  val SUBMISSION_RECEIPT_REFERENCE = "SUBMISSION_RECEIPT_REFERENCE"
+case object ConfirmationPage extends QuestionPage[String] {
 
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "submissionReceiptReference"
 }

@@ -19,17 +19,17 @@ package controllers
 import base.SpecBase
 import fixtures.SubmitReportOfReceiptFixtures
 import handlers.ErrorHandler
-import mocks.services.{MockGetCnCodeInformationService, MockSubmitReportOfReceiptService}
+import mocks.services.{MockGetCnCodeInformationService, MockSubmitReportOfReceiptService, MockUserAnswersService}
 import mocks.viewmodels.MockCheckAnswersHelper
 import models.AcceptMovement.Satisfactory
 import models.UserAnswers
 import models.response.{MissingMandatoryPage, SubmitReportOfReceiptException}
 import navigation.{FakeNavigator, Navigator}
-import pages.{AcceptMovementPage, DateOfArrivalPage}
+import pages.{AcceptMovementPage, ConfirmationPage, DateOfArrivalPage}
 import play.api.inject
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.{GetCnCodeInformationService, SubmitReportOfReceiptService}
+import services.{GetCnCodeInformationService, SubmitReportOfReceiptService, UserAnswersService}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.CheckAnswersHelper
 import viewmodels.govuk.SummaryListFluency
@@ -38,7 +38,7 @@ import views.html.CheckYourAnswersView
 import scala.concurrent.Future
 
 class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency with MockCheckAnswersHelper with MockGetCnCodeInformationService
-  with MockSubmitReportOfReceiptService with SubmitReportOfReceiptFixtures {
+  with MockSubmitReportOfReceiptService with MockUserAnswersService with SubmitReportOfReceiptFixtures {
 
   class Fixture(userAnswers: Option[UserAnswers]) {
     val application =
@@ -47,7 +47,8 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency wi
           inject.bind[CheckAnswersHelper].toInstance(mockCheckAnswersHelper),
           inject.bind[Navigator].toInstance(new FakeNavigator(testOnwardRoute)),
           inject.bind[SubmitReportOfReceiptService].toInstance(mockSubmitReportOfReceiptService),
-          inject.bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService)
+          inject.bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService),
+          inject.bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()
 
@@ -108,6 +109,13 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency wi
 
               MockSubmitReportOfReceiptService.submit(testErn, testArc, getMovementResponseModel, userAnswers)
                 .returns(Future.successful(successResponse))
+
+              MockUserAnswersService.set()
+                .returns(
+                  Future.successful(
+                    emptyUserAnswers.set(ConfirmationPage, successResponse.receipt)
+                  )
+                )
 
               val result = route(application, request).value
 

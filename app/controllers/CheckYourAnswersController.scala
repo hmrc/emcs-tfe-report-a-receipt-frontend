@@ -16,17 +16,18 @@
 
 package controllers
 
-import config.SessionKeys.SUBMISSION_RECEIPT_REFERENCE
 import controllers.actions._
 import handlers.ErrorHandler
-import models.NormalMode
+import models.{NormalMode, UserAnswers}
 import models.response.MissingMandatoryPage
 import navigation.Navigator
-import pages.CheckAnswersPage
+import pages.{CheckAnswersPage, ConfirmationPage}
 import play.api.i18n.MessagesApi
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{GetCnCodeInformationService, SubmitReportOfReceiptService}
+import services.{GetCnCodeInformationService, SubmitReportOfReceiptService, UserAnswersService}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+import uk.gov.hmrc.http.HeaderCarrier
 import viewmodels.checkAnswers.{CheckAnswersHelper, CheckAnswersItemHelper}
 import views.html.CheckYourAnswersView
 
@@ -34,6 +35,7 @@ import javax.inject.Inject
 import scala.concurrent.Future
 
 class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi,
+                                           override val userAnswersService: UserAnswersService,
                                            override val auth: AuthAction,
                                            override val userAllowList: UserAllowListAction,
                                            override val withMovement: MovementAction,
@@ -47,7 +49,7 @@ class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi
                                            submitReportOfReceiptService: SubmitReportOfReceiptService,
                                            getCnCodeInformationService: GetCnCodeInformationService,
                                            errorHandler: ErrorHandler
-                                          ) extends BaseController with AuthActionHelper {
+                                          ) extends BaseNavigationController with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String): Action[AnyContent] =
     authorisedDataRequestAsync(ern, arc) { implicit request =>
@@ -91,9 +93,12 @@ class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi
 
   def onSubmit(ern: String, arc: String): Action[AnyContent] =
     authorisedDataRequestAsync(ern, arc) { implicit request =>
-      submitReportOfReceiptService.submit(ern, arc).map { response =>
-        Redirect(navigator.nextPage(CheckAnswersPage, NormalMode, request.userAnswers))
-          .addingToSession(SUBMISSION_RECEIPT_REFERENCE -> response.receipt)
+      submitReportOfReceiptService.submit(ern, arc).flatMap { response =>
+
+        deleteDraftAndSetConfirmationFlow(request.internalId, request.ern, request.arc, response.receipt).map { _ =>
+          Redirect(navigator.nextPage(CheckAnswersPage, NormalMode, request.userAnswers))
+        }
+
       } recover {
         case _: MissingMandatoryPage =>
           BadRequest(errorHandler.badRequestTemplate)
@@ -101,4 +106,17 @@ class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi
           InternalServerError(errorHandler.internalServerErrorTemplate)
       }
     }
+
+
+  private def deleteDraftAndSetConfirmationFlow(internalId: String,
+                                                    ern: String,
+                                                    arc: String,
+                                                    receipt: String)
+                                                   (implicit req: HeaderCarrier): Future[UserAnswers] =
+    userAnswersService.set(
+      UserAnswers(internalId,
+        ern,
+        arc,
+        data = Json.obj(ConfirmationPage.toString -> receipt))
+    )
 }

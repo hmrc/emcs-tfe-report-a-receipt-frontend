@@ -37,7 +37,7 @@ class ItemDetailsCardHelper @Inject()(link: link, list: list, appConfig: AppConf
 
     val descriptionRow: Option[(HtmlContent, HtmlContent)] = Some((
       HtmlContent(messages("itemDetails.key.description")),
-      HtmlContent(cnCodeInformation.cnCodeDescription)
+      HtmlContent(cnCodeInformation.exciseProductCodeDescription)
     ))
 
     val quantityRow: Option[(HtmlContent, HtmlContent)] = Some((
@@ -67,6 +67,16 @@ class ItemDetailsCardHelper @Inject()(link: link, list: list, appConfig: AppConf
       ))
     ))
 
+    val densityRow: Option[(HtmlContent, HtmlContent)] = {
+      item.density.map {
+        density =>
+          (
+            HtmlContent(messages("itemDetails.key.density")),
+            HtmlContent(messages("itemDetails.value.density", density.toString(), messages(s"itemDetails.value.density.${cnCodeInformation.unitOfMeasureCode.toUnitOfMeasure}")))
+          )
+      }
+    }
+
     val alcoholicStrengthRow: Option[(HtmlContent, HtmlContent)] = {
       item.alcoholicStrength.map {
         strength =>
@@ -77,12 +87,32 @@ class ItemDetailsCardHelper @Inject()(link: link, list: list, appConfig: AppConf
       }
     }
 
+    val maturationAgeRow: Option[(HtmlContent, HtmlContent)] = {
+      item.maturationAge.map {
+        maturationAge =>
+          (
+            HtmlContent(messages("itemDetails.key.maturationAge")),
+            HtmlContent(maturationAge)
+          )
+      }
+    }
+
     val degreePlatoRow: Option[(HtmlContent, HtmlContent)] = {
       item.degreePlato.map {
         deg =>
           (
             HtmlContent(messages("itemDetails.key.degreePlato")),
             HtmlContent(messages("itemDetails.value.degreePlato", deg))
+          )
+      }
+    }
+
+    val fiscalMarkRow: Option[(HtmlContent, HtmlContent)] = {
+      item.fiscalMark.map {
+        fiscalMark =>
+          (
+            HtmlContent(messages("itemDetails.key.fiscalMark")),
+            HtmlContent(fiscalMark)
           )
       }
     }
@@ -107,22 +137,22 @@ class ItemDetailsCardHelper @Inject()(link: link, list: list, appConfig: AppConf
       }
     }
 
-    val commercialDescriptionRow: Option[(HtmlContent, HtmlContent)] = {
-      item.commercialDescription.map {
-        description =>
-          (
-            HtmlContent(messages("itemDetails.key.commercialDescription")),
-            HtmlContent(description)
-          )
-      }
-    }
-
     val brandNameOfProductRow: Option[(HtmlContent, HtmlContent)] = {
       item.brandNameOfProduct.map {
         brandNameOfProduct =>
           (
             HtmlContent(messages("itemDetails.key.brandNameOfProduct")),
             HtmlContent(brandNameOfProduct)
+          )
+      }
+    }
+
+    val commercialDescriptionRow: Option[(HtmlContent, HtmlContent)] = {
+      item.commercialDescription.map {
+        description =>
+          (
+            HtmlContent(messages("itemDetails.key.commercialDescription")),
+            HtmlContent(description)
           )
       }
     }
@@ -136,6 +166,26 @@ class ItemDetailsCardHelper @Inject()(link: link, list: list, appConfig: AppConf
           )
 
       )
+    }
+
+    val wineOperationsRow: Option[(HtmlContent, HtmlContent)] = {
+      item.wineProduct match {
+        case Some(wineProduct) => Some(
+          wineProduct.wineOperations match {
+            case Some(values) if values.nonEmpty =>
+              (
+                HtmlContent(messages("itemDetails.key.wineOperations")),
+                HtmlContent(list(values.map(Html(_))))
+              )
+            case _ =>
+              (
+                HtmlContent(messages("itemDetails.key.wineOperations")),
+                HtmlContent(messages("itemDetails.value.wineOperations.none"))
+              )
+          }
+        )
+        case None => None
+      }
     }
 
     val wineGrowingZoneCodeRow: Option[(HtmlContent, HtmlContent)] = {
@@ -162,26 +212,6 @@ class ItemDetailsCardHelper @Inject()(link: link, list: list, appConfig: AppConf
       )
     }
 
-    val wineOperationsRow: Option[(HtmlContent, HtmlContent)] = {
-      item.wineProduct match {
-        case Some(wineProduct) => Some(
-          wineProduct.wineOperations match {
-            case Some(values) if values.nonEmpty =>
-              (
-                HtmlContent(messages("itemDetails.key.wineOperations")),
-                HtmlContent(list(values.map(Html(_))))
-              )
-            case _ =>
-              (
-                HtmlContent(messages("itemDetails.key.wineOperations")),
-                HtmlContent(messages("itemDetails.value.wineOperations.none"))
-              )
-          }
-        )
-        case None => None
-      }
-    }
-
     val wineOtherInformationRow: Option[(HtmlContent, HtmlContent)] = {
       item.wineProduct.flatMap(
         _.otherInformation.map(
@@ -200,16 +230,19 @@ class ItemDetailsCardHelper @Inject()(link: link, list: list, appConfig: AppConf
       quantityRow,
       grossWeightRow,
       netWeightRow,
+      densityRow,
       alcoholicStrengthRow,
+      maturationAgeRow,
       degreePlatoRow,
+      fiscalMarkRow,
       designationOfOriginRow,
       sizeOfProducerRow,
-      commercialDescriptionRow,
       brandNameOfProductRow,
+      commercialDescriptionRow,
       wineProductCategoryRow,
+      wineOperationsRow,
       wineGrowingZoneCodeRow,
       thirdCountryOfOriginRow,
-      wineOperationsRow,
       wineOtherInformationRow
     )
 

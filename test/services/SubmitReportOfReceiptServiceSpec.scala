@@ -23,7 +23,6 @@ import mocks.connectors.MockSubmitReportOfReceiptConnector
 import mocks.services.MockAuditingService
 import models.AcceptMovement._
 import models.audit.{SubmitReportOfReceiptAuditModel, SubmitReportOfReceiptResponseAuditModel}
-import models.response.emcsTfe.SubmitReportOfReceiptResponse
 import models.response.{SubmitReportOfReceiptException, UnexpectedDownstreamResponseError}
 import models.submitReportOfReceipt.SubmitReportOfReceiptModel
 import pages._

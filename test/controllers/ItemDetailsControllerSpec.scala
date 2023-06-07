@@ -56,7 +56,7 @@ class ItemDetailsControllerSpec extends SpecBase
 
         MockGetWineOperationsService.getWineOperations(Seq(item1)).returns(Future.successful(Seq(item1)))
 
-        MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq((item1, CnCodeInformation("", `1`)))))
+        MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq((item1, CnCodeInformation("", "", `1`)))))
 
         running(application) {
           val request = FakeRequest(GET, onPageLoadUrl(idx = 1))
@@ -66,7 +66,7 @@ class ItemDetailsControllerSpec extends SpecBase
           val view = application.injector.instanceOf[ItemDetailsView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(item1, CnCodeInformation("", `1`))(dataRequest(request), messages(application)).toString
+          contentAsString(result) mustEqual view(item1, CnCodeInformation("", "", `1`))(dataRequest(request), messages(application)).toString
         }
       }
 

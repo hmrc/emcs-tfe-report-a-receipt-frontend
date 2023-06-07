@@ -60,7 +60,7 @@ class ItemShortageOrExcessControllerSpec extends SpecBase with MockUserAnswersSe
     "must return OK and the correct view for a GET" in {
 
       MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
-        (item1, CnCodeInformation("", `1`))
+        (item1, CnCodeInformation("", "", `1`))
       )))
 
       val application = applicationBuilder(userAnswers = Some(defaultUserAnswers))
@@ -86,7 +86,7 @@ class ItemShortageOrExcessControllerSpec extends SpecBase with MockUserAnswersSe
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
-        (item1, CnCodeInformation("", `1`))
+        (item1, CnCodeInformation("", "", `1`))
       )))
 
       val userAnswers = defaultUserAnswers.set(ItemShortageOrExcessPage(1), itemShortageOrExcess)
@@ -116,7 +116,7 @@ class ItemShortageOrExcessControllerSpec extends SpecBase with MockUserAnswersSe
       MockUserAnswersService.set().returns(Future.successful(defaultUserAnswers))
 
       MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
-        (item1, CnCodeInformation("", `1`))
+        (item1, CnCodeInformation("", "", `1`))
       )))
 
       val application =
@@ -150,7 +150,7 @@ class ItemShortageOrExcessControllerSpec extends SpecBase with MockUserAnswersSe
         MockUserAnswersService.set().returns(Future.successful(defaultUserAnswers))
 
         MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
-          (item1, CnCodeInformation("", `1`))
+          (item1, CnCodeInformation("", "", `1`))
         )))
 
         val application =
@@ -183,7 +183,7 @@ class ItemShortageOrExcessControllerSpec extends SpecBase with MockUserAnswersSe
         MockUserAnswersService.set().returns(Future.successful(defaultUserAnswers))
 
         MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
-          (item1, CnCodeInformation("", `1`))
+          (item1, CnCodeInformation("", "", `1`))
         )))
 
         val application =
@@ -219,7 +219,7 @@ class ItemShortageOrExcessControllerSpec extends SpecBase with MockUserAnswersSe
         MockUserAnswersService.set().returns(Future.successful(defaultUserAnswers))
 
         MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
-          (item1, CnCodeInformation("", `1`))
+          (item1, CnCodeInformation("", "", `1`))
         )))
 
         val application =
@@ -255,7 +255,7 @@ class ItemShortageOrExcessControllerSpec extends SpecBase with MockUserAnswersSe
     "must return a Bad Request and errors when valid data is submitted but shortage amount exceeds the quantity" in {
 
       MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
-        (item1, CnCodeInformation("", `1`))
+        (item1, CnCodeInformation("", "", `1`))
       )))
 
       val application = applicationBuilder(userAnswers = Some(defaultUserAnswers))
@@ -294,7 +294,7 @@ class ItemShortageOrExcessControllerSpec extends SpecBase with MockUserAnswersSe
     "must return a Bad Request and errors when valid data is submitted but shortage amount exceeds the quantity minus the amount already refused" in {
 
       MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
-        (item1, CnCodeInformation("", `1`))
+        (item1, CnCodeInformation("", "", `1`))
       )))
 
       val refusedAmount: BigDecimal = 10.125
@@ -340,7 +340,7 @@ class ItemShortageOrExcessControllerSpec extends SpecBase with MockUserAnswersSe
     "must return a Bad Request and errors when invalid data is submitted" in {
 
       MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
-        (item1, CnCodeInformation("", `1`))
+        (item1, CnCodeInformation("", "", `1`))
       )))
 
       val application = applicationBuilder(userAnswers = Some(defaultUserAnswers))

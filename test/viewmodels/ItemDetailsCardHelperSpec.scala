@@ -45,7 +45,7 @@ class ItemDetailsCardHelperSpec extends SpecBase {
 
         "should render the ItemDetails card" - {
 
-          val cnCodeInformation = CnCodeInformation("cn code description", ReferenceDataUnitOfMeasure.`1`)
+          val cnCodeInformation = CnCodeInformation("cn code description", "excise product code description", ReferenceDataUnitOfMeasure.`2`)
 
           //noinspection ScalaStyle
           def card(wineProduct: Option[WineProduct]): Seq[(HtmlContent, HtmlContent)] = {
@@ -56,7 +56,7 @@ class ItemDetailsCardHelperSpec extends SpecBase {
               )),
               Seq((
                 HtmlContent(langMessages.descriptionKey),
-                HtmlContent(cnCodeInformation.cnCodeDescription)
+                HtmlContent(cnCodeInformation.exciseProductCodeDescription)
               )),
               Seq((
                 HtmlContent(langMessages.quantityKey),
@@ -71,12 +71,24 @@ class ItemDetailsCardHelperSpec extends SpecBase {
                 HtmlContent(langMessages.netWeightValue(item1.netMass))
               )),
               Seq((
+                HtmlContent(langMessages.densityKey),
+                HtmlContent(langMessages.densityValue(item1.density.get))
+              )),
+              Seq((
                 HtmlContent(langMessages.alcoholicStrengthKey),
                 HtmlContent(langMessages.alcoholicStrengthValue(item1.alcoholicStrength.get))
               )),
               Seq((
+                HtmlContent(langMessages.maturationAgeKey),
+                HtmlContent(item1.maturationAge.get)
+              )),
+              Seq((
                 HtmlContent(langMessages.degreePlatoKey),
                 HtmlContent(langMessages.degreePlatoValue(item1.degreePlato.get))
+              )),
+              Seq((
+                HtmlContent(langMessages.fiscalMarkKey),
+                HtmlContent(item1.fiscalMark.get)
               )),
               Seq((
                 HtmlContent(langMessages.designationOfOriginKey),
@@ -87,17 +99,27 @@ class ItemDetailsCardHelperSpec extends SpecBase {
                 HtmlContent(langMessages.sizeOfProducerValue(item1.sizeOfProducer.get))
               )),
               Seq((
-                HtmlContent(langMessages.commercialDescriptionKey),
-                HtmlContent(item1.commercialDescription.get)
-              )),
-              Seq((
                 HtmlContent(langMessages.brandNameOfProductKey),
                 HtmlContent(item1.brandNameOfProduct.get)
+              )),
+              Seq((
+                HtmlContent(langMessages.commercialDescriptionKey),
+                HtmlContent(item1.commercialDescription.get)
               )),
               wineProduct match {
                 case Some(_) => Seq((
                   HtmlContent(langMessages.wineProductCategoryKey),
                   HtmlContent(langMessages.wineWithoutPDOPGI)
+                ))
+                case None => Seq()
+              },
+              wineProduct match {
+                case Some(value) => Seq((
+                  HtmlContent(langMessages.wineOperationsKey),
+                  value.wineOperations match {
+                    case Some(values) if values.nonEmpty => HtmlContent(list(values.map(v => Html(v))))
+                    case _ => HtmlContent(langMessages.wineOperationsValueNone)
+                  }
                 ))
                 case None => Seq()
               },
@@ -112,16 +134,6 @@ class ItemDetailsCardHelperSpec extends SpecBase {
                 case Some(value) => Seq((
                   HtmlContent(langMessages.thirdCountryOfOriginKey),
                   HtmlContent(value.thirdCountryOfOrigin.get)
-                ))
-                case None => Seq()
-              },
-              wineProduct match {
-                case Some(value) => Seq((
-                  HtmlContent(langMessages.wineOperationsKey),
-                  value.wineOperations match {
-                    case Some(values) if values.nonEmpty => HtmlContent(list(values.map(v => Html(v))))
-                    case _ => HtmlContent(langMessages.wineOperationsValueNone)
-                  }
                 ))
                 case None => Seq()
               },

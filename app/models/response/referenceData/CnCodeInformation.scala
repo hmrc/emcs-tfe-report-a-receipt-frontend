@@ -20,11 +20,12 @@ import models.ReferenceDataUnitOfMeasure
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-case class CnCodeInformation(cnCodeDescription: String, unitOfMeasureCode: ReferenceDataUnitOfMeasure)
+case class CnCodeInformation(cnCodeDescription: String, exciseProductCodeDescription: String, unitOfMeasureCode: ReferenceDataUnitOfMeasure)
 
 object CnCodeInformation {
   implicit val reads: Reads[CnCodeInformation] = (
     (JsPath \ "cnCodeDescription").read[String] and
+    (JsPath \ "exciseProductCodeDescription").read[String] and
       (JsPath \ "unitOfMeasureCode").read[Int].map(value => ReferenceDataUnitOfMeasure.enumerable.withName(value.toString).get)
   )(CnCodeInformation.apply _)
 

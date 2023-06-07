@@ -32,7 +32,7 @@
 
 @layout(pageTitle = titleNoForm(messages("itemDetails.title"))) {
 
-    @h1(cnCodeInformation.cnCodeDescription, None, "govuk-heading-l")
+    @h1(messages("itemDetails.heading", item.itemUniqueReference), Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
 
     @summaryCard(
         cardTitle = messages("itemDetails.itemDetailsCardTitle"),

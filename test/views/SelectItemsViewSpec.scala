@@ -46,7 +46,7 @@ class SelectItemsViewSpec extends ViewSpecBase with ViewBehaviours {
         implicit val doc: Document = Jsoup.parse(view(
           Seq(item1, item2)
             .zipWithIndex
-            .map { case (l, i) => (l, CnCodeInformation(s"testdata${i + 1}", `1`)) }
+            .map { case (l, i) => (l, CnCodeInformation(s"testdata${i + 1}", "", `1`)) }
         ).toString())
 
         behave like pageWithExpectedElementsAndMessages(Seq(

@@ -64,7 +64,7 @@ class AddedItemsViewSpec extends ViewSpecBase with ViewBehaviours {
             listHelper
               .itemList()
               .zipWithIndex
-              .map { case (l, i) => (l, CnCodeInformation(s"testdata${i + 1}", `1`)) },
+              .map { case (l, i) => (l, CnCodeInformation(s"testdata${i + 1}", "", `1`)) },
             allItemsAdded = false,
             testOnwardRoute
           ).toString())
@@ -100,7 +100,7 @@ class AddedItemsViewSpec extends ViewSpecBase with ViewBehaviours {
             listHelper
               .itemList()
               .zipWithIndex
-              .map { case (l, i) => (l, CnCodeInformation(s"testdata${i + 1}", `1`)) },
+              .map { case (l, i) => (l, CnCodeInformation(s"testdata${i + 1}", "", `1`)) },
             allItemsAdded = true,
             testOnwardRoute,
           ).toString())

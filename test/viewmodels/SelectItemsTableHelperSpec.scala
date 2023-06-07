@@ -56,7 +56,7 @@ class SelectItemsTableHelperSpec extends SpecBase {
           selectItemsTableHelper.dataRows(
             ern = testErn,
             arc = testArc,
-            items = Seq(item1, item2).zipWithIndex.map { case (l, i) => (l, CnCodeInformation(s"testdata${i + 1}", `1`)) }
+            items = Seq(item1, item2).zipWithIndex.map { case (l, i) => (l, CnCodeInformation(s"testdata${i + 1}", "", `1`)) }
           ) mustBe Seq(
             Seq(
               TableRow(

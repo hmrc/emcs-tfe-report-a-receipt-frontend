@@ -18,7 +18,7 @@ package services
 
 import config.AppConfig
 import connectors.emcsTfe.SubmitReportOfReceiptConnector
-import models.audit.SubmitReportOfReceiptAuditModel
+import models.audit.{SubmitReportOfReceiptAuditModel, SubmitReportOfReceiptResponseAuditModel}
 import models.requests.DataRequest
 import models.response.SubmitReportOfReceiptException
 import models.response.emcsTfe.SubmitReportOfReceiptResponse
@@ -47,7 +47,16 @@ class SubmitReportOfReceiptService @Inject()(submitReportOfReceiptConnector: Sub
     )
 
     submitReportOfReceiptConnector.submit(ern, submission).map {
-      case Right(success) => success
+      case Right(success) =>
+        auditingService.audit(
+          SubmitReportOfReceiptResponseAuditModel(
+            correlationId = dataRequest.internalId,
+            arc = dataRequest.arc,
+            traderId = ern,
+            receipt = success.receipt
+          )
+        )
+        success
       case Left(_) => throw SubmitReportOfReceiptException(s"Failed to submit Report of Receipt to emcs-tfe for ern: '$ern' & arc: '$arc'")
     }
   }

@@ -17,6 +17,7 @@
 package fixtures.audit
 
 import models.AcceptMovement._
+import models.DestinationType.DirectDelivery
 import models.WrongWithMovement.{BrokenSeals, Damaged, Excess, Other}
 import models.submitReportOfReceipt.{AddressModel, ReceiptedItemsModel, SubmitReportOfReceiptModel, TraderModel, UnsatisfactoryModel}
 import play.api.libs.json.{JsValue, Json}
@@ -34,6 +35,7 @@ object SubmitReportOfReceiptAuditModelFixture {
       submission = SubmitReportOfReceiptModel(
         arc = "ARC",
         sequenceNumber = 1,
+        destinationType = DirectDelivery,
         consigneeTrader = Some(TraderModel(
           traderId = Some("id"),
           traderName = Some("name"),
@@ -61,6 +63,7 @@ object SubmitReportOfReceiptAuditModelFixture {
       submission = SubmitReportOfReceiptModel(
         arc = "ARC",
         sequenceNumber = 1,
+        destinationType = DirectDelivery,
         consigneeTrader = Some(TraderModel(
           traderId = Some("id"),
           traderName = Some("name"),
@@ -118,6 +121,7 @@ object SubmitReportOfReceiptAuditModelFixture {
       submission = SubmitReportOfReceiptModel(
       arc = "ARC",
       sequenceNumber = 1,
+        destinationType = DirectDelivery,
       consigneeTrader = Some(TraderModel(
         traderId = Some("id"),
         traderName = Some("name"),
@@ -175,6 +179,7 @@ object SubmitReportOfReceiptAuditModelFixture {
       submission = SubmitReportOfReceiptModel(
         arc = "ARC",
         sequenceNumber = 1,
+        destinationType = DirectDelivery,
         consigneeTrader = Some(TraderModel(
           traderId = Some("id"),
           traderName = Some("name"),

@@ -19,7 +19,7 @@ package models.submitReportOfReceipt
 import config.AppConfig
 import models.WrongWithMovement._
 import models.response.emcsTfe.GetMovementResponse
-import models.{AcceptMovement, UserAnswers}
+import models.{AcceptMovement, DestinationType, UserAnswers}
 import pages.{AcceptMovementPage, DateOfArrivalPage, MoreInformationPage}
 import play.api.libs.json.{Format, Json}
 import utils.{JsonOptionFormatter, ModelConstructorHelpers}
@@ -28,6 +28,7 @@ import java.time.LocalDate
 
 case class SubmitReportOfReceiptModel(arc: String,
                                       sequenceNumber: Int,
+                                      destinationType: DestinationType,
                                       consigneeTrader: Option[TraderModel],
                                       deliveryPlaceTrader: Option[TraderModel],
                                       destinationOffice: String,
@@ -44,6 +45,7 @@ object SubmitReportOfReceiptModel extends JsonOptionFormatter with ModelConstruc
     SubmitReportOfReceiptModel(
       arc = movementDetails.arc,
       sequenceNumber = movementDetails.sequenceNumber,
+      destinationType = movementDetails.destinationType,
       consigneeTrader = movementDetails.consigneeTrader,
       deliveryPlaceTrader = movementDetails.deliveryPlaceTrader,
       destinationOffice = appConfig.destinationOffice,

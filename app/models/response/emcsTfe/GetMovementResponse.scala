@@ -16,6 +16,7 @@
 
 package models.response.emcsTfe
 
+import models.DestinationType
 import models.submitReportOfReceipt.TraderModel
 import play.api.libs.json.{Json, Reads}
 
@@ -24,6 +25,7 @@ import java.time.LocalDate
 
 case class GetMovementResponse(arc: String,
                                sequenceNumber: Int,
+                               destinationType: DestinationType,
                                consigneeTrader: Option[TraderModel],
                                deliveryPlaceTrader: Option[TraderModel],
                                localReferenceNumber: String,

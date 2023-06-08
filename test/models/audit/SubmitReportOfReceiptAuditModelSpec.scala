@@ -18,8 +18,6 @@ package models.audit
 
 import base.SpecBase
 import fixtures.audit.SubmitReportOfReceiptAuditModelFixture._
-import play.api.libs.json.Json
-import models.audit.SubmitReportOfReceiptAuditModel
 
 class SubmitReportOfReceiptAuditModelSpec extends SpecBase {
 

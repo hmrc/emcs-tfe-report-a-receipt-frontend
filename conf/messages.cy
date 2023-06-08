@@ -23,6 +23,12 @@ unitOfMeasure.litres20.long = litres (temperature of 20°C)
 unitOfMeasure.thousands.short = x1000
 unitOfMeasure.thousands.long = x1000 items
 
+wineProductCategory.wineWithoutPDOPGI = Wine without PDO/PGI
+wineProductCategory.varietalWineWithoutPDOPGI = Varietal wine without PDO/PGI
+wineProductCategory.wineWithPDOOrPGI = Wine with PDO or PGI
+wineProductCategory.importedWine = Imported wine
+wineProductCategory.other = Other
+
 date.day = Day
 date.month = Month
 date.year = Year
@@ -285,6 +291,38 @@ selectItems.table.row.alcohol = {0}%
 selectItems.table.row.alcohol.na = N/A
 selectItems.table.row.quantity = {0} {1}
 
+itemDetails.title = Item details
+itemDetails.itemDetailsCardTitle = Item details
+itemDetails.packagingTypeCardTitle = Packaging type {0}
+itemDetails.key.commodityCode = Commodity Code
+itemDetails.key.description = Description
+itemDetails.key.quantity = Quantity
+itemDetails.value.quantity = {0} {1}
+itemDetails.key.grossWeight = Gross Weight
+itemDetails.value.grossWeight = {0} {1}
+itemDetails.key.netWeight = Net Weight
+itemDetails.value.netWeight = {0} {1}
+itemDetails.key.alcoholicStrength = Alcoholic strength by volume in percentage
+itemDetails.value.alcoholicStrength = {0}%
+itemDetails.key.degreePlato = Degree Plato
+itemDetails.value.degreePlato = {0}&deg;P
+itemDetails.key.designationOfOrigin = Designation of origin
+itemDetails.key.sizeOfProducer = Size of producer
+itemDetails.value.sizeOfProducer = {0} hectolitres
+itemDetails.key.commercialDescription = Commercial description
+itemDetails.key.brandNameOfProduct = Brand name of product
+itemDetails.key.wineProductCategory = Category of wine product
+itemDetails.key.wineGrowingZoneCode = Wine growing zone code
+itemDetails.key.thirdCountryOfOrigin = Third country of origin
+itemDetails.key.wineOperations = Wine operations
+itemDetails.value.wineOperations.none = The product has not undergone any operations
+itemDetails.key.wineOtherInformation = More information about the wine
+itemDetails.packaging.key.type = Type
+itemDetails.packaging.key.quantity = Quantity
+itemDetails.packaging.key.identityOfCommercialSeal = Identity of commercial seal
+itemDetails.packaging.key.sealInformation = Seal information
+itemDetails.packaging.key.shippingMarks = Shipping marks
+
 itemShortageOrExcess.title = Tell us about the shortage or excess
 itemShortageOrExcess.heading = Tell us about the shortage or excess
 itemShortageOrExcess.shortageOrExcess.label = Shortage or excess
@@ -343,7 +381,8 @@ itemSealsInformation.checkYourAnswers.change.hidden = information about broken s
 itemSealsInformation.checkYourAnswers.addMoreInformation = Enter more information about broken seal(s) (optional)
 
 refusingAnyAmountOfItem.checkYourAnswers.label = Amount refused
-	refusingAnyAmountOfItem.checkYourAnswers.addMoreInformation =  Refuse an amount of this item (optional)
+refusingAnyAmountOfItem.checkYourAnswers.amount.value = {0} {1}
+refusingAnyAmountOfItem.checkYourAnswers.addMoreInformation = Refuse an amount of this item (optional)
 
 addedItems.title.singular = You have given information for 1 item
 addedItems.title.plural = You have given information for {0} items
@@ -370,7 +409,7 @@ refusedAmount.error.maxLength = The amount you are refusing must be {0} characte
 
 continueDraft.title = Do you want to continue with this draft report of receipt?
 continueDraft.heading = Do you want to continue with this draft report of receipt?
-continueDraft.error.required = Select yes if you want to continue with this draft report of receipt
+continueDraft.error.required = Select if you want to continue with this draft report of receipt
 continueDraft.p1 = A report of receipt is already in progress for this movement. You can continue with this draft, or start a new one.
 continueDraft.indent = If you choose to start a new report of receipt this draft will be deleted.
 continueDraft.continue = Continue with this draft

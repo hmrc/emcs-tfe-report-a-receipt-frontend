@@ -18,6 +18,7 @@ package controllers.actions
 
 import base.SpecBase
 import config.AppConfig
+import featureswitch.core.config.{FeatureSwitching, UserAllowList}
 import handlers.ErrorHandler
 import mocks.connectors.MockUserAllowListConnector
 import models.requests.{CheckUserAllowListRequest, UserRequest}
@@ -32,28 +33,29 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class UserAllowListActionSpec extends SpecBase with MockFactory with MockUserAllowListConnector {
+class UserAllowListActionSpec extends SpecBase with MockFactory with MockUserAllowListConnector with FeatureSwitching {
 
   lazy val app = applicationBuilder(userAnswers = None).build()
   implicit val hc = HeaderCarrier()
   implicit lazy val request = UserRequest(FakeRequest(), testErn, testInternalId, testCredId)
 
   lazy val errorHandler = app.injector.instanceOf[ErrorHandler]
-  lazy val mockAppConfig = mock[AppConfig]
+  override lazy val config = mock[AppConfig]
 
   lazy val userAllowListAction = new UserAllowListActionImpl(
     userAllowListConnector = mockUserAllowListConnector,
     errorHandler = errorHandler,
-    config = mockAppConfig
+    config = config
   )
 
   class Harness(enabled: Boolean, connectorResponse: Either[ErrorResponse, Boolean]) {
 
-    (() => mockAppConfig.allowListEnabled).expects().returns(enabled).anyNumberOfTimes()
-
     if(enabled) {
+      enable(UserAllowList)
       MockUserAllowListConnector.check(CheckUserAllowListRequest(testErn))
         .returns(Future.successful(connectorResponse))
+    } else {
+      disable(UserAllowList)
     }
 
     val result: Future[Result] = userAllowListAction.invokeBlock(request, { _: UserRequest[_] =>

@@ -1,0 +1,43 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+
+@(cardTitle: String, content: Seq[(HtmlContent, HtmlContent)])
+
+<div class="govuk-summary-card">
+    <div class="govuk-summary-card__title-wrapper">
+        <h2 class="govuk-summary-card__title">@cardTitle</h2>
+    </div>
+    <div class="govuk-summary-card__content">
+        <dl class="govuk-summary-list govuk-summary-list--no-border">
+            @content.map { case (key, value) =>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        @key.asHtml
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @value.asHtml
+                    </dd>
+                </div>
+            }
+        </dl>
+    </div>
+</div>
+
+@{
+    //$COVERAGE-OFF$
+}

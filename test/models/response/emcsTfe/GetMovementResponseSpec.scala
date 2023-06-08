@@ -29,10 +29,7 @@ class GetMovementResponseSpec extends SpecBase {
 
   "GetMovementResponse" - {
     "should read from json" in {
-      Json.fromJson[GetMovementResponse](getMovementResponseJson) mustBe JsSuccess(getMovementResponseModel)
-    }
-    "should write to json" in {
-      Json.toJson(getMovementResponseModel) mustBe getMovementResponseJson
+      Json.fromJson[GetMovementResponse](getMovementResponseInputJson) mustBe JsSuccess(getMovementResponseModel)
     }
   }
 }

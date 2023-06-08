@@ -29,7 +29,7 @@ class EmcsTfeHttpParserSpec extends SpecBase
   with Status with MimeTypes with HeaderNames with MockHttpClient with GetMovementResponseFixtures {
 
   lazy val httpParser = new EmcsTfeHttpParser[GetMovementResponse] {
-    override implicit val reads: Reads[GetMovementResponse] = GetMovementResponse.format
+    override implicit val reads: Reads[GetMovementResponse] = GetMovementResponse.reads
     override def http: HttpClient = mockHttpClient
   }
 
@@ -39,7 +39,7 @@ class EmcsTfeHttpParserSpec extends SpecBase
 
       "when valid JSON is returned that can be parsed to the model" in {
 
-        val httpResponse = HttpResponse(Status.OK, getMovementResponseJson, Map())
+        val httpResponse = HttpResponse(Status.OK, getMovementResponseInputJson, Map())
 
         httpParser.EmcsTfeReads.read("POST", "/movement/ern/arc", httpResponse) mustBe Right(getMovementResponseModel)
       }

@@ -22,7 +22,8 @@ import fixtures.SubmitReportOfReceiptFixtures
 import mocks.connectors.MockSubmitReportOfReceiptConnector
 import mocks.services.MockAuditingService
 import models.AcceptMovement._
-import models.audit.SubmitReportOfReceiptAuditModel
+import models.audit.{SubmitReportOfReceiptAuditModel, SubmitReportOfReceiptResponseAuditModel}
+import models.response.emcsTfe.SubmitReportOfReceiptResponse
 import models.response.{SubmitReportOfReceiptException, UnexpectedDownstreamResponseError}
 import models.submitReportOfReceipt.SubmitReportOfReceiptModel
 import pages._
@@ -57,6 +58,7 @@ class SubmitReportOfReceiptServiceSpec extends SpecBase with MockSubmitReportOfR
         val submission = SubmitReportOfReceiptModel(getMovementResponseModel)(userAnswers, mockAppConfig)
 
         MockAuditingService.verifyAudit(SubmitReportOfReceiptAuditModel("internalId", submission, "ern")).noMoreThanOnce()
+        MockAuditingService.verifyAudit(SubmitReportOfReceiptResponseAuditModel("internalId", "arc", "ern", successResponse.receipt)).noMoreThanOnce()
         MockSubmitReportOfReceiptConnector.submit(testErn, submission).returns(Future.successful(Right(successResponse)))
 
         testService.submit(testErn, testArc)(hc, request).futureValue mustBe successResponse

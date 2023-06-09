@@ -32,7 +32,7 @@ class ItemDetailsCardHelper @Inject()(link: link, list: list, appConfig: AppConf
   def constructItemDetailsCard(item: MovementItem, cnCodeInformation: CnCodeInformation)(implicit messages: Messages): Seq[(HtmlContent, HtmlContent)] = {
     val commodityCodeRow: Option[(HtmlContent, HtmlContent)] = Some((
       HtmlContent(messages("itemDetails.key.commodityCode")),
-      HtmlContent(link(link = appConfig.getUrlForCommodityCode(item.cnCode), messageKey = item.cnCode, opensInNewTab = true))
+      HtmlContent(link(link = appConfig.getUrlForCommodityCode(item.cnCode), messageKey = item.cnCode, opensInNewTab = true, id = Some("commodity-code")))
     ))
 
     val descriptionRow: Option[(HtmlContent, HtmlContent)] = Some((

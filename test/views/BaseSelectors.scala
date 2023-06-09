@@ -42,6 +42,8 @@ trait BaseSelectors {
   val cardHeader: Int => String = i => s".govuk-summary-card:nth-of-type($i) h2"
 
   val inputSuffix = ".govuk-input__suffix"
+
+  def id(i: String) = s"#$i"
 }
 
 object BaseSelectors extends BaseSelectors

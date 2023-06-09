@@ -49,6 +49,7 @@ class ItemDetailsViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.title -> messagesForLanguage.title,
           Selectors.h1 -> messagesForLanguage.h1(item2.itemUniqueReference),
           Selectors.h2(1) -> messagesForLanguage.h2(request.arc),
+          Selectors.id("commodity-code") -> (item2.cnCode + " " + msgs("site.opensInNewTab")),
           Selectors.cardHeader(1) -> messagesForLanguage.itemDetailsCardHeading,
           Selectors.cardHeader(2) -> messagesForLanguage.packagingCardHeading(1),
           Selectors.cardHeader(3) -> messagesForLanguage.packagingCardHeading(2)

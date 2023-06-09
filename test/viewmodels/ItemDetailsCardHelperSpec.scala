@@ -52,7 +52,7 @@ class ItemDetailsCardHelperSpec extends SpecBase {
             Seq(
               Seq((
                 HtmlContent(langMessages.commodityCodeKey),
-                HtmlContent(link(link = appConfig.getUrlForCommodityCode(item1.cnCode), messageKey = item1.cnCode, opensInNewTab = true))
+                HtmlContent(link(link = appConfig.getUrlForCommodityCode(item1.cnCode), messageKey = item1.cnCode, opensInNewTab = true, id = Some("commodity-code")))
               )),
               Seq((
                 HtmlContent(langMessages.descriptionKey),

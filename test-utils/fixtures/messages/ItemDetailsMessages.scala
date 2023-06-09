@@ -21,7 +21,8 @@ object ItemDetailsMessages {
   sealed trait ViewMessages { _: i18n =>
     val heading: String
     val title: String
-    val h1: String => String
+    val h1: Int => String
+    val h2: String => String
     val itemDetailsCardHeading: String
     val packagingCardHeading: Int => String
     val wineWithoutPDOPGI: String
@@ -33,10 +34,14 @@ object ItemDetailsMessages {
     val grossWeightValue: BigDecimal => String
     val netWeightKey: String
     val netWeightValue: BigDecimal => String
+    val densityKey: String
+    val densityValue: BigDecimal => String
     val alcoholicStrengthKey: String
     val alcoholicStrengthValue: BigDecimal => String
+    val maturationAgeKey: String
     val degreePlatoKey: String
     val degreePlatoValue: BigDecimal => String
+    val fiscalMarkKey: String
     val designationOfOriginKey: String
     val sizeOfProducerKey: String
     val sizeOfProducerValue: String => String
@@ -58,27 +63,32 @@ object ItemDetailsMessages {
   object English extends ViewMessages with BaseEnglish {
     override val heading = "Item details"
     override val title: String = title(heading)
-    override val h1: String => String = s => s
+    override val h1: Int => String = i => s"Item $i"
+    override val h2: String => String = s => s"Report of receipt for $s"
     override val itemDetailsCardHeading = "Item details"
     override val packagingCardHeading: Int => String = i => s"Packaging type $i"
     override val wineWithoutPDOPGI = "Wine without PDO/PGI"
-    override val commodityCodeKey = "Commodity Code"
+    override val commodityCodeKey = "Commodity code"
     override val descriptionKey = "Description"
     override val quantityKey = "Quantity"
-    override val quantityValue: BigDecimal => String = value => s"$value kilograms"
-    override val grossWeightKey = "Gross Weight"
+    override val quantityValue: BigDecimal => String = value => s"$value litres (temperature of 15°C)"
+    override val grossWeightKey = "Gross weight"
     override val grossWeightValue: BigDecimal => String = value => s"$value kg"
-    override val netWeightKey = "Net Weight"
+    override val netWeightKey = "Net weight"
     override val netWeightValue: BigDecimal => String = value => s"$value kg"
-    override val alcoholicStrengthKey = "Alcoholic strength by volume in percentage"
+    override val densityKey = "Density"
+    override val densityValue: BigDecimal => String = value => s"${value}kg/m<sup>3</sup> (temperature of 15&deg;C)"
+    override val alcoholicStrengthKey = "Alcoholic strength by volume"
     override val alcoholicStrengthValue: BigDecimal => String = value => s"$value%"
+    override val maturationAgeKey = "Maturation age"
     override val degreePlatoKey = "Degree Plato"
     override val degreePlatoValue: BigDecimal => String = value => s"$value&deg;P"
-    override val designationOfOriginKey = "Designation of origin"
+    override val fiscalMarkKey = "Fiscal marks"
+    override val designationOfOriginKey = "Protected designation of origin (PDO) or geographical indication (PDI)"
     override val sizeOfProducerKey = "Size of producer"
     override val sizeOfProducerValue: String => String = value => s"$value hectolitres"
     override val commercialDescriptionKey = "Commercial description"
-    override val brandNameOfProductKey = "Brand name of product"
+    override val brandNameOfProductKey = "Brand name"
     override val wineProductCategoryKey = "Category of wine product"
     override val wineGrowingZoneCodeKey = "Wine growing zone code"
     override val thirdCountryOfOriginKey = "Third country of origin"
@@ -95,27 +105,32 @@ object ItemDetailsMessages {
   object Welsh extends ViewMessages with BaseWelsh {
     override val heading = "Item details"
     override val title: String = title(heading)
-    override val h1: String => String = s => s
+    override val h1: Int => String = i => s"Item $i"
+    override val h2: String => String = s => s"Report of receipt for $s"
     override val itemDetailsCardHeading = "Item details"
     override val packagingCardHeading: Int => String = i => s"Packaging type $i"
     override val wineWithoutPDOPGI = "Wine without PDO/PGI"
-    override val commodityCodeKey = "Commodity Code"
+    override val commodityCodeKey = "Commodity code"
     override val descriptionKey = "Description"
     override val quantityKey = "Quantity"
-    override val quantityValue: BigDecimal => String = value => s"$value kilograms"
-    override val grossWeightKey = "Gross Weight"
+    override val quantityValue: BigDecimal => String = value => s"$value litres (temperature of 15°C)"
+    override val grossWeightKey = "Gross weight"
     override val grossWeightValue: BigDecimal => String = value => s"$value kg"
-    override val netWeightKey = "Net Weight"
+    override val netWeightKey = "Net weight"
     override val netWeightValue: BigDecimal => String = value => s"$value kg"
-    override val alcoholicStrengthKey = "Alcoholic strength by volume in percentage"
+    override val densityKey = "Density"
+    override val densityValue: BigDecimal => String = value => s"${value}kg/m<sup>3</sup> (temperature of 15&deg;C)"
+    override val alcoholicStrengthKey = "Alcoholic strength by volume"
     override val alcoholicStrengthValue: BigDecimal => String = value => s"$value%"
+    override val maturationAgeKey = "Maturation age"
     override val degreePlatoKey = "Degree Plato"
     override val degreePlatoValue: BigDecimal => String = value => s"$value&deg;P"
-    override val designationOfOriginKey = "Designation of origin"
+    override val fiscalMarkKey = "Fiscal marks"
+    override val designationOfOriginKey = "Protected designation of origin (PDO) or geographical indication (PDI)"
     override val sizeOfProducerKey = "Size of producer"
     override val sizeOfProducerValue: String => String = value => s"$value hectolitres"
     override val commercialDescriptionKey = "Commercial description"
-    override val brandNameOfProductKey = "Brand name of product"
+    override val brandNameOfProductKey = "Brand name"
     override val wineProductCategoryKey = "Category of wine product"
     override val wineGrowingZoneCodeKey = "Wine growing zone code"
     override val thirdCountryOfOriginKey = "Third country of origin"

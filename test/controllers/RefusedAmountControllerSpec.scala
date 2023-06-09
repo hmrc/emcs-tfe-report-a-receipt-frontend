@@ -58,7 +58,7 @@ class RefusedAmountControllerSpec extends SpecBase with MockUserAnswersService w
         .build()
 
       MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
-        (item1, CnCodeInformation("", `1`))
+        (item1, CnCodeInformation("", "", `1`))
       )))
 
       running(application) {
@@ -84,7 +84,7 @@ class RefusedAmountControllerSpec extends SpecBase with MockUserAnswersService w
         .build()
 
       MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
-        (item1, CnCodeInformation("", `1`))
+        (item1, CnCodeInformation("", "", `1`))
       )))
 
       running(application) {
@@ -134,7 +134,7 @@ class RefusedAmountControllerSpec extends SpecBase with MockUserAnswersService w
         .build()
 
       MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
-        (item1, CnCodeInformation("", `1`))
+        (item1, CnCodeInformation("", "", `1`))
       )))
 
       running(application) {

@@ -61,7 +61,7 @@ class CheckYourAnswersItemControllerSpec extends SpecBase
           .build()
 
         MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
-          (item1, CnCodeInformation("name", `1`))
+          (item1, CnCodeInformation("name", "", `1`))
         )))
 
         running(application) {

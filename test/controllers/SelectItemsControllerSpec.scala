@@ -61,8 +61,8 @@ class SelectItemsControllerSpec extends SpecBase
         val updatedCratePackage: Packaging = cratePackage.copy(typeOfPackage = "Crate")
 
         MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1, item2)).returns(Future.successful(Seq(
-          (item1, CnCodeInformation("", `1`)),
-          (item2, CnCodeInformation("", `1`))
+          (item1, CnCodeInformation("", "", `1`)),
+          (item2, CnCodeInformation("", "", `1`))
         )))
 
         MockGetPackagingTypesService.getPackagingTypes(Seq(item1, item2)).returns(Future.successful(Seq(
@@ -78,7 +78,7 @@ class SelectItemsControllerSpec extends SpecBase
           val view = application.injector.instanceOf[SelectItemsView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(Seq(item1, item2).map(l => (l, CnCodeInformation("", `1`))))(dataRequest(request), messages(application)).toString
+          contentAsString(result) mustEqual view(Seq(item1, item2).map(l => (l, CnCodeInformation("", "", `1`))))(dataRequest(request), messages(application)).toString
         }
       }
 

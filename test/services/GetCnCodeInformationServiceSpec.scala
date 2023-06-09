@@ -36,7 +36,7 @@ class GetCnCodeInformationServiceSpec extends SpecBase with MockGetCnCodeInforma
   lazy val testService = new GetCnCodeInformationService(mockGetCnCodeInformationConnector)
 
   val request = CnCodeInformationRequest(productCodeList = Seq("T400"), cnCodeList = Seq("24029000"))
-  val movementItems = Seq(MovementItem(1, "T400", "24029000", 1, 1, 1, None, None, None, None, None, None, Seq(), None))
+  val movementItems = Seq(MovementItem(1, "T400", "24029000", 1, 1, 1, None, None, None, None, None, None, None, None, None, Seq(), None))
   val listItems = Seq(ListItemWithProductCode(productCode = "T400", cnCode = "24029000", changeUrl = "", removeUrl = ""))
 
   ".getCnCodeInformationWithMovementItems" - {
@@ -47,12 +47,14 @@ class GetCnCodeInformationServiceSpec extends SpecBase with MockGetCnCodeInforma
         MockGetCnCodeInformationConnector.getCnCodeInformation(request).returns(Future.successful(Right(CnCodeInformationResponse(data = Map(
           "24029000" -> CnCodeInformation(
             cnCodeDescription = "Cigars, cheroots, cigarillos and cigarettes not containing tobacco",
+            exciseProductCodeDescription = "Fine-cut tobacco for the rolling of cigarettes",
             unitOfMeasureCode = ReferenceDataUnitOfMeasure.`1`
           )
         )))))
 
         testService.getCnCodeInformationWithMovementItems(movementItems)(hc).futureValue mustBe Seq((movementItems.head, CnCodeInformation(
           cnCodeDescription = "Cigars, cheroots, cigarillos and cigarettes not containing tobacco",
+          exciseProductCodeDescription = "Fine-cut tobacco for the rolling of cigarettes",
           unitOfMeasureCode = ReferenceDataUnitOfMeasure.`1`
         )))
       }
@@ -72,19 +74,21 @@ class GetCnCodeInformationServiceSpec extends SpecBase with MockGetCnCodeInforma
       "when not all items match something from the Connector" in {
         val request = CnCodeInformationRequest(productCodeList = Seq("T400", "T401", "T402"), cnCodeList = Seq("24029000", "24029001", "24029002"))
         val items = Seq(
-          MovementItem(1, "T400", "24029000", 1, 1, 1, None, None, None, None, None, None, Seq(), None),
-          MovementItem(1, "T401", "24029001", 1, 1, 1, None, None, None, None, None, None, Seq(), None),
-          MovementItem(1, "T402", "24029002", 1, 1, 1, None, None, None, None, None, None, Seq(), None)
+          MovementItem(1, "T400", "24029000", 1, 1, 1, None, None, None, None, None, None, None, None, None, Seq(), None),
+          MovementItem(1, "T401", "24029001", 1, 1, 1, None, None, None, None, None, None, None, None, None, Seq(), None),
+          MovementItem(1, "T402", "24029002", 1, 1, 1, None, None, None, None, None, None, None, None, None, Seq(), None)
         )
 
 
         MockGetCnCodeInformationConnector.getCnCodeInformation(request).returns(Future.successful(Right(CnCodeInformationResponse(data = Map(
           "24029000" -> CnCodeInformation(
             cnCodeDescription = "Cigars, cheroots, cigarillos and cigarettes not containing tobacco",
+            exciseProductCodeDescription = "Fine-cut tobacco for the rolling of cigarettes",
             unitOfMeasureCode = ReferenceDataUnitOfMeasure.`1`
           ),
           "24029001" -> CnCodeInformation(
             cnCodeDescription = "Cigars, cheroots, cigarillos and cigarettes not containing tobacco",
+            exciseProductCodeDescription = "Fine-cut tobacco for the rolling of cigarettes",
             unitOfMeasureCode = ReferenceDataUnitOfMeasure.`1`
           )
         )))))
@@ -104,12 +108,14 @@ class GetCnCodeInformationServiceSpec extends SpecBase with MockGetCnCodeInforma
         MockGetCnCodeInformationConnector.getCnCodeInformation(request).returns(Future.successful(Right(CnCodeInformationResponse(data = Map(
           "24029000" -> CnCodeInformation(
             cnCodeDescription = "Cigars, cheroots, cigarillos and cigarettes not containing tobacco",
+            exciseProductCodeDescription = "Fine-cut tobacco for the rolling of cigarettes",
             unitOfMeasureCode = ReferenceDataUnitOfMeasure.`1`
           )
         )))))
 
         testService.getCnCodeInformationWithListItems(listItems)(hc).futureValue mustBe Seq((listItems.head, CnCodeInformation(
           cnCodeDescription = "Cigars, cheroots, cigarillos and cigarettes not containing tobacco",
+          exciseProductCodeDescription = "Fine-cut tobacco for the rolling of cigarettes",
           unitOfMeasureCode = ReferenceDataUnitOfMeasure.`1`
         )))
       }
@@ -138,10 +144,12 @@ class GetCnCodeInformationServiceSpec extends SpecBase with MockGetCnCodeInforma
         MockGetCnCodeInformationConnector.getCnCodeInformation(request).returns(Future.successful(Right(CnCodeInformationResponse(data = Map(
           "24029000" -> CnCodeInformation(
             cnCodeDescription = "Cigars, cheroots, cigarillos and cigarettes not containing tobacco",
+            exciseProductCodeDescription = "Fine-cut tobacco for the rolling of cigarettes",
             unitOfMeasureCode = ReferenceDataUnitOfMeasure.`1`
           ),
           "24029001" -> CnCodeInformation(
             cnCodeDescription = "Cigars, cheroots, cigarillos and cigarettes not containing tobacco",
+            exciseProductCodeDescription = "Fine-cut tobacco for the rolling of cigarettes",
             unitOfMeasureCode = ReferenceDataUnitOfMeasure.`1`
           )
         )))))

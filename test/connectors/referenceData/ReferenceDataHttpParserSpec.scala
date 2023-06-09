@@ -41,11 +41,13 @@ class ReferenceDataHttpParserSpec extends SpecBase
 
         val cnCodeInformation = Map("24029000" -> CnCodeInformation(
           cnCodeDescription = "Cigars, cheroots, cigarillos and cigarettes not containing tobacco",
+          exciseProductCodeDescription = "Fine-cut tobacco for the rolling of cigarettes",
           unitOfMeasureCode = `1`
         ))
 
         val cnCodeInformationJson = Json.obj("24029000" -> Json.obj(
           "cnCodeDescription" -> "Cigars, cheroots, cigarillos and cigarettes not containing tobacco",
+          "exciseProductCodeDescription" -> "Fine-cut tobacco for the rolling of cigarettes",
           "unitOfMeasureCode" -> 1
         ))
 

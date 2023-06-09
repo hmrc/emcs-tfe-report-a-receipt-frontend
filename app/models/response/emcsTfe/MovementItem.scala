@@ -26,10 +26,13 @@ case class MovementItem(itemUniqueReference: Int,
                         netMass: BigDecimal,
                         alcoholicStrength: Option[BigDecimal],
                         degreePlato: Option[BigDecimal],
+                        fiscalMark: Option[String],
                         designationOfOrigin: Option[String],
                         sizeOfProducer: Option[String],
+                        density: Option[BigDecimal],
                         commercialDescription: Option[String],
                         brandNameOfProduct: Option[String],
+                        maturationAge: Option[String],
                         packaging: Seq[Packaging],
                         wineProduct: Option[WineProduct]
                        )

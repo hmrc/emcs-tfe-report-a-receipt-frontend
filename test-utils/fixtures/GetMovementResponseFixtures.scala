@@ -57,10 +57,13 @@ trait GetMovementResponseFixtures { _: BaseFixtures =>
     netMass = BigDecimal(375),
     alcoholicStrength = Some(BigDecimal(12.7)),
     degreePlato = Some(1.2),
+    fiscalMark = Some("Mark 1"),
     designationOfOrigin = Some("FR"),
     sizeOfProducer = Some("Huge"),
+    density = Some(9000),
     commercialDescription = Some("description"),
     brandNameOfProduct = Some("Big fancy brand name"),
+    maturationAge = Some("Lots"),
     packaging = Seq(boxPackage),
     wineProduct = Some(wineProduct)
   )
@@ -74,10 +77,13 @@ trait GetMovementResponseFixtures { _: BaseFixtures =>
     netMass = BigDecimal(315),
     alcoholicStrength = None,
     degreePlato = None,
+    fiscalMark = Some("Mark 2"),
     designationOfOrigin = Some("FR"),
     sizeOfProducer = Some("Huge"),
+    density = None,
     commercialDescription = Some("description"),
     brandNameOfProduct = Some("Big fancy brand name"),
+    maturationAge = None,
     packaging = Seq(boxPackage, cratePackage),
     wineProduct = Some(wineProduct)
   )
@@ -114,10 +120,13 @@ trait GetMovementResponseFixtures { _: BaseFixtures =>
         "netMass" -> 375,
         "alcoholicStrength" -> 12.7,
         "degreePlato" -> 1.2,
+        "fiscalMark" -> "Mark 1",
         "designationOfOrigin" -> "FR",
         "sizeOfProducer" -> "Huge",
+        "density" -> 9000,
         "commercialDescription" -> "description",
         "brandNameOfProduct" -> "Big fancy brand name",
+        "maturationAge" -> "Lots",
         "packaging" -> Json.arr(
           Json.obj(fields =
             "typeOfPackage" -> "BX",
@@ -142,6 +151,7 @@ trait GetMovementResponseFixtures { _: BaseFixtures =>
         "quantity" -> 550,
         "grossMass" -> 910,
         "netMass" -> 315,
+        "fiscalMark" -> "Mark 2",
         "designationOfOrigin" -> "FR",
         "sizeOfProducer" -> "Huge",
         "commercialDescription" -> "description",

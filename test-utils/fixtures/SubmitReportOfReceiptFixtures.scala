@@ -17,6 +17,7 @@
 package fixtures
 
 import models.AcceptMovement._
+import models.DestinationType.TaxWarehouse
 import models.response.emcsTfe.SubmitReportOfReceiptResponse
 import models.submitReportOfReceipt.SubmitReportOfReceiptModel
 import play.api.libs.json.Json
@@ -33,6 +34,7 @@ trait SubmitReportOfReceiptFixtures extends BaseFixtures
   val maxSubmitReportOfReceiptModel = SubmitReportOfReceiptModel(
     arc = testArc,
     sequenceNumber = 1,
+    destinationType = TaxWarehouse,
     consigneeTrader = Some(maxTraderModel),
     deliveryPlaceTrader = Some(maxTraderModel.copy(eoriNumber = None)),
     destinationOffice = destinationOfficeId,
@@ -49,6 +51,7 @@ trait SubmitReportOfReceiptFixtures extends BaseFixtures
   val minSubmitReportOfReceiptModel = SubmitReportOfReceiptModel(
     arc = testArc,
     sequenceNumber = 1,
+    destinationType = TaxWarehouse,
     consigneeTrader = Some(minTraderModel),
     deliveryPlaceTrader = Some(minTraderModel),
     destinationOffice = destinationOfficeId,

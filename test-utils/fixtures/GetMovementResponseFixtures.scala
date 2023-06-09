@@ -16,6 +16,7 @@
 
 package fixtures
 
+import models.DestinationType.TaxWarehouse
 import models.{CategoryOfWine, ReferenceDataCategoryOfWine}
 import models.response.emcsTfe.{GetMovementResponse, MovementItem, Packaging, WineProduct}
 import play.api.libs.json.{JsValue, Json}
@@ -91,6 +92,7 @@ trait GetMovementResponseFixtures { _: BaseFixtures =>
   val getMovementResponseModel: GetMovementResponse = GetMovementResponse(
     arc = testArc,
     sequenceNumber = 1,
+    destinationType = TaxWarehouse,
     consigneeTrader = None,
     deliveryPlaceTrader = None,
     localReferenceNumber = "MyLrn",
@@ -105,6 +107,7 @@ trait GetMovementResponseFixtures { _: BaseFixtures =>
   val getMovementResponseInputJson: JsValue = Json.obj(
     "arc" -> testArc,
     "sequenceNumber" -> 1,
+    "destinationType" -> "1",
     "localReferenceNumber" -> "MyLrn",
     "eadStatus" -> "MyEadStatus",
     "consignorName" -> "MyConsignor",

@@ -71,6 +71,7 @@ class SubmitReportOfReceiptModelSpec extends SpecBase with SubmitReportOfReceipt
           submission mustBe SubmitReportOfReceiptModel(
             arc = getMovementResponseModel.arc,
             sequenceNumber = getMovementResponseModel.sequenceNumber,
+            destinationType = getMovementResponseModel.destinationType,
             consigneeTrader = getMovementResponseModel.consigneeTrader,
             deliveryPlaceTrader = getMovementResponseModel.deliveryPlaceTrader,
             destinationOffice = "GB004098",
@@ -110,6 +111,7 @@ class SubmitReportOfReceiptModelSpec extends SpecBase with SubmitReportOfReceipt
           submission mustBe SubmitReportOfReceiptModel(
             arc = getMovementResponseModel.arc,
             sequenceNumber = getMovementResponseModel.sequenceNumber,
+            destinationType = getMovementResponseModel.destinationType,
             consigneeTrader = getMovementResponseModel.consigneeTrader,
             deliveryPlaceTrader = getMovementResponseModel.deliveryPlaceTrader,
             destinationOffice = "GB004098",
@@ -166,6 +168,7 @@ class SubmitReportOfReceiptModelSpec extends SpecBase with SubmitReportOfReceipt
           submission mustBe SubmitReportOfReceiptModel(
             arc = getMovementResponseModel.arc,
             sequenceNumber = getMovementResponseModel.sequenceNumber,
+            destinationType = getMovementResponseModel.destinationType,
             consigneeTrader = getMovementResponseModel.consigneeTrader,
             deliveryPlaceTrader = getMovementResponseModel.deliveryPlaceTrader,
             destinationOffice = "GB004098",
@@ -211,6 +214,7 @@ class SubmitReportOfReceiptModelSpec extends SpecBase with SubmitReportOfReceipt
           submission mustBe SubmitReportOfReceiptModel(
             arc = getMovementResponseModel.arc,
             sequenceNumber = getMovementResponseModel.sequenceNumber,
+            destinationType = getMovementResponseModel.destinationType,
             consigneeTrader = getMovementResponseModel.consigneeTrader,
             deliveryPlaceTrader = getMovementResponseModel.deliveryPlaceTrader,
             destinationOffice = "GB004098",

@@ -17,27 +17,51 @@
 package controllers
 
 import base.SpecBase
+import config.AppConfig
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.UnauthorisedView
+import views.html.auth.errors.{NotAnOrganisationView, UnauthorisedView}
 
 class UnauthorisedControllerSpec extends SpecBase {
 
   "Unauthorised Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "when calling .unauthorised" - {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      "must return OK and the correct view for a GET" in {
 
-      running(application) {
-        val request = FakeRequest(GET, routes.UnauthorisedController.onPageLoad.url)
+        val application = applicationBuilder().build()
 
-        val result = route(application, request).value
+        running(application) {
+          val request = FakeRequest(GET, routes.UnauthorisedController.unauthorised().url)
 
-        val view = application.injector.instanceOf[UnauthorisedView]
+          val result = route(application, request).value
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view()(request, messages(application)).toString
+          val view = application.injector.instanceOf[UnauthorisedView]
+
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view()(request, messages(application)).toString
+        }
+      }
+    }
+
+    "when calling .notAnOrganisation" - {
+
+      "must return OK and the correct view for a GET" in {
+
+        val application = applicationBuilder().build()
+
+        running(application) {
+          val request = FakeRequest(GET, routes.UnauthorisedController.notAnOrganisation().url)
+
+          val result = route(application, request).value
+
+          val view = application.injector.instanceOf[NotAnOrganisationView]
+          val config = application.injector.instanceOf[AppConfig]
+
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view()(request, messages(application), config).toString
+        }
       }
     }
   }

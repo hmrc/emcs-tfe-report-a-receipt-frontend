@@ -431,3 +431,11 @@ notPermittedPage.p2.suffix = to see information about a specific movement or rec
 notPermittedPage.p3.prefix = You can also visit the
 notPermittedPage.p3.link = EMCS general enquiries page
 notPermittedPage.p3.suffix = for more help.
+
+notAnOrganisation.title = There is a problem
+notAnOrganisation.heading = There is a problem
+notAnOrganisation.p1 = You must be signed in as an organisation.
+notAnOrganisation.p2 = To use this service you must either:
+notAnOrganisation.bullet.1.link = sign in to a business tax account that has an EMCS enrolment
+notAnOrganisation.bullet.1.afterLink = if you have one of those
+notAnOrganisation.bullet.2.link = register for a business tax account and enrol for EMCS

@@ -156,7 +156,7 @@ class AuthActionSpec extends SpecBase with BaseFixtures with BeforeAndAfterAll {
                   override val authConnector = new FakeSuccessAuthConnector(authResponse())
 
                   status(result) mustBe SEE_OTHER
-                  redirectLocation(result) mustBe Some(controllers.routes.UnauthorisedController.unauthorised().url)
+                  redirectLocation(result) mustBe Some(controllers.routes.UnauthorisedController.noEnrolment().url)
                 }
               }
 

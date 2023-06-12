@@ -22,12 +22,13 @@ import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.auth.errors.{NotAnOrganisationView, UnauthorisedView}
+import views.html.auth.errors.{NoEnrolmentView, NotAnOrganisationView, UnauthorisedView}
 
 class UnauthorisedController @Inject()(
                                         val controllerComponents: MessagesControllerComponents,
                                         view: UnauthorisedView,
-                                        notAnOrgView: NotAnOrganisationView
+                                        notAnOrgView: NotAnOrganisationView,
+                                        noEnrolmentView: NoEnrolmentView
                                       )(implicit val config: AppConfig) extends FrontendBaseController with I18nSupport {
 
   def unauthorised(): Action[AnyContent] = Action { implicit request =>
@@ -36,5 +37,9 @@ class UnauthorisedController @Inject()(
 
   def notAnOrganisation(): Action[AnyContent] = Action { implicit request =>
     Ok(notAnOrgView())
+  }
+
+  def noEnrolment(): Action[AnyContent] = Action { implicit request =>
+    Ok(noEnrolmentView())
   }
 }

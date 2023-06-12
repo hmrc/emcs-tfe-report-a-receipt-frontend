@@ -438,3 +438,10 @@ notAnOrganisation.p2 = To use this service you must either:
 notAnOrganisation.bullet.1.link = sign in to a business tax account that has an EMCS enrolment
 notAnOrganisation.bullet.1.afterLink = if you have one of those
 notAnOrganisation.bullet.2.link = register for a business tax account and enrol for EMCS
+
+noEnrolment.title = There is a problem
+noEnrolment.heading = There is a problem
+noEnrolment.p1 = To use this service you or the account administrator must either:
+noEnrolment.bullet.1.link = enrol for EMCS
+noEnrolment.bullet.2.link = sign in to a business tax account that has an EMCS enrolment
+noEnrolment.bullet.2.afterLink = if you have one of those

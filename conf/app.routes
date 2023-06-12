@@ -16,6 +16,7 @@ GET         /account/signed-out                                                 
 
 GET         /unauthorised                                                        controllers.UnauthorisedController.unauthorised()
 GET         /individual-credentials                                              controllers.UnauthorisedController.notAnOrganisation()
+GET         /no-enrolment                                                        controllers.UnauthorisedController.noEnrolment()
 
 GET         /:ern/:arc                                                           controllers.IndexController.onPageLoad(ern: String, arc: String)
 POST        /:ern/:arc                                                           controllers.IndexController.onSubmit(ern: String, arc: String)

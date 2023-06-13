@@ -26,21 +26,37 @@
 
 @()(implicit request: Request[_], messages: Messages, config: AppConfig)
 
-@layout(titleNoForm(messages("noEnrolment.title"))) {
+@layout(titleNoForm(messages("inactive.title"))) {
 
-    @h1("noEnrolment.heading", classes = "govuk-heading-l")
+    @h1("inactive.heading", classes = "govuk-heading-l")
 
     @p() {
-        @messages("noEnrolment.p1")
+        @messages("inactive.p1")
+    }
+
+    @p() {
+        @messages("inactive.p2")
     }
 
     @bullets(Seq(
-        link(config.registerGuidance, "noEnrolment.bullet1.link"),
+        Html(messages("inactive.bullet1")),
+        Html(messages("inactive.bullet2"))
+    ))
+
+    @p() {
+        @messages("inactive.p3")
+    }
+
+    @bullets(Seq(
         HtmlFormat.fill(Seq(
-            link(config.loginGuidance, "noEnrolment.bullet2.link", withEndingComma = true),
-            Html(messages("noEnrolment.bullet2.afterLink"))
+            link(config.registerGuidance, "inactive.bullet3.link", withEndingComma = true),
+            Html(messages("inactive.bullet3.afterLink"))
         ))
     ))
+
+    @p() {
+        @messages("inactive.p4")
+    }
 }
 
 @{

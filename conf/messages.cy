@@ -76,9 +76,6 @@ signedOut.title = For your security, we signed you out
 signedOut.heading = For your security, we signed you out
 signedOut.guidance = We did not save your answers.
 
-unauthorised.title = You can’t access this service with this account
-unauthorised.heading = You can’t access this service with this account
-
 arc.subHeading = Report of receipt for {0}
 
 dateOfArrival.title = When did this movement arrive?
@@ -435,13 +432,44 @@ notAnOrganisation.title = There is a problem
 notAnOrganisation.heading = There is a problem
 notAnOrganisation.p1 = You must be signed in as an organisation.
 notAnOrganisation.p2 = To use this service you must either:
-notAnOrganisation.bullet.1.link = sign in to a business tax account that has an EMCS enrolment
-notAnOrganisation.bullet.1.afterLink = if you have one of those
-notAnOrganisation.bullet.2.link = register for a business tax account and enrol for EMCS
+notAnOrganisation.bullet1.link = sign in to a business tax account that has an EMCS enrolment
+notAnOrganisation.bullet1.afterLink = if you have one of those
+notAnOrganisation.bullet2.link = register for a business tax account and enrol for EMCS
 
 noEnrolment.title = There is a problem
 noEnrolment.heading = There is a problem
 noEnrolment.p1 = To use this service you or the account administrator must either:
-noEnrolment.bullet.1.link = enrol for EMCS
-noEnrolment.bullet.2.link = sign in to a business tax account that has an EMCS enrolment
-noEnrolment.bullet.2.afterLink = if you have one of those
+noEnrolment.bullet1.link = enrol for EMCS
+noEnrolment.bullet2.link = sign in to a business tax account that has an EMCS enrolment
+noEnrolment.bullet2.afterLink = if you have one of those
+
+inactive.title = There is a problem
+inactive.heading = There is a problem
+inactive.p1 = You do not have an active enrollment for the Excise Movement and Control System (EMCS).
+inactive.p2 = To use this service you must either:
+inactive.bullet1 = activate EMCS using the activation code that was sent to you by post
+inactive.bullet2 = ask for a new activation code to be sent to you online
+inactive.p3 = or,
+inactive.bullet3.link = re-enroll for EMCS
+inactive.bullet3.afterLink = if it has been more than 28 days since your code was sent to you
+inactive.p4 = If you think you have signed in with the wrong details, sign out and check the details you have are correct.
+
+unauthorised.title = There is a problem
+unauthorised.heading = There is a problem
+unauthorised.p1 = You do not have permission to view this page.
+unauthorised.p2 = You should:
+unauthorised.bullet1 = check you have signed in with the right details
+unauthorised.bullet2 = check you are using the right excise reference number (ERN)
+unauthorised.p3 = If you are using the right sign in details and ERN, check the web address is correct.
+
+notOnPrivateBeta.title = There is a problem
+notOnPrivateBeta.heading = There is a problem
+notOnPrivateBeta.p1 = You do not have permission to view this page.
+notOnPrivateBeta.alreadySignedUp.h2 = If you have signed up for the Excise Movement and Control System (EMCS) private beta research
+notOnPrivateBeta.alreadySignedUp.p1 = If you typed the web address, check it is correct. If you pasted the web address, check you copied the entire address.
+notOnPrivateBeta.alreadySignedUp.p2 = If you think you have signed in with the wrong details, sign out and check the details you have are correct.
+notOnPrivateBeta.notSignedUp.h2 = If you have not signed up for the EMCS private beta research
+notOnPrivateBeta.notSignedUp.p1.preLink = You can choose to
+notOnPrivateBeta.notSignedUp.p1.link = take part in the EMCS private beta research
+notOnPrivateBeta.notSignedUp.p1.afterLink = if you are not already involved.
+notOnPrivateBeta.notSignedUp.p2 = To take part you must currently submit EMCS receipts using the HMRC platform.

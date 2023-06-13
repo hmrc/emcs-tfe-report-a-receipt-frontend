@@ -39,7 +39,7 @@ class NoEnrolmentViewSpec extends ViewSpecBase with ViewBehaviours {
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
 
         implicit val msgs: Messages = messages(app, messagesForLanguage.lang)
-        implicit val request: DataRequest[AnyContentAsEmpty.type] = dataRequest(FakeRequest(), emptyUserAnswers)
+        implicit val request = FakeRequest()
         implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
         val view = app.injector.instanceOf[NoEnrolmentView]

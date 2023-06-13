@@ -1,0 +1,7 @@
+# microservice specific routes
+
+GET         /wrong-permission                                                    controllers.error.ErrorController.unauthorised()
+GET         /individual-credentials                                              controllers.error.ErrorController.notAnOrganisation()
+GET         /no-enrolment                                                        controllers.error.ErrorController.noEnrolment()
+GET         /inactive-enrolment                                                  controllers.error.ErrorController.inactiveEnrolment()
+GET         /no-beta                                                             controllers.error.ErrorController.notOnPrivateBeta()

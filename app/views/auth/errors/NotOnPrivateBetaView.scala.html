@@ -19,28 +19,44 @@
 @this(
         layout: templates.Layout,
         h1: components.h1,
+        h2: components.h2,
         p: components.p,
-        bullets: components.bullets,
         link: components.link
 )
 
 @()(implicit request: Request[_], messages: Messages, config: AppConfig)
 
-@layout(titleNoForm(messages("noEnrolment.title"))) {
+@layout(titleNoForm(messages("notOnPrivateBeta.title"))) {
 
-    @h1("noEnrolment.heading", classes = "govuk-heading-l")
+    @h1("notOnPrivateBeta.heading", classes = "govuk-heading-l")
 
     @p() {
-        @messages("noEnrolment.p1")
+        @messages("notOnPrivateBeta.p1")
     }
 
-    @bullets(Seq(
-        link(config.registerGuidance, "noEnrolment.bullet1.link"),
-        HtmlFormat.fill(Seq(
-            link(config.loginGuidance, "noEnrolment.bullet2.link", withEndingComma = true),
-            Html(messages("noEnrolment.bullet2.afterLink"))
+    @h2("notOnPrivateBeta.alreadySignedUp.h2")
+
+    @p() {
+        @messages("notOnPrivateBeta.alreadySignedUp.p1")
+    }
+
+    @p() {
+        @messages("notOnPrivateBeta.alreadySignedUp.p2")
+    }
+
+    @h2("notOnPrivateBeta.notSignedUp.h2")
+
+    @p() {
+        @HtmlFormat.fill(Seq(
+            Html(messages("notOnPrivateBeta.notSignedUp.p1.preLink")),
+            link(config.signUpBetaFormUrl, "notOnPrivateBeta.notSignedUp.p1.link"),
+            Html(messages("notOnPrivateBeta.notSignedUp.p1.afterLink"))
         ))
-    ))
+    }
+
+    @p() {
+        @messages("notOnPrivateBeta.notSignedUp.p2")
+    }
 }
 
 @{

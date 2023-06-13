@@ -18,23 +18,21 @@ package views.auth.errors
 
 import base.ViewSpecBase
 import config.AppConfig
-import fixtures.messages.NotAnOrganisationMessages
-import models.requests.DataRequest
+import fixtures.messages.NotOnPrivateBetaMessages
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.i18n.Messages
-import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import views.html.auth.errors.NotAnOrganisationView
+import views.html.auth.errors.NotOnPrivateBetaView
 import views.{BaseSelectors, ViewBehaviours}
 
-class NotAnOrganisationViewSpec extends ViewSpecBase with ViewBehaviours {
+class NotOnPrivateBetaViewSpec extends ViewSpecBase with ViewBehaviours {
 
   object Selectors extends BaseSelectors
 
-  "NotAnOrganisationView" - {
+  "NotOnPrivateBetaView" - {
 
-    Seq(NotAnOrganisationMessages.English, NotAnOrganisationMessages.Welsh).foreach { messagesForLanguage =>
+    Seq(NotOnPrivateBetaMessages.English, NotOnPrivateBetaMessages.Welsh).foreach { messagesForLanguage =>
 
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
 
@@ -42,7 +40,7 @@ class NotAnOrganisationViewSpec extends ViewSpecBase with ViewBehaviours {
         implicit val request = FakeRequest()
         implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
-        val view = app.injector.instanceOf[NotAnOrganisationView]
+        val view = app.injector.instanceOf[NotOnPrivateBetaView]
 
         implicit val doc: Document = Jsoup.parse(view().toString())
 
@@ -50,21 +48,18 @@ class NotAnOrganisationViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.title -> messagesForLanguage.title,
           Selectors.h1 -> messagesForLanguage.heading,
           Selectors.p(1) -> messagesForLanguage.p1,
-          Selectors.p(2) -> messagesForLanguage.p2,
-          Selectors.bullet(1) -> messagesForLanguage.bullet1,
-          Selectors.bullet(2) -> messagesForLanguage.bullet2
+          Selectors.h2(1) -> messagesForLanguage.alreadySignedUpH2,
+          Selectors.p(2) -> messagesForLanguage.alreadySignedUpP1,
+          Selectors.p(3) -> messagesForLanguage.alreadySignedUpP2,
+          Selectors.h2(2) -> messagesForLanguage.notSignedUpH2,
+          Selectors.p(4) -> messagesForLanguage.notSignedUpP1,
+          Selectors.p(5) -> messagesForLanguage.notSignedUpP2
         ))
 
-        "have the correct guidance link to log in to EMCS" in {
+        "have the correct link to the form to sign up for the User Research" in {
 
-          doc.select(Selectors.bullet(1)).select("a").attr("href") mustBe
-            "https://www.gov.uk/log-in-hmrc-excise-import-export"
-        }
-
-        "have the correct guidance link to register for EMCS" in {
-
-          doc.select(Selectors.bullet(2)).select("a").attr("href") mustBe
-            "https://www.gov.uk/guidance/excise-movement-and-control-system-how-to-register-and-use#register-and-enrol"
+          doc.select(Selectors.p(4)).select("a").attr("href") mustBe
+            "https://forms.office.com/e/RehKkae1vH"
         }
       }
     }

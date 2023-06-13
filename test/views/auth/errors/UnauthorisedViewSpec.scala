@@ -18,31 +18,30 @@ package views.auth.errors
 
 import base.ViewSpecBase
 import config.AppConfig
-import fixtures.messages.NotAnOrganisationMessages
+import fixtures.messages.UnauthorisedMessages
 import models.requests.DataRequest
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import views.html.auth.errors.NotAnOrganisationView
+import views.html.auth.errors.UnauthorisedView
 import views.{BaseSelectors, ViewBehaviours}
 
-class NotAnOrganisationViewSpec extends ViewSpecBase with ViewBehaviours {
+class UnauthorisedViewSpec extends ViewSpecBase with ViewBehaviours {
 
   object Selectors extends BaseSelectors
 
-  "NotAnOrganisationView" - {
+  "UnauthorisedView" - {
 
-    Seq(NotAnOrganisationMessages.English, NotAnOrganisationMessages.Welsh).foreach { messagesForLanguage =>
+    Seq(UnauthorisedMessages.English, UnauthorisedMessages.Welsh).foreach { messagesForLanguage =>
 
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
 
         implicit val msgs: Messages = messages(app, messagesForLanguage.lang)
-        implicit val request = FakeRequest()
-        implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
-        val view = app.injector.instanceOf[NotAnOrganisationView]
+        val view = app.injector.instanceOf[UnauthorisedView]
 
         implicit val doc: Document = Jsoup.parse(view().toString())
 
@@ -52,20 +51,9 @@ class NotAnOrganisationViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.p(1) -> messagesForLanguage.p1,
           Selectors.p(2) -> messagesForLanguage.p2,
           Selectors.bullet(1) -> messagesForLanguage.bullet1,
-          Selectors.bullet(2) -> messagesForLanguage.bullet2
+          Selectors.bullet(2) -> messagesForLanguage.bullet2,
+          Selectors.p(3) -> messagesForLanguage.p3
         ))
-
-        "have the correct guidance link to log in to EMCS" in {
-
-          doc.select(Selectors.bullet(1)).select("a").attr("href") mustBe
-            "https://www.gov.uk/log-in-hmrc-excise-import-export"
-        }
-
-        "have the correct guidance link to register for EMCS" in {
-
-          doc.select(Selectors.bullet(2)).select("a").attr("href") mustBe
-            "https://www.gov.uk/guidance/excise-movement-and-control-system-how-to-register-and-use#register-and-enrol"
-        }
       }
     }
   }

@@ -14,21 +14,23 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.error
 
 import config.AppConfig
-
-import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.auth.errors.{NoEnrolmentView, NotAnOrganisationView, UnauthorisedView}
+import views.html.auth.errors.{InactiveEnrolmentView, NoEnrolmentView, NotAnOrganisationView, NotOnPrivateBetaView, UnauthorisedView}
 
-class UnauthorisedController @Inject()(
+import javax.inject.Inject
+
+class ErrorController @Inject()(
                                         val controllerComponents: MessagesControllerComponents,
                                         view: UnauthorisedView,
                                         notAnOrgView: NotAnOrganisationView,
-                                        noEnrolmentView: NoEnrolmentView
+                                        noEnrolmentView: NoEnrolmentView,
+                                        inactiveEnrolmentView: InactiveEnrolmentView,
+                                        notOnPrivateBetaView: NotOnPrivateBetaView
                                       )(implicit val config: AppConfig) extends FrontendBaseController with I18nSupport {
 
   def unauthorised(): Action[AnyContent] = Action { implicit request =>
@@ -41,5 +43,13 @@ class UnauthorisedController @Inject()(
 
   def noEnrolment(): Action[AnyContent] = Action { implicit request =>
     Ok(noEnrolmentView())
+  }
+
+  def inactiveEnrolment(): Action[AnyContent] = Action { implicit request =>
+    Ok(inactiveEnrolmentView())
+  }
+
+  def notOnPrivateBeta(): Action[AnyContent] = Action { implicit request =>
+    Ok(notOnPrivateBetaView())
   }
 }

@@ -42,8 +42,9 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig, configuration: Configu
   lazy val loginUrl: String         = configuration.get[String]("urls.login")
   def loginContinueUrl(ern: String, arc: String): String = configuration.get[String]("urls.loginContinue") + s"/$ern/$arc"
   lazy val signOutUrl: String       = configuration.get[String]("urls.signOut")
-  lazy val loginGuidanceUrl: String = configuration.get[String]("urls.loginGuidanceUrl")
-  lazy val registerGuidanceUrl: String = configuration.get[String]("urls.registerGuidanceUrl")
+  lazy val loginGuidance: String = configuration.get[String]("urls.loginGuidance")
+  lazy val registerGuidance: String = configuration.get[String]("urls.registerGuidance")
+  lazy val signUpBetaFormUrl: String = configuration.get[String]("urls.signupBetaForm")
 
   lazy val tradeTariffCommoditiesUrl: String = configuration.get[String]("urls.tradeTariffCommodities")
   def getUrlForCommodityCode(code: String): String = s"$tradeTariffCommoditiesUrl/${code}00"

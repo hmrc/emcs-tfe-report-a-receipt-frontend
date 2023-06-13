@@ -17,9 +17,9 @@
 package controllers
 
 import base.SpecBase
-import config.SessionKeys
 import handlers.ErrorHandler
 import models.UserAnswers
+import pages.ConfirmationPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.ConfirmationView
@@ -37,15 +37,15 @@ class ConfirmationControllerSpec extends SpecBase {
 
     "when the confirmation receipt reference is held in session" - {
 
-      "must return OK and the correct view for a GET" in new Fixture(Some(emptyUserAnswers)) {
+      "must return OK and the correct view for a GET" in new Fixture(Some(emptyUserAnswers.set(ConfirmationPage, testConfirmationReference))) {
 
         running(application) {
           val req = dataRequest(
-            request = request.withSession(SessionKeys.SUBMISSION_RECEIPT_REFERENCE -> testConfirmationReference),
+            request = request,
             answers = emptyUserAnswers
           )
 
-          val result = route(application, req).value
+          val result = route(application, request).value
 
           status(result) mustEqual OK
           contentAsString(result) mustEqual view(testConfirmationReference)(req, messages(application)).toString

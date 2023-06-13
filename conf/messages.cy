@@ -421,3 +421,12 @@ continueDraft.p1 = A report of receipt is already in progress for this movement.
 continueDraft.indent = If you choose to start a new report of receipt this draft will be deleted.
 continueDraft.continue = Continue with this draft
 continueDraft.startAgain = Start a new report of receipt
+
+notPermittedPage.title = There is a problem
+notPermittedPage.heading = There is a problem
+notPermittedPage.p1 = You do not have permission to view this page.
+notPermittedPage.p2.link = Go to your ''At a glance'' page
+notPermittedPage.p2.suffix = to see information about a specific movement or receipt.
+notPermittedPage.p3.prefix = You can also visit the
+notPermittedPage.p3.link = EMCS general enquiries page
+notPermittedPage.p3.suffix = for more help.

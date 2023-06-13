@@ -16,9 +16,9 @@
 
 package controllers
 
-import config.SessionKeys.SUBMISSION_RECEIPT_REFERENCE
 import controllers.actions._
 import handlers.ErrorHandler
+import pages.ConfirmationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -41,7 +41,7 @@ class ConfirmationController @Inject()(
 
   def onPageLoad(ern: String, arc: String): Action[AnyContent] =
     authorisedDataRequest(ern, arc) { implicit request =>
-      request.session.get(SUBMISSION_RECEIPT_REFERENCE) match {
+      request.userAnswers.get(ConfirmationPage) match {
         case Some(reference) =>
           Ok(view(reference))
         case None =>

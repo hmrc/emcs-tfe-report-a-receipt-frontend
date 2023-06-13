@@ -19,6 +19,7 @@ package controllers.actions
 import javax.inject.Inject
 import controllers.routes
 import models.requests.{DataRequest, OptionalDataRequest}
+import pages.ConfirmationPage
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
 
@@ -28,9 +29,13 @@ class DataRequiredActionImpl @Inject()(implicit val executionContext: ExecutionC
 
   override protected def refine[A](request: OptionalDataRequest[A]): Future[Either[Result, DataRequest[A]]] = {
 
+    val currentlyOnTheConfirmationPage = request.uri contains routes.ConfirmationController.onPageLoad( request.ern, request.arc ).url
+
     request.userAnswers match {
       case None =>
         Future.successful(Left(Redirect(routes.JourneyRecoveryController.onPageLoad())))
+      case Some(data) if data.get(ConfirmationPage).isDefined && !currentlyOnTheConfirmationPage =>
+        Future.successful(Left(Redirect(routes.NotPermittedPageController.onPageLoad( request.ern, request.arc ))))
       case Some(data) =>
         Future.successful(Right(DataRequest(request.request, data)))
     }

@@ -56,8 +56,12 @@ class SubmitReportOfReceiptServiceSpec extends SpecBase with MockSubmitReportOfR
         val request = dataRequest(FakeRequest(), userAnswers)
         val submission = SubmitReportOfReceiptModel(getMovementResponseModel)(userAnswers, mockAppConfig)
 
-        MockAuditingService.verifyAudit(SubmitReportOfReceiptAuditModel("internalId", submission, "ern")).noMoreThanOnce()
-        MockAuditingService.verifyAudit(SubmitReportOfReceiptResponseAuditModel("internalId", "arc", "ern", successResponse.receipt)).noMoreThanOnce()
+        MockAuditingService.verifyAudit(SubmitReportOfReceiptAuditModel("credId", "internalId", "correlationId", submission, "ern")).noMoreThanOnce()
+
+        MockAuditingService.verifyAudit(
+          SubmitReportOfReceiptResponseAuditModel("credId", "internalId", "correlationId", "arc", "ern", successResponse.receipt)
+        ).noMoreThanOnce()
+
         MockSubmitReportOfReceiptConnector.submit(testErn, submission).returns(Future.successful(Right(successResponse)))
 
         testService.submit(testErn, testArc)(hc, request).futureValue mustBe successResponse
@@ -77,7 +81,7 @@ class SubmitReportOfReceiptServiceSpec extends SpecBase with MockSubmitReportOfR
         val request = dataRequest(FakeRequest(), userAnswers)
         val submission = SubmitReportOfReceiptModel(getMovementResponseModel)(userAnswers, mockAppConfig)
 
-        MockAuditingService.verifyAudit(SubmitReportOfReceiptAuditModel("internalId", submission, "ern")).noMoreThanOnce()
+        MockAuditingService.verifyAudit(SubmitReportOfReceiptAuditModel("credId", "internalId", "correlationId", submission, "ern")).noMoreThanOnce()
         MockSubmitReportOfReceiptConnector.submit(testErn, submission).returns(Future.successful(Left(UnexpectedDownstreamResponseError)))
         intercept[SubmitReportOfReceiptException](await(testService.submit(testErn, testArc)(hc, request))).getMessage mustBe
           s"Failed to submit Report of Receipt to emcs-tfe for ern: '$testErn' & arc: '$testArc'"

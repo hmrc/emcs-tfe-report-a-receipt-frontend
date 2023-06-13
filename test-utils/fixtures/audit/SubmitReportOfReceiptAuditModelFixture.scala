@@ -30,6 +30,8 @@ object SubmitReportOfReceiptAuditModelFixture {
 
   val submitRORAuditModelSatisfactoryModel: SubmitReportOfReceiptAuditModel =
     SubmitReportOfReceiptAuditModel(
+      credentialId = "credId",
+      internalId = "internalId",
       correlationId = "ABCD1234",
       ern = "ERN",
       submission = SubmitReportOfReceiptModel(
@@ -58,6 +60,8 @@ object SubmitReportOfReceiptAuditModelFixture {
 
   val submitRORAuditModelUnSatisfactoryModel: SubmitReportOfReceiptAuditModel =
     SubmitReportOfReceiptAuditModel(
+      credentialId = "credId",
+      internalId = "internalId",
       correlationId = "ABCD1234",
       ern = "ERN",
       submission = SubmitReportOfReceiptModel(
@@ -116,6 +120,8 @@ object SubmitReportOfReceiptAuditModelFixture {
 
   val submitRORAuditModelPartiallyRefusedModel: SubmitReportOfReceiptAuditModel =
     SubmitReportOfReceiptAuditModel(
+      credentialId = "credId",
+      internalId = "internalId",
       correlationId = "ABCD1234",
       ern = "ERN",
       submission = SubmitReportOfReceiptModel(
@@ -174,6 +180,8 @@ object SubmitReportOfReceiptAuditModelFixture {
 
   val submitRORAuditModelRefusedModel: SubmitReportOfReceiptAuditModel =
     SubmitReportOfReceiptAuditModel(
+      credentialId = "credId",
+      internalId = "internalId",
       correlationId = "ABCD1234",
       ern = "ERN",
       submission = SubmitReportOfReceiptModel(
@@ -233,6 +241,8 @@ object SubmitReportOfReceiptAuditModelFixture {
   val submitRORAuditModelSatisfactoryJson : JsValue = Json.parse(
       s"""
         |{
+        |   "credentialId": "credId",
+        |   "internalId": "internalId",
         |		"correlationId": "ABCD1234",
         |		"ern": "ERN",
         |		"arc": "ARC",
@@ -268,6 +278,8 @@ object SubmitReportOfReceiptAuditModelFixture {
   val submitRORAuditModelUnSatisfactoryJson : JsValue = Json.parse(
     s"""
       |{
+      |   "credentialId": "credId",
+      |   "internalId": "internalId",
       |		"correlationId": "ABCD1234",
       |		"ern": "ERN",
       |		"arc": "ARC",
@@ -335,6 +347,8 @@ object SubmitReportOfReceiptAuditModelFixture {
   val submitRORAuditModelPartiallyRefusedJson : JsValue = Json.parse(
     s"""
       |{
+      |   "credentialId": "credId",
+      |   "internalId": "internalId",
       |		"correlationId": "ABCD1234",
       |		"ern": "ERN",
       |		"arc": "ARC",
@@ -402,6 +416,8 @@ object SubmitReportOfReceiptAuditModelFixture {
   val submitRORAuditModelRefusedJson : JsValue = Json.parse(
     s"""
       |{
+      |   "credentialId": "credId",
+      |   "internalId": "internalId",
       |		"correlationId": "ABCD1234",
       |		"ern": "ERN",
       |		"arc": "ARC",

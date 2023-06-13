@@ -26,13 +26,15 @@ object SubmitReportOfReceiptResponseAuditModelFixture {
   val time = LocalDate.now().toString
 
   val submitRORResponseAuditModel: SubmitReportOfReceiptResponseAuditModel =
-    SubmitReportOfReceiptResponseAuditModel("correlationId", "arc", "ern", "receipt")
+    SubmitReportOfReceiptResponseAuditModel("credId", "internalId", "correlationId", "arc", "ern", "receipt")
 
   val submitRORResponseAuditJson : JsValue = Json.parse(
       s"""
         |{
+        |   "credentialId": "credId",
+        |   "internalId": "internalId",
         |   "correlationId": "correlationId",
-        |   "ern": "arc",
+        |   "arc": "arc",
         |   "traderId": "ern",
         |   "receipt": "receipt"
         |}

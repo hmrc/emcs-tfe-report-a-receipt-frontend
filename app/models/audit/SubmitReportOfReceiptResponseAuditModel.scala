@@ -18,7 +18,9 @@ package models.audit
 
 import play.api.libs.json.{JsValue, Json}
 
-case class SubmitReportOfReceiptResponseAuditModel(correlationId: String,
+case class SubmitReportOfReceiptResponseAuditModel(credentialId: String,
+                                                   internalId: String,
+                                                   correlationId: String,
                                                    arc: String,
                                                    traderId: String,
                                                    receipt: String) extends AuditModel {
@@ -28,8 +30,10 @@ case class SubmitReportOfReceiptResponseAuditModel(correlationId: String,
   override val auditType: String = "ReportOfReceiptResponse"
 
   override val detail: JsValue = Json.obj(
-      "correlationId" -> correlationId,
-              "ern" -> arc,
+       "credentialId" -> credentialId,
+              "internalId" -> internalId,
+              "correlationId" -> correlationId,
+              "arc" -> arc,
               "traderId" -> traderId,
               "receipt" -> receipt
   )

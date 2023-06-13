@@ -18,11 +18,12 @@ package models.submitReportOfReceipt
 
 import base.SpecBase
 import config.AppConfig
-import fixtures.SubmitReportOfReceiptFixtures
+import fixtures.{GetMovementResponseFixtures, SubmitReportOfReceiptFixtures, TraderModelFixtures}
 import models.AcceptMovement.{PartiallyRefused, Refused, Satisfactory, Unsatisfactory}
 import models.HowMuchIsWrong.{IndividualItem, TheWholeMovement}
 import models.WrongWithMovement.{BrokenSeals, Damaged, Excess, Other, Shortage, ShortageOrExcess}
 import models.response.MissingMandatoryPage
+import models.submitReportOfReceipt.SubmitReportOfReceiptModel.{DESTINATION_OFFICE_PREFIX_GB, DESTINATION_OFFICE_PREFIX_XI}
 import models.{ItemShortageOrExcessModel, WrongWithMovement}
 import org.scalamock.scalatest.MockFactory
 import pages.unsatisfactory.individualItems._
@@ -31,7 +32,12 @@ import pages.{AcceptMovementPage, AddMoreInformationPage, DateOfArrivalPage, Mor
 import play.api.libs.json.Json
 import utils.ModelConstructorHelpers
 
-class SubmitReportOfReceiptModelSpec extends SpecBase with SubmitReportOfReceiptFixtures with MockFactory with ModelConstructorHelpers {
+class SubmitReportOfReceiptModelSpec extends SpecBase
+  with SubmitReportOfReceiptFixtures
+  with GetMovementResponseFixtures
+  with TraderModelFixtures
+  with MockFactory
+  with ModelConstructorHelpers {
 
   lazy val mockAppConfig = mock[AppConfig]
 
@@ -57,7 +63,7 @@ class SubmitReportOfReceiptModelSpec extends SpecBase with SubmitReportOfReceipt
 
         "when the movement is satisfactory" in {
 
-          (() => mockAppConfig.destinationOffice).expects().returns("GB004098").anyNumberOfTimes()
+          (() => mockAppConfig.destinationOfficeSuffix).expects().returns("004098").anyNumberOfTimes()
 
           val userAnswers =
             emptyUserAnswers
@@ -84,7 +90,7 @@ class SubmitReportOfReceiptModelSpec extends SpecBase with SubmitReportOfReceipt
 
         "when the WholeMovement is unsatisfactory/refused" in {
 
-          (() => mockAppConfig.destinationOffice).expects().returns("GB004098").anyNumberOfTimes()
+          (() => mockAppConfig.destinationOfficeSuffix).expects().returns("004098").anyNumberOfTimes()
 
           val userAnswers =
             emptyUserAnswers
@@ -124,7 +130,7 @@ class SubmitReportOfReceiptModelSpec extends SpecBase with SubmitReportOfReceipt
 
         "when the IndividualItems are unsatisfactory/refused" in {
 
-          (() => mockAppConfig.destinationOffice).expects().returns("GB004098").anyNumberOfTimes()
+          (() => mockAppConfig.destinationOfficeSuffix).expects().returns("004098").anyNumberOfTimes()
 
           val userAnswers =
             emptyUserAnswers
@@ -181,7 +187,7 @@ class SubmitReportOfReceiptModelSpec extends SpecBase with SubmitReportOfReceipt
 
         "when the IndividualItems are partially refused" in {
 
-          (() => mockAppConfig.destinationOffice).expects().returns("GB004098").anyNumberOfTimes()
+          (() => mockAppConfig.destinationOfficeSuffix).expects().returns("004098").anyNumberOfTimes()
 
           val userAnswers =
             emptyUserAnswers
@@ -228,7 +234,7 @@ class SubmitReportOfReceiptModelSpec extends SpecBase with SubmitReportOfReceipt
 
       "must throw an exception when the DateOfArrival is missing" in {
 
-        (() => mockAppConfig.destinationOffice).expects().returns("GB004098").anyNumberOfTimes()
+        (() => mockAppConfig.destinationOfficeSuffix).expects().returns("004098").anyNumberOfTimes()
 
         val userAnswers =
           emptyUserAnswers
@@ -241,7 +247,7 @@ class SubmitReportOfReceiptModelSpec extends SpecBase with SubmitReportOfReceipt
 
       "must throw an exception when the AcceptMovement is missing" in {
 
-        (() => mockAppConfig.destinationOffice).expects().returns("GB004098").anyNumberOfTimes()
+        (() => mockAppConfig.destinationOfficeSuffix).expects().returns("004098").anyNumberOfTimes()
 
         val userAnswers =
           emptyUserAnswers
@@ -250,6 +256,29 @@ class SubmitReportOfReceiptModelSpec extends SpecBase with SubmitReportOfReceipt
         val err = intercept[MissingMandatoryPage](SubmitReportOfReceiptModel(getMovementResponseModel)(userAnswers, mockAppConfig))
 
         err.getMessage mustBe s"Missing mandatory UserAnswer for page: '$AcceptMovementPage'"
+      }
+    }
+
+    "calling .destinationOfficePrefix(_: UserAnswers)" - {
+
+      val GB_ID = "GB123123123"
+      val XI_ID = "XI123123123"
+
+      s"must return $DESTINATION_OFFICE_PREFIX_GB" - {
+        s"when logged in user ERN starts with $DESTINATION_OFFICE_PREFIX_GB" in {
+          val userAnswers = emptyUserAnswers.copy(ern = GB_ID)
+          SubmitReportOfReceiptModel.destinationOfficePrefix(userAnswers) mustBe DESTINATION_OFFICE_PREFIX_GB
+        }
+        s"when logged in user ERN doesn't start with $DESTINATION_OFFICE_PREFIX_GB or $DESTINATION_OFFICE_PREFIX_XI (default case)" in {
+          val userAnswers = emptyUserAnswers.copy(ern = testErn)
+          SubmitReportOfReceiptModel.destinationOfficePrefix(userAnswers) mustBe DESTINATION_OFFICE_PREFIX_GB
+        }
+      }
+      s"must return $DESTINATION_OFFICE_PREFIX_XI" - {
+        s"when logged in user ERN starts with $DESTINATION_OFFICE_PREFIX_XI" in {
+          val userAnswers = emptyUserAnswers.copy(ern = XI_ID)
+          SubmitReportOfReceiptModel.destinationOfficePrefix(userAnswers) mustBe DESTINATION_OFFICE_PREFIX_XI
+        }
       }
     }
   }

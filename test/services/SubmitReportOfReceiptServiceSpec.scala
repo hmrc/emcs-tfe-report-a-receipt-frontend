@@ -47,7 +47,7 @@ class SubmitReportOfReceiptServiceSpec extends SpecBase with MockSubmitReportOfR
 
       "when Connector returns success from downstream" in {
 
-        (() => mockAppConfig.destinationOffice).expects().returns("GB004098").anyNumberOfTimes()
+        (() => mockAppConfig.destinationOfficeSuffix).expects().returns("004098").anyNumberOfTimes()
 
         val userAnswers = emptyUserAnswers
           .set(DateOfArrivalPage, testDateOfArrival)
@@ -72,7 +72,7 @@ class SubmitReportOfReceiptServiceSpec extends SpecBase with MockSubmitReportOfR
 
       "when Connector returns failure from downstream" in {
 
-        (() => mockAppConfig.destinationOffice).expects().returns("GB004098").anyNumberOfTimes()
+        (() => mockAppConfig.destinationOfficeSuffix).expects().returns("004098").anyNumberOfTimes()
 
         val userAnswers = emptyUserAnswers
           .set(DateOfArrivalPage, testDateOfArrival)

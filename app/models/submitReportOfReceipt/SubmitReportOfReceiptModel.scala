@@ -41,14 +41,25 @@ object SubmitReportOfReceiptModel extends JsonOptionFormatter with ModelConstruc
 
   implicit val fmt: Format[SubmitReportOfReceiptModel] = Json.format
 
+  private[models] val DESTINATION_OFFICE_PREFIX_GB = "GB"
+  private[models] val DESTINATION_OFFICE_PREFIX_XI = "XI"
+
+  private[models] def destinationOfficePrefix(implicit userAnswers: UserAnswers): String = {
+    userAnswers.ern match {
+      case id if id.startsWith(DESTINATION_OFFICE_PREFIX_XI) => DESTINATION_OFFICE_PREFIX_XI
+      case _ => DESTINATION_OFFICE_PREFIX_GB
+    }
+  }
+
   def apply(movementDetails: GetMovementResponse)(implicit userAnswers: UserAnswers, appConfig: AppConfig): SubmitReportOfReceiptModel = {
+
     SubmitReportOfReceiptModel(
       arc = movementDetails.arc,
       sequenceNumber = movementDetails.sequenceNumber,
       destinationType = movementDetails.destinationType,
       consigneeTrader = movementDetails.consigneeTrader,
       deliveryPlaceTrader = movementDetails.deliveryPlaceTrader,
-      destinationOffice = appConfig.destinationOffice,
+      destinationOffice = destinationOfficePrefix + appConfig.destinationOfficeSuffix,
       dateOfArrival = mandatoryPage(DateOfArrivalPage),
       acceptMovement = mandatoryPage(AcceptMovementPage),
       individualItems = ReceiptedItemsModel(movementDetails),

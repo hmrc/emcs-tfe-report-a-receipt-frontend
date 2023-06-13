@@ -25,6 +25,7 @@ import models.response.emcsTfe.SubmitReportOfReceiptResponse
 import models.submitReportOfReceipt.SubmitReportOfReceiptModel
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.util.UUID
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -38,19 +39,22 @@ class SubmitReportOfReceiptService @Inject()(submitReportOfReceiptConnector: Sub
 
     val submission = SubmitReportOfReceiptModel(dataRequest.movementDetails)(dataRequest.userAnswers, appConfig)
 
-    auditingService.audit(
-      SubmitReportOfReceiptAuditModel(
-        correlationId = dataRequest.internalId,
-        submission = submission,
-        ern = ern
-      )
+    val auditSubmission = SubmitReportOfReceiptAuditModel(
+      credentialId = dataRequest.request.request.credId,
+      internalId = dataRequest.internalId,
+      correlationId = UUID.randomUUID().toString,
+      submission = submission,
+      ern = ern
     )
+    auditingService.audit(auditSubmission)
 
     submitReportOfReceiptConnector.submit(ern, submission).map {
       case Right(success) =>
         auditingService.audit(
           SubmitReportOfReceiptResponseAuditModel(
-            correlationId = dataRequest.internalId,
+            credentialId = auditSubmission.credentialId,
+            internalId = dataRequest.internalId,
+            correlationId = auditSubmission.correlationId,
             arc = dataRequest.arc,
             traderId = ern,
             receipt = success.receipt

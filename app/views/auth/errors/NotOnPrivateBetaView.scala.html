@@ -26,9 +26,9 @@
 
 @()(implicit request: Request[_], messages: Messages, config: AppConfig)
 
-@layout(titleNoForm(messages("notOnPrivateBeta.title"))) {
+@layout(titleNoForm(messages("notOnPrivateBeta.title")), showBackLink = false) {
 
-    @h1("notOnPrivateBeta.heading", classes = "govuk-heading-l")
+    @h1("notOnPrivateBeta.heading", classes = "govuk-heading-xl govuk-!-margin-bottom-6")
 
     @p() {
         @messages("notOnPrivateBeta.p1")

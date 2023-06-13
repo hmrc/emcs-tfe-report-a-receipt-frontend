@@ -26,9 +26,9 @@
 
 @()(implicit request: Request[_], messages: Messages, config: AppConfig)
 
-@layout(titleNoForm(messages("notAnOrganisation.title"))) {
+@layout(titleNoForm(messages("notAnOrganisation.title")), showBackLink = false) {
 
-    @h1("notAnOrganisation.heading", classes = "govuk-heading-l")
+    @h1("notAnOrganisation.heading", classes = "govuk-heading-xl govuk-!-margin-bottom-6")
 
     @p() {
         @messages("notAnOrganisation.p1")

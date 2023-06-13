@@ -26,9 +26,9 @@
 
 @()(implicit request: Request[_], messages: Messages, config: AppConfig)
 
-@layout(titleNoForm(messages("inactive.title"))) {
+@layout(titleNoForm(messages("inactive.title")), showBackLink = false) {
 
-    @h1("inactive.heading", classes = "govuk-heading-l")
+    @h1("inactive.heading", classes = "govuk-heading-xl govuk-!-margin-bottom-6")
 
     @p() {
         @messages("inactive.p1")
@@ -40,22 +40,14 @@
 
     @bullets(Seq(
         Html(messages("inactive.bullet1")),
-        Html(messages("inactive.bullet2"))
-    ))
-
-    @p() {
-        @messages("inactive.p3")
-    }
-
-    @bullets(Seq(
         HtmlFormat.fill(Seq(
-            link(config.registerGuidance, "inactive.bullet3.link", withEndingComma = true),
-            Html(messages("inactive.bullet3.afterLink"))
+            link(config.registerGuidance, "inactive.bullet2.link", withEndingComma = true),
+            Html(messages("inactive.bullet2.afterLink"))
         ))
     ))
 
     @p() {
-        @messages("inactive.p4")
+        @messages("inactive.p3")
     }
 }
 

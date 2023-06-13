@@ -19,11 +19,9 @@ package views.auth.errors
 import base.ViewSpecBase
 import config.AppConfig
 import fixtures.messages.NotAnOrganisationMessages
-import models.requests.DataRequest
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.i18n.Messages
-import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import views.html.auth.errors.NotAnOrganisationView
 import views.{BaseSelectors, ViewBehaviours}

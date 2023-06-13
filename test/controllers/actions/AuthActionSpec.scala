@@ -151,7 +151,7 @@ class AuthActionSpec extends SpecBase with BaseFixtures with BeforeAndAfterAll {
 
               s"Enrolments is missing the ${EnrolmentKeys.EMCS_ENROLMENT}" - {
 
-                "redirect to unauthorised" in new Harness {
+                "redirect to no enrolment page" in new Harness {
 
                   override val authConnector = new FakeSuccessAuthConnector(authResponse())
 
@@ -162,7 +162,7 @@ class AuthActionSpec extends SpecBase with BaseFixtures with BeforeAndAfterAll {
 
               s"Enrolments exists for ${EnrolmentKeys.EMCS_ENROLMENT} but is NOT activated" - {
 
-                "redirect to unauthorised" in new Harness {
+                "redirect to inactive enrolment page" in new Harness {
 
                   override val authConnector = new FakeSuccessAuthConnector(authResponse(enrolments = Enrolments(Set(
                     Enrolment(
@@ -173,7 +173,7 @@ class AuthActionSpec extends SpecBase with BaseFixtures with BeforeAndAfterAll {
                   ))))
 
                   status(result) mustBe SEE_OTHER
-                  redirectLocation(result) mustBe Some(controllers.error.routes.ErrorController.unauthorised().url)
+                  redirectLocation(result) mustBe Some(controllers.error.routes.ErrorController.inactiveEnrolment().url)
                 }
               }
 

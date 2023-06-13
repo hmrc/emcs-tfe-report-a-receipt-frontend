@@ -100,7 +100,7 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector,
             block(UserRequest(request, ernFromUrl, internalId, credId))
           case Some(_) =>
             logger.debug(s"[checkOrganisationEMCSEnrolment] ${EnrolmentKeys.EMCS_ENROLMENT} enrolment found but not activated")
-            Future.successful(Redirect(controllers.error.routes.ErrorController.unauthorised()))
+            Future.successful(Redirect(controllers.error.routes.ErrorController.inactiveEnrolment()))
           case None =>
             logger.warn(s"[checkOrganisationEMCSEnrolment] User attempted to access ern: '$ernFromUrl' which they are not authorised to view")
             Future.successful(Redirect(controllers.error.routes.ErrorController.unauthorised()))

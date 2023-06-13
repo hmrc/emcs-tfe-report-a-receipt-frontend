@@ -76,14 +76,14 @@ class UserAllowListActionSpec extends SpecBase with MockFactory with MockUserAll
 
       "when the connector returns false (NOT on the list)" - {
 
-        "must execute the supplied block" in new Harness(enabled = true, connectorResponse = Right(false)) {
+        "must return SEE_OTHER and redirect to the not on private beta page" in new Harness(enabled = true, connectorResponse = Right(false)) {
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.error.routes.ErrorController.unauthorised().url)
+          redirectLocation(result) mustBe Some(controllers.error.routes.ErrorController.notOnPrivateBeta().url)
         }
       }
 
       "when the connector returns a Left" - {
-        "must execute the supplied block" in new Harness(enabled = true, connectorResponse = Left(UnexpectedDownstreamResponseError)) {
+        "render ISE" in new Harness(enabled = true, connectorResponse = Left(UnexpectedDownstreamResponseError)) {
           status(result) mustBe INTERNAL_SERVER_ERROR
         }
       }

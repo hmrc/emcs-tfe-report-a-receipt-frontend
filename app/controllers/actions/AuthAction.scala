@@ -33,7 +33,7 @@ import javax.inject.Singleton
 import scala.concurrent.{ExecutionContext, Future}
 
 trait AuthAction {
-  def apply(ern: String): ActionBuilder[UserRequest, AnyContent] with ActionFunction[Request, UserRequest]
+  def apply(ern: String, arc: String): ActionBuilder[UserRequest, AnyContent] with ActionFunction[Request, UserRequest]
 }
 
 @Singleton
@@ -42,7 +42,7 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector,
                                val bodyParser: BodyParsers.Default
                               )(implicit val ec: ExecutionContext) extends AuthAction with AuthorisedFunctions with Logging {
 
-  def apply(ern: String): ActionBuilder[UserRequest, AnyContent] with ActionFunction[Request, UserRequest] =
+  def apply(ern: String, arc: String): ActionBuilder[UserRequest, AnyContent] with ActionFunction[Request, UserRequest] =
     new ActionBuilder[UserRequest, AnyContent] with ActionFunction[Request, UserRequest] {
 
       override val parser = bodyParser
@@ -76,7 +76,7 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector,
 
         } recover {
           case _: NoActiveSession =>
-            Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
+            Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl(ern, arc))))
           case x: AuthorisationException =>
             logger.debug(s"[invokeBlock] Authorisation Exception ${x.reason}")
             Redirect(controllers.routes.UnauthorisedController.onPageLoad())

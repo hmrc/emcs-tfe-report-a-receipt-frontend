@@ -30,9 +30,9 @@ trait AuthActionHelper {
   val userAllowList: UserAllowListAction
 
   def authorisedDataRequest(ern: String, arc: String)(block: DataRequest[_] => Result): Action[AnyContent] =
-    (auth(ern) andThen userAllowList andThen withMovement(arc) andThen getData andThen requireData)(block)
+    (auth(ern, arc) andThen userAllowList andThen withMovement(arc) andThen getData andThen requireData)(block)
 
   def authorisedDataRequestAsync(ern: String, arc: String)(block: DataRequest[_] => Future[Result]): Action[AnyContent] =
-    (auth(ern) andThen userAllowList andThen withMovement(arc) andThen getData andThen requireData).async(block)
+    (auth(ern, arc) andThen userAllowList andThen withMovement(arc) andThen getData andThen requireData).async(block)
 
 }

@@ -38,7 +38,7 @@ class IndexController @Inject()(override val messagesApi: MessagesApi,
                                 view: ContinueDraftView) extends BaseController {
 
   def onPageLoad(ern: String, arc: String): Action[AnyContent] =
-    (authAction(ern) andThen withMovement(arc) andThen getData).async { implicit request =>
+    (authAction(ern, arc) andThen withMovement(arc) andThen getData).async { implicit request =>
       request.userAnswers match {
         case Some(ans) if ans.data.fields.nonEmpty =>
           Future.successful(Ok(view(formProvider(), routes.IndexController.onSubmit(ern, arc))))
@@ -48,7 +48,7 @@ class IndexController @Inject()(override val messagesApi: MessagesApi,
     }
 
   def onSubmit(ern: String, arc: String): Action[AnyContent] =
-    (authAction(ern) andThen withMovement(arc) andThen getData).async { implicit request =>
+    (authAction(ern, arc) andThen withMovement(arc) andThen getData).async { implicit request =>
       formProvider().bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, routes.IndexController.onSubmit(ern, arc)))),

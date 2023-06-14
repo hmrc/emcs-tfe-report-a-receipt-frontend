@@ -32,7 +32,7 @@
 
 @layout(pageTitle = titleNoForm(messages("selectItems.title")), fullWidthContent = true) {
 
-    @h1("selectItems.heading", Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
+    @h1("selectItems.heading", Some(messages("arc.subHeading", request.arc)), "govuk-heading-xl")
 
     @table(helper.constructTable(items))
 }

@@ -21,36 +21,30 @@ object SelectItemsMessages {
   sealed trait ViewMessages { _: i18n =>
     val title: String
     val heading: String
+    val tableHeadItem: String
     val tableHeadDescription: String
     val tableHeadQuantity: String
-    val tableHeadAlcohol: String
     val tableHeadPackaging: String
-    val alcoholRow: Option[BigDecimal] => String
+    val tableRowItem: Int => String
   }
 
-  object English extends ViewMessages with BaseEnglish {
+  object English extends ViewMessages with UnitOfMeasureMessages.English {
     override val heading = "Select an item to give information about"
     override val title = title(heading)
-    override val tableHeadDescription = "Description"
+    override val tableHeadItem = "Item"
+    override val tableHeadDescription = "Commercial description"
     override val tableHeadQuantity = "Quantity"
-    override val tableHeadAlcohol = "Alcohol"
     override val tableHeadPackaging = "Packaging"
-    override val alcoholRow: Option[BigDecimal] => String = {
-      case Some(strength) => strength + "%"
-      case None => "N/A"
-    }
+    override val tableRowItem: Int => String = "Item " + _
   }
 
-  object Welsh extends ViewMessages with BaseWelsh {
+  object Welsh extends ViewMessages with UnitOfMeasureMessages.Welsh {
     override val heading = "Select an item to give information about"
     override val title = title(heading)
-    override val tableHeadDescription = "Description"
+    override val tableHeadItem = "Item"
+    override val tableHeadDescription = "Commercial description"
     override val tableHeadQuantity = "Quantity"
-    override val tableHeadAlcohol = "Alcohol"
     override val tableHeadPackaging = "Packaging"
-    override val alcoholRow: Option[BigDecimal] => String = {
-      case Some(strength) => strength + "%"
-      case None => "N/A"
-    }
+    override val tableRowItem: Int => String = "Item " + _
   }
 }

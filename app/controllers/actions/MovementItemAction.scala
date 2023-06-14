@@ -19,7 +19,7 @@ package controllers.actions
 import connectors.emcsTfe.GetMovementConnector
 import handlers.ErrorHandler
 import models.requests.{MovementRequest, UserRequest}
-import play.api.mvc.Results.BadRequest
+import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
@@ -40,7 +40,7 @@ class MovementActionImpl @Inject()(getMovementConnector: GetMovementConnector,
 
       getMovementConnector.getMovement(request.ern, arc).map {
         case Left(_) =>
-          Left(BadRequest(errorHandler.badRequestTemplate(request)))
+          Left(Redirect(controllers.error.routes.ErrorController.unauthorised()))
         case Right(movementDetails) =>
           Right(MovementRequest(request, arc, movementDetails))
       }

@@ -45,7 +45,7 @@ class UserAllowListActionImpl @Inject()(userAllowListConnector: UserAllowListCon
         case Right(true) => Right(request)
         case Right(false) =>
           logger.info(s"[refine] User with ern: '${request.ern}' was not on the allow-list")
-          Left(Redirect(routes.UnauthorisedController.onPageLoad()))
+          Left(Redirect(controllers.error.routes.ErrorController.notOnPrivateBeta()))
         case Left(_) =>
           logger.warn(s"[refine] Unable to check if User is on allow-list as unexpected error returned from user-allow-list")
           Left(InternalServerError(errorHandler.internalServerErrorTemplate(request)))

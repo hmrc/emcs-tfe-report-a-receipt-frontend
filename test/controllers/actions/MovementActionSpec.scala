@@ -78,8 +78,8 @@ class MovementActionSpec extends SpecBase with MockitoSugar with MockGetMovement
 
       "must render a BadRequest" in new Harness(Left(JsonValidationError)) {
 
-        status(result) mustBe BAD_REQUEST
-        Html(contentAsString(result)) mustBe errorHandler.badRequestTemplate
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.error.routes.ErrorController.unauthorised().url)
       }
     }
   }

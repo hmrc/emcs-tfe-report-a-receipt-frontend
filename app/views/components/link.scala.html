@@ -23,7 +23,8 @@
         opensInNewTab: Boolean = false,
         button: Boolean = false,
         classes: String = "govuk-link",
-        hiddenContent: Option[String] = None
+        hiddenContent: Option[String] = None,
+        withEndingComma: Boolean = false
 )(implicit messages: Messages)
 
 <a href="@link"
@@ -33,7 +34,7 @@
    @if(button){role="button" data-module="govuk-button"}>
     @messages(messageKey)@if(opensInNewTab)(" " + messages("site.opensInNewTab"))@hiddenContent.map{content=>
         <span class="govuk-visually-hidden"> @content</span>
-    }</a>
+    }</a>@if(withEndingComma){,}
 
 @{
  //$COVERAGE-OFF$

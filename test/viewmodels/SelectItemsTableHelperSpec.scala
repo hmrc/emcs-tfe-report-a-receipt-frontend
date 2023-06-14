@@ -44,9 +44,9 @@ class SelectItemsTableHelperSpec extends SpecBase {
         "should render the correct header rows" in {
 
           selectItemsTableHelper.headerRow mustBe Some(Seq(
+            HeadCell(Text(langMessages.tableHeadItem)),
             HeadCell(Text(langMessages.tableHeadDescription)),
             HeadCell(Text(langMessages.tableHeadQuantity)),
-            HeadCell(Text(langMessages.tableHeadAlcohol)),
             HeadCell(Text(langMessages.tableHeadPackaging))
           ))
         }
@@ -62,19 +62,20 @@ class SelectItemsTableHelperSpec extends SpecBase {
               TableRow(
                 content = HtmlContent(link(
                   link = controllers.routes.SelectItemsController.addItemToList(testErn, testArc, item1.itemUniqueReference).url,
-                  messageKey = "testdata1"
+                  messageKey = langMessages.tableRowItem(item1.itemUniqueReference)
                 )),
+                classes = "white-space-nowrap",
+              ),
+              TableRow(
+                content = Text("testdata1"),
                 classes = "govuk-!-width-one-half"
               ),
               TableRow(
-                content = Text(item1.quantity.toString() + " kg")
-              ),
-              TableRow(
-                content = Text(langMessages.alcoholRow(item1.alcoholicStrength))
+                content = Text(item1.quantity.toString() + " " + langMessages.kilogramsShort)
               ),
               TableRow(
                 content = HtmlContent(list(Seq(
-                  Html(boxPackage.quantity.get.toString() + " x " + boxPackage.typeOfPackage)
+                  Html(boxPackage.quantity.get.toString() + " " + boxPackage.typeOfPackage)
                 )))
               )
             ),
@@ -82,20 +83,21 @@ class SelectItemsTableHelperSpec extends SpecBase {
               TableRow(
                 content = HtmlContent(link(
                   link = controllers.routes.SelectItemsController.addItemToList(testErn, testArc, item2.itemUniqueReference).url,
-                  messageKey = "testdata2"
+                  messageKey = langMessages.tableRowItem(item2.itemUniqueReference)
                 )),
+                classes = "white-space-nowrap",
+              ),
+              TableRow(
+                content = Text("testdata2"),
                 classes = "govuk-!-width-one-half"
               ),
               TableRow(
-                content = Text(item2.quantity.toString() + " kg")
-              ),
-              TableRow(
-                content = Text(langMessages.alcoholRow(item2.alcoholicStrength))
+                content = Text(item2.quantity.toString() + " " + langMessages.kilogramsShort)
               ),
               TableRow(
                 content = HtmlContent(list(Seq(
-                  Html(boxPackage.quantity.get.toString() + " x " + boxPackage.typeOfPackage),
-                  Html(cratePackage.quantity.get.toString() + " x " + cratePackage.typeOfPackage)
+                  Html(boxPackage.quantity.get.toString() + " " + boxPackage.typeOfPackage),
+                  Html(cratePackage.quantity.get.toString() + " " + cratePackage.typeOfPackage)
                 )))
               )
             )

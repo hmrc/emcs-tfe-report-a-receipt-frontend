@@ -29,7 +29,7 @@ object UnitOfMeasureMessages {
     val thousandsLong: String
   }
 
-  object English extends ViewMessages with BaseEnglish {
+  trait English extends ViewMessages with BaseEnglish {
     override val kilogramsShort: String = "kg"
     override val kilogramsLong: String = "kilograms"
     override val litres15Short: String = "litres"
@@ -39,8 +39,9 @@ object UnitOfMeasureMessages {
     override val thousandsShort: String = "x1000"
     override val thousandsLong: String = "x1000 items"
   }
+  object English extends English
 
-  object Welsh extends ViewMessages with BaseWelsh {
+  trait Welsh extends ViewMessages with BaseWelsh {
     override val kilogramsShort: String = "kg"
     override val kilogramsLong: String = "kilograms"
     override val litres15Short: String = "litres"
@@ -50,4 +51,5 @@ object UnitOfMeasureMessages {
     override val thousandsShort: String = "x1000"
     override val thousandsLong: String = "x1000 items"
   }
+  object Welsh extends Welsh
 }

@@ -30,21 +30,25 @@ import javax.inject.Inject
 class SelectItemsTableHelper @Inject()(link: link, list: list) {
 
   private[viewmodels] def headerRow(implicit messages: Messages): Option[Seq[HeadCell]] = Some(Seq(
+    HeadCell(Text(messages("selectItems.table.heading.item"))),
     HeadCell(Text(messages("selectItems.table.heading.description"))),
     HeadCell(Text(messages("selectItems.table.heading.quantity"))),
-    HeadCell(Text(messages("selectItems.table.heading.alcohol"))),
     HeadCell(Text(messages("selectItems.table.heading.packaging")))
   ))
 
   private[viewmodels] def dataRows(ern: String, arc: String, items: Seq[(MovementItem, CnCodeInformation)])(implicit messages: Messages): Seq[Seq[TableRow]] =
-    items.map {
+    items.sortBy(_._1.itemUniqueReference).map {
       case (item, cnCodeInformation) =>
         Seq(
           TableRow(
             content = HtmlContent(link(
               link = controllers.routes.SelectItemsController.addItemToList(ern, arc, item.itemUniqueReference).url,
-              messageKey = cnCodeInformation.cnCodeDescription
+              messageKey = messages("selectItems.table.row.item", item.itemUniqueReference)
             )),
+            classes = "white-space-nowrap"
+          ),
+          TableRow(
+            content = Text(messages(cnCodeInformation.cnCodeDescription)),
             classes = "govuk-!-width-one-half"
           ),
           TableRow(
@@ -55,14 +59,8 @@ class SelectItemsTableHelper @Inject()(link: link, list: list) {
             ))
           ),
           TableRow(
-            content = Text(item.alcoholicStrength match {
-              case Some(strength) => messages("selectItems.table.row.alcohol", strength)
-              case None => messages("selectItems.table.row.alcohol.na")
-            })
-          ),
-          TableRow(
             content = HtmlContent(list(item.packaging.map(pckg =>
-              Html(pckg.quantity.getOrElse(0).toString() + " x " + pckg.typeOfPackage)
+              Html(messages("selectItems.table.row.packaging", pckg.quantity.getOrElse(0), pckg.typeOfPackage))
             )))
           )
         )

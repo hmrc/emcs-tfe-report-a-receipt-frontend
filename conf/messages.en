@@ -283,13 +283,13 @@ wrongWithItem.checkYourAnswers.change.hidden = what was wrong
 
 selectItems.title = Select an item to give information about
 selectItems.heading = Select an item to give information about
-selectItems.table.heading.description = Description
+selectItems.table.heading.item = Item
+selectItems.table.heading.description = Commercial description
 selectItems.table.heading.quantity = Quantity
-selectItems.table.heading.alcohol = Alcohol
 selectItems.table.heading.packaging = Packaging
-selectItems.table.row.alcohol = {0}%
-selectItems.table.row.alcohol.na = N/A
+selectItems.table.row.item = Item {0}
 selectItems.table.row.quantity = {0} {1}
+selectItems.table.row.packaging = {0} {1}
 
 itemDetails.title = Item details
 itemDetails.heading = Item {0}

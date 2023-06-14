@@ -45,7 +45,7 @@ class SelectItemsController @Inject()(override val messagesApi: MessagesApi,
                                      ) extends BaseNavigationController with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String): Action[AnyContent] =
-    authorisedDataRequestAsync(ern, arc) { implicit request =>
+    authorisedDataRequestWithUpToDateMovementAsync(ern, arc) { implicit request =>
       val filteredItems: Seq[MovementItem] = getFilteredItems(request)
       if (filteredItems.isEmpty) {
         Future.successful(Redirect(routes.AddedItemsController.onPageLoad(ern, arc)))
@@ -59,7 +59,7 @@ class SelectItemsController @Inject()(override val messagesApi: MessagesApi,
     }
 
   def addItemToList(ern: String, arc: String, itemUniqueReference: Int): Action[AnyContent] =
-    authorisedDataRequestAsync(ern, arc) { implicit request =>
+    authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
       // remove any previously entered data before adding an item to the list
       val newUserAnswers = request.userAnswers.removeItem(itemUniqueReference)
       saveAndRedirect(SelectItemsPage(itemUniqueReference), itemUniqueReference, newUserAnswers, NormalMode)

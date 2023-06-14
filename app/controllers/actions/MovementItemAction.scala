@@ -30,7 +30,7 @@ class MovementActionImpl @Inject()(getMovementConnector: GetMovementConnector,
                                    errorHandler: ErrorHandler)
                                   (implicit ec: ExecutionContext) extends MovementAction {
 
-  override def apply(arc: String): ActionRefiner[UserRequest, MovementRequest] = new ActionRefiner[UserRequest, MovementRequest] {
+  override def apply(arc: String, forceFetchNew: Boolean): ActionRefiner[UserRequest, MovementRequest] = new ActionRefiner[UserRequest, MovementRequest] {
 
     override def executionContext: ExecutionContext = ec
 
@@ -38,7 +38,7 @@ class MovementActionImpl @Inject()(getMovementConnector: GetMovementConnector,
 
       implicit val hc = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-      getMovementConnector.getMovement(request.ern, arc).map {
+      getMovementConnector.getMovement(request.ern, arc, forceFetchNew).map {
         case Left(_) =>
           Left(Redirect(controllers.error.routes.ErrorController.unauthorised()))
         case Right(movementDetails) =>
@@ -49,5 +49,7 @@ class MovementActionImpl @Inject()(getMovementConnector: GetMovementConnector,
 }
 
 trait MovementAction {
-  def apply(arc: String): ActionRefiner[UserRequest, MovementRequest]
+  def apply(arc: String, forceFetchNew: Boolean): ActionRefiner[UserRequest, MovementRequest]
+  def upToDate(arc: String): ActionRefiner[UserRequest, MovementRequest] = apply(arc, forceFetchNew = true)
+  def fromCache(arc: String): ActionRefiner[UserRequest, MovementRequest] = apply(arc, forceFetchNew = false)
 }

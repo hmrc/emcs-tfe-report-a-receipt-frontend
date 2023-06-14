@@ -49,7 +49,7 @@ class WrongWithMovementController @Inject()(
     onPageLoad(WrongWithMovementPage, ern, arc, routes.WrongWithMovementController.submitWrongWithMovement(ern, arc, mode))
 
   def submitWrongWithMovement(ern: String, arc: String, mode: Mode): Action[AnyContent] = {
-    authorisedDataRequestAsync(ern, arc) { implicit request =>
+    authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
       formProvider(WrongWithMovementPage).bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(
@@ -100,7 +100,7 @@ class WrongWithMovementController @Inject()(
     onPageLoad(WrongWithItemPage(idx), ern, arc, routes.WrongWithMovementController.submitWrongWithItem(ern, arc, idx, mode))
 
   def submitWrongWithItem(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] = {
-    authorisedDataRequestAsync(ern, arc) { implicit request =>
+    authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
       formProvider(WrongWithItemPage(idx)).bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(
@@ -145,7 +145,7 @@ class WrongWithMovementController @Inject()(
                          ern: String,
                          arc: String,
                          action: Call): Action[AnyContent] =
-    authorisedDataRequest(ern, arc) { implicit request =>
+    authorisedDataRequestWithCachedMovement(ern, arc) { implicit request =>
       Ok(view(page, fillForm(page, formProvider(page)), action))
     }
 }

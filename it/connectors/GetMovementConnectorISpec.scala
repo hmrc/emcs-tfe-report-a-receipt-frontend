@@ -51,49 +51,49 @@ class GetMovementConnectorISpec  extends AnyFreeSpec
 
     val body = Json.toJson(getMovementResponseInputJson)
 
-    val url = s"/emcs-tfe/movement/ern/arc?forceFetchNew=true"
+    def url(forceFetchNew: Boolean): String = s"/emcs-tfe/movement/ern/arc?forceFetchNew=$forceFetchNew"
 
     "must return true when the server responds OK" in {
 
       server.stubFor(
-        get(urlEqualTo(url))
+        get(urlEqualTo(url(forceFetchNew = true)))
           .willReturn(aResponse().withStatus(OK).withBody(Json.stringify(body)))
       )
 
-      connector.getMovement(exciseRegistrationNumber, arc).futureValue mustBe Right(getMovementResponseModel)
+      connector.getMovement(exciseRegistrationNumber, arc, forceFetchNew = true).futureValue mustBe Right(getMovementResponseModel)
     }
 
     "must return false when the server responds NOT_FOUND" in {
 
       server.stubFor(
-        get(urlEqualTo(url))
+        get(urlEqualTo(url(forceFetchNew = false)))
           .withHeader(AUTHORIZATION, equalTo("token"))
           .willReturn(aResponse().withStatus(NOT_FOUND))
       )
 
-      connector.getMovement(exciseRegistrationNumber, arc).futureValue mustBe Left(UnexpectedDownstreamResponseError)
+      connector.getMovement(exciseRegistrationNumber, arc, forceFetchNew = false).futureValue mustBe Left(UnexpectedDownstreamResponseError)
     }
 
     "must fail when the server responds with any other status" in {
 
       server.stubFor(
-        get(urlEqualTo(url))
+        get(urlEqualTo(url(forceFetchNew = true)))
           .withHeader(AUTHORIZATION, equalTo("token"))
           .willReturn(aResponse().withStatus(INTERNAL_SERVER_ERROR))
       )
 
-      connector.getMovement(exciseRegistrationNumber, arc).futureValue mustBe Left(UnexpectedDownstreamResponseError)
+      connector.getMovement(exciseRegistrationNumber, arc, forceFetchNew = true).futureValue mustBe Left(UnexpectedDownstreamResponseError)
     }
 
     "must fail when the connection fails" in {
 
       server.stubFor(
-        get(urlEqualTo(url))
+        get(urlEqualTo(url(forceFetchNew = true)))
           .withHeader(AUTHORIZATION, equalTo("token"))
           .willReturn(aResponse().withFault(Fault.RANDOM_DATA_THEN_CLOSE))
       )
 
-      connector.getMovement(exciseRegistrationNumber, arc).futureValue mustBe Left(UnexpectedDownstreamResponseError)
+      connector.getMovement(exciseRegistrationNumber, arc, forceFetchNew = true).futureValue mustBe Left(UnexpectedDownstreamResponseError)
     }
   }
 

@@ -46,7 +46,7 @@ class RemoveItemController @Inject()(
   def onPageLoad(ern: String,
                          arc: String,
                          idx: Int): Action[AnyContent] =
-    authorisedDataRequest(ern, arc) { implicit request =>
+    authorisedDataRequestWithCachedMovement(ern, arc) { implicit request =>
       withItem(idx) {
         _ => Ok(view(
           form = formProvider(RemoveItemPage(idx)),
@@ -59,7 +59,7 @@ class RemoveItemController @Inject()(
   def onSubmit(ern: String,
                        arc: String,
                        idx: Int): Action[AnyContent] =
-    authorisedDataRequestAsync(ern, arc) { implicit request =>
+    authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
       withItemAsync(idx) {
         _ =>
         formProvider(RemoveItemPage(idx)).bindFromRequest().fold(

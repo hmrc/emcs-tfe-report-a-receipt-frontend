@@ -40,7 +40,7 @@ class ConfirmationController @Inject()(
                                       ) extends FrontendBaseController with I18nSupport with AuthActionHelper with Logging {
 
   def onPageLoad(ern: String, arc: String): Action[AnyContent] =
-    authorisedDataRequest(ern, arc) { implicit request =>
+    authorisedDataRequestWithCachedMovement(ern, arc) { implicit request =>
       request.userAnswers.get(ConfirmationPage) match {
         case Some(reference) =>
           Ok(view(reference))

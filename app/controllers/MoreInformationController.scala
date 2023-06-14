@@ -90,7 +90,7 @@ class MoreInformationController @Inject()(
       routes.MoreInformationController.submitItemDamageInformation(ern, arc, idx, mode), mode)
 
   private def onPageLoad(ern: String, arc: String, page: QuestionPage[Option[String]], action: Call): Action[AnyContent] =
-    authorisedDataRequest(ern, arc) { implicit request =>
+    authorisedDataRequestWithCachedMovement(ern, arc) { implicit request =>
       Ok(view(fillForm(page, formProvider(page)), page, action))
     }
 
@@ -100,7 +100,7 @@ class MoreInformationController @Inject()(
                        yesNoPage: QuestionPage[Boolean],
                        action: Call,
                        mode: Mode): Action[AnyContent] =
-    authorisedDataRequestAsync(ern, arc) { implicit request =>
+    authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
       formProvider(page).bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, page, action))),

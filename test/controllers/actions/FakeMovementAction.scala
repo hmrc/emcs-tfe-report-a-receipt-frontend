@@ -24,7 +24,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class FakeMovementAction(movementData: GetMovementResponse) extends MovementAction {
 
-  override def apply(arc: String): ActionRefiner[UserRequest, MovementRequest] = new ActionRefiner[UserRequest, MovementRequest] {
+  override def apply(arc: String, forceFetchNew: Boolean): ActionRefiner[UserRequest, MovementRequest] = new ActionRefiner[UserRequest, MovementRequest] {
 
     override def refine[A](request: UserRequest[A]): Future[Either[Result, MovementRequest[A]]] =
       Future.successful(Right(MovementRequest(request, arc, movementData)))

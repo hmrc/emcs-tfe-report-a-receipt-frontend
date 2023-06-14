@@ -42,7 +42,7 @@ class RefusingAnyAmountOfItemController @Inject()(override val messagesApi: Mess
                                                   view: RefusingAnyAmountOfItemView) extends BaseNavigationController with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
-    authorisedDataRequest(ern, arc) { implicit request =>
+    authorisedDataRequestWithCachedMovement(ern, arc) { implicit request =>
       Ok(view(
         form = fillForm(RefusingAnyAmountOfItemPage(idx), formProvider()),
         action = routes.RefusingAnyAmountOfItemController.onSubmit(ern, arc, idx, mode)
@@ -50,7 +50,7 @@ class RefusingAnyAmountOfItemController @Inject()(override val messagesApi: Mess
     }
 
   def onSubmit(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
-    authorisedDataRequestAsync(ern, arc) { implicit request =>
+    authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
       formProvider().bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, routes.RefusingAnyAmountOfItemController.onSubmit(ern, arc, idx, mode)))),

@@ -17,8 +17,7 @@
 package mocks.services
 
 import models.audit.AuditModel
-import models.requests.DataRequest
-import org.scalamock.handlers.CallHandler3
+import org.scalamock.handlers.CallHandler2
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.BeforeAndAfterEach
 import services.AuditingService
@@ -29,9 +28,8 @@ trait MockAuditingService extends MockFactory with BeforeAndAfterEach {
   lazy val mockAuditingService: AuditingService = mock[AuditingService]
 
   object MockAuditingService {
-    def verifyAudit(auditModel: AuditModel)
-    : CallHandler3[AuditModel, HeaderCarrier,  DataRequest[_], Unit] =
-      (mockAuditingService.audit( _: AuditModel)(_: HeaderCarrier, _: DataRequest[_]))
-        .expects(*, *, *)
+    def verifyAudit(auditModel: AuditModel): CallHandler2[AuditModel, HeaderCarrier, Unit] =
+      (mockAuditingService.audit( _: AuditModel)(_: HeaderCarrier))
+        .expects(*, *)
   }
 }

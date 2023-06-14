@@ -44,7 +44,7 @@ class CheckYourAnswersItemController @Inject()(
                                           ) extends BaseNavigationController with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String, idx: Int): Action[AnyContent] =
-    authorisedDataRequestAsync(ern, arc) { implicit request =>
+    authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
       withItemAsync(idx) {
         item =>
           getCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item)).map {
@@ -61,7 +61,7 @@ class CheckYourAnswersItemController @Inject()(
     }
 
   def onSubmit(ern: String, arc: String, idx: Int): Action[AnyContent] =
-    authorisedDataRequestAsync(ern, arc) { implicit request =>
+    authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
       withItemAsync(idx) {
         _ =>
           saveAndRedirect(CheckAnswersItemPage(idx), true, request.userAnswers, NormalMode)

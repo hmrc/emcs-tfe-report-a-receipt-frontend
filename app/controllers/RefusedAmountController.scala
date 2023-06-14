@@ -44,7 +44,7 @@ class RefusedAmountController @Inject()(
                                        ) extends BaseNavigationController with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
-    authorisedDataRequestAsync(ern, arc) { implicit request =>
+    authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
       withItemAsync(idx) { item =>
         getCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item)).map {
           serviceResult =>
@@ -60,7 +60,7 @@ class RefusedAmountController @Inject()(
     }
 
   def onSubmit(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
-    authorisedDataRequestAsync(ern, arc) { implicit request =>
+    authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
       withItemAsync(idx) { item =>
         val shortageAmount = request.userAnswers.get(ItemShortageOrExcessPage(item.itemUniqueReference)).flatMap(_.shortageAmount)
         formProvider(item.quantity, shortageAmount).bindFromRequest().fold(

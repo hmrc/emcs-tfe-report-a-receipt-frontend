@@ -52,7 +52,7 @@ class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi
                                           ) extends BaseNavigationController with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String): Action[AnyContent] =
-    authorisedDataRequestAsync(ern, arc) { implicit request =>
+    authorisedDataRequestWithUpToDateMovementAsync(ern, arc) { implicit request =>
       withAllCompletedItemsAsync() {
         items =>
           val formattedAnswersFuture: Future[Seq[(String, SummaryList)]] = {
@@ -92,7 +92,7 @@ class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi
     }
 
   def onSubmit(ern: String, arc: String): Action[AnyContent] =
-    authorisedDataRequestAsync(ern, arc) { implicit request =>
+    authorisedDataRequestWithUpToDateMovementAsync(ern, arc) { implicit request =>
       submitReportOfReceiptService.submit(ern, arc).flatMap { response =>
 
         deleteDraftAndSetConfirmationFlow(request.internalId, request.ern, request.arc, response.receipt).map { _ =>

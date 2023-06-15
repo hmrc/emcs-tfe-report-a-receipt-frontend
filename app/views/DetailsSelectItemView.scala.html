@@ -1,0 +1,80 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import models.requests.DataRequest
+@import models.response.emcsTfe.MovementItem
+@import models.response.referenceData.CnCodeInformation
+@import viewmodels.DetailsSelectItemHelper
+@import views.html.components.table
+
+@this(
+    layout: templates.Layout,
+    formHelper: FormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    govukRadios: GovukRadios,
+    govukButton: GovukButton,
+    govukTable: GovukTable,
+    h1: components.h1,
+    p: components.p,
+    table: table,
+    link: components.link,
+    helper: DetailsSelectItemHelper
+)
+
+@(form: Form[_], item: MovementItem, cnCodeInformation: CnCodeInformation)(implicit request: DataRequest[_], messages: Messages)
+
+@layout(pageTitle = title(form, messages("detailsSelectItem.title"))) {
+
+    @formHelper(action = routes.DetailsSelectItemController.onSubmit(request.ern, request.arc, item.itemUniqueReference), 'autoComplete -> "off") {
+
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
+        }
+
+        @h1(messages("itemDetails.heading", item.itemUniqueReference), Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
+
+        @govukTable(Table(
+            rows = helper.constructItemSummaryRows(item, cnCodeInformation),
+            firstCellIsHeader = true
+        ))
+
+        @p() {
+            @link(
+                routes.ItemDetailsController.onPageLoad( request.ern, request.arc, item.itemUniqueReference ).url,
+                messages("detailsSelectItem.viewAllDetails", item.itemUniqueReference),
+                opensInNewTab = false,
+                id = Some("contactHmrc")
+            )
+        }
+
+        @p(classes = "govuk-body govuk-!-margin-top-8") {
+            @govukRadios(
+                RadiosViewModel.yesNo(
+                    field = form("value"),
+                    legend = LegendViewModel(HtmlContent(heading)).withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")
+                )
+            )
+        }
+
+        @govukButton(
+            ButtonViewModel(messages("site.continue"))
+        )
+    }
+}
+
+@heading = {
+    @h1("detailsSelectItem.heading", None, "govuk-fieldset__heading")
+}

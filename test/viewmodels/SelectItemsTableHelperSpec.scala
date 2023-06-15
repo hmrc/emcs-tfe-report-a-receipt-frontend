@@ -61,7 +61,7 @@ class SelectItemsTableHelperSpec extends SpecBase {
             Seq(
               TableRow(
                 content = HtmlContent(link(
-                  link = controllers.routes.SelectItemsController.addItemToList(testErn, testArc, item1.itemUniqueReference).url,
+                  link = controllers.routes.DetailsSelectItemController.onPageLoad(testErn, testArc, item1.itemUniqueReference).url,
                   messageKey = langMessages.tableRowItem(item1.itemUniqueReference)
                 )),
                 classes = "white-space-nowrap",
@@ -82,7 +82,7 @@ class SelectItemsTableHelperSpec extends SpecBase {
             Seq(
               TableRow(
                 content = HtmlContent(link(
-                  link = controllers.routes.SelectItemsController.addItemToList(testErn, testArc, item2.itemUniqueReference).url,
+                  link = controllers.routes.DetailsSelectItemController.onPageLoad(testErn, testArc, item2.itemUniqueReference).url,
                   messageKey = langMessages.tableRowItem(item2.itemUniqueReference)
                 )),
                 classes = "white-space-nowrap",

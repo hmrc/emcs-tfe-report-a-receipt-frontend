@@ -23,6 +23,9 @@ import pages.unsatisfactory.{HowMuchIsWrongPage, WrongWithMovementPage}
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryDetailsSelectItemPagePage: Arbitrary[DetailsSelectItemPage.type] =
+    Arbitrary(DetailsSelectItemPage)
+
   implicit lazy val arbitraryRefusedAmountPage: Arbitrary[RefusedAmountPage] =
     Arbitrary(RefusedAmountPage(1))
 

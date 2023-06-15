@@ -61,12 +61,12 @@ class OtherInformationController @Inject()(
     onSubmit(ItemOtherInformationPage(idx), ern, arc, routes.OtherInformationController.submitItemOtherInformation(ern, arc, idx, mode), mode)
 
   private def onPageLoad(page: QuestionPage[String], ern: String, arc: String, action: Call): Action[AnyContent] =
-    authorisedDataRequest(ern, arc) { implicit request =>
+    authorisedDataRequestWithCachedMovement(ern, arc) { implicit request =>
       Ok(view(page, fillForm(page, formProvider(Some(page))), action))
     }
 
   private def onSubmit(page: QuestionPage[String], ern: String, arc: String, action: Call, mode: Mode): Action[AnyContent] =
-    authorisedDataRequestAsync(ern, arc) { implicit request: DataRequest[_] =>
+    authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request: DataRequest[_] =>
       submitAndTrimWhitespaceFromTextarea[String](Some(page), formProvider)(
         formWithErrors => Future.successful(BadRequest(view(page, formWithErrors, action)))
       )(

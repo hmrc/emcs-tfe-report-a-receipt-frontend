@@ -45,7 +45,7 @@ class GetMovementConnectorSpec extends SpecBase
 
         MockHttpClient.get(s"${appConfig.emcsTfeBaseUrl}/movement/ern/arc?forceFetchNew=true").returns(Future.successful(Right(getMovementResponseModel)))
 
-        connector.getMovement(exciseRegistrationNumber = "ern", arc = "arc").futureValue mustBe Right(getMovementResponseModel)
+        connector.getMovement(exciseRegistrationNumber = "ern", arc = "arc", forceFetchNew = true).futureValue mustBe Right(getMovementResponseModel)
       }
     }
 
@@ -53,9 +53,9 @@ class GetMovementConnectorSpec extends SpecBase
 
       "when downstream call fails" in {
 
-        MockHttpClient.get(s"${appConfig.emcsTfeBaseUrl}/movement/ern/arc?forceFetchNew=true").returns(Future.successful(Left(JsonValidationError)))
+        MockHttpClient.get(s"${appConfig.emcsTfeBaseUrl}/movement/ern/arc?forceFetchNew=false").returns(Future.successful(Left(JsonValidationError)))
 
-        connector.getMovement(exciseRegistrationNumber = "ern", arc = "arc").futureValue mustBe Left(JsonValidationError)
+        connector.getMovement(exciseRegistrationNumber = "ern", arc = "arc", forceFetchNew = false).futureValue mustBe Left(JsonValidationError)
       }
     }
   }

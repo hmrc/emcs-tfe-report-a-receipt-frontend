@@ -32,8 +32,8 @@ class GetMovementConnector @Inject()(val http: HttpClient,
   override implicit val reads: Reads[GetMovementResponse] = GetMovementResponse.reads
 
   lazy val baseUrl: String = config.emcsTfeBaseUrl
-  def getMovement(exciseRegistrationNumber: String, arc: String)
+  def getMovement(exciseRegistrationNumber: String, arc: String, forceFetchNew: Boolean)
                  (implicit headerCarrier: HeaderCarrier, executionContext: ExecutionContext): Future[Either[ErrorResponse, GetMovementResponse]] =
-    get(s"$baseUrl/movement/$exciseRegistrationNumber/$arc?forceFetchNew=true")
+    get(s"$baseUrl/movement/$exciseRegistrationNumber/$arc?forceFetchNew=$forceFetchNew")
 
 }

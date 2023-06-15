@@ -17,9 +17,7 @@
 package views.auth.errors
 
 import base.ViewSpecBase
-import config.AppConfig
 import fixtures.messages.UnauthorisedMessages
-import models.requests.DataRequest
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.i18n.Messages

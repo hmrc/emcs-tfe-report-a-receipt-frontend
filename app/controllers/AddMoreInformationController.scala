@@ -93,7 +93,7 @@ class AddMoreInformationController @Inject()(
                          arc: String,
                          yesNoPage: QuestionPage[Boolean],
                          submitAction: Call): Action[AnyContent] =
-    authorisedDataRequest(ern, arc) { implicit request =>
+    authorisedDataRequestWithCachedMovement(ern, arc) { implicit request =>
       Ok(view(fillForm(yesNoPage, formProvider(yesNoPage)), yesNoPage, submitAction))
     }
 
@@ -103,7 +103,7 @@ class AddMoreInformationController @Inject()(
                        infoPage: QuestionPage[Option[String]],
                        submitAction: Call,
                        mode: Mode): Action[AnyContent] =
-    authorisedDataRequestAsync(ern, arc) { implicit request =>
+    authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
       formProvider(yesNoPage).bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, yesNoPage, submitAction))),

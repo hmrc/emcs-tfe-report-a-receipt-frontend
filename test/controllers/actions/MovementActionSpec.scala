@@ -22,19 +22,16 @@ import mocks.connectors.MockGetMovementConnector
 import models.requests.{MovementRequest, UserRequest}
 import models.response.emcsTfe.GetMovementResponse
 import models.response.{ErrorResponse, JsonValidationError}
-import org.scalatest.BeforeAndAfterAll
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.Play
 import play.api.mvc.Results.Ok
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class MovementActionSpec extends SpecBase with MockitoSugar with MockGetMovementConnector with BeforeAndAfterAll {
+class MovementActionSpec extends SpecBase with MockitoSugar with MockGetMovementConnector {
 
   lazy val app = applicationBuilder(userAnswers = None).build()
   implicit val hc = HeaderCarrier()
@@ -47,39 +44,64 @@ class MovementActionSpec extends SpecBase with MockitoSugar with MockGetMovement
     errorHandler
   )
 
-  override def beforeAll(): Unit = {
-    Play.start(app)
-  }
+  class Harness(forceFetchNew: Boolean, connectorResponse: Either[ErrorResponse, GetMovementResponse]) {
 
-  override def afterAll(): Unit = {
-    Play.stop(app)
-  }
+    val action = if(forceFetchNew) movementAction.upToDate(testArc) else movementAction.fromCache(testArc)
 
-  class Harness(connectorResponse: Either[ErrorResponse, GetMovementResponse]) {
+    MockGetMovementConnector.getMovement(testErn, testArc, forceFetchNew).returns(Future.successful(connectorResponse))
 
-    MockGetMovementConnector.getMovement(testErn, testArc).returns(Future.successful(connectorResponse))
-
-    val result = movementAction(testArc).invokeBlock(request, { movementRequest: MovementRequest[_] =>
+    val result = action.invokeBlock(request, { _: MovementRequest[_] =>
       Future.successful(Ok)
     })
   }
 
   "MovementAction" - {
 
-    "when the connector returns a Movement successfully for the requested ARC" - {
+    ".fromCache() - (forceFetchNew=false)" - {
 
-      "must execute the supplied block" in new Harness(Right(getMovementResponseModel)) {
+      "when the connector returns a Movement successfully for the requested ARC" - {
 
-        status(result) mustBe OK
+        "must execute the supplied block" in new Harness(
+          forceFetchNew = false,
+          connectorResponse = Right(getMovementResponseModel)
+        ) {
+          status(result) mustBe OK
+        }
+      }
+
+      "when the connector does not return any data" - {
+
+        "must render a BadRequest" in new Harness(
+          forceFetchNew = true,
+          connectorResponse = Left(JsonValidationError)
+        ) {
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.error.routes.ErrorController.unauthorised().url)
+        }
       }
     }
 
-    "when the connector does not return any data" - {
+    ".upToDate() - (forceFetchNew=true)" - {
 
-      "must render a BadRequest" in new Harness(Left(JsonValidationError)) {
+      "when the connector returns a Movement successfully for the requested ARC" - {
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.error.routes.ErrorController.unauthorised().url)
+        "must execute the supplied block" in new Harness(
+          forceFetchNew = true,
+          connectorResponse = Right(getMovementResponseModel)
+        ) {
+          status(result) mustBe OK
+        }
+      }
+
+      "when the connector does not return any data" - {
+
+        "must render a BadRequest" in new Harness(
+          forceFetchNew = true,
+          connectorResponse = Left(JsonValidationError)
+        ) {
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.error.routes.ErrorController.unauthorised().url)
+        }
       }
     }
   }

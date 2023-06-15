@@ -51,7 +51,7 @@ class AddedItemsController @Inject()(
                                     ) extends BaseNavigationController with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String): Action[AnyContent] =
-    authorisedDataRequestAsync(ern, arc) { implicit request =>
+    authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
       withAddedItems(ern, arc) {
         getCnCodeInformationService.getCnCodeInformationWithListItems(_).flatMap {
           serviceResult =>
@@ -62,7 +62,7 @@ class AddedItemsController @Inject()(
     }
 
   def onSubmit(ern: String, arc: String): Action[AnyContent] =
-    authorisedDataRequestAsync(ern, arc) { implicit request =>
+    authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
 
       val isPartiallyRefused = request.userAnswers.get(AcceptMovementPage).contains(PartiallyRefused)
 

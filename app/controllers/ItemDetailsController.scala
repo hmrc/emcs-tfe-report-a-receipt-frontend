@@ -43,7 +43,7 @@ class ItemDetailsController @Inject()(
                                      ) extends BaseNavigationController with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String, idx: Int): Action[AnyContent] = {
-    authorisedDataRequestAsync(ern, arc) { implicit request =>
+    authorisedDataRequestWithUpToDateMovementAsync(ern, arc) { implicit request =>
       request.movementDetails.item(idx) match {
         case Some(item) =>
           getPackagingTypesService.getPackagingTypes(Seq(item)).flatMap {

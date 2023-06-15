@@ -18,7 +18,6 @@ package controllers.actions
 
 import config.AppConfig
 import connectors.userAllowList.UserAllowListConnector
-import controllers.routes
 import featureswitch.core.config.{FeatureSwitching, UserAllowList}
 import handlers.ErrorHandler
 import models.requests.{CheckUserAllowListRequest, UserRequest}

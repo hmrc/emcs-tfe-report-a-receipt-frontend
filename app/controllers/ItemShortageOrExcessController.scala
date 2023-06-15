@@ -52,7 +52,7 @@ class ItemShortageOrExcessController @Inject()(
                                               ) extends BaseNavigationController with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
-    authorisedDataRequestAsync(ern, arc) { implicit request =>
+    authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
       withItemAsync(idx) { item =>
         getCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item)).map {
           serviceResult =>
@@ -63,7 +63,7 @@ class ItemShortageOrExcessController @Inject()(
     }
 
   def onSubmit(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
-    authorisedDataRequestAsync(ern, arc) { implicit request =>
+    authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
       withItemAsync(idx) { item =>
         getCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item)).flatMap {
           serviceResult =>

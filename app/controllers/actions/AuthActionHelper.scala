@@ -16,8 +16,8 @@
 
 package controllers.actions
 
-import models.requests.DataRequest
-import play.api.mvc.{Action, AnyContent, Result}
+import models.requests.{DataRequest, MovementRequest, UserRequest}
+import play.api.mvc.{Action, ActionRefiner, AnyContent, Result}
 
 import scala.concurrent.Future
 
@@ -29,10 +29,25 @@ trait AuthActionHelper {
   val requireData: DataRequiredAction
   val userAllowList: UserAllowListAction
 
-  def authorisedDataRequest(ern: String, arc: String)(block: DataRequest[_] => Result): Action[AnyContent] =
-    (auth(ern, arc) andThen userAllowList andThen withMovement(arc) andThen getData andThen requireData)(block)
+  private def authedDataRequest(ern: String, arc: String, movementRefiner: => ActionRefiner[UserRequest, MovementRequest]) =
+    auth(ern, arc) andThen userAllowList andThen movementRefiner andThen getData andThen requireData
 
-  def authorisedDataRequestAsync(ern: String, arc: String)(block: DataRequest[_] => Future[Result]): Action[AnyContent] =
-    (auth(ern, arc) andThen userAllowList andThen withMovement(arc) andThen getData andThen requireData).async(block)
+
+  private def authedDataRequestUpToDate(ern: String, arc: String) = authedDataRequest(ern, arc, withMovement.upToDate(arc))
+
+  def authorisedDataRequestWithUpToDateMovement(ern: String, arc: String)(block: DataRequest[_] => Result): Action[AnyContent] =
+    authedDataRequestUpToDate(ern, arc)(block)
+
+  def authorisedDataRequestWithUpToDateMovementAsync(ern: String, arc: String)(block: DataRequest[_] => Future[Result]): Action[AnyContent] =
+    authedDataRequestUpToDate(ern, arc).async(block)
+
+
+  private def authedDataRequestFromCache(ern: String, arc: String) = authedDataRequest(ern, arc, withMovement.fromCache(arc))
+
+  def authorisedDataRequestWithCachedMovement(ern: String, arc: String)(block: DataRequest[_] => Result): Action[AnyContent] =
+    authedDataRequestFromCache(ern, arc)(block)
+
+  def authorisedDataRequestWithCachedMovementAsync(ern: String, arc: String)(block: DataRequest[_] => Future[Result]): Action[AnyContent] =
+    authedDataRequestFromCache(ern, arc).async(block)
 
 }

@@ -52,4 +52,8 @@ class ErrorController @Inject()(
   def notOnPrivateBeta(): Action[AnyContent] = Action { implicit request =>
     Ok(notOnPrivateBetaView())
   }
+
+  def wrongArc(): Action[AnyContent] = Action { implicit request =>
+    Ok(view())
+  }
 }

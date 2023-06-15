@@ -40,7 +40,7 @@ class MovementActionImpl @Inject()(getMovementConnector: GetMovementConnector,
 
       getMovementConnector.getMovement(request.ern, arc, forceFetchNew).map {
         case Left(_) =>
-          Left(Redirect(controllers.error.routes.ErrorController.unauthorised()))
+          Left(Redirect(controllers.error.routes.ErrorController.wrongArc()))
         case Right(movementDetails) =>
           Right(MovementRequest(request, arc, movementDetails))
       }

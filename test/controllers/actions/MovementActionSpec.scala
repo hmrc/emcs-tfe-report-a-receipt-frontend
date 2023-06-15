@@ -76,7 +76,7 @@ class MovementActionSpec extends SpecBase with MockitoSugar with MockGetMovement
           connectorResponse = Left(JsonValidationError)
         ) {
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.error.routes.ErrorController.unauthorised().url)
+          redirectLocation(result) mustBe Some(controllers.error.routes.ErrorController.wrongArc().url)
         }
       }
     }
@@ -100,7 +100,7 @@ class MovementActionSpec extends SpecBase with MockitoSugar with MockGetMovement
           connectorResponse = Left(JsonValidationError)
         ) {
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.error.routes.ErrorController.unauthorised().url)
+          redirectLocation(result) mustBe Some(controllers.error.routes.ErrorController.wrongArc().url)
         }
       }
     }

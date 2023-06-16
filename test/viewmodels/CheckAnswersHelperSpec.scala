@@ -32,7 +32,7 @@ import viewmodels.implicits._
 class CheckAnswersHelperSpec extends SpecBase
   with MockDateOfArrivalSummary
   with MockAcceptMovementSummary
-  with MockHowMuchIsWrongSummary
+  with MockHowGiveInformationSummary
   with MockMoreInformationSummary
   with MockOtherInformationSummary
   with MockWrongWithMovementSummary {
@@ -40,7 +40,7 @@ class CheckAnswersHelperSpec extends SpecBase
   lazy val checkAnswersHelper = new CheckAnswersHelper(
     mockAcceptMovementSummary,
     mockDateOfArrivalSummary,
-    mockHowMuchIsWrongSummary,
+    mockHowGiveInformationSummary,
     mockMoreInformationSummary,
     mockOtherInformationSummary,
     mockWrongWithMovementSummary
@@ -103,7 +103,7 @@ class CheckAnswersHelperSpec extends SpecBase
 
               val dateOfArrivalAnswer = SummaryListRow("DateOfArrival", ValueViewModel("today"))
               val acceptMovementAnswer = SummaryListRow("AcceptMovement", ValueViewModel("Yes"))
-              val howMuchIsWrongAnswer = SummaryListRow("HowMuchIsWrong", ValueViewModel("Whole Movement"))
+              val howGiveInformationAnswer = SummaryListRow("howGiveInformation", ValueViewModel("Whole Movement"))
               val wrongWithMovementAnswer = SummaryListRow("WrongWithMovement", ValueViewModel("shortage"))
               val shortageInformationAnswer = SummaryListRow("ShortageInfo", ValueViewModel("Info"))
               val excessInformationAnswer = SummaryListRow("ExcessInfo", ValueViewModel("Info"))
@@ -114,7 +114,7 @@ class CheckAnswersHelperSpec extends SpecBase
 
               MockDateOfArrivalSummary.row().returns(Some(dateOfArrivalAnswer))
               MockAcceptMovementSummary.row().returns(Some(acceptMovementAnswer))
-              MockHowMuchIsWrongSummary.row().returns(Some(howMuchIsWrongAnswer))
+              MockHowGiveInformationSummary.row().returns(Some(howGiveInformationAnswer))
               MockWrongWithMovementSummary.row().returns(Some(wrongWithMovementAnswer))
               MockMoreInformationSummary.row(
                 ShortageInformationPage,
@@ -141,7 +141,7 @@ class CheckAnswersHelperSpec extends SpecBase
               checkAnswersHelper.summaryList() mustBe SummaryList(Seq(
                 dateOfArrivalAnswer,
                 acceptMovementAnswer,
-                howMuchIsWrongAnswer,
+                howGiveInformationAnswer,
                 wrongWithMovementAnswer,
                 shortageInformationAnswer,
                 excessInformationAnswer,
@@ -165,13 +165,13 @@ class CheckAnswersHelperSpec extends SpecBase
               "when the WrongWithMovementPage contains no WrongWithMovement values" in {
                 val dateOfArrivalAnswer = SummaryListRow("DateOfArrival", ValueViewModel("today"))
                 val acceptMovementAnswer = SummaryListRow("AcceptMovement", ValueViewModel("Yes"))
-                val howMuchIsWrongAnswer = SummaryListRow("HowMuchIsWrong", ValueViewModel("Whole Movement"))
+                val howGiveInformationAnswer = SummaryListRow("HowGiveInformation", ValueViewModel("Whole Movement"))
                 val wrongWithMovementAnswer = SummaryListRow("WrongWithMovement", ValueViewModel("shortage"))
                 val moreInformationAnswer = SummaryListRow("MoreInfo", ValueViewModel("Info"))
 
                 MockDateOfArrivalSummary.row().returns(Some(dateOfArrivalAnswer))
                 MockAcceptMovementSummary.row().returns(Some(acceptMovementAnswer))
-                MockHowMuchIsWrongSummary.row().returns(Some(howMuchIsWrongAnswer))
+                MockHowGiveInformationSummary.row().returns(Some(howGiveInformationAnswer))
                 MockWrongWithMovementSummary.row().returns(Some(wrongWithMovementAnswer))
                 MockMoreInformationSummary.row(
                   MoreInformationPage,
@@ -181,7 +181,7 @@ class CheckAnswersHelperSpec extends SpecBase
                 checkAnswersHelper.summaryList() mustBe SummaryList(Seq(
                   dateOfArrivalAnswer,
                   acceptMovementAnswer,
-                  howMuchIsWrongAnswer,
+                  howGiveInformationAnswer,
                   wrongWithMovementAnswer,
                   moreInformationAnswer
                 )).withCssClass("govuk-!-margin-bottom-9")

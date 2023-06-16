@@ -28,9 +28,9 @@
 
 @(form: Form[_], mode: Mode)(implicit request: DataRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("howMuchIsWrong.title"))) {
+@layout(pageTitle = title(form, messages("howGiveInformation.title"))) {
 
-    @formHelper(action = routes.HowMuchIsWrongController.onSubmit(request.ern, request.arc, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.HowGiveInformationController.onSubmit(request.ern, request.arc, mode), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
@@ -40,15 +40,15 @@
             RadiosViewModel(
                 field  = form("value"),
                 legend = LegendViewModel(HtmlContent(heading)).withCssClass("govuk-fieldset__legend govuk-fieldset__legend--l"),
-                items  = HowMuchIsWrong.options
+                items  = HowGiveInformation.options
             )
         )
         @saveAndContinue()
-    }
+    }s
 }
 
 @heading = {
-    @h1("howMuchIsWrong.heading", Some(messages("arc.subHeading", request.arc)), "govuk-fieldset__heading")
+    @h1("howGiveInformation.heading", Some(messages("arc.subHeading", request.arc)), "govuk-fieldset__heading")
 }
 
 @{

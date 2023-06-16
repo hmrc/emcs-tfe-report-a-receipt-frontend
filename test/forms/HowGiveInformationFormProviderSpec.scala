@@ -16,27 +16,27 @@
 
 package forms
 
-import fixtures.messages.HowMuchIsWrongMessages
+import fixtures.messages.HowGiveInformationMessages
 import forms.behaviours.OptionFieldBehaviours
-import models.HowMuchIsWrong
+import models.HowGiveInformation
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.FormError
 import play.api.i18n.{Messages, MessagesApi}
 
 
-class HowMuchIsWrongFormProviderSpec extends OptionFieldBehaviours with GuiceOneAppPerSuite {
+class HowGiveInformationFormProviderSpec extends OptionFieldBehaviours with GuiceOneAppPerSuite {
 
-  val form = new HowMuchIsWrongFormProvider()()
+  val form = new HowGiveInformationFormProvider()()
 
   ".value" - {
 
     val fieldName = "value"
-    val requiredKey = "howMuchIsWrong.error.required"
+    val requiredKey = "howGiveInformation.error.required"
 
-    behave like optionsField[HowMuchIsWrong](
+    behave like optionsField[HowGiveInformation](
       form,
       fieldName,
-      validValues  = HowMuchIsWrong.values,
+      validValues  = HowGiveInformation.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 
@@ -49,14 +49,14 @@ class HowMuchIsWrongFormProviderSpec extends OptionFieldBehaviours with GuiceOne
 
   "Error Messages" - {
 
-    Seq(HowMuchIsWrongMessages.English, HowMuchIsWrongMessages.Welsh) foreach { messagesForLanguage =>
+    Seq(HowGiveInformationMessages.English, HowGiveInformationMessages.Welsh) foreach { messagesForLanguage =>
 
       implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(messagesForLanguage.lang))
 
       s"when output for language code '${messagesForLanguage.lang.code}'" - {
 
         "have the correct error message when no option is selected" in {
-          messages("howMuchIsWrong.error.required") mustBe messagesForLanguage.requiredError
+          messages("howGiveInformation.error.required") mustBe messagesForLanguage.requiredError
         }
       }
     }

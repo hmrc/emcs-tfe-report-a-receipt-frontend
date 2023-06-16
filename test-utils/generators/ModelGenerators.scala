@@ -22,9 +22,9 @@ import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
 
-  implicit lazy val arbitraryHowMuchIsWrong: Arbitrary[HowMuchIsWrong] =
+  implicit lazy val arbitraryHowGiveInformation: Arbitrary[HowGiveInformation] =
     Arbitrary {
-      Gen.oneOf(HowMuchIsWrong.values.toSeq)
+      Gen.oneOf(HowGiveInformation.values.toSeq)
     }
 
   implicit lazy val arbitraryWrongWithMovement: Arbitrary[WrongWithMovement] =

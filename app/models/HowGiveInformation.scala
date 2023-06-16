@@ -20,26 +20,26 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
-sealed trait HowMuchIsWrong
+sealed trait HowGiveInformation
 
-object HowMuchIsWrong extends Enumerable.Implicits {
+object HowGiveInformation extends Enumerable.Implicits {
 
-  case object TheWholeMovement extends WithName("wholeMovement") with HowMuchIsWrong
-  case object IndividualItem extends WithName("individualItem") with HowMuchIsWrong
+  case object TheWholeMovement extends WithName("wholeMovement") with HowGiveInformation
+  case object IndividualItem extends WithName("individualItem") with HowGiveInformation
 
-  val values: Seq[HowMuchIsWrong] = Seq(
+  val values: Seq[HowGiveInformation] = Seq(
     TheWholeMovement, IndividualItem
   )
 
   def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
     case (value, index) =>
       RadioItem(
-        content = Text(messages(s"howMuchIsWrong.${value.toString}")),
+        content = Text(messages(s"howGiveInformation.${value.toString}")),
         value   = Some(value.toString),
         id      = Some(s"value_$index")
       )
   }
 
-  implicit val enumerable: Enumerable[HowMuchIsWrong] =
+  implicit val enumerable: Enumerable[HowGiveInformation] =
     Enumerable(values.map(v => v.toString -> v): _*)
 }

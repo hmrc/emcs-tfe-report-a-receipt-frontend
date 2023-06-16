@@ -16,7 +16,7 @@
 
 package fixtures.messages
 
-object HowMuchIsWrongMessages {
+object HowGiveInformationMessages {
 
   sealed trait ViewMessages { _: i18n =>
     val title: String

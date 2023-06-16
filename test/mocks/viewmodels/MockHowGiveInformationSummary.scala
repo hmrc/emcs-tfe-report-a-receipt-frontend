@@ -21,17 +21,17 @@ import org.scalamock.handlers.CallHandler2
 import org.scalamock.scalatest.MockFactory
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.HowMuchIsWrongSummary
+import viewmodels.checkAnswers.HowGiveInformationSummary
 
 
-trait MockHowMuchIsWrongSummary extends MockFactory {
+trait MockHowGiveInformationSummary extends MockFactory {
 
-  lazy val mockHowMuchIsWrongSummary: HowMuchIsWrongSummary = mock[HowMuchIsWrongSummary]
+  lazy val mockHowGiveInformationSummary: HowGiveInformationSummary = mock[HowGiveInformationSummary]
 
-  object MockHowMuchIsWrongSummary {
+  object MockHowGiveInformationSummary {
 
     def row(): CallHandler2[DataRequest[_], Messages, Option[SummaryListRow]] =
-      (mockHowMuchIsWrongSummary.row()(_: DataRequest[_], _: Messages))
+      (mockHowGiveInformationSummary.row()(_: DataRequest[_], _: Messages))
         .expects(*, *)
   }
 }

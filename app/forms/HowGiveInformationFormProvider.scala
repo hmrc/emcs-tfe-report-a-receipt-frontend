@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-package pages.unsatisfactory
+package forms
 
-import models.HowMuchIsWrong
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import javax.inject.Inject
 
-case object HowMuchIsWrongPage extends QuestionPage[HowMuchIsWrong] {
+import forms.mappings.Mappings
+import play.api.data.Form
+import models.HowGiveInformation
 
-  override def path: JsPath = JsPath \ toString
+class HowGiveInformationFormProvider @Inject() extends Mappings {
 
-  override def toString: String = "howMuchIsWrong"
+  def apply(): Form[HowGiveInformation] =
+    Form(
+      "value" -> enumerable[HowGiveInformation]("howGiveInformation.error.required")
+    )
 }

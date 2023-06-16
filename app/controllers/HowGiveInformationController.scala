@@ -17,36 +17,36 @@
 package controllers
 
 import controllers.actions._
-import forms.HowMuchIsWrongFormProvider
+import forms.HowGiveInformationFormProvider
 import models.{Mode, UserAnswers}
 import navigation.Navigator
-import pages.unsatisfactory.HowMuchIsWrongPage
+import pages.unsatisfactory.HowGiveInformationPage
 import pages.{AcceptMovementPage, DateOfArrivalPage}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.UserAnswersService
-import views.html.HowMuchIsWrongView
+import views.html.HowGiveInformationView
 
 import javax.inject.Inject
 import scala.concurrent.Future
 
-class HowMuchIsWrongController @Inject()(
-                                          override val messagesApi: MessagesApi,
-                                          override val userAnswersService: UserAnswersService,
-                                          override val navigator: Navigator,
-                                          override val auth: AuthAction,
-                                          override val userAllowList: UserAllowListAction,
-                                          override val withMovement: MovementAction,
-                                          override val getData: DataRetrievalAction,
-                                          override val requireData: DataRequiredAction,
-                                          formProvider: HowMuchIsWrongFormProvider,
-                                          val controllerComponents: MessagesControllerComponents,
-                                          view: HowMuchIsWrongView
+class HowGiveInformationController @Inject()(
+                                              override val messagesApi: MessagesApi,
+                                              override val userAnswersService: UserAnswersService,
+                                              override val navigator: Navigator,
+                                              override val auth: AuthAction,
+                                              override val userAllowList: UserAllowListAction,
+                                              override val withMovement: MovementAction,
+                                              override val getData: DataRetrievalAction,
+                                              override val requireData: DataRequiredAction,
+                                              formProvider: HowGiveInformationFormProvider,
+                                              val controllerComponents: MessagesControllerComponents,
+                                              view: HowGiveInformationView
                                         ) extends BaseNavigationController with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String, mode: Mode): Action[AnyContent] =
     authorisedDataRequestWithCachedMovement(ern, arc) { implicit request =>
-      Ok(view(fillForm(HowMuchIsWrongPage, formProvider()), mode))
+      Ok(view(fillForm(HowGiveInformationPage, formProvider()), mode))
     }
 
   def onSubmit(ern: String, arc: String, mode: Mode): Action[AnyContent] =
@@ -56,11 +56,11 @@ class HowMuchIsWrongController @Inject()(
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value => {
           val newUserAnswers: UserAnswers = cleanseUserAnswersIfValueHasChanged(
-            page = HowMuchIsWrongPage,
+            page = HowGiveInformationPage,
             newAnswer = value,
             cleansingFunction = request.userAnswers.filterForPages(Seq(DateOfArrivalPage, AcceptMovementPage))
           )
-          saveAndRedirect(HowMuchIsWrongPage, value, newUserAnswers, mode)
+          saveAndRedirect(HowGiveInformationPage, value, newUserAnswers, mode)
         }
       )
     }

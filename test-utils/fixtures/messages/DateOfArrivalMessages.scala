@@ -33,8 +33,8 @@ object DateOfArrivalMessages {
   }
 
   object English extends ViewMessages with BaseEnglish {
-    override val title = title("When did this movement arrive?")
-    override val heading = "When did this movement arrive?"
+    override val heading = "When did you take delivery of the goods?"
+    override val title = title(heading)
     override val hint = "For example, 31 8 2022"
     override val checkYourAnswersLabel = "Date of arrival"
     override val hiddenChangeLinkText = "the date of arrival"
@@ -47,8 +47,8 @@ object DateOfArrivalMessages {
   }
 
   object Welsh extends ViewMessages with BaseWelsh {
-    override val title = title("When did this movement arrive?")
-    override val heading = "When did this movement arrive?"
+    override val heading = "When did you take delivery of the goods?"
+    override val title = title(heading)
     override val hint = "For example, 31 8 2022"
     override val checkYourAnswersLabel = "Date of arrival"
     override val hiddenChangeLinkText = "the date of arrival"

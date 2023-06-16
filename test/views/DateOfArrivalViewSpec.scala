@@ -53,10 +53,23 @@ class DateOfArrivalViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.dateDay -> messagesForLanguage.day,
           Selectors.dateMonth -> messagesForLanguage.month,
           Selectors.dateYear -> messagesForLanguage.year,
-          Selectors.button -> messagesForLanguage.saveAndContinue,
-          Selectors.secondaryButton -> messagesForLanguage.saveAndReturnToMovement
+          Selectors.button -> messagesForLanguage.saveAndContinue
         ))
       }
+    }
+
+    "must not render a secondary button" in {
+      val dateOfDispatch = LocalDate.now()
+
+      implicit val msgs = messages(app, DateOfArrivalMessages.English.lang)
+      implicit val request = dataRequest(FakeRequest(), emptyUserAnswers)
+
+      val form = app.injector.instanceOf[DateOfArrivalFormProvider].apply(dateOfDispatch)
+      val view = app.injector.instanceOf[DateOfArrivalView]
+
+      implicit val doc = Jsoup.parse(view(form, NormalMode).toString())
+
+      doc.select(Selectors.secondaryButton).size() mustBe 0
     }
   }
 }

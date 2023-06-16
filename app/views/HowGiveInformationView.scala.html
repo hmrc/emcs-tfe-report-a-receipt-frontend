@@ -15,15 +15,17 @@
  *@
 
 @import models.requests.DataRequest
+@import config.AppConfig
 
 @this(
+    appConfig: AppConfig,
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
     govukButton: GovukButton,
     h1: components.h1,
-    saveAndContinue: components.saveAndContinue
+    saveAndExit: components.saveAndExit
 )
 
 @(form: Form[_], mode: Mode)(implicit request: DataRequest[_], messages: Messages)
@@ -43,7 +45,7 @@
                 items  = HowGiveInformation.options
             )
         )
-        @saveAndContinue()
+        @saveAndExit()
     }
 }
 

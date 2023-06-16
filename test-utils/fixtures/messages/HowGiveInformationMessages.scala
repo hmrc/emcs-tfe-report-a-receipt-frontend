@@ -28,6 +28,7 @@ object HowGiveInformationMessages {
     val checkYourAnswersWholeMovement: String
     val checkYourAnswersIndividualItem: String
     val hiddenChangeLinkText: String
+    val savePreviousAnswersAndExitLinkText: String
   }
 
   object English extends ViewMessages with BaseEnglish {
@@ -40,6 +41,7 @@ object HowGiveInformationMessages {
     override val checkYourAnswersWholeMovement = "Whole movement"
     override val checkYourAnswersIndividualItem = "Individual items"
     override val hiddenChangeLinkText = "how much of this movement is wrong"
+    override val savePreviousAnswersAndExitLinkText = "Save previous answers and exit"
   }
 
   object Welsh extends ViewMessages with BaseWelsh {
@@ -52,5 +54,6 @@ object HowGiveInformationMessages {
     override val checkYourAnswersWholeMovement = "Whole movement"
     override val checkYourAnswersIndividualItem = "Individual items"
     override val hiddenChangeLinkText = "how much of this movement is wrong"
+    override val savePreviousAnswersAndExitLinkText = "Save previous answers and exit"
   }
 }

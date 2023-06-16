@@ -23,10 +23,18 @@ import models.ReferenceDataUnitOfMeasure
 import models.response.emcsTfe.WineProduct
 import models.response.referenceData.CnCodeInformation
 import play.twirl.api.Html
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Text, Value}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{Content, HtmlContent}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import views.html.components.{link, list}
 
 class ItemDetailsCardHelperSpec extends SpecBase {
+
+  private def summaryListRowBuilder(key: Content, value: Content) = SummaryListRow(
+    Key(key),
+    Value(value),
+    classes = "govuk-summary-list__row--no-border"
+  )
 
   "ItemDetailsCardHelper" - {
 
@@ -48,99 +56,99 @@ class ItemDetailsCardHelperSpec extends SpecBase {
           val cnCodeInformation = CnCodeInformation("cn code description", "excise product code description", ReferenceDataUnitOfMeasure.`2`)
 
           //noinspection ScalaStyle
-          def card(wineProduct: Option[WineProduct]): Seq[(HtmlContent, HtmlContent)] = {
+          def card(wineProduct: Option[WineProduct]): Seq[SummaryListRow] = {
             Seq(
-              Seq((
-                HtmlContent(langMessages.commodityCodeKey),
+              Seq(summaryListRowBuilder(
+                Text(langMessages.commodityCodeKey),
                 HtmlContent(link(link = appConfig.getUrlForCommodityCode(item1.cnCode), messageKey = item1.cnCode, opensInNewTab = true, id = Some("commodity-code")))
               )),
-              Seq((
-                HtmlContent(langMessages.descriptionKey),
-                HtmlContent(cnCodeInformation.exciseProductCodeDescription)
+              Seq(summaryListRowBuilder(
+                Text(langMessages.descriptionKey),
+                Text(cnCodeInformation.exciseProductCodeDescription)
               )),
-              Seq((
-                HtmlContent(langMessages.quantityKey),
-                HtmlContent(langMessages.quantityValue(item1.quantity))
+              Seq(summaryListRowBuilder(
+                Text(langMessages.quantityKey),
+                Text(langMessages.quantityValue(item1.quantity))
               )),
-              Seq((
-                HtmlContent(langMessages.grossWeightKey),
-                HtmlContent(langMessages.grossWeightValue(item1.grossMass))
+              Seq(summaryListRowBuilder(
+                Text(langMessages.grossWeightKey),
+                Text(langMessages.grossWeightValue(item1.grossMass))
               )),
-              Seq((
-                HtmlContent(langMessages.netWeightKey),
-                HtmlContent(langMessages.netWeightValue(item1.netMass))
+              Seq(summaryListRowBuilder(
+                Text(langMessages.netWeightKey),
+                Text(langMessages.netWeightValue(item1.netMass))
               )),
-              Seq((
-                HtmlContent(langMessages.densityKey),
+              Seq(summaryListRowBuilder(
+                Text(langMessages.densityKey),
                 HtmlContent(langMessages.densityValue(item1.density.get))
               )),
-              Seq((
-                HtmlContent(langMessages.alcoholicStrengthKey),
-                HtmlContent(langMessages.alcoholicStrengthValue(item1.alcoholicStrength.get))
+              Seq(summaryListRowBuilder(
+                Text(langMessages.alcoholicStrengthKey),
+                Text(langMessages.alcoholicStrengthValue(item1.alcoholicStrength.get))
               )),
-              Seq((
-                HtmlContent(langMessages.maturationAgeKey),
-                HtmlContent(item1.maturationAge.get)
+              Seq(summaryListRowBuilder(
+                Text(langMessages.maturationAgeKey),
+                Text(item1.maturationAge.get)
               )),
-              Seq((
-                HtmlContent(langMessages.degreePlatoKey),
+              Seq(summaryListRowBuilder(
+                Text(langMessages.degreePlatoKey),
                 HtmlContent(langMessages.degreePlatoValue(item1.degreePlato.get))
               )),
-              Seq((
-                HtmlContent(langMessages.fiscalMarkKey),
-                HtmlContent(item1.fiscalMark.get)
+              Seq(summaryListRowBuilder(
+                Text(langMessages.fiscalMarkKey),
+                Text(item1.fiscalMark.get)
               )),
-              Seq((
-                HtmlContent(langMessages.designationOfOriginKey),
-                HtmlContent(item1.designationOfOrigin.get)
+              Seq(summaryListRowBuilder(
+                Text(langMessages.designationOfOriginKey),
+                Text(item1.designationOfOrigin.get)
               )),
-              Seq((
-                HtmlContent(langMessages.sizeOfProducerKey),
-                HtmlContent(langMessages.sizeOfProducerValue(item1.sizeOfProducer.get))
+              Seq(summaryListRowBuilder(
+                Text(langMessages.sizeOfProducerKey),
+                Text(langMessages.sizeOfProducerValue(item1.sizeOfProducer.get))
               )),
-              Seq((
-                HtmlContent(langMessages.brandNameOfProductKey),
-                HtmlContent(item1.brandNameOfProduct.get)
+              Seq(summaryListRowBuilder(
+                Text(langMessages.brandNameOfProductKey),
+                Text(item1.brandNameOfProduct.get)
               )),
-              Seq((
-                HtmlContent(langMessages.commercialDescriptionKey),
-                HtmlContent(item1.commercialDescription.get)
+              Seq(summaryListRowBuilder(
+                Text(langMessages.commercialDescriptionKey),
+                Text(item1.commercialDescription.get)
               )),
               wineProduct match {
-                case Some(_) => Seq((
-                  HtmlContent(langMessages.wineProductCategoryKey),
-                  HtmlContent(langMessages.wineWithoutPDOPGI)
+                case Some(_) => Seq(summaryListRowBuilder(
+                  Text(langMessages.wineProductCategoryKey),
+                  Text(langMessages.wineWithoutPDOPGI)
                 ))
                 case None => Seq()
               },
               wineProduct match {
-                case Some(value) => Seq((
-                  HtmlContent(langMessages.wineOperationsKey),
+                case Some(value) => Seq(summaryListRowBuilder(
+                  Text(langMessages.wineOperationsKey),
                   value.wineOperations match {
                     case Some(values) if values.nonEmpty => HtmlContent(list(values.map(v => Html(v))))
-                    case _ => HtmlContent(langMessages.wineOperationsValueNone)
+                    case _ => Text(langMessages.wineOperationsValueNone)
                   }
                 ))
                 case None => Seq()
               },
               wineProduct match {
-                case Some(value) => Seq((
-                  HtmlContent(langMessages.wineGrowingZoneCodeKey),
-                  HtmlContent(value.wineGrowingZoneCode.get)
+                case Some(value) => Seq(summaryListRowBuilder(
+                  Text(langMessages.wineGrowingZoneCodeKey),
+                  Text(value.wineGrowingZoneCode.get)
                 ))
                 case None => Seq()
               },
               wineProduct match {
-                case Some(value) => Seq((
-                  HtmlContent(langMessages.thirdCountryOfOriginKey),
-                  HtmlContent(value.thirdCountryOfOrigin.get)
+                case Some(value) => Seq(summaryListRowBuilder(
+                  Text(langMessages.thirdCountryOfOriginKey),
+                  Text(value.thirdCountryOfOrigin.get)
                 ))
                 case None => Seq()
               },
               wineProduct match {
-                case Some(value) => Seq((
-                  HtmlContent(langMessages.wineOtherInformationKey),
-                  HtmlContent(value.otherInformation.get)
+                case Some(value) => Seq(summaryListRowBuilder(
+                  Text(langMessages.wineOtherInformationKey),
+                  Text(value.otherInformation.get)
                 ))
                 case None => Seq()
               }
@@ -165,25 +173,25 @@ class ItemDetailsCardHelperSpec extends SpecBase {
         "should render the PackagingType card" in {
 
           helper.constructPackagingTypeCard(boxPackage) mustBe Seq(
-            (
-              HtmlContent(langMessages.packagingTypeKey),
-              HtmlContent(boxPackage.typeOfPackage)
+            summaryListRowBuilder(
+              Text(langMessages.packagingTypeKey),
+              Text(boxPackage.typeOfPackage)
             ),
-            (
-              HtmlContent(langMessages.packagingQuantityKey),
-              HtmlContent(boxPackage.quantity.get.toString())
+            summaryListRowBuilder(
+              Text(langMessages.packagingQuantityKey),
+              Text(boxPackage.quantity.get.toString())
             ),
-            (
-              HtmlContent(langMessages.packagingIdentityOfCommercialSealKey),
-              HtmlContent(boxPackage.identityOfCommercialSeal.get)
+            summaryListRowBuilder(
+              Text(langMessages.packagingIdentityOfCommercialSealKey),
+              Text(boxPackage.identityOfCommercialSeal.get)
             ),
-            (
-              HtmlContent(langMessages.packagingSealInformationKey),
-              HtmlContent(boxPackage.sealInformation.get)
+            summaryListRowBuilder(
+              Text(langMessages.packagingSealInformationKey),
+              Text(boxPackage.sealInformation.get)
             ),
-            (
-              HtmlContent(langMessages.packagingShippingMarksKey),
-              HtmlContent(boxPackage.shippingMarks.get)
+            summaryListRowBuilder(
+              Text(langMessages.packagingShippingMarksKey),
+              Text(boxPackage.shippingMarks.get)
             )
           )
         }

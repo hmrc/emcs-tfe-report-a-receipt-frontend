@@ -22,290 +22,285 @@ import models.response.emcsTfe.{MovementItem, Packaging}
 import models.response.referenceData.CnCodeInformation
 import play.api.i18n.Messages
 import play.twirl.api.Html
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Text}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{Content, HtmlContent}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryListRow, Value}
 import views.html.components.{link, list}
 
 import javax.inject.Inject
 
 class ItemDetailsCardHelper @Inject()(link: link, list: list, appConfig: AppConfig) {
-  //noinspection ScalaStyle
-  def constructItemDetailsCard(item: MovementItem, cnCodeInformation: CnCodeInformation)(implicit messages: Messages): Seq[(HtmlContent, HtmlContent)] = {
-    val commodityCodeRow: Option[(HtmlContent, HtmlContent)] = Some((
-      HtmlContent(messages("itemDetails.key.commodityCode")),
-      HtmlContent(link(link = appConfig.getUrlForCommodityCode(item.cnCode), messageKey = item.cnCode, opensInNewTab = true, id = Some("commodity-code")))
-    ))
 
-    val descriptionRow: Option[(HtmlContent, HtmlContent)] = Some((
-      HtmlContent(messages("itemDetails.key.description")),
-      HtmlContent(cnCodeInformation.exciseProductCodeDescription)
-    ))
+  def constructItemDetailsCard(item: MovementItem, cnCodeInformation: CnCodeInformation)(implicit messages: Messages): Seq[SummaryListRow] = {
 
-    val quantityRow: Option[(HtmlContent, HtmlContent)] = Some((
-      HtmlContent(messages("itemDetails.key.quantity")),
-      HtmlContent(messages(
-        "itemDetails.value.quantity",
-        item.quantity.toString(),
-        messages(s"unitOfMeasure.${cnCodeInformation.unitOfMeasureCode.toUnitOfMeasure}.long")
-      ))
-    ))
+    implicit val _item = item
+    implicit val _cnCodeInfo = cnCodeInformation
 
-    val grossWeightRow: Option[(HtmlContent, HtmlContent)] = Some((
-      HtmlContent(messages("itemDetails.key.grossWeight")),
-      HtmlContent(messages(
-        "itemDetails.value.grossWeight",
-        item.grossMass.toString(),
-        messages(s"unitOfMeasure.$Kilograms.short")
-      ))
-    ))
+    Seq(
+      commodityCodeRow(),
+      descriptionRow(),
+      quantityRow(),
+      grossWeightRow(),
+      netWeightRow(),
+      densityRow(),
+      alcoholicStrengthRow(),
+      maturationAgeRow(),
+      degreePlatoRow(),
+      fiscalMarkRow(),
+      designationOfOriginRow(),
+      sizeOfProducerRow(),
+      brandNameOfProductRow(),
+      commercialDescriptionRow(),
+      wineProductCategoryRow(),
+      wineOperationsRow(),
+      wineGrowingZoneCodeRow(),
+      thirdCountryOfOriginRow(),
+      wineOtherInformationRow()
+    ).flatten
+  }
 
-    val netWeightRow: Option[(HtmlContent, HtmlContent)] = Some((
-      HtmlContent(messages("itemDetails.key.netWeight")),
-      HtmlContent(messages(
+
+  private def summaryListRowBuilder(key: Content, value: Content) = SummaryListRow(
+    Key(key),
+    Value(value),
+    classes = "govuk-summary-list__row--no-border"
+  )
+
+  private def wineOtherInformationRow()(implicit item: MovementItem, messages: Messages) =
+    item.wineProduct.flatMap(
+      _.otherInformation.map(
+        otherInformation =>
+          summaryListRowBuilder(
+            Text(messages("itemDetails.key.wineOtherInformation")),
+            Text(otherInformation)
+          )
+      )
+    )
+
+  private def thirdCountryOfOriginRow()(implicit item: MovementItem, messages: Messages) =
+    item.wineProduct.flatMap(
+      _.thirdCountryOfOrigin.map(
+        country =>
+          summaryListRowBuilder(
+            Text(messages("itemDetails.key.thirdCountryOfOrigin")),
+            Text(country)
+          )
+      )
+    )
+
+  private def wineGrowingZoneCodeRow()(implicit item: MovementItem, messages: Messages) =
+    item.wineProduct.flatMap(
+      _.wineGrowingZoneCode.map(
+        zoneCode =>
+          summaryListRowBuilder(
+            Text(messages("itemDetails.key.wineGrowingZoneCode")),
+            Text(zoneCode)
+          )
+      )
+    )
+
+  private def wineOperationsRow()(implicit item: MovementItem, messages: Messages) =
+    item.wineProduct match {
+      case Some(wineProduct) => Some(
+        wineProduct.wineOperations match {
+          case Some(values) if values.nonEmpty =>
+            summaryListRowBuilder(
+              Text(messages("itemDetails.key.wineOperations")),
+              HtmlContent(list(values.map(Html(_))))
+            )
+          case _ =>
+            summaryListRowBuilder(
+              Text(messages("itemDetails.key.wineOperations")),
+              Text(messages("itemDetails.value.wineOperations.none"))
+            )
+        }
+      )
+      case None => None
+    }
+
+  private def wineProductCategoryRow()(implicit item: MovementItem, messages: Messages) =
+    item.wineProduct.map(
+      wineProduct =>
+        summaryListRowBuilder(
+          Text(messages("itemDetails.key.wineProductCategory")),
+          Text(messages(s"wineProductCategory.${wineProduct.wineProductCategory}"))
+        )
+
+    )
+
+  private def commercialDescriptionRow()(implicit item: MovementItem, messages: Messages) =
+    item.commercialDescription.map {
+      description =>
+        summaryListRowBuilder(
+          Text(messages("itemDetails.key.commercialDescription")),
+          Text(description)
+        )
+    }
+
+  private def brandNameOfProductRow()(implicit item: MovementItem, messages: Messages) =
+    item.brandNameOfProduct.map {
+      brandNameOfProduct =>
+        summaryListRowBuilder(
+          Text(messages("itemDetails.key.brandNameOfProduct")),
+          Text(brandNameOfProduct)
+        )
+    }
+
+  private def sizeOfProducerRow()(implicit item: MovementItem, messages: Messages) =
+    item.sizeOfProducer.map {
+      size =>
+        summaryListRowBuilder(
+          Text(messages("itemDetails.key.sizeOfProducer")),
+          Text(messages("itemDetails.value.sizeOfProducer", size))
+        )
+    }
+
+  private def designationOfOriginRow()(implicit item: MovementItem, messages: Messages) =
+    item.designationOfOrigin.map {
+      designation =>
+        summaryListRowBuilder(
+          Text(messages("itemDetails.key.designationOfOrigin")),
+          Text(designation)
+        )
+    }
+
+  private def fiscalMarkRow()(implicit item: MovementItem, messages: Messages) =
+    item.fiscalMark.map {
+      fiscalMark =>
+        summaryListRowBuilder(
+          Text(messages("itemDetails.key.fiscalMark")),
+          Text(fiscalMark)
+        )
+    }
+
+  private def degreePlatoRow()(implicit item: MovementItem, messages: Messages) =
+    item.degreePlato.map {
+      deg =>
+        summaryListRowBuilder(
+          Text(messages("itemDetails.key.degreePlato")),
+          HtmlContent(messages("itemDetails.value.degreePlato", deg))
+        )
+    }
+
+  private def maturationAgeRow()(implicit item: MovementItem, messages: Messages) =
+    item.maturationAge.map {
+      maturationAge =>
+        summaryListRowBuilder(
+          Text(messages("itemDetails.key.maturationAge")),
+          Text(maturationAge)
+        )
+    }
+
+  private def alcoholicStrengthRow()(implicit item: MovementItem, messages: Messages) =
+    item.alcoholicStrength.map {
+      strength =>
+        summaryListRowBuilder(
+          Text(messages("itemDetails.key.alcoholicStrength")),
+          Text(messages("itemDetails.value.alcoholicStrength", strength))
+        )
+    }
+
+  private def densityRow()(implicit item: MovementItem, cnCodeInformation: CnCodeInformation, messages: Messages) =
+    item.density.map {
+      density =>
+        summaryListRowBuilder(
+          Text(messages("itemDetails.key.density")),
+          HtmlContent(messages("itemDetails.value.density", density.toString(), messages(s"itemDetails.value.density.${cnCodeInformation.unitOfMeasureCode.toUnitOfMeasure}")))
+        )
+    }
+
+  private def netWeightRow()(implicit item: MovementItem, messages: Messages) =
+    Some(summaryListRowBuilder(
+      Text(messages("itemDetails.key.netWeight")),
+      Text(messages(
         "itemDetails.value.netWeight",
         item.netMass.toString(),
         messages(s"unitOfMeasure.$Kilograms.short")
       ))
     ))
 
-    val densityRow: Option[(HtmlContent, HtmlContent)] = {
-      item.density.map {
-        density =>
-          (
-            HtmlContent(messages("itemDetails.key.density")),
-            HtmlContent(messages("itemDetails.value.density", density.toString(), messages(s"itemDetails.value.density.${cnCodeInformation.unitOfMeasureCode.toUnitOfMeasure}")))
-          )
-      }
-    }
-
-    val alcoholicStrengthRow: Option[(HtmlContent, HtmlContent)] = {
-      item.alcoholicStrength.map {
-        strength =>
-          (
-            HtmlContent(messages("itemDetails.key.alcoholicStrength")),
-            HtmlContent(messages("itemDetails.value.alcoholicStrength", strength))
-          )
-      }
-    }
-
-    val maturationAgeRow: Option[(HtmlContent, HtmlContent)] = {
-      item.maturationAge.map {
-        maturationAge =>
-          (
-            HtmlContent(messages("itemDetails.key.maturationAge")),
-            HtmlContent(maturationAge)
-          )
-      }
-    }
-
-    val degreePlatoRow: Option[(HtmlContent, HtmlContent)] = {
-      item.degreePlato.map {
-        deg =>
-          (
-            HtmlContent(messages("itemDetails.key.degreePlato")),
-            HtmlContent(messages("itemDetails.value.degreePlato", deg))
-          )
-      }
-    }
-
-    val fiscalMarkRow: Option[(HtmlContent, HtmlContent)] = {
-      item.fiscalMark.map {
-        fiscalMark =>
-          (
-            HtmlContent(messages("itemDetails.key.fiscalMark")),
-            HtmlContent(fiscalMark)
-          )
-      }
-    }
-
-    val designationOfOriginRow: Option[(HtmlContent, HtmlContent)] = {
-      item.designationOfOrigin.map {
-        designation =>
-          (
-            HtmlContent(messages("itemDetails.key.designationOfOrigin")),
-            HtmlContent(designation)
-          )
-      }
-    }
-
-    val sizeOfProducerRow: Option[(HtmlContent, HtmlContent)] = {
-      item.sizeOfProducer.map {
-        size =>
-          (
-            HtmlContent(messages("itemDetails.key.sizeOfProducer")),
-            HtmlContent(messages("itemDetails.value.sizeOfProducer", size))
-          )
-      }
-    }
-
-    val brandNameOfProductRow: Option[(HtmlContent, HtmlContent)] = {
-      item.brandNameOfProduct.map {
-        brandNameOfProduct =>
-          (
-            HtmlContent(messages("itemDetails.key.brandNameOfProduct")),
-            HtmlContent(brandNameOfProduct)
-          )
-      }
-    }
-
-    val commercialDescriptionRow: Option[(HtmlContent, HtmlContent)] = {
-      item.commercialDescription.map {
-        description =>
-          (
-            HtmlContent(messages("itemDetails.key.commercialDescription")),
-            HtmlContent(description)
-          )
-      }
-    }
-
-    val wineProductCategoryRow: Option[(HtmlContent, HtmlContent)] = {
-      item.wineProduct.map(
-        wineProduct =>
-          (
-            HtmlContent(messages("itemDetails.key.wineProductCategory")),
-            HtmlContent(messages(s"wineProductCategory.${wineProduct.wineProductCategory}"))
-          )
-
-      )
-    }
-
-    val wineOperationsRow: Option[(HtmlContent, HtmlContent)] = {
-      item.wineProduct match {
-        case Some(wineProduct) => Some(
-          wineProduct.wineOperations match {
-            case Some(values) if values.nonEmpty =>
-              (
-                HtmlContent(messages("itemDetails.key.wineOperations")),
-                HtmlContent(list(values.map(Html(_))))
-              )
-            case _ =>
-              (
-                HtmlContent(messages("itemDetails.key.wineOperations")),
-                HtmlContent(messages("itemDetails.value.wineOperations.none"))
-              )
-          }
-        )
-        case None => None
-      }
-    }
-
-    val wineGrowingZoneCodeRow: Option[(HtmlContent, HtmlContent)] = {
-      item.wineProduct.flatMap(
-        _.wineGrowingZoneCode.map(
-          zoneCode =>
-            (
-              HtmlContent(messages("itemDetails.key.wineGrowingZoneCode")),
-              HtmlContent(zoneCode)
-            )
-        )
-      )
-    }
-
-    val thirdCountryOfOriginRow: Option[(HtmlContent, HtmlContent)] = {
-      item.wineProduct.flatMap(
-        _.thirdCountryOfOrigin.map(
-          country =>
-            (
-              HtmlContent(messages("itemDetails.key.thirdCountryOfOrigin")),
-              HtmlContent(country)
-            )
-        )
-      )
-    }
-
-    val wineOtherInformationRow: Option[(HtmlContent, HtmlContent)] = {
-      item.wineProduct.flatMap(
-        _.otherInformation.map(
-          otherInformation =>
-            (
-              HtmlContent(messages("itemDetails.key.wineOtherInformation")),
-              HtmlContent(otherInformation)
-            )
-        )
-      )
-    }
-
-    val rows: Seq[Option[(HtmlContent, HtmlContent)]] = Seq(
-      commodityCodeRow,
-      descriptionRow,
-      quantityRow,
-      grossWeightRow,
-      netWeightRow,
-      densityRow,
-      alcoholicStrengthRow,
-      maturationAgeRow,
-      degreePlatoRow,
-      fiscalMarkRow,
-      designationOfOriginRow,
-      sizeOfProducerRow,
-      brandNameOfProductRow,
-      commercialDescriptionRow,
-      wineProductCategoryRow,
-      wineOperationsRow,
-      wineGrowingZoneCodeRow,
-      thirdCountryOfOriginRow,
-      wineOtherInformationRow
-    )
-
-    rows.flatten
-  }
-
-  //noinspection ScalaStyle
-  def constructPackagingTypeCard(packaging: Packaging)(implicit messages: Messages): Seq[(HtmlContent, HtmlContent)] = {
-
-    val typeRow: Option[(HtmlContent, HtmlContent)] = {
-      Some((
-        HtmlContent(messages("itemDetails.packaging.key.type")),
-        HtmlContent(packaging.typeOfPackage)
+  private def grossWeightRow()(implicit item: MovementItem, messages: Messages) =
+    Some(summaryListRowBuilder(
+      Text(messages("itemDetails.key.grossWeight")),
+      Text(messages(
+        "itemDetails.value.grossWeight",
+        item.grossMass.toString(),
+        messages(s"unitOfMeasure.$Kilograms.short")
       ))
-    }
+    ))
 
-    val quantityRow: Option[(HtmlContent, HtmlContent)] = {
+  private def quantityRow()(implicit item: MovementItem, cnCodeInformation: CnCodeInformation, messages: Messages) =
+    Some(summaryListRowBuilder(
+      Text(messages("itemDetails.key.quantity")),
+      Text(messages(
+        "itemDetails.value.quantity",
+        item.quantity.toString(),
+        messages(s"unitOfMeasure.${cnCodeInformation.unitOfMeasureCode.toUnitOfMeasure}.long")
+      ))
+    ))
+
+  private def descriptionRow()(implicit cnCodeInformation: CnCodeInformation, messages: Messages) =
+    Some(summaryListRowBuilder(
+      Text(messages("itemDetails.key.description")),
+      Text(cnCodeInformation.exciseProductCodeDescription)
+    ))
+
+  private def commodityCodeRow()(implicit item: MovementItem, messages: Messages) =
+    Some(summaryListRowBuilder(
+      Text(messages("itemDetails.key.commodityCode")),
+      HtmlContent(link(link = appConfig.getUrlForCommodityCode(item.cnCode), messageKey = item.cnCode, opensInNewTab = true, id = Some("commodity-code")))
+    ))
+
+
+  def constructPackagingTypeCard(packaging: Packaging)(implicit messages: Messages): Seq[SummaryListRow] = {
+
+    val typeRow: Option[SummaryListRow] =
+      Some(summaryListRowBuilder(
+        Text(messages("itemDetails.packaging.key.type")),
+        Text(packaging.typeOfPackage)
+      ))
+
+    val quantityRow: Option[SummaryListRow] =
       packaging.quantity.map {
-        value => (
-          HtmlContent(messages("itemDetails.packaging.key.quantity")),
-          HtmlContent(value.toString())
+        value => summaryListRowBuilder(
+          Text(messages("itemDetails.packaging.key.quantity")),
+          Text(value.toString())
         )
       }
-    }
 
-    val identityOfCommercialSealRow: Option[(HtmlContent, HtmlContent)] = {
+    val identityOfCommercialSealRow: Option[SummaryListRow] =
       packaging.identityOfCommercialSeal.map {
         value =>
-          (
-            HtmlContent(messages("itemDetails.packaging.key.identityOfCommercialSeal")),
-            HtmlContent(value)
+          summaryListRowBuilder(
+            Text(messages("itemDetails.packaging.key.identityOfCommercialSeal")),
+            Text(value)
           )
       }
-    }
 
-    val sealInformationRow: Option[(HtmlContent, HtmlContent)] = {
+    val sealInformationRow: Option[SummaryListRow] =
       packaging.sealInformation.map {
         value =>
-          (
-            HtmlContent(messages("itemDetails.packaging.key.sealInformation")),
-            HtmlContent(value)
+          summaryListRowBuilder(
+            Text(messages("itemDetails.packaging.key.sealInformation")),
+            Text(value)
           )
       }
-    }
 
-    val shippingMarksRow: Option[(HtmlContent, HtmlContent)] = {
+    val shippingMarksRow: Option[SummaryListRow] =
       packaging.shippingMarks.map {
         value =>
-          (
-            HtmlContent(messages("itemDetails.packaging.key.shippingMarks")),
-            HtmlContent(value)
+          summaryListRowBuilder(
+            Text(messages("itemDetails.packaging.key.shippingMarks")),
+            Text(value)
           )
       }
-    }
 
-    val rows: Seq[Option[(HtmlContent, HtmlContent)]] = Seq(
+    Seq(
       typeRow,
       quantityRow,
       identityOfCommercialSealRow,
       sealInformationRow,
       shippingMarksRow,
-    )
-
-    rows.flatten
+    ).flatten
   }
 }

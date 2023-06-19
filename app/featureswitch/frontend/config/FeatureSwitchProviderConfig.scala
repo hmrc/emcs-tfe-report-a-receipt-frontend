@@ -30,7 +30,11 @@ class FeatureSwitchProviderConfig @Inject()(configuration: Configuration, appCon
 
   lazy val selfBaseUrl: String = appConfig.selfUrl
 
-  lazy val selfFeatureSwitchUrl = s"$selfBaseUrl" + featureswitch.api.controllers.routes.FeatureSwitchApiController.getFeatureSwitches()
+  lazy val selfFeatureSwitchUrl: String =
+    selfBaseUrl + featureswitch.api.controllers.routes.FeatureSwitchApiController.getFeatureSwitches()
+
+  lazy val emcsTfeFeatureSwitchUrl: String =
+    appConfig.emcsTfeBaseUrl + featureswitch.api.controllers.routes.FeatureSwitchApiController.getFeatureSwitches()
 
   lazy val selfFeatureSwitchProvider: FeatureSwitchProvider = FeatureSwitchProvider(
     id = "emcs-tfe-report-a-receipt-frontend",
@@ -38,7 +42,13 @@ class FeatureSwitchProviderConfig @Inject()(configuration: Configuration, appCon
     url = selfFeatureSwitchUrl
   )
 
+  lazy val emcsTfeFeatureSwitchProvider: FeatureSwitchProvider = FeatureSwitchProvider(
+    id = "emcs-tfe",
+    appName = "EMCS TFE Backend",
+    url = emcsTfeFeatureSwitchUrl
+  )
+
   lazy val featureSwitchProviders: Seq[FeatureSwitchProvider] =
-    Seq(selfFeatureSwitchProvider)
+    Seq(selfFeatureSwitchProvider, emcsTfeFeatureSwitchProvider)
 
 }

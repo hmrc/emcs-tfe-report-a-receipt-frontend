@@ -25,7 +25,8 @@
         govukButton: GovukButton,
         h1: h1,
         table: table,
-        helper: ItemDetailsCardHelper
+        helper: ItemDetailsCardHelper,
+        summaryCard: summaryCard
 )
 
 @(item: MovementItem, cnCodeInformation: CnCodeInformation)(implicit request: DataRequest[_], messages: Messages)
@@ -35,14 +36,14 @@
     @h1(messages("itemDetails.heading", item.itemUniqueReference), Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
 
     @summaryCard(
-        cardTitle = messages("itemDetails.itemDetailsCardTitle"),
-        content = helper.constructItemDetailsCard(item, cnCodeInformation)
+        Card(Some(CardTitle(Text(messages("itemDetails.itemDetailsCardTitle"))))),
+        helper.constructItemDetailsCard(item, cnCodeInformation)
     )
 
     @item.packaging.zipWithIndex.map { case (packaging, i) =>
         @summaryCard(
-            cardTitle = messages("itemDetails.packagingTypeCardTitle", i + 1),
-            content = helper.constructPackagingTypeCard(packaging)
+            Card(Some(CardTitle(Text(messages("itemDetails.packagingTypeCardTitle", i + 1))))),
+            helper.constructPackagingTypeCard(packaging)
         )
     }
 }

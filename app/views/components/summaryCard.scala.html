@@ -16,27 +16,14 @@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 
-@(cardTitle: String, content: Seq[(HtmlContent, HtmlContent)])
+@this(govukSummaryList: GovukSummaryList)
 
-<div class="govuk-summary-card">
-    <div class="govuk-summary-card__title-wrapper">
-        <h2 class="govuk-summary-card__title">@cardTitle</h2>
-    </div>
-    <div class="govuk-summary-card__content">
-        <dl class="govuk-summary-list govuk-summary-list--no-border">
-            @content.map { case (key, value) =>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        @key.asHtml
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @value.asHtml
-                    </dd>
-                </div>
-            }
-        </dl>
-    </div>
-</div>
+@(
+        card: Card,
+        summaryListRows: Seq[SummaryListRow]
+)
+
+@govukSummaryList(SummaryList(summaryListRows, Some(card)))
 
 @{
     //$COVERAGE-OFF$

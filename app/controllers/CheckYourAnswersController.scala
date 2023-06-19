@@ -55,14 +55,14 @@ class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi
     authorisedDataRequestWithUpToDateMovementAsync(ern, arc) { implicit request =>
       withAllCompletedItemsAsync() {
         items =>
-          val formattedAnswersFuture: Future[Seq[(String, SummaryList)]] = {
+          val formattedAnswersFuture: Future[Seq[(Int, SummaryList)]] = {
             if (items.nonEmpty) {
               getCnCodeInformationService.getCnCodeInformationWithMovementItems(items).map {
                 serviceResult =>
                   serviceResult.map {
                     case (item, cnCodeInformation) =>
                       (
-                        cnCodeInformation.cnCodeDescription,
+                        item.itemUniqueReference,
                         checkAnswersItemHelper.summaryList(
                           idx = item.itemUniqueReference,
                           unitOfMeasure = cnCodeInformation.unitOfMeasureCode.toUnitOfMeasure,

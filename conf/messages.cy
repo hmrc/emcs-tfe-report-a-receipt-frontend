@@ -141,7 +141,7 @@ moreInformation.hint = Give more information (optional)
 moreInformation.error.length = Information must be 350 characters or less
 moreInformation.error.invalidCharacter = Information must not include < and > and : and ;
 moreInformation.error.character = Information must contain letters or numbers
-moreInformation.checkYourAnswers.label = More information
+moreInformation.checkYourAnswers.label = More information about this movement
 moreInformation.checkYourAnswers.change.hidden = information about this movement
 moreInformation.checkYourAnswers.addMoreInformation = Enter more information about movement (optional)
 
@@ -200,11 +200,18 @@ otherInformation.checkYourAnswers.addMoreInformation = Enter more information ab
 
 checkYourAnswers.title = Check your answers before submitting your receipt
 checkYourAnswers.heading = Check your answers before submitting your receipt
-checkYourAnswers.movementDetails.h2 = Movement details
+checkYourAnswers.movementDetails.h2 = Movement
+checkYourAnswers.items.h2 = Items
+checkYourAnswers.item.cardTitle = Item {0}
+checkYourAnswers.item.details = Item details
+checkYourAnswers.item.details.hidden = for item {0}
+checkYourAnswers.item.remove = Remove
+checkYourAnswers.item.remove.hidden = item {0}
 checkYourAnswers.submit.h2 = Now submit your report of receipt
-checkYourAnswers.declaration = By submitting this report of receipt you are confirming that, to the best of your knowledge, the details you are providing are correct.
+checkYourAnswers.declaration = By submitting this report of receipt you are confirming that:
+checkYourAnswers.declaration.bullet1 = to the best of your knowledge, the details you are providing are correct
+checkYourAnswers.declaration.bullet2 = you understand this receipt cannot be recalled or changed after submission
 checkYourAnswers.submit.button = Submit report of receipt
-checkYourAnswers.itemDetails.h2 = Summary for {0}
 checkYourAnswers.add.item.link = Add another item
 
 checkYourAnswersItem.title = Check your answers for {0}

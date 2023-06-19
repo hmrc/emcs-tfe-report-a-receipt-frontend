@@ -23,7 +23,7 @@ import models.requests.DataRequest
 import pages.unsatisfactory._
 import pages.{AcceptMovementPage, MoreInformationPage}
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, SummaryListRow}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Card, SummaryList, SummaryListRow}
 import viewmodels.govuk.summarylist._
 
 import javax.inject.Inject
@@ -65,7 +65,7 @@ class CheckAnswersHelper @Inject()(acceptMovementSummary: AcceptMovementSummary,
           page = MoreInformationPage,
           changeAction = controllers.routes.MoreInformationController.loadMoreInformation(request.ern, request.arc, CheckMode)
         )
-    ).withCssClass("govuk-!-margin-bottom-9")
+    )
   }
 
   private def shortageInformation()(implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] =

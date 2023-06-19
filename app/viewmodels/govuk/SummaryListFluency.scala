@@ -25,8 +25,11 @@ trait SummaryListFluency {
 
   object SummaryListViewModel {
 
-    def apply(rows: Seq[SummaryListRow]): SummaryList =
-      SummaryList(rows = rows)
+    def apply(rows: Seq[SummaryListRow], card: Option[Card] = None): SummaryList =
+      SummaryList(
+        card = card,
+        rows = rows
+      )
   }
 
   implicit class FluentSummaryList(list: SummaryList) {

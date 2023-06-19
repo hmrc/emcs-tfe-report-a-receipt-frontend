@@ -68,7 +68,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency wi
         running(application) {
 
           val list = SummaryListViewModel(Seq.empty)
-          val itemList = Seq.empty[(String, SummaryList)]
+          val itemList = Seq.empty[(Int, SummaryList)]
 
           MockCheckAnswersHelper.summaryList().returns(list)
 

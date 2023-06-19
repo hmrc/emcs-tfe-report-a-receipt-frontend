@@ -22,13 +22,14 @@
         id: Option[String] = None,
         opensInNewTab: Boolean = false,
         button: Boolean = false,
+        buttonSecondary: Boolean = false,
         classes: String = "govuk-link",
         hiddenContent: Option[String] = None,
         withEndingComma: Boolean = false
 )(implicit messages: Messages)
 
 <a href="@link"
-   class="@classes"
+   class="@classes@if(button){ govuk-button}@if(buttonSecondary){ govuk-button--secondary}"
    @id.map(x => s" id=$x")
    @if(opensInNewTab){target="_blank" rel="noopener noreferrer"}
    @if(button){role="button" data-module="govuk-button"}>

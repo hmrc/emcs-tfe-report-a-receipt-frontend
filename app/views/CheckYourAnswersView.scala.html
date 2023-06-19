@@ -18,55 +18,84 @@
 
 @this(
         layout: templates.Layout,
-        govukSummaryList: GovukSummaryList,
+        summaryCard: components.summaryCard,
+        summaryCardNoTitle: components.summaryCardNoTitle,
         formHelper: FormWithCSRF,
         h1: components.h1,
         h2: components.h2,
         p: components.p,
         link: components.link,
-        continueOrExit: components.continueOrExit
+        bullets: components.bullets,
+        govukButton: GovukButton
 )
 
-@(submitAction: Call, addItemLink: String, list: SummaryList, itemList: Seq[(String, SummaryList)], itemsToAdd: Boolean)(implicit request: DataRequest[_], messages: Messages)
+@(submitAction: Call, addItemLink: String, list: SummaryList, itemList: Seq[(Int, SummaryList)], itemsToAdd: Boolean)(implicit request: DataRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("checkYourAnswers.title"))) {
 
-    @formHelper(submitAction) {
+    @h1("checkYourAnswers.heading", Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
 
-     @h1("checkYourAnswers.heading", Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
+    @h2("checkYourAnswers.movementDetails.h2")
 
-     @h2("checkYourAnswers.movementDetails.h2")
+    @summaryCardNoTitle(list.rows)
 
-     @govukSummaryList(list)
+    @if(itemList.nonEmpty) {
+        @h2(messages("checkYourAnswers.items.h2"))
+    }
 
+    @itemList.map { case (itemReference, item) =>
+        @summaryCard(
+            card = Card(
+                Some(CardTitle(Text(messages("checkYourAnswers.item.cardTitle", itemReference)))),
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
+                            href = routes.ItemDetailsController.onPageLoad(request.ern, request.arc, itemReference).url,
+                            content = Text(messages("checkYourAnswers.item.details")),
+                            visuallyHiddenText = Some(messages("checkYourAnswers.item.details.hidden", itemReference))
+                        ),
+                        ActionItem(
+                            href = routes.RemoveItemController.onPageLoad(request.ern, request.arc, itemReference).url,
+                            content = Text(messages("checkYourAnswers.item.remove")),
+                            visuallyHiddenText = Some(messages("checkYourAnswers.item.remove.hidden", itemReference)),
+                        )
+                    )
+                ))
+            ),
+            summaryListRows = item.rows
+        )
+    }
 
-     @itemList.map { case (itemName, item) =>
-        @h2(messages("checkYourAnswers.itemDetails.h2", itemName), classes = "govuk-heading-m govuk-!-margin-top-9")
-        @govukSummaryList(item)
-     }
-
-     @if(itemsToAdd) {
-        <p class="govuk-body govuk-!-margin-bottom-9">
-            @link(
-                addItemLink,
-                "checkYourAnswers.add.item.link",
-                id = Some("add-item")
-            )
+    @if(itemsToAdd) {
+        <p class="govuk-body">
+        @link(
+            addItemLink,
+            "checkYourAnswers.add.item.link",
+            id = Some("add-item"),
+            button = true,
+            buttonSecondary = true
+        )
         </p>
-     }
+    }
 
+    @h2("checkYourAnswers.submit.h2", classes = "govuk-heading-m govuk-!-margin-top-7")
 
-    @h2("checkYourAnswers.submit.h2", classes = "govuk-heading-m govuk-!-margin-top-9")
+    @p() {
+        @messages("checkYourAnswers.declaration")
+    }
 
-     @p() {
-         @messages("checkYourAnswers.declaration")
-     }
+    @bullets(Seq(
+        Html(messages("checkYourAnswers.declaration.bullet1")),
+        Html(messages("checkYourAnswers.declaration.bullet2"))
+    ))
 
-     @continueOrExit("checkYourAnswers.submit.button")
-
+    @formHelper(submitAction) {
+        @govukButton(
+            ButtonViewModel(messages("checkYourAnswers.submit.button")).preventingDoubleClick()
+        )
     }
 }
 
 @{
- //$COVERAGE-OFF$
+    //$COVERAGE-OFF$
 }

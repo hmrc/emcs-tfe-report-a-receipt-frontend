@@ -28,6 +28,7 @@ object MoreInformationMessages {
     val checkYourAnswersLabel: String
     val hiddenChangeLink: String
     val addMoreInformation: String
+    val savePreviousAnswersAndExitLinkText: String
   }
 
   object English extends ViewMessages with BaseEnglish {
@@ -40,6 +41,7 @@ object MoreInformationMessages {
     override val checkYourAnswersLabel = "More information"
     override val hiddenChangeLink = "information about this movement"
     override val addMoreInformation = "Enter more information about movement (optional)"
+    override val savePreviousAnswersAndExitLinkText = "Save previous answers and exit"
   }
 
   object Welsh extends ViewMessages with BaseWelsh {
@@ -52,5 +54,6 @@ object MoreInformationMessages {
     override val lengthError = "Information must be 350 characters or less"
     override val hiddenChangeLink = "information about this movement"
     override val addMoreInformation = "Enter more information about movement (optional)"
+    override val savePreviousAnswersAndExitLinkText = "Save previous answers and exit"
   }
 }

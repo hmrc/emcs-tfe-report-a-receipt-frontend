@@ -23,12 +23,11 @@ import models.WrongWithMovement
 import models.WrongWithMovement.Damaged
 import models.response.emcsTfe.Packaging
 import models.response.referenceData.CnCodeInformation
-import navigation.{FakeNavigator, Navigator}
 import pages.unsatisfactory.individualItems.{AddItemDamageInformationPage, CheckAnswersItemPage, SelectItemsPage, WrongWithItemPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.{GetCnCodeInformationService, GetPackagingTypesService, UserAnswersService}
+import services.{GetCnCodeInformationService, GetPackagingTypesService}
 import utils.JsonOptionFormatter
 import views.html.SelectItemsView
 

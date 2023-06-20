@@ -17,11 +17,10 @@
 package controllers
 
 import controllers.actions._
+import models.ItemModel
 import models.requests.DataRequest
 import models.response.emcsTfe.MovementItem
-import models.{ItemModel, NormalMode}
 import navigation.Navigator
-import pages.unsatisfactory.individualItems.SelectItemsPage
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{GetCnCodeInformationService, GetPackagingTypesService, UserAnswersService}
@@ -56,13 +55,6 @@ class SelectItemsController @Inject()(override val messagesApi: MessagesApi,
           }
         }
       }
-    }
-
-  def addItemToList(ern: String, arc: String, itemUniqueReference: Int): Action[AnyContent] =
-    authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
-      // remove any previously entered data before adding an item to the list
-      val newUserAnswers = request.userAnswers.removeItem(itemUniqueReference)
-      saveAndRedirect(SelectItemsPage(itemUniqueReference), itemUniqueReference, newUserAnswers, NormalMode)
     }
 
   private[controllers] def getFilteredItems(implicit request: DataRequest[_]): Seq[MovementItem] = {

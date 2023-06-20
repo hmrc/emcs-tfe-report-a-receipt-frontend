@@ -100,9 +100,11 @@ GET         /:ern/:arc/what-wrong-movement/change                               
 POST        /:ern/:arc/what-wrong-movement/change                                controllers.WrongWithMovementController.submitWrongWithMovement(ern: String, arc: String, mode: Mode = CheckMode)
 
 GET         /:ern/:arc/select-items-give-information                             controllers.SelectItemsController.onPageLoad(ern: String, arc: String)
-GET         /:ern/:arc/select-items-give-information/:uniqueItemReference        controllers.SelectItemsController.addItemToList(ern: String, arc: String, uniqueItemReference: Int)
 
 GET         /:ern/:arc/item/:idx/details                                         controllers.ItemDetailsController.onPageLoad(ern: String, arc: String, idx: Int)
+
+GET         /:ern/:arc/item/:idx/details-select-item                             controllers.DetailsSelectItemController.onPageLoad(ern: String, arc: String, idx: Int)
+POST        /:ern/:arc/item/:idx/details-select-item                             controllers.DetailsSelectItemController.onSubmit(ern: String, arc: String, idx: Int)
 
 GET         /:ern/:arc/item/:idx/what-wrong-item                                 controllers.WrongWithMovementController.loadWrongWithItem(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
 POST        /:ern/:arc/item/:idx/what-wrong-item                                 controllers.WrongWithMovementController.submitWrongWithItem(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
@@ -178,3 +180,4 @@ GET         /:ern/:arc/add-to-list                                              
 POST        /:ern/:arc/add-to-list                                               controllers.AddedItemsController.onSubmit(ern, arc)
 
 GET         /:ern/:arc/not-permitted                                             controllers.NotPermittedPageController.onPageLoad(ern, arc)
+

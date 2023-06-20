@@ -23,12 +23,11 @@ import models.WrongWithMovement
 import models.WrongWithMovement.Damaged
 import models.response.emcsTfe.Packaging
 import models.response.referenceData.CnCodeInformation
-import navigation.{FakeNavigator, Navigator}
 import pages.unsatisfactory.individualItems.{AddItemDamageInformationPage, CheckAnswersItemPage, SelectItemsPage, WrongWithItemPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.{GetCnCodeInformationService, GetPackagingTypesService, UserAnswersService}
+import services.{GetCnCodeInformationService, GetPackagingTypesService}
 import utils.JsonOptionFormatter
 import views.html.SelectItemsView
 
@@ -41,7 +40,6 @@ class SelectItemsControllerSpec extends SpecBase
   with MockGetPackagingTypesService {
 
   lazy val loadListUrl: String = routes.SelectItemsController.onPageLoad(testErn, testArc).url
-  lazy val addItemUrl: String = routes.SelectItemsController.addItemToList(testErn, testArc, item1.itemUniqueReference).url
 
   "SelectItems Controller" - {
 
@@ -102,120 +100,6 @@ class SelectItemsControllerSpec extends SpecBase
 
             status(result) mustEqual SEE_OTHER
             redirectLocation(result).value mustEqual routes.AddedItemsController.onPageLoad(testErn, testArc).url
-          }
-        }
-      }
-
-      "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
-        val application = applicationBuilder(userAnswers = None)
-          .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService))
-          .build()
-
-        running(application) {
-          val request = FakeRequest(GET, loadListUrl)
-
-          val result = route(application, request).value
-
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
-        }
-      }
-    }
-
-    "when calling .addItem()" - {
-
-      "when no items have been added" - {
-
-        "must save the UniqueReference of the item to the object of items and redirect to onward route" in {
-
-          val updatedAnswers = emptyUserAnswers.set(SelectItemsPage(1), item1.itemUniqueReference)
-
-          MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
-
-          val application =
-            applicationBuilder(userAnswers = Some(emptyUserAnswers))
-              .overrides(
-                bind[Navigator].toInstance(new FakeNavigator(testOnwardRoute)),
-                bind[UserAnswersService].toInstance(mockUserAnswersService),
-                bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService)
-              )
-              .build()
-
-          running(application) {
-            val request = FakeRequest(GET, addItemUrl)
-
-            val result = route(application, request).value
-
-            status(result) mustEqual SEE_OTHER
-            redirectLocation(result) mustBe Some(testOnwardRoute.url)
-          }
-        }
-      }
-
-      "when items have already been added" - {
-
-        "must save the UniqueReference of the item to the object of items and redirect to onward route" in {
-
-          val userAnswers = emptyUserAnswers.set(SelectItemsPage(2), item2.itemUniqueReference)
-          val updatedAnswers = userAnswers.set(SelectItemsPage(1), item1.itemUniqueReference)
-
-          MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
-
-          val application =
-            applicationBuilder(userAnswers = Some(userAnswers))
-              .overrides(
-                bind[Navigator].toInstance(new FakeNavigator(testOnwardRoute)),
-                bind[UserAnswersService].toInstance(mockUserAnswersService),
-                bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService)
-              )
-              .build()
-
-          running(application) {
-            val request = FakeRequest(GET, addItemUrl)
-
-            val result = route(application, request).value
-
-            status(result) mustEqual SEE_OTHER
-            redirectLocation(result) mustBe Some(testOnwardRoute.url)
-          }
-        }
-      }
-
-      "when adding the same item again" - {
-
-        "must redirect to onward route and remove previous answers for that item" in {
-
-          val userAnswers = emptyUserAnswers
-            .set(SelectItemsPage(1), item1.itemUniqueReference)
-            .set(WrongWithItemPage(1), Set(WrongWithMovement.individualItemValues.head))
-            .set(SelectItemsPage(2), item2.itemUniqueReference)
-
-          MockUserAnswersService
-            .set(emptyUserAnswers
-              .set(SelectItemsPage(1), item1.itemUniqueReference)
-              .set(SelectItemsPage(2), item2.itemUniqueReference))
-            .returns(Future.successful(emptyUserAnswers
-              .set(SelectItemsPage(1), item1.itemUniqueReference)
-              .set(SelectItemsPage(2), item2.itemUniqueReference))
-            )
-
-          val application =
-            applicationBuilder(userAnswers = Some(userAnswers))
-              .overrides(
-                bind[Navigator].toInstance(new FakeNavigator(testOnwardRoute)),
-                bind[UserAnswersService].toInstance(mockUserAnswersService),
-                bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService)
-              )
-              .build()
-
-          running(application) {
-            val request = FakeRequest(GET, addItemUrl)
-
-            val result = route(application, request).value
-
-            status(result) mustEqual SEE_OTHER
-            redirectLocation(result) mustBe Some(testOnwardRoute.url)
           }
         }
       }

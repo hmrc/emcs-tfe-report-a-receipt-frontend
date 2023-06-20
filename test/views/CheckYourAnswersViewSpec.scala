@@ -20,7 +20,7 @@ import base.ViewSpecBase
 import controllers.routes
 import fixtures.messages.CheckYourAnswersMessages
 import models.UnitOfMeasure.Kilograms
-import models.{ItemShortageOrExcessModel, WrongWithMovement}
+import models.{ItemShortageOrExcessModel, ReviewMode, WrongWithMovement}
 import models.WrongWithMovement.{Shortage, ShortageOrExcess}
 import models.requests.DataRequest
 import org.jsoup.Jsoup
@@ -96,7 +96,7 @@ class CheckYourAnswersViewSpec extends ViewSpecBase with ViewBehaviours {
         "have a link to remove the Item" in {
 
           doc.select(Selectors.itemRemoveLink(1)).attr("href") mustBe
-            routes.RemoveItemController.onPageLoad(testErn, testArc, item1.itemUniqueReference).url
+            routes.RemoveItemController.onPageLoad(testErn, testArc, item1.itemUniqueReference, ReviewMode).url
         }
       }
     }

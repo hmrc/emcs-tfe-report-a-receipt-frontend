@@ -19,7 +19,7 @@ package viewmodels
 import controllers.routes
 import models.requests.DataRequest
 import models.response.emcsTfe.MovementItem
-import models.{ItemModel, ListItemWithProductCode}
+import models.{ItemModel, ListItemWithProductCode, NormalMode}
 
 class AddedItemsSummary  {
 
@@ -31,7 +31,7 @@ class AddedItemsSummary  {
             productCode = item.productCode,
             cnCode = item.cnCode,
             changeUrl = routes.CheckYourAnswersItemController.onPageLoad(request.ern, request.arc, uniqueReference).url,
-            removeUrl = routes.RemoveItemController.onPageLoad(request.ern, request.arc, uniqueReference).url
+            removeUrl = routes.RemoveItemController.onPageLoad(request.ern, request.arc, uniqueReference, NormalMode).url
           )
         }
     }

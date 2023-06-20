@@ -18,6 +18,7 @@ package controllers
 
 import controllers.actions._
 import forms.AddMoreInformationFormProvider
+import models.{Mode, NormalMode, ReviewMode}
 import navigation.Navigator
 import pages.unsatisfactory.individualItems.RemoveItemPage
 import play.api.i18n.MessagesApi
@@ -30,51 +31,55 @@ import javax.inject.Inject
 import scala.concurrent.Future
 
 class RemoveItemController @Inject()(
-                                              override val messagesApi: MessagesApi,
-                                              override val userAnswersService: UserAnswersService,
-                                              override val navigator: Navigator,
-                                              override val auth: AuthAction,
-                                              override val userAllowList: UserAllowListAction,
-                                              override val withMovement: MovementAction,
-                                              override val getData: DataRetrievalAction,
-                                              override val requireData: DataRequiredAction,
-                                              formProvider: AddMoreInformationFormProvider,
-                                              val controllerComponents: MessagesControllerComponents,
-                                              view: AddMoreInformationView
-                                            ) extends BaseNavigationController with AuthActionHelper with JsonOptionFormatter {
+                                      override val messagesApi: MessagesApi,
+                                      override val userAnswersService: UserAnswersService,
+                                      override val navigator: Navigator,
+                                      override val auth: AuthAction,
+                                      override val userAllowList: UserAllowListAction,
+                                      override val withMovement: MovementAction,
+                                      override val getData: DataRetrievalAction,
+                                      override val requireData: DataRequiredAction,
+                                      formProvider: AddMoreInformationFormProvider,
+                                      val controllerComponents: MessagesControllerComponents,
+                                      view: AddMoreInformationView
+                                    ) extends BaseNavigationController with AuthActionHelper with JsonOptionFormatter {
 
   def onPageLoad(ern: String,
-                         arc: String,
-                         idx: Int): Action[AnyContent] =
+                 arc: String,
+                 idx: Int,
+                 mode: Mode = NormalMode): Action[AnyContent] =
     authorisedDataRequestWithCachedMovement(ern, arc) { implicit request =>
       withItem(idx) {
         _ => Ok(view(
           form = formProvider(RemoveItemPage(idx)),
           page = RemoveItemPage(idx),
-          action = routes.RemoveItemController.onSubmit(ern, arc, idx)
+          action = routes.RemoveItemController.onSubmit(ern, arc, idx, mode)
         ))
       }
     }
 
   def onSubmit(ern: String,
-                       arc: String,
-                       idx: Int): Action[AnyContent] =
+               arc: String,
+               idx: Int,
+               mode: Mode = NormalMode): Action[AnyContent] =
     authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
       withItemAsync(idx) {
         _ =>
-        formProvider(RemoveItemPage(idx)).bindFromRequest().fold(
-          formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, RemoveItemPage(idx), routes.RemoveItemController.onSubmit(ern, arc, idx)))),
-          {
-            case true =>
-              val updatedAnswers = request.userAnswers.removeItem(idx)
-              userAnswersService.set(updatedAnswers).map { _ =>
-                Redirect(routes.AddedItemsController.onPageLoad(request.ern, request.arc))
-              }
-            case false =>
-              Future.successful(Redirect(routes.AddedItemsController.onPageLoad(ern, arc)))
-          }
-        )
+          formProvider(RemoveItemPage(idx)).bindFromRequest().fold(
+            formWithErrors =>
+              Future.successful(BadRequest(view(formWithErrors, RemoveItemPage(idx), routes.RemoveItemController.onSubmit(ern, arc, idx, mode)))),
+            {
+              case true =>
+                val updatedAnswers = request.userAnswers.removeItem(idx)
+                userAnswersService.set(updatedAnswers).map { _ =>
+                  Redirect(routes.AddedItemsController.onPageLoad(request.ern, request.arc))
+                }
+              case false if mode == ReviewMode =>
+                Future.successful(Redirect(routes.CheckYourAnswersController.onPageLoad(ern, arc)))
+              case false =>
+                Future.successful(Redirect(routes.AddedItemsController.onPageLoad(ern, arc)))
+            }
+          )
       }
     }
 

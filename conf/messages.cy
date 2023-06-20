@@ -92,10 +92,11 @@ dateOfArrival.checkYourAnswers.change.hidden = the date of arrival
 
 acceptMovement.title = Do you want to accept this movement?
 acceptMovement.heading = Do you want to accept this movement?
-acceptMovement.satisfactory = Yes, it is satisfactory
-acceptMovement.unsatisfactory = Yes, but it is unsatisfactory
-acceptMovement.refused = No, I want to refuse it
-acceptMovement.partiallyRefused = No, I want to partially refuse it
+acceptMovement.hintText = You’ll be able to give information about this movement later, even if it's satisfactory.
+acceptMovement.satisfactory = Yes, it’s satisfactory
+acceptMovement.unsatisfactory = Yes, but it’s unsatisfactory
+acceptMovement.refused = No, I want to refuse the whole movement
+acceptMovement.partiallyRefused = No, I want to partially refuse the movement
 acceptMovement.error.required = Select if you want to accept this movement
 acceptMovement.checkYourAnswers.label = Receipt status
 acceptMovement.checkYourAnswers.satisfactory = Accepted and satisfactory

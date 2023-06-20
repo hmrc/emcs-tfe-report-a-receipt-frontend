@@ -31,7 +31,6 @@
 @layout(pageTitle = title(form, messages("acceptMovement.title"))) {
 
     @formHelper(action = routes.AcceptMovementController.onSubmit(request.ern, request.arc, mode), 'autoComplete -> "off") {
-
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
         }
@@ -41,7 +40,7 @@
                 field  = form("value"),
                 legend = LegendViewModel(HtmlContent(heading)).withCssClass("govuk-fieldset__legend govuk-fieldset__legend--l"),
                 items  = AcceptMovement.options
-            )
+            ).withHint(HintViewModel(messages("acceptMovement.hintText")))
         )
 
         @continueOrExit()

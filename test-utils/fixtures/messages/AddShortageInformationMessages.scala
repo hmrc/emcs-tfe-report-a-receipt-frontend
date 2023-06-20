@@ -25,14 +25,14 @@ object AddShortageInformationMessages {
   }
 
   object English extends ViewMessages with BaseEnglish {
-    override val heading = "Do you want to give more information about being sent less items than expected?"
+    override val heading = "Do you want to give information about receiving less goods than expected?"
     override val title = title(heading)
-    override val requiredError: String = "Select yes if you want to give more information about being sent less goods than expected"
+    override val requiredError: String = "Select if you want to give information about receiving less goods than expected"
   }
 
   object Welsh extends ViewMessages with BaseWelsh {
-    override val heading = "Do you want to give more information about being sent less items than expected?"
+    override val heading = "Do you want to give information about receiving less goods than expected?"
     override val title = title(heading)
-    override val requiredError: String = "Select yes if you want to give more information about being sent less goods than expected"
+    override val requiredError: String = "Select if you want to give information about receiving less goods than expected"
   }
 }

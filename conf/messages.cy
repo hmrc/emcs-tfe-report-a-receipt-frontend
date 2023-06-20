@@ -111,9 +111,9 @@ addMoreInformation.satisfactory.title = Do you want to give any information abou
 addMoreInformation.satisfactory.heading = Do you want to give any information about this movement?
 addMoreInformation.error.required = Select yes if you want to give more information about this movement
 
-addShortageInformation.title = Do you want to give more information about being sent less items than expected?
-addShortageInformation.heading = Do you want to give more information about being sent less items than expected?
-addShortageInformation.error.required = Select yes if you want to give more information about being sent less goods than expected
+addShortageInformation.title = Do you want to give information about receiving less goods than expected?
+addShortageInformation.heading = Do you want to give information about receiving less goods than expected?
+addShortageInformation.error.required = Select if you want to give information about receiving less goods than expected
 
 addExcessInformation.title = Do you want to give more information about being sent more items than expected?
 addExcessInformation.heading = Do you want to give more information about being sent more items than expected?

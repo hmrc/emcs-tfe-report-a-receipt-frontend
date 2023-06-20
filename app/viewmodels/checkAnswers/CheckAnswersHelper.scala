@@ -17,13 +17,13 @@
 package viewmodels.checkAnswers
 
 import models.AcceptMovement.{Refused, Unsatisfactory}
-import models.{AcceptMovement, CheckMode}
 import models.WrongWithMovement.{BrokenSeals, Damaged, Excess, Other, Shortage}
 import models.requests.DataRequest
+import models.{AcceptMovement, CheckMode}
 import pages.unsatisfactory._
 import pages.{AcceptMovementPage, MoreInformationPage}
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Card, SummaryList, SummaryListRow}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, SummaryListRow}
 import viewmodels.govuk.summarylist._
 
 import javax.inject.Inject

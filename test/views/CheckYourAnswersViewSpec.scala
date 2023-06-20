@@ -86,6 +86,18 @@ class CheckYourAnswersViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.bullet(2) -> messagesForLanguage.bullet2,
           Selectors.submitButton -> messagesForLanguage.submitButton
         ))
+
+        "have a link to view the Item details" in {
+
+          doc.select(Selectors.itemDetailsLink(1)).attr("href") mustBe
+            routes.ItemDetailsController.onPageLoad(testErn, testArc, item1.itemUniqueReference).url
+        }
+
+        "have a link to remove the Item" in {
+
+          doc.select(Selectors.itemRemoveLink(1)).attr("href") mustBe
+            routes.RemoveItemController.onPageLoad(testErn, testArc, item1.itemUniqueReference).url
+        }
       }
     }
   }

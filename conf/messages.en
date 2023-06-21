@@ -150,7 +150,7 @@ moreInformation.checkYourAnswers.addMoreInformation = Enter more information abo
 
 shortageInformation.title = Give information about receiving less goods than expected
 shortageInformation.heading = Give information about receiving less goods than expected
-shortageInformation.hint = Give more information (optional)
+shortageInformation.hint = Give information (optional)
 shortageInformation.error.length = Information must be 350 characters or less
 shortageInformation.error.invalidCharacter = Information must not include < and > and : and ;
 shortageInformation.error.character = Information must contain letters or numbers

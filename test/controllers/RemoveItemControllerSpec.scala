@@ -19,11 +19,11 @@ package controllers
 import base.SpecBase
 import forms.AddMoreInformationFormProvider
 import mocks.services.MockUserAnswersService
-import models.HowMuchIsWrong.IndividualItem
+import models.HowGiveInformation.IndividualItem
 import models.UserAnswers
 import navigation.{FakeNavigator, Navigator}
 import pages.QuestionPage
-import pages.unsatisfactory.HowMuchIsWrongPage
+import pages.unsatisfactory.HowGiveInformationPage
 import pages.unsatisfactory.individualItems.{CheckAnswersItemPage, RemoveItemPage, SelectItemsPage}
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, JsPath, Json}
@@ -49,7 +49,7 @@ class RemoveItemControllerSpec extends SpecBase with MockUserAnswersService {
   lazy val page: QuestionPage[Boolean] = RemoveItemPage(1)
 
   lazy val baseAnswers: UserAnswers = emptyUserAnswers
-    .set(HowMuchIsWrongPage, IndividualItem)
+    .set(HowGiveInformationPage, IndividualItem)
     .set(SelectItemsPage(1), item1.itemUniqueReference)
     .set(CheckAnswersItemPage(1), true)
 
@@ -82,7 +82,7 @@ class RemoveItemControllerSpec extends SpecBase with MockUserAnswersService {
         }
 
         val updatedAnswers = emptyUserAnswers
-          .set(HowMuchIsWrongPage, IndividualItem)
+          .set(HowGiveInformationPage, IndividualItem)
           .set(ItemsPage, Json.obj())
         MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers)).once()
 

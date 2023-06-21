@@ -24,40 +24,40 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.OptionValues
 import play.api.libs.json.{JsError, JsString, Json}
 
-class HowMuchIsWrongSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
+class HowGiveInformationSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
 
-  "HowMuchIsWrong" - {
+  "HowGiveInformation" - {
 
     "must deserialise valid values" in {
 
-      val gen = Gen.oneOf(HowMuchIsWrong.values.toSeq)
+      val gen = Gen.oneOf(HowGiveInformation.values.toSeq)
 
       forAll(gen) {
-        howMuchIsWrong =>
+        howGiveInformation =>
 
-          JsString(howMuchIsWrong.toString).validate[HowMuchIsWrong].asOpt.value mustEqual howMuchIsWrong
+          JsString(howGiveInformation.toString).validate[HowGiveInformation].asOpt.value mustEqual howGiveInformation
       }
     }
 
     "must fail to deserialise invalid values" in {
 
-      val gen = arbitrary[String] suchThat (!HowMuchIsWrong.values.map(_.toString).contains(_))
+      val gen = arbitrary[String] suchThat (!HowGiveInformation.values.map(_.toString).contains(_))
 
       forAll(gen) {
         invalidValue =>
 
-          JsString(invalidValue).validate[HowMuchIsWrong] mustEqual JsError("error.invalid")
+          JsString(invalidValue).validate[HowGiveInformation] mustEqual JsError("error.invalid")
       }
     }
 
     "must serialise" in {
 
-      val gen = Gen.oneOf(HowMuchIsWrong.values.toSeq)
+      val gen = Gen.oneOf(HowGiveInformation.values.toSeq)
 
       forAll(gen) {
-        howMuchIsWrong =>
+        howGiveInformation =>
 
-          Json.toJson(howMuchIsWrong) mustEqual JsString(howMuchIsWrong.toString)
+          Json.toJson(howGiveInformation) mustEqual JsString(howGiveInformation.toString)
       }
     }
   }

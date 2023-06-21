@@ -240,15 +240,15 @@ confirmation.excess.differentGoods.bullet2 = the person or organisation holding 
 confirmation.contactHmrc.link = Contact the HMRC excise helpline
 confirmation.contactHmrc.afterLink = if you need more help or information about excise duties.
 
-howMuchIsWrong.title = How much of this movement is wrong?
-howMuchIsWrong.heading = How much of this movement is wrong?
-howMuchIsWrong.wholeMovement = The whole movement
-howMuchIsWrong.individualItem = Individual item(s) in this movement
-howMuchIsWrong.error.required = Select how much of the movement is wrong
-howMuchIsWrong.checkYourAnswers.label = Amount of the movement that is wrong
-howMuchIsWrong.checkYourAnswers.wholeMovement = Whole movement
-howMuchIsWrong.checkYourAnswers.individualItem = Individual items
-howMuchIsWrong.checkYourAnswers.change.hidden = how much of this movement is wrong
+howGiveInformation.title = How do you want to give information about this movement?
+howGiveInformation.heading = How do you want to give information about this movement?
+howGiveInformation.wholeMovement = I want to give information about the whole movement
+howGiveInformation.individualItem = I want to choose which item(s) to give information about
+howGiveInformation.error.required = Select how you want to give information about this movement
+howGiveInformation.checkYourAnswers.label = Amount of the movement that is wrong
+howGiveInformation.checkYourAnswers.wholeMovement = Whole movement
+howGiveInformation.checkYourAnswers.individualItem = Individual items
+howGiveInformation.checkYourAnswers.change.hidden = how much of this movement is wrong
 
 wrongWithMovement.title = What’s wrong with the movement?
 wrongWithMovement.heading = What’s wrong with the movement?

@@ -19,7 +19,7 @@ package navigation
 import base.SpecBase
 import controllers.routes
 import models.AcceptMovement._
-import models.HowMuchIsWrong.{IndividualItem, TheWholeMovement}
+import models.HowGiveInformation.{IndividualItem, TheWholeMovement}
 import models.WrongWithMovement._
 import models._
 import pages._
@@ -75,12 +75,12 @@ class NavigatorSpec extends SpecBase {
 
         s"when the user answers is $Refused" - {
 
-          "must go to the HowMuchIsWrongWithMovement page" in {
+          "must go to the HowGiveInformationWithMovement page" in {
 
             val userAnswers = emptyUserAnswers.set(AcceptMovementPage, Refused)
 
             navigator.nextPage(AcceptMovementPage, NormalMode, userAnswers) mustBe
-              routes.HowMuchIsWrongController.onPageLoad(testErn, testArc, NormalMode)
+              routes.HowGiveInformationController.onPageLoad(testErn, testArc, NormalMode)
           }
         }
 
@@ -96,15 +96,15 @@ class NavigatorSpec extends SpecBase {
         }
       }
 
-      "for the HowMuchIsWrong page" - {
+      "for the HowGiveInformation page" - {
 
         s"when the user answers is $TheWholeMovement" - {
 
           "must go to the WrongWithMovement page" in {
 
-            val userAnswers = emptyUserAnswers.set(HowMuchIsWrongPage, TheWholeMovement)
+            val userAnswers = emptyUserAnswers.set(HowGiveInformationPage, TheWholeMovement)
 
-            navigator.nextPage(HowMuchIsWrongPage, NormalMode, userAnswers) mustBe
+            navigator.nextPage(HowGiveInformationPage, NormalMode, userAnswers) mustBe
               routes.WrongWithMovementController.loadWrongWithMovement(testErn, testArc, NormalMode)
           }
         }
@@ -113,18 +113,18 @@ class NavigatorSpec extends SpecBase {
 
           "must go to the Item Selection List page" in {
 
-            val userAnswers = emptyUserAnswers.set(HowMuchIsWrongPage, IndividualItem)
+            val userAnswers = emptyUserAnswers.set(HowGiveInformationPage, IndividualItem)
 
-            navigator.nextPage(HowMuchIsWrongPage, NormalMode, userAnswers) mustBe
+            navigator.nextPage(HowGiveInformationPage, NormalMode, userAnswers) mustBe
               routes.SelectItemsController.onPageLoad(testErn, testArc)
           }
         }
 
         s"when there is no answer for the question" - {
 
-          "must go to back to the HowMuchIsWrong page" in {
-            navigator.nextPage(HowMuchIsWrongPage, NormalMode, emptyUserAnswers) mustBe
-              routes.HowMuchIsWrongController.onPageLoad(testErn, testArc, NormalMode)
+          "must go to back to the HowGiveInformation page" in {
+            navigator.nextPage(HowGiveInformationPage, NormalMode, emptyUserAnswers) mustBe
+              routes.HowGiveInformationController.onPageLoad(testErn, testArc, NormalMode)
           }
         }
       }

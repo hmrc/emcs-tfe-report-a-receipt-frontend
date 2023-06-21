@@ -30,7 +30,7 @@ import javax.inject.Inject
 
 class CheckAnswersHelper @Inject()(acceptMovementSummary: AcceptMovementSummary,
                                    dateOfArrivalSummary: DateOfArrivalSummary,
-                                   howMuchIsWrongSummary: HowMuchIsWrongSummary,
+                                   howGiveInformationSummary: HowGiveInformationSummary,
                                    moreInformationSummary: MoreInformationSummary,
                                    otherInformationSummary: OtherInformationSummary,
                                    wrongWithMovementSummary: WrongWithMovementSummary) {
@@ -46,7 +46,7 @@ class CheckAnswersHelper @Inject()(acceptMovementSummary: AcceptMovementSummary,
       val wrongWithMovementAcceptedStatuses: Set[AcceptMovement] = Set(Unsatisfactory, Refused)
       if (request.userAnswers.get(AcceptMovementPage).exists(wrongWithMovementAcceptedStatuses.contains)) {
         Seq(
-          howMuchIsWrongSummary.row(),
+          howGiveInformationSummary.row(),
           wrongWithMovementSummary.row(),
           shortageInformation(),
           excessInformation(),

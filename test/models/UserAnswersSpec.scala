@@ -25,7 +25,7 @@ import base.SpecBase
 import models.WrongWithMovement.Damaged
 import models.response.emcsTfe.MovementItem
 import pages.unsatisfactory.individualItems._
-import pages.unsatisfactory.{ExcessInformationPage, HowMuchIsWrongPage}
+import pages.unsatisfactory.{ExcessInformationPage, HowGiveInformationPage}
 import pages.{DateOfArrivalPage, MoreInformationPage, QuestionPage}
 import play.api.libs.json._
 
@@ -535,7 +535,7 @@ class UserAnswersSpec extends SpecBase {
       "must only return pages in the supplied Seq" in {
         val existingUserAnswers = baseUserAnswers
           .set(DateOfArrivalPage, LocalDate.MIN)
-          .set(HowMuchIsWrongPage, HowMuchIsWrong.TheWholeMovement)
+          .set(HowGiveInformationPage, HowGiveInformation.TheWholeMovement)
           .set(MoreInformationPage, Some("more info"))
 
         existingUserAnswers.filterForPages(Seq(DateOfArrivalPage, MoreInformationPage)) mustBe {
@@ -549,7 +549,7 @@ class UserAnswersSpec extends SpecBase {
       "must return an empty Seq if none of the supplied pages are in UserAnswers" in {
         val existingUserAnswers = baseUserAnswers
           .set(DateOfArrivalPage, LocalDate.MIN)
-          .set(HowMuchIsWrongPage, HowMuchIsWrong.TheWholeMovement)
+          .set(HowGiveInformationPage, HowGiveInformation.TheWholeMovement)
           .set(MoreInformationPage, Some("more info"))
 
         existingUserAnswers.filterForPages(Seq(ExcessInformationPage)) mustBe baseUserAnswers

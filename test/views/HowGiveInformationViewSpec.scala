@@ -17,23 +17,23 @@
 package views
 
 import base.ViewSpecBase
-import fixtures.messages.HowMuchIsWrongMessages
-import forms.HowMuchIsWrongFormProvider
+import fixtures.messages.HowGiveInformationMessages
+import forms.HowGiveInformationFormProvider
 import models.NormalMode
 import org.jsoup.Jsoup
 import play.api.test.FakeRequest
-import views.html.HowMuchIsWrongView
+import views.html.HowGiveInformationView
 
-class HowMuchIsWrongViewSpec extends ViewSpecBase with ViewBehaviours {
+class HowGiveInformationViewSpec extends ViewSpecBase with ViewBehaviours {
 
-  lazy val form = app.injector.instanceOf[HowMuchIsWrongFormProvider].apply()
-  lazy val view = app.injector.instanceOf[HowMuchIsWrongView]
+  lazy val form = app.injector.instanceOf[HowGiveInformationFormProvider].apply()
+  lazy val view = app.injector.instanceOf[HowGiveInformationView]
 
   object Selectors extends BaseSelectors
 
-  "HowMuchIsWrong view" - {
+  "HowGiveInformation view" - {
 
-    Seq(HowMuchIsWrongMessages.English, HowMuchIsWrongMessages.Welsh).foreach { messagesForLanguage =>
+    Seq(HowGiveInformationMessages.English, HowGiveInformationMessages.Welsh).foreach { messagesForLanguage =>
 
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
 
@@ -48,7 +48,7 @@ class HowMuchIsWrongViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.radioButton(1) -> messagesForLanguage.wholeMovement,
           Selectors.radioButton(2) -> messagesForLanguage.individualItem,
           Selectors.button -> messagesForLanguage.saveAndContinue,
-          Selectors.secondaryButton -> messagesForLanguage.saveAndReturnToMovement
+          Selectors.link(1) -> messagesForLanguage.savePreviousAnswersAndExitLinkText
         ))
       }
     }

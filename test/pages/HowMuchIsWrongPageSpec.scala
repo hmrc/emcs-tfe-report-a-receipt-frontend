@@ -16,18 +16,18 @@
 
 package pages
 
-import models.HowMuchIsWrong
+import models.HowGiveInformation
 import pages.behaviours.PageBehaviours
-import pages.unsatisfactory.HowMuchIsWrongPage
+import pages.unsatisfactory.HowGiveInformationPage
 
-class HowMuchIsWrongSpec extends PageBehaviours {
+class HowGiveInformationSpec extends PageBehaviours {
 
-  "HowMuchIsWrongPage" - {
+  "HowGiveInformationPage" - {
 
-    beRetrievable[HowMuchIsWrong](HowMuchIsWrongPage)
+    beRetrievable[HowGiveInformation](HowGiveInformationPage)
 
-    beSettable[HowMuchIsWrong](HowMuchIsWrongPage)
+    beSettable[HowGiveInformation](HowGiveInformationPage)
 
-    beRemovable[HowMuchIsWrong](HowMuchIsWrongPage)
+    beRemovable[HowGiveInformation](HowGiveInformationPage)
   }
 }

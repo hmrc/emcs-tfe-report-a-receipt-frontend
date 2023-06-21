@@ -16,7 +16,7 @@
 
 package models.submitReportOfReceipt
 
-import models.HowMuchIsWrong.TheWholeMovement
+import models.HowGiveInformation.TheWholeMovement
 import models.WrongWithMovement._
 import models.response.emcsTfe.GetMovementResponse
 import models.{UserAnswers, WrongWithMovement}
@@ -106,7 +106,7 @@ object ReceiptedItemsModel extends JsonOptionFormatter {
   }
 
   def apply(movementDetails: GetMovementResponse)(implicit userAnswers: UserAnswers): Seq[ReceiptedItemsModel] = {
-    userAnswers.get(HowMuchIsWrongPage) match {
+    userAnswers.get(HowGiveInformationPage) match {
       case Some(TheWholeMovement) => wholeMovementApply(movementDetails)
       case _ => individualItemsApply(movementDetails)
     }

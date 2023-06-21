@@ -18,7 +18,7 @@ package navigation
 
 import controllers.routes
 import models.AcceptMovement.{PartiallyRefused, Satisfactory, Unsatisfactory}
-import models.HowMuchIsWrong.TheWholeMovement
+import models.HowGiveInformation.TheWholeMovement
 import models.WrongWithMovement.{BrokenSeals, Damaged, Excess, Other, Shortage, ShortageOrExcess}
 import models._
 import pages._
@@ -40,14 +40,14 @@ class Navigator @Inject()() extends BaseNavigator {
           case Some(Satisfactory) => routes.AddMoreInformationController.loadMoreInformation(userAnswers.ern, userAnswers.arc, NormalMode)
           case Some(Unsatisfactory) => routes.SelectItemsController.onPageLoad(userAnswers.ern, userAnswers.arc)
           case Some(PartiallyRefused) => routes.SelectItemsController.onPageLoad(userAnswers.ern, userAnswers.arc)
-          case _ => routes.HowMuchIsWrongController.onPageLoad(userAnswers.ern, userAnswers.arc, NormalMode)
+          case _ => routes.HowGiveInformationController.onPageLoad(userAnswers.ern, userAnswers.arc, NormalMode)
         }
-    case HowMuchIsWrongPage =>
+    case HowGiveInformationPage =>
       (userAnswers: UserAnswers) =>
-        userAnswers.get(HowMuchIsWrongPage) match {
+        userAnswers.get(HowGiveInformationPage) match {
           case Some(TheWholeMovement) => routes.WrongWithMovementController.loadWrongWithMovement(userAnswers.ern, userAnswers.arc, NormalMode)
           case Some(_) => routes.SelectItemsController.onPageLoad(userAnswers.ern, userAnswers.arc)
-          case None => routes.HowMuchIsWrongController.onPageLoad(userAnswers.ern, userAnswers.arc, NormalMode)
+          case None => routes.HowGiveInformationController.onPageLoad(userAnswers.ern, userAnswers.arc, NormalMode)
         }
     case SelectItemsPage(idx) =>
       (userAnswers: UserAnswers) =>

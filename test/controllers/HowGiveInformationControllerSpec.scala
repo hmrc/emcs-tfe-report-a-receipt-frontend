@@ -17,41 +17,41 @@
 package controllers
 
 import base.SpecBase
-import forms.HowMuchIsWrongFormProvider
+import forms.HowGiveInformationFormProvider
 import mocks.services.MockUserAnswersService
-import models.{HowMuchIsWrong, NormalMode}
+import models.{HowGiveInformation, NormalMode}
 import navigation.{FakeNavigator, Navigator}
-import pages.unsatisfactory.HowMuchIsWrongPage
+import pages.unsatisfactory.HowGiveInformationPage
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.UserAnswersService
-import views.html.HowMuchIsWrongView
+import views.html.HowGiveInformationView
 
 import scala.concurrent.Future
 
-class HowMuchIsWrongControllerSpec extends SpecBase with MockUserAnswersService {
+class HowGiveInformationControllerSpec extends SpecBase with MockUserAnswersService {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val howMuchIsWrongRoute = routes.HowMuchIsWrongController.onPageLoad(testErn, testArc, NormalMode).url
+  lazy val howGiveInformationRoute = routes.HowGiveInformationController.onPageLoad(testErn, testArc, NormalMode).url
 
-  val formProvider = new HowMuchIsWrongFormProvider()
+  val formProvider = new HowGiveInformationFormProvider()
   val form = formProvider()
 
-  "HowMuchIsWrong Controller" - {
+  "HowGiveInformation Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, howMuchIsWrongRoute)
+        val request = FakeRequest(GET, howGiveInformationRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[HowMuchIsWrongView]
+        val view = application.injector.instanceOf[HowGiveInformationView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(dataRequest(request), messages(application)).toString
@@ -60,19 +60,19 @@ class HowMuchIsWrongControllerSpec extends SpecBase with MockUserAnswersService 
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(HowMuchIsWrongPage, HowMuchIsWrong.values.head)
+      val userAnswers = emptyUserAnswers.set(HowGiveInformationPage, HowGiveInformation.values.head)
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, howMuchIsWrongRoute)
+        val request = FakeRequest(GET, howGiveInformationRoute)
 
-        val view = application.injector.instanceOf[HowMuchIsWrongView]
+        val view = application.injector.instanceOf[HowGiveInformationView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(HowMuchIsWrong.values.head), NormalMode)(dataRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(HowGiveInformation.values.head), NormalMode)(dataRequest(request), messages(application)).toString
       }
     }
 
@@ -80,11 +80,11 @@ class HowMuchIsWrongControllerSpec extends SpecBase with MockUserAnswersService 
 
       "and delete the rest of the answers when the input answer isn't the same as the current answer" in {
 
-        val updatedAnswers = emptyUserAnswers.set(HowMuchIsWrongPage, HowMuchIsWrong.values.head)
+        val updatedAnswers = emptyUserAnswers.set(HowGiveInformationPage, HowGiveInformation.values.head)
         MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
 
         val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers.set(HowMuchIsWrongPage, HowMuchIsWrong.values.last)))
+          applicationBuilder(userAnswers = Some(emptyUserAnswers.set(HowGiveInformationPage, HowGiveInformation.values.last)))
             .overrides(
               bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
               bind[UserAnswersService].toInstance(mockUserAnswersService)
@@ -93,8 +93,8 @@ class HowMuchIsWrongControllerSpec extends SpecBase with MockUserAnswersService 
 
         running(application) {
           val request =
-            FakeRequest(POST, howMuchIsWrongRoute)
-              .withFormUrlEncodedBody(("value", HowMuchIsWrong.values.head.toString))
+            FakeRequest(POST, howGiveInformationRoute)
+              .withFormUrlEncodedBody(("value", HowGiveInformation.values.head.toString))
 
           val result = route(application, request).value
 
@@ -107,7 +107,7 @@ class HowMuchIsWrongControllerSpec extends SpecBase with MockUserAnswersService 
         MockUserAnswersService.set().never()
 
         val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers.set(HowMuchIsWrongPage, HowMuchIsWrong.values.head)))
+          applicationBuilder(userAnswers = Some(emptyUserAnswers.set(HowGiveInformationPage, HowGiveInformation.values.head)))
             .overrides(
               bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
               bind[UserAnswersService].toInstance(mockUserAnswersService)
@@ -116,8 +116,8 @@ class HowMuchIsWrongControllerSpec extends SpecBase with MockUserAnswersService 
 
         running(application) {
           val request =
-            FakeRequest(POST, howMuchIsWrongRoute)
-              .withFormUrlEncodedBody(("value", HowMuchIsWrong.values.head.toString))
+            FakeRequest(POST, howGiveInformationRoute)
+              .withFormUrlEncodedBody(("value", HowGiveInformation.values.head.toString))
 
           val result = route(application, request).value
 
@@ -133,12 +133,12 @@ class HowMuchIsWrongControllerSpec extends SpecBase with MockUserAnswersService 
 
       running(application) {
         val request =
-          FakeRequest(POST, howMuchIsWrongRoute)
+          FakeRequest(POST, howGiveInformationRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
 
-        val view = application.injector.instanceOf[HowMuchIsWrongView]
+        val view = application.injector.instanceOf[HowGiveInformationView]
 
         val result = route(application, request).value
 
@@ -152,7 +152,7 @@ class HowMuchIsWrongControllerSpec extends SpecBase with MockUserAnswersService 
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, howMuchIsWrongRoute)
+        val request = FakeRequest(GET, howGiveInformationRoute)
 
         val result = route(application, request).value
 
@@ -167,8 +167,8 @@ class HowMuchIsWrongControllerSpec extends SpecBase with MockUserAnswersService 
 
       running(application) {
         val request =
-          FakeRequest(POST, howMuchIsWrongRoute)
-            .withFormUrlEncodedBody(("value", HowMuchIsWrong.values.head.toString))
+          FakeRequest(POST, howGiveInformationRoute)
+            .withFormUrlEncodedBody(("value", HowGiveInformation.values.head.toString))
 
         val result = route(application, request).value
 

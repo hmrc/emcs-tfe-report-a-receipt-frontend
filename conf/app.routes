@@ -89,10 +89,10 @@ POST        /:ern/:arc/check-answers                                            
 
 GET         /:ern/:arc/confirmation                                              controllers.ConfirmationController.onPageLoad(ern: String, arc: String)
 
-GET         /:ern/:arc/how-much-wrong-movement                                   controllers.HowMuchIsWrongController.onPageLoad(ern: String, arc: String, mode: Mode = NormalMode)
-POST        /:ern/:arc/how-much-wrong-movement                                   controllers.HowMuchIsWrongController.onSubmit(ern: String, arc: String, mode: Mode = NormalMode)
-GET         /:ern/:arc/how-much-wrong-movement/change                            controllers.HowMuchIsWrongController.onPageLoad(ern: String, arc: String, mode: Mode = CheckMode)
-POST        /:ern/:arc/how-much-wrong-movement/change                            controllers.HowMuchIsWrongController.onSubmit(ern: String, arc: String, mode: Mode = CheckMode)
+GET         /:ern/:arc/how-give-information-movement                             controllers.HowGiveInformationController.onPageLoad(ern: String, arc: String, mode: Mode = NormalMode)
+POST        /:ern/:arc/how-give-information-movement                             controllers.HowGiveInformationController.onSubmit(ern: String, arc: String, mode: Mode = NormalMode)
+GET         /:ern/:arc/how-give-information-movement/change                      controllers.HowGiveInformationController.onPageLoad(ern: String, arc: String, mode: Mode = CheckMode)
+POST        /:ern/:arc/how-give-information-movement/change                      controllers.HowGiveInformationController.onSubmit(ern: String, arc: String, mode: Mode = CheckMode)
 
 GET         /:ern/:arc/what-wrong-movement                                       controllers.WrongWithMovementController.loadWrongWithMovement(ern: String, arc: String, mode: Mode = NormalMode)
 POST        /:ern/:arc/what-wrong-movement                                       controllers.WrongWithMovementController.submitWrongWithMovement(ern: String, arc: String, mode: Mode = NormalMode)

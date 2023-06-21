@@ -19,7 +19,7 @@ package models.submitReportOfReceipt
 import base.SpecBase
 import fixtures.ReceiptedItemsModelFixtures
 import models.AcceptMovement.{PartiallyRefused, Refused, Satisfactory, Unsatisfactory}
-import models.HowMuchIsWrong.{IndividualItem, TheWholeMovement}
+import models.HowGiveInformation.{IndividualItem, TheWholeMovement}
 import models.WrongWithMovement.{BrokenSeals, Damaged, Excess, Other, Shortage, ShortageOrExcess}
 import models.{ItemShortageOrExcessModel, WrongWithMovement}
 import pages.unsatisfactory.individualItems._
@@ -79,7 +79,7 @@ class ReceiptedItemsModelSpec extends SpecBase with ReceiptedItemsModelFixtures 
               emptyUserAnswers
                 .set(DateOfArrivalPage, testDateOfArrival)
                 .set(AcceptMovementPage, Refused)
-                .set(HowMuchIsWrongPage, TheWholeMovement)
+                .set(HowGiveInformationPage, TheWholeMovement)
                 .set(WrongWithMovementPage, Set[WrongWithMovement](
                   Shortage,
                   Excess,
@@ -166,7 +166,7 @@ class ReceiptedItemsModelSpec extends SpecBase with ReceiptedItemsModelFixtures 
               emptyUserAnswers
                 .set(DateOfArrivalPage, testDateOfArrival)
                 .set(AcceptMovementPage, Unsatisfactory)
-                .set(HowMuchIsWrongPage, IndividualItem)
+                .set(HowGiveInformationPage, IndividualItem)
                 //-----------------
                 //Item 1 Starts ==>
                 .set(SelectItemsPage(item1.itemUniqueReference), item1.itemUniqueReference)

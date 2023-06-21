@@ -19,7 +19,7 @@ package viewmodels.checkAnswers
 import controllers.routes
 import models.NormalMode
 import models.requests.DataRequest
-import pages.unsatisfactory.HowMuchIsWrongPage
+import pages.unsatisfactory.HowGiveInformationPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -28,27 +28,27 @@ import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 
-class HowMuchIsWrongSummary {
+class HowGiveInformationSummary {
 
   def row()(implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] =
-    request.userAnswers.get(HowMuchIsWrongPage).map {
+    request.userAnswers.get(HowGiveInformationPage).map {
       answer =>
 
         val value = ValueViewModel(
           HtmlContent(
-            HtmlFormat.escape(messages(s"$HowMuchIsWrongPage.checkYourAnswers.$answer"))
+            HtmlFormat.escape(messages(s"$HowGiveInformationPage.checkYourAnswers.$answer"))
           )
         )
 
         SummaryListRowViewModel(
-          key     = s"$HowMuchIsWrongPage.checkYourAnswers.label",
+          key     = s"$HowGiveInformationPage.checkYourAnswers.label",
           value   = value,
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              routes.HowMuchIsWrongController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, NormalMode).url,
-              id = HowMuchIsWrongPage
-            ).withVisuallyHiddenText(messages(s"$HowMuchIsWrongPage.checkYourAnswers.change.hidden"))
+              routes.HowGiveInformationController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, NormalMode).url,
+              id = HowGiveInformationPage
+            ).withVisuallyHiddenText(messages(s"$HowGiveInformationPage.checkYourAnswers.change.hidden"))
           )
         )
     }

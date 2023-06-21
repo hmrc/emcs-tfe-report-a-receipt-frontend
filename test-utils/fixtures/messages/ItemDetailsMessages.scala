@@ -19,8 +19,8 @@ package fixtures.messages
 object ItemDetailsMessages {
 
   sealed trait ViewMessages { _: i18n =>
-    val heading: String
-    val title: String
+    val heading: Int => String
+    val title: Int => String
     val h1: Int => String
     val h2: String => String
     val itemDetailsCardHeading: String
@@ -61,8 +61,8 @@ object ItemDetailsMessages {
   }
 
   object English extends ViewMessages with BaseEnglish {
-    override val heading = "Item details"
-    override val title: String = title(heading)
+    override val heading: Int => String = i => s"Item details $i"
+    override val title: Int => String = i => title(heading(i))
     override val h1: Int => String = i => s"Item $i"
     override val h2: String => String = s => s"Report of receipt for $s"
     override val itemDetailsCardHeading = "Item details"
@@ -103,8 +103,8 @@ object ItemDetailsMessages {
   }
 
   object Welsh extends ViewMessages with BaseWelsh {
-    override val heading = "Item details"
-    override val title: String = title(heading)
+    override val heading: Int => String = i => s"Item details $i"
+    override val title: Int => String = i => title(heading(i))
     override val h1: Int => String = i => s"Item $i"
     override val h2: String => String = s => s"Report of receipt for $s"
     override val itemDetailsCardHeading = "Item details"

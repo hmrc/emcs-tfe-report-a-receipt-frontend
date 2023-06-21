@@ -31,7 +31,7 @@
 
 @(item: MovementItem, cnCodeInformation: CnCodeInformation)(implicit request: DataRequest[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("itemDetails.title"))) {
+@layout(pageTitle = titleNoForm(messages("itemDetails.title", item.itemUniqueReference))) {
 
     @h1(messages("itemDetails.heading", item.itemUniqueReference), Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
 

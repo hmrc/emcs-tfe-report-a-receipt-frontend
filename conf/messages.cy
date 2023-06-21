@@ -288,7 +288,7 @@ selectItems.table.row.item = Item {0}
 selectItems.table.row.quantity = {0} {1}
 selectItems.table.row.packaging = {0} {1}
 
-itemDetails.title = Item details
+itemDetails.title = Item details {0}
 itemDetails.heading = Item {0}
 itemDetails.itemDetailsCardTitle = Item details
 itemDetails.packagingTypeCardTitle = Packaging type {0}

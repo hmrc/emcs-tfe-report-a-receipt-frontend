@@ -22,7 +22,7 @@
         govukErrorSummary: GovukErrorSummary,
         govukDateInput: GovukDateInput,
         h1: components.h1,
-        saveAndContinue: components.saveAndContinue
+        continue: components.continue
 )
 
 @(form: Form[_], mode: Mode)(implicit request: DataRequest[_], messages: Messages)
@@ -43,7 +43,7 @@
             .withHint(HintViewModel(messages("dateOfArrival.hint")))
         )
 
-        @saveAndContinue(showReturnToMovementLink = false)
+        @continue()
     }
 }
 

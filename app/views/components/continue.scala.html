@@ -22,22 +22,13 @@
         appConfig: AppConfig
 )
 
-@(primaryKey: String = "site.saveAndContinue", showReturnToMovementLink: Boolean = true)(implicit messages: Messages, request: DataRequest[_])
+@(primaryKey: String = "site.saveAndContinue")(implicit messages: Messages, request: DataRequest[_])
 
 <div class="govuk-button-group">
 
   @govukButton(
       ButtonViewModel(messages(primaryKey)).preventingDoubleClick()
   )
-
-    @if(showReturnToMovementLink) {
-        @govukButton(
-            ButtonViewModel(messages("site.saveAndReturnToMovement"))
-                    .preventingDoubleClick()
-                    .asSecondaryButton()
-                    .asLink(appConfig.emcsMovementDetailsUrl(request.ern, request.arc))
-        )
-    }
 
 </div>
 

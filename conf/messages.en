@@ -8,7 +8,6 @@ site.yes = Yes
 site.continue = Continue
 site.saveAndContinue = Save and continue
 site.savePreviousAnswersAndExit = Save previous answers and exit
-site.saveAndReturnToMovement = Save and return to movement
 site.start = Start now
 site.startAgain = Start again
 site.signIn = Sign in

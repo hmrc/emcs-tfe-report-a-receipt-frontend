@@ -58,7 +58,7 @@ class DateOfArrivalViewSpec extends ViewSpecBase with ViewBehaviours {
       }
     }
 
-    "must not render a secondary button" in {
+    "must not render a secondary link" in {
       val dateOfDispatch = LocalDate.now()
 
       implicit val msgs = messages(app, DateOfArrivalMessages.English.lang)
@@ -69,7 +69,7 @@ class DateOfArrivalViewSpec extends ViewSpecBase with ViewBehaviours {
 
       implicit val doc = Jsoup.parse(view(form, NormalMode).toString())
 
-      doc.select(Selectors.secondaryButton).size() mustBe 0
+      doc.select(Selectors.id("save-and-exit")).size() mustBe 0
     }
   }
 }

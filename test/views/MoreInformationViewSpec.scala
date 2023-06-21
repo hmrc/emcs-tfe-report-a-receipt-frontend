@@ -54,7 +54,7 @@ class MoreInformationViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.h1 -> messagesForLanguage.heading,
           Selectors.hint -> messagesForLanguage.hint,
           Selectors.button -> messagesForLanguage.saveAndContinue,
-          Selectors.link(1) -> messagesForLanguage.savePreviousAnswersAndExitLinkText
+          Selectors.id("save-and-exit") -> messagesForLanguage.savePreviousAnswersAndExitLinkText
         ))
       }
     }
@@ -80,7 +80,7 @@ class MoreInformationViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.h1 -> messagesForLanguage.heading,
           Selectors.hint -> messagesForLanguage.hint,
           Selectors.button -> messagesForLanguage.saveAndContinue,
-          Selectors.link(1) -> messagesForLanguage.savePreviousAnswersAndExitLinkText
+          Selectors.id("save-and-exit") -> messagesForLanguage.savePreviousAnswersAndExitLinkText
         ))
       }
     }
@@ -106,7 +106,7 @@ class MoreInformationViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.h1 -> messagesForLanguage.heading,
           Selectors.hint -> messagesForLanguage.hint,
           Selectors.button -> messagesForLanguage.saveAndContinue,
-          Selectors.link(1) -> messagesForLanguage.savePreviousAnswersAndExitLinkText
+          Selectors.id("save-and-exit") -> messagesForLanguage.savePreviousAnswersAndExitLinkText
         ))
       }
     }
@@ -132,7 +132,7 @@ class MoreInformationViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.h1 -> messagesForLanguage.heading,
           Selectors.hint -> messagesForLanguage.hint,
           Selectors.button -> messagesForLanguage.saveAndContinue,
-          Selectors.link(1) -> messagesForLanguage.savePreviousAnswersAndExitLinkText
+          Selectors.id("save-and-exit") -> messagesForLanguage.savePreviousAnswersAndExitLinkText
         ))
       }
     }
@@ -158,7 +158,7 @@ class MoreInformationViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.h1 -> messagesForLanguage.heading,
           Selectors.hint -> messagesForLanguage.hint,
           Selectors.button -> messagesForLanguage.saveAndContinue,
-          Selectors.link(1) -> messagesForLanguage.savePreviousAnswersAndExitLinkText
+          Selectors.id("save-and-exit") -> messagesForLanguage.savePreviousAnswersAndExitLinkText
         ))
       }
     }

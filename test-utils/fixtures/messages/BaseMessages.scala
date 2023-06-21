@@ -26,7 +26,7 @@ sealed trait BaseMessages { _: i18n =>
   val lang: Lang
   val continue: String
   val saveAndContinue: String
-  val saveAndReturnToMovement: String
+  val savePreviousAnswersAndExit: String
   val day: String
   val month: String
   val year: String
@@ -42,7 +42,7 @@ trait BaseEnglish extends BaseMessages with EN {
   override def arcSubheading(arc: String): String = s"Report of receipt for $arc"
   override val continue = "Continue"
   override val saveAndContinue = "Save and continue"
-  override val saveAndReturnToMovement = "Save and return to movement"
+  override val savePreviousAnswersAndExit = "Save previous answers and exit"
   override val day: String = "Day"
   override val month: String = "Month"
   override val year: String = "Year"
@@ -59,7 +59,7 @@ trait BaseWelsh extends BaseMessages with CY {
   override def arcSubheading(arc: String): String = s"Report of receipt for $arc"
   override val continue = "Continue"
   override val saveAndContinue = "Save and continue"
-  override val saveAndReturnToMovement = "Save and return to movement"
+  override val savePreviousAnswersAndExit = "Save previous answers and exit"
   override val day: String = "Day"
   override val month: String = "Month"
   override val year: String = "Year"

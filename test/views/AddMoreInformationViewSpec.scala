@@ -51,7 +51,7 @@ class AddMoreInformationViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.radioButton(1) -> messagesForLanguage.yes,
           Selectors.radioButton(2) -> messagesForLanguage.no,
           Selectors.button -> messagesForLanguage.saveAndContinue,
-          Selectors.secondaryButton -> messagesForLanguage.saveAndReturnToMovement
+          Selectors.id("save-and-exit") -> messagesForLanguage.savePreviousAnswersAndExit
         ))
       }
     }
@@ -76,7 +76,7 @@ class AddMoreInformationViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.radioButton(1) -> messagesForLanguage.yes,
           Selectors.radioButton(2) -> messagesForLanguage.no,
           Selectors.button -> messagesForLanguage.saveAndContinue,
-          Selectors.secondaryButton -> messagesForLanguage.saveAndReturnToMovement
+          Selectors.id("save-and-exit") -> messagesForLanguage.savePreviousAnswersAndExit
         ))
       }
     }
@@ -101,7 +101,7 @@ class AddMoreInformationViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.radioButton(1) -> messagesForLanguage.yes,
           Selectors.radioButton(2) -> messagesForLanguage.no,
           Selectors.button -> messagesForLanguage.saveAndContinue,
-          Selectors.secondaryButton -> messagesForLanguage.saveAndReturnToMovement
+          Selectors.id("save-and-exit") -> messagesForLanguage.savePreviousAnswersAndExit
         ))
       }
     }
@@ -126,7 +126,7 @@ class AddMoreInformationViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.radioButton(1) -> messagesForLanguage.yes,
           Selectors.radioButton(2) -> messagesForLanguage.no,
           Selectors.button -> messagesForLanguage.saveAndContinue,
-          Selectors.secondaryButton -> messagesForLanguage.saveAndReturnToMovement
+          Selectors.id("save-and-exit") -> messagesForLanguage.savePreviousAnswersAndExit
         ))
       }
     }
@@ -151,7 +151,7 @@ class AddMoreInformationViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.radioButton(1) -> messagesForLanguage.yes,
           Selectors.radioButton(2) -> messagesForLanguage.no,
           Selectors.button -> messagesForLanguage.saveAndContinue,
-          Selectors.secondaryButton -> messagesForLanguage.saveAndReturnToMovement
+          Selectors.id("save-and-exit") -> messagesForLanguage.savePreviousAnswersAndExit
         ))
       }
     }
@@ -176,7 +176,7 @@ class AddMoreInformationViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.radioButton(1) -> messagesForLanguage.yes,
           Selectors.radioButton(2) -> messagesForLanguage.no,
           Selectors.button -> messagesForLanguage.saveAndContinue,
-          Selectors.secondaryButton -> messagesForLanguage.saveAndReturnToMovement
+          Selectors.id("save-and-exit") -> messagesForLanguage.savePreviousAnswersAndExit
         ))
       }
     }

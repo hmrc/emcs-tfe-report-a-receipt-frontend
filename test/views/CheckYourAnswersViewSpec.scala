@@ -60,7 +60,7 @@ class CheckYourAnswersViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.h2(3) -> messagesForLanguage.submitH2,
           Selectors.p(1) -> messagesForLanguage.declaration,
           Selectors.button -> messagesForLanguage.submitButton,
-          Selectors.secondaryButton -> messagesForLanguage.saveAndReturnToMovement
+          Selectors.id("save-and-exit") -> messagesForLanguage.savePreviousAnswersAndExit
         ))
       }
     }

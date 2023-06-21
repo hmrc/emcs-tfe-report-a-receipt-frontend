@@ -56,7 +56,7 @@ class RefusedAmountViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.label("value") -> viewMessagesForLanguage.heading(unitOfMeasureMessagesForLanguage.kilogramsLong),
           Selectors.inputSuffix -> unitOfMeasureMessagesForLanguage.kilogramsShort,
           Selectors.button -> viewMessagesForLanguage.saveAndContinue,
-          Selectors.secondaryButton -> viewMessagesForLanguage.saveAndReturnToMovement
+          Selectors.id("save-and-exit") -> viewMessagesForLanguage.savePreviousAnswersAndExit
         ))
 
         "input label should be visually hidden as same as heading" in {
@@ -90,7 +90,7 @@ class RefusedAmountViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.label("value") -> viewMessagesForLanguage.heading(unitOfMeasureMessagesForLanguage.litres15Long),
           Selectors.inputSuffix -> unitOfMeasureMessagesForLanguage.litres15Short,
           Selectors.button -> viewMessagesForLanguage.saveAndContinue,
-          Selectors.secondaryButton -> viewMessagesForLanguage.saveAndReturnToMovement
+          Selectors.id("save-and-exit") -> viewMessagesForLanguage.savePreviousAnswersAndExit
         ))
       }
     }
@@ -120,7 +120,7 @@ class RefusedAmountViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.label("value") -> viewMessagesForLanguage.heading(unitOfMeasureMessagesForLanguage.litres20Long),
           Selectors.inputSuffix -> unitOfMeasureMessagesForLanguage.litres20Short,
           Selectors.button -> viewMessagesForLanguage.saveAndContinue,
-          Selectors.secondaryButton -> viewMessagesForLanguage.saveAndReturnToMovement
+          Selectors.id("save-and-exit") -> viewMessagesForLanguage.savePreviousAnswersAndExit
         ))
       }
     }
@@ -150,7 +150,7 @@ class RefusedAmountViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.label("value") -> viewMessagesForLanguage.heading(unitOfMeasureMessagesForLanguage.thousandsLong),
           Selectors.inputSuffix -> unitOfMeasureMessagesForLanguage.thousandsShort,
           Selectors.button -> viewMessagesForLanguage.saveAndContinue,
-          Selectors.secondaryButton -> viewMessagesForLanguage.saveAndReturnToMovement
+          Selectors.id("save-and-exit") -> viewMessagesForLanguage.savePreviousAnswersAndExit
         ))
       }
     }

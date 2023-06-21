@@ -23,7 +23,7 @@
         govukErrorSummary: GovukErrorSummary,
         govukInput: GovukInput,
         govukButton: GovukButton,
-        saveAndContinue: components.saveAndContinue,
+        continueOrExit: components.continueOrExit,
         h1: components.h1
 )
 
@@ -51,7 +51,7 @@
             .withHint(HintViewModel(Text(messages("refusedAmount.hint"))))
         )
 
-        @saveAndContinue()
+        @continueOrExit()
     }
 }
 

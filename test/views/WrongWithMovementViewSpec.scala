@@ -53,7 +53,7 @@ class WrongWithMovementViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.checkboxItem(4) -> messagesForLanguage.brokenSeals,
           Selectors.checkboxItem(5) -> messagesForLanguage.other,
           Selectors.button -> messagesForLanguage.saveAndContinue,
-          Selectors.secondaryButton -> messagesForLanguage.saveAndReturnToMovement
+          Selectors.id("save-and-exit") -> messagesForLanguage.savePreviousAnswersAndExit
         ))
       }
     }
@@ -79,7 +79,7 @@ class WrongWithMovementViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.checkboxItem(3) -> messagesForLanguage.brokenSeals,
           Selectors.checkboxItem(4) -> messagesForLanguage.other,
           Selectors.button -> messagesForLanguage.saveAndContinue,
-          Selectors.secondaryButton -> messagesForLanguage.saveAndReturnToMovement
+          Selectors.id("save-and-exit") -> messagesForLanguage.savePreviousAnswersAndExit
         ))
       }
     }

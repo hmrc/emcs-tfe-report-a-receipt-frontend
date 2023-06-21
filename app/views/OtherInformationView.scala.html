@@ -28,7 +28,7 @@
         govukButton: GovukButton,
         h1: components.h1,
         h2: components.h2,
-        saveAndContinue: components.saveAndContinue
+        continueOrExit: components.continueOrExit
 )
 
 @(page: QuestionPage[String], form: Form[_], action: Call)(implicit request: DataRequest[_], messages: Messages)
@@ -58,7 +58,7 @@
             ))
         }
 
-        @saveAndContinue()
+        @continueOrExit()
 
     }
 }

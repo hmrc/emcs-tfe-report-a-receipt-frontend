@@ -25,6 +25,14 @@ class AppConfigSpec extends SpecBase with FeatureSwitching {
 
   "AppConfig" - {
 
+    ".deskproName must be emcstfe" in {
+      config.deskproName mustBe "emcstfe"
+    }
+
+    ".feedbackFrontendSurveyUrl() must handoff to feedback frontend with the correct URL" in {
+      config.feedbackFrontendSurveyUrl mustBe s"http://localhost:9514/feedback/${config.deskproName}/beta"
+    }
+
     ".emcsMovementDetailsUrl()" - {
 
       "when ReturnToLegacy is enabled" - {

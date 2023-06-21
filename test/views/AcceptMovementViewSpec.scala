@@ -50,7 +50,7 @@ class AcceptMovementViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.radioButton(3) -> messagesForLanguage.refused,
           Selectors.radioButton(4) -> messagesForLanguage.partiallyRefused,
           Selectors.button -> messagesForLanguage.saveAndContinue,
-          Selectors.secondaryButton -> messagesForLanguage.saveAndReturnToMovement
+          Selectors.id("save-and-exit") -> messagesForLanguage.savePreviousAnswersAndExit
         ))
       }
     }

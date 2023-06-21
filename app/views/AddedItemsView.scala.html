@@ -25,7 +25,7 @@
         addToList: components.addToListSummary,
         govukRadios: GovukRadios,
         h1: components.h1,
-        saveAndContinue: components.saveAndContinue
+        continueOrExit: components.continueOrExit
 )
 
 @(form: Option[Form[Boolean]], items: Seq[(ListItemWithProductCode, CnCodeInformation)], allItemsAdded: Boolean, action: Call)(implicit request: DataRequest[_], messages: Messages)
@@ -55,7 +55,7 @@
             }
         }
 
-        @saveAndContinue()
+        @continueOrExit()
     }
 }
 

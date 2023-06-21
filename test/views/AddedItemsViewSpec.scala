@@ -78,7 +78,7 @@ class AddedItemsViewSpec extends ViewSpecBase with ViewBehaviours {
             Selectors.itemRemoveLink(1) -> messagesForLanguage.remove,
             Selectors.radioButton(1) -> messagesForLanguage.yes,
             Selectors.radioButton(2) -> messagesForLanguage.no,
-            Selectors.secondaryButton -> messagesForLanguage.saveAndReturnToMovement
+            Selectors.id("save-and-exit") -> messagesForLanguage.savePreviousAnswersAndExit
           ))
         }
 
@@ -115,7 +115,7 @@ class AddedItemsViewSpec extends ViewSpecBase with ViewBehaviours {
             Selectors.itemCnCode(2) -> "testdata2",
             Selectors.itemChangeLink(2) -> messagesForLanguage.change,
             Selectors.itemRemoveLink(2) -> messagesForLanguage.remove,
-            Selectors.secondaryButton -> messagesForLanguage.saveAndReturnToMovement
+            Selectors.id("save-and-exit") -> messagesForLanguage.savePreviousAnswersAndExit
           ))
         }
       }

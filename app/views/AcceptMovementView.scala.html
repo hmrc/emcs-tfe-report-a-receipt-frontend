@@ -23,7 +23,7 @@
         govukRadios: GovukRadios,
         govukButton: GovukButton,
         h1: components.h1,
-        saveAndContinue: components.saveAndContinue
+        continueOrExit: components.continueOrExit
 )
 
 @(form: Form[_], mode: Mode)(implicit request: DataRequest[_], messages: Messages)
@@ -44,7 +44,7 @@
             )
         )
 
-        @saveAndContinue()
+        @continueOrExit()
     }
 }
 

@@ -24,7 +24,7 @@
         h2: components.h2,
         p: components.p,
         link: components.link,
-        saveAndContinue: components.saveAndContinue
+        continueOrExit: components.continueOrExit
 )
 
 @(submitAction: Call, addItemLink: String, list: SummaryList, itemList: Seq[(String, SummaryList)], itemsToAdd: Boolean)(implicit request: DataRequest[_], messages: Messages)
@@ -56,13 +56,13 @@
      }
 
 
-@h2("checkYourAnswers.submit.h2", classes = "govuk-heading-m govuk-!-margin-top-9")
+    @h2("checkYourAnswers.submit.h2", classes = "govuk-heading-m govuk-!-margin-top-9")
 
      @p() {
          @messages("checkYourAnswers.declaration")
      }
 
-     @saveAndContinue("checkYourAnswers.submit.button")
+     @continueOrExit("checkYourAnswers.submit.button")
 
     }
 }

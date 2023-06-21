@@ -23,7 +23,7 @@
         h1: components.h1,
         h2: components.h2,
         p: components.p,
-        saveAndContinue: components.saveAndContinue
+        continueOrExit: components.continueOrExit
 )
 
 @(submitAction: Call, itemName: String, list: SummaryList)(implicit request: DataRequest[_], messages: Messages)
@@ -36,7 +36,7 @@
 
         @govukSummaryList(list)
 
-        @saveAndContinue()
+        @continueOrExit()
 
     }
 }

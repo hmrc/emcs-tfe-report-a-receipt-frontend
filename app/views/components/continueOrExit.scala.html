@@ -26,16 +26,11 @@
 
 <div class="govuk-button-group">
 
-  @govukButton(
-      ButtonViewModel(messages(primaryKey)).preventingDoubleClick()
-  )
+    @govukButton(
+        ButtonViewModel(messages(primaryKey)).preventingDoubleClick()
+    )
 
-  @govukButton(
-      ButtonViewModel(messages("site.saveAndReturnToMovement"))
-              .preventingDoubleClick()
-              .asSecondaryButton()
-              .asLink(appConfig.emcsMovementDetailsUrl(request.ern, request.arc))
-  )
+    <a class="govuk-link" id="save-and-exit" href="@appConfig.emcsTfeHomeUrl(Some(request.ern))">@messages("site.savePreviousAnswersAndExit")</a>
 
 </div>
 

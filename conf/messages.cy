@@ -8,7 +8,6 @@ site.yes = Yes
 site.continue = Continue
 site.saveAndContinue = Save and continue
 site.savePreviousAnswersAndExit = Save previous answers and exit
-site.saveAndReturnToMovement = Save and return to movement
 site.start = Start now
 site.startAgain = Start again
 site.signIn = Sign in
@@ -79,8 +78,8 @@ signedOut.guidance = We did not save your answers.
 
 arc.subHeading = Report of receipt for {0}
 
-dateOfArrival.title = When did this movement arrive?
-dateOfArrival.heading = When did this movement arrive?
+dateOfArrival.title = When did you take delivery of the goods?
+dateOfArrival.heading = When did you take delivery of the goods?
 dateOfArrival.hint = For example, 31 8 2022
 dateOfArrival.error.required.all = Enter the date you received the movement
 dateOfArrival.error.required.two = The date you received the movement must include a {0} and {1}

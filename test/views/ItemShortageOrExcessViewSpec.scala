@@ -66,7 +66,7 @@ class ItemShortageOrExcessViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.inputSuffix -> unitOfMeasureMessagesForLanguage.kilogramsShort,
           Selectors.additionalInfoLabel -> viewMessagesForLanguage.additionalInfoLabel,
           Selectors.button -> viewMessagesForLanguage.saveAndContinue,
-          Selectors.secondaryButton -> viewMessagesForLanguage.saveAndReturnToMovement
+          Selectors.id("save-and-exit") -> viewMessagesForLanguage.savePreviousAnswersAndExit
         ))
       }
     }
@@ -100,7 +100,7 @@ class ItemShortageOrExcessViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.inputSuffix -> unitOfMeasureMessagesForLanguage.litres15Short,
           Selectors.additionalInfoLabel -> viewMessagesForLanguage.additionalInfoLabel,
           Selectors.button -> viewMessagesForLanguage.saveAndContinue,
-          Selectors.secondaryButton -> viewMessagesForLanguage.saveAndReturnToMovement
+          Selectors.id("save-and-exit") -> viewMessagesForLanguage.savePreviousAnswersAndExit
         ))
       }
     }
@@ -134,7 +134,7 @@ class ItemShortageOrExcessViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.inputSuffix -> unitOfMeasureMessagesForLanguage.litres20Short,
           Selectors.additionalInfoLabel -> viewMessagesForLanguage.additionalInfoLabel,
           Selectors.button -> viewMessagesForLanguage.saveAndContinue,
-          Selectors.secondaryButton -> viewMessagesForLanguage.saveAndReturnToMovement
+          Selectors.id("save-and-exit") -> viewMessagesForLanguage.savePreviousAnswersAndExit
         ))
       }
     }
@@ -168,7 +168,7 @@ class ItemShortageOrExcessViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.inputSuffix -> unitOfMeasureMessagesForLanguage.thousandsShort,
           Selectors.additionalInfoLabel -> viewMessagesForLanguage.additionalInfoLabel,
           Selectors.button -> viewMessagesForLanguage.saveAndContinue,
-          Selectors.secondaryButton -> viewMessagesForLanguage.saveAndReturnToMovement
+          Selectors.id("save-and-exit") -> viewMessagesForLanguage.savePreviousAnswersAndExit
         ))
       }
     }

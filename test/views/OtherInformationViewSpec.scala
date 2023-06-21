@@ -55,7 +55,7 @@ class OtherInformationViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.h1 -> messagesForLanguage.heading,
           Selectors.hint -> messagesForLanguage.hint,
           Selectors.button -> messagesForLanguage.saveAndContinue,
-          Selectors.secondaryButton -> messagesForLanguage.saveAndReturnToMovement
+          Selectors.id("save-and-exit") -> messagesForLanguage.savePreviousAnswersAndExit
         ))
       }
     }
@@ -81,7 +81,7 @@ class OtherInformationViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.h1 -> messagesForLanguage.refusedHeading,
           Selectors.hint -> messagesForLanguage.hint,
           Selectors.button -> messagesForLanguage.saveAndContinue,
-          Selectors.secondaryButton -> messagesForLanguage.saveAndReturnToMovement
+          Selectors.id("save-and-exit") -> messagesForLanguage.savePreviousAnswersAndExit
         ))
       }
     }
@@ -107,7 +107,7 @@ class OtherInformationViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.h1 -> messagesForLanguage.heading,
           Selectors.hint -> messagesForLanguage.hint,
           Selectors.button -> messagesForLanguage.saveAndContinue,
-          Selectors.secondaryButton -> messagesForLanguage.saveAndReturnToMovement
+          Selectors.id("save-and-exit") -> messagesForLanguage.savePreviousAnswersAndExit
         ))
       }
     }

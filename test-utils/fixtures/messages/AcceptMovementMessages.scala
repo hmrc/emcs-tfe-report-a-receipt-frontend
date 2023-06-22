@@ -37,10 +37,10 @@ object AcceptMovementMessages {
   object English extends ViewMessages with BaseEnglish {
     override val title = title("Do you want to accept this movement?")
     override val heading = "Do you want to accept this movement?"
-    override val satisfactory = "Yes, it is satisfactory"
-    override val unsatisfactory = "Yes, but it is unsatisfactory"
-    override val refused = "No, I want to refuse it"
-    override val partiallyRefused = "No, I want to partially refuse it"
+    override val satisfactory = "Yes, it’s satisfactory"
+    override val unsatisfactory = "Yes, but it’s unsatisfactory"
+    override val refused = "No, I want to refuse the whole movement"
+    override val partiallyRefused = "No, I want to partially refuse the movement"
     override val requiredError = "Select if you want to accept this movement"
     override val checkYourAnswersLabel = "Receipt status"
     override val hiddenChangeLinkText = "the receipt status"
@@ -53,10 +53,10 @@ object AcceptMovementMessages {
   object Welsh extends ViewMessages with BaseWelsh {
     override val title = title("Do you want to accept this movement?")
     override val heading = "Do you want to accept this movement?"
-    override val satisfactory = "Yes, it is satisfactory"
-    override val unsatisfactory = "Yes, but it is unsatisfactory"
-    override val refused = "No, I want to refuse it"
-    override val partiallyRefused = "No, I want to partially refuse it"
+    override val satisfactory = "Yes, it’s satisfactory"
+    override val unsatisfactory = "Yes, but it’s unsatisfactory"
+    override val refused = "No, I want to refuse the whole movement"
+    override val partiallyRefused = "No, I want to partially refuse the movement"
     override val requiredError: String = "Select if you want to accept this movement"
     override val checkYourAnswersLabel = "Receipt status"
     override val hiddenChangeLinkText = "the receipt status"

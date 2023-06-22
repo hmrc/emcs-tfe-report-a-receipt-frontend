@@ -91,7 +91,9 @@
 
     @formHelper(submitAction) {
         @govukButton(
-            ButtonViewModel(messages("checkYourAnswers.submit.button")).preventingDoubleClick()
+            ButtonViewModel(messages("checkYourAnswers.submit.button"))
+                    .preventingDoubleClick()
+                    .withId("submit")
         )
     }
 }

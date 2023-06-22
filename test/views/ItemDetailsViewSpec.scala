@@ -46,7 +46,7 @@ class ItemDetailsViewSpec extends ViewSpecBase with ViewBehaviours {
         implicit val doc: Document = Jsoup.parse(view(item2, CnCodeInformation("testdata", "product code desc", `1`)).toString)
 
         behave like pageWithExpectedElementsAndMessages(Seq(
-          Selectors.title -> messagesForLanguage.title,
+          Selectors.title -> messagesForLanguage.title(item2.itemUniqueReference),
           Selectors.h1 -> messagesForLanguage.h1(item2.itemUniqueReference),
           Selectors.h2(1) -> messagesForLanguage.h2(request.arc),
           Selectors.id("commodity-code") -> (item2.cnCode + " " + msgs("site.opensInNewTab")),

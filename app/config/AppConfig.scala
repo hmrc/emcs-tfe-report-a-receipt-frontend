@@ -52,7 +52,7 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig, configuration: Configu
   lazy val contactHmrcUrl: String   = configuration.get[String]("urls.contactHmrc")
 
   private lazy val feedbackFrontendHost: String = configuration.get[String]("feedback-frontend.host")
-  lazy val feedbackFrontendSurveyUrl: String    = s"$feedbackFrontendHost/feedback/$deskproName"
+  lazy val feedbackFrontendSurveyUrl: String    = s"$feedbackFrontendHost/feedback/$deskproName/beta"
 
   def languageTranslationEnabled: Boolean = isEnabled(WelshLanguage)
 

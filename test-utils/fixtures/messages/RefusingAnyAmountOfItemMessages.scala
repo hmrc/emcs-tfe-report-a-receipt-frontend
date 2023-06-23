@@ -25,13 +25,13 @@ object RefusingAnyAmountOfItemMessages {
   }
 
   object English extends ViewMessages with BaseEnglish {
-    override val heading = "Are you refusing any amount of this item?"
+    override val heading = "Are you refusing any amount of item 1?"
     override val title = title(heading)
     override val requiredError: String = "Select yes if you want to refuse an amount of this item"
   }
 
   object Welsh extends ViewMessages with BaseWelsh {
-    override val heading = "Are you refusing any amount of this item?"
+    override val heading = "Are you refusing any amount of item 1?"
     override val title = title(heading)
     override val requiredError: String = "Select yes if you want to refuse an amount of this item"
   }

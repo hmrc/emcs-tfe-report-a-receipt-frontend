@@ -18,20 +18,25 @@ package controllers
 
 import base.SpecBase
 import forms.RefusingAnyAmountOfItemFormProvider
-import mocks.services.MockUserAnswersService
+import mocks.services.{MockGetCnCodeInformationService, MockGetPackagingTypesService, MockGetWineOperationsService, MockUserAnswersService}
 import models.NormalMode
+import models.ReferenceDataUnitOfMeasure.`1`
+import models.response.referenceData.CnCodeInformation
 import navigation.{FakeNavigator, Navigator}
 import pages.unsatisfactory.individualItems.{RefusingAnyAmountOfItemPage, SelectItemsPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.UserAnswersService
+import services.{GetCnCodeInformationService, GetPackagingTypesService, GetWineOperationsService, UserAnswersService}
 import views.html.RefusingAnyAmountOfItemView
 
 import scala.concurrent.Future
 
-class RefusingAnyAmountOfItemControllerSpec extends SpecBase with MockUserAnswersService {
+class RefusingAnyAmountOfItemControllerSpec extends SpecBase with MockGetCnCodeInformationService
+  with MockUserAnswersService
+  with MockGetWineOperationsService
+  with MockGetPackagingTypesService {
 
   def onwardRoute = Call("GET", "/foo")
 
@@ -45,7 +50,19 @@ class RefusingAnyAmountOfItemControllerSpec extends SpecBase with MockUserAnswer
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(
+          bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService),
+          bind[GetWineOperationsService].toInstance(mockGetWineOperationsService),
+          bind[GetPackagingTypesService].toInstance(mockGetPackagingTypesService))
+        .build()
+
+      MockGetPackagingTypesService.getPackagingTypes(Seq(item1)).returns(Future.successful(Seq(item1)))
+      MockGetWineOperationsService.getWineOperations(Seq(item1)).returns(Future.successful(Seq(item1)))
+
+      MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
+        (item1, CnCodeInformation("", "", `1`))
+      )))
 
       running(application) {
         val request = FakeRequest(GET, refusingAnyAmountOfItemRoute)
@@ -55,7 +72,7 @@ class RefusingAnyAmountOfItemControllerSpec extends SpecBase with MockUserAnswer
         val view = application.injector.instanceOf[RefusingAnyAmountOfItemView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, submitAction)(dataRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, submitAction, item1, CnCodeInformation("", "", `1`))(dataRequest(request), messages(application)).toString
       }
     }
 
@@ -63,7 +80,19 @@ class RefusingAnyAmountOfItemControllerSpec extends SpecBase with MockUserAnswer
 
       val userAnswers = emptyUserAnswers.set(RefusingAnyAmountOfItemPage(1), true)
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(
+          bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService),
+          bind[GetWineOperationsService].toInstance(mockGetWineOperationsService),
+          bind[GetPackagingTypesService].toInstance(mockGetPackagingTypesService))
+        .build()
+
+      MockGetPackagingTypesService.getPackagingTypes(Seq(item1)).returns(Future.successful(Seq(item1)))
+      MockGetWineOperationsService.getWineOperations(Seq(item1)).returns(Future.successful(Seq(item1)))
+
+      MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
+        (item1, CnCodeInformation("", "", `1`))
+      )))
 
       running(application) {
         val request = FakeRequest(GET, refusingAnyAmountOfItemRoute)
@@ -73,7 +102,7 @@ class RefusingAnyAmountOfItemControllerSpec extends SpecBase with MockUserAnswer
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), submitAction)(dataRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(true), submitAction, item1, CnCodeInformation("", "", `1`))(dataRequest(request), messages(application)).toString
       }
     }
 
@@ -84,13 +113,20 @@ class RefusingAnyAmountOfItemControllerSpec extends SpecBase with MockUserAnswer
           .set(SelectItemsPage(1), 1)
           .set(RefusingAnyAmountOfItemPage(1), true)
 
-          MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
+        MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
+        MockGetPackagingTypesService.getPackagingTypes(Seq(item1)).returns(Future.successful(Seq(item1)))
+        MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
+          (item1, CnCodeInformation("", "", `1`))
+        )))
 
         val application =
           applicationBuilder(userAnswers = Some(emptyUserAnswers.set(RefusingAnyAmountOfItemPage(1), false)))
             .overrides(
+              bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService),
               bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-              bind[UserAnswersService].toInstance(mockUserAnswersService)
+              bind[UserAnswersService].toInstance(mockUserAnswersService),
+              bind[GetPackagingTypesService].toInstance(mockGetPackagingTypesService),
+              bind[GetWineOperationsService].toInstance(mockGetWineOperationsService)
             )
             .build()
 
@@ -109,12 +145,19 @@ class RefusingAnyAmountOfItemControllerSpec extends SpecBase with MockUserAnswer
       "and not delete the rest of the answers when the input answer is the same as the current answer" in {
 
         MockUserAnswersService.set().never()
+        MockGetPackagingTypesService.getPackagingTypes(Seq(item1)).returns(Future.successful(Seq(item1)))
+        MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
+          (item1, CnCodeInformation("", "", `1`))
+        )))
 
         val application =
           applicationBuilder(userAnswers = Some(emptyUserAnswers.set(RefusingAnyAmountOfItemPage(1), true)))
             .overrides(
+              bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService),
               bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-              bind[UserAnswersService].toInstance(mockUserAnswersService)
+              bind[UserAnswersService].toInstance(mockUserAnswersService),
+              bind[GetPackagingTypesService].toInstance(mockGetPackagingTypesService),
+              bind[GetWineOperationsService].toInstance(mockGetWineOperationsService)
             )
             .build()
 
@@ -131,9 +174,76 @@ class RefusingAnyAmountOfItemControllerSpec extends SpecBase with MockUserAnswer
       }
     }
 
+    "must redirect to /select-items" - {
+
+      "when the item doesn't exist in UserAnswers" in {
+        MockGetWineOperationsService.getWineOperations(Seq(item1)).returns(Future.successful(Seq(item1)))
+        MockGetPackagingTypesService.getPackagingTypes(Seq(item1)).returns(Future.successful(Seq(item1)))
+        MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq.empty))
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(
+            bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService),
+            bind[GetPackagingTypesService].toInstance(mockGetPackagingTypesService),
+            bind[GetWineOperationsService].toInstance(mockGetWineOperationsService))
+          .build()
+
+        running(application) {
+
+          val request = FakeRequest(GET, refusingAnyAmountOfItemRoute)
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual routes.SelectItemsController.onPageLoad(testErn, testArc).url
+        }
+      }
+
+      "when the call to get CN information returned no data" in {
+        MockGetPackagingTypesService.getPackagingTypes(Seq(item1)).returns(Future.successful(Seq(item1)))
+        MockGetWineOperationsService.getWineOperations(Seq(item1)).returns(Future.successful(Seq(item1)))
+
+        MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq.empty))
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(
+            bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService),
+            bind[GetPackagingTypesService].toInstance(mockGetPackagingTypesService),
+            bind[GetWineOperationsService].toInstance(mockGetWineOperationsService))
+          .build()
+
+
+
+        running(application) {
+
+          val request = FakeRequest(GET, refusingAnyAmountOfItemRoute)
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual routes.SelectItemsController.onPageLoad(testErn, testArc).url
+        }
+      }
+
+    }
+
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      MockGetPackagingTypesService.getPackagingTypes(Seq(item1)).returns(Future.successful(Seq(item1)))
+      MockGetPackagingTypesService.getPackagingTypes(Seq(item1)).returns(Future.successful(Seq(item1)))
+      MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
+        (item1, CnCodeInformation("", "", `1`))
+      )))
+      MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
+        (item1, CnCodeInformation("", "", `1`))
+      )))
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(
+          bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService),
+          bind[GetPackagingTypesService].toInstance(mockGetPackagingTypesService),
+          bind[GetWineOperationsService].toInstance(mockGetWineOperationsService)
+        )
+        .build()
+
 
       running(application) {
         val request =
@@ -147,7 +257,7 @@ class RefusingAnyAmountOfItemControllerSpec extends SpecBase with MockUserAnswer
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, submitAction)(dataRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, submitAction, item1, CnCodeInformation("", "", `1`))(dataRequest(request), messages(application)).toString
       }
     }
 

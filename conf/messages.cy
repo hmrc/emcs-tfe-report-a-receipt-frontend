@@ -441,8 +441,9 @@ addedItems.heading.plural = You have given information for {0} items
 addedItems.addAnother = Do you want to give information for another item?
 addedItems.error.required = Select yes if you want to give information about another item
 
-refusingAnyAmountOfItem.title = Are you refusing any amount of this item?
-refusingAnyAmountOfItem.heading = Are you refusing any amount of this item?
+refusingAnyAmountOfItem.title = Are you refusing any amount of item {0}?
+refusingAnyAmountOfItem.heading = Are you refusing any amount of item {0}?
+refusingAnyAmountOfItem.item = View item {0} details
 refusingAnyAmountOfItem.error.required = Select yes if you want to refuse an amount of this item
 
 removeItem.title = Are you sure you want to remove information about this item?

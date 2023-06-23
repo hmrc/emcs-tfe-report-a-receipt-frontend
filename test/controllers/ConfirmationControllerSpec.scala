@@ -18,7 +18,8 @@ package controllers
 
 import base.SpecBase
 import handlers.ErrorHandler
-import models.UserAnswers
+import models.AcceptMovement.Satisfactory
+import models.{ConfirmationDetails, UserAnswers}
 import pages.ConfirmationPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -37,7 +38,16 @@ class ConfirmationControllerSpec extends SpecBase {
 
     "when the confirmation receipt reference is held in session" - {
 
-      "must return OK and the correct view for a GET" in new Fixture(Some(emptyUserAnswers.set(ConfirmationPage, testConfirmationReference))) {
+      val testConfirmationDetails = ConfirmationDetails(
+        testConfirmationReference,
+        testReceiptDate,
+        Satisfactory.toString,
+        hasMovementShortage = false,
+        hasItemShortage = false,
+        hasMovementExcess = false,
+        hasItemExcess = false)
+
+      "must return OK and the correct view for a GET" in new Fixture(Some(emptyUserAnswers.set(ConfirmationPage, testConfirmationDetails))) {
 
         running(application) {
           val req = dataRequest(
@@ -48,7 +58,7 @@ class ConfirmationControllerSpec extends SpecBase {
           val result = route(application, request).value
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(testConfirmationReference)(req, messages(application)).toString
+          contentAsString(result) mustEqual view(testConfirmationDetails)(req, messages(application)).toString
         }
       }
     }

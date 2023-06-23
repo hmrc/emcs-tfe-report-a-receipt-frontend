@@ -19,9 +19,9 @@ package views
 import base.ViewSpecBase
 import fixtures.messages.ConfirmationMessages
 import models.AcceptMovement.{Refused, Satisfactory, Unsatisfactory}
-import models.{ItemShortageOrExcessModel, WrongWithMovement}
 import models.WrongWithMovement.{Excess, Shortage}
 import models.requests.DataRequest
+import models.{ConfirmationDetails, ItemShortageOrExcessModel, WrongWithMovement}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import pages.AcceptMovementPage
@@ -51,7 +51,9 @@ class ConfirmationViewSpec extends ViewSpecBase with ViewBehaviours {
 
           val view = app.injector.instanceOf[ConfirmationView]
 
-          implicit val doc: Document = Jsoup.parse(view(testConfirmationReference).toString())
+          val testConfirmationDetails = ConfirmationDetails(testConfirmationReference, testReceiptDate, Satisfactory.toString)
+
+          implicit val doc: Document = Jsoup.parse(view(testConfirmationDetails).toString())
 
           behave like pageWithExpectedElementsAndMessages(Seq(
             Selectors.title -> messagesForLanguage.title,
@@ -61,8 +63,8 @@ class ConfirmationViewSpec extends ViewSpecBase with ViewBehaviours {
             Selectors.p(2) -> messagesForLanguage.whatNextP1,
             Selectors.p(3) -> messagesForLanguage.whatNextP2,
             Selectors.p(4) -> messagesForLanguage.contactHmrc,
-            Selectors.p(5) -> messagesForLanguage.returnToMovement,
-            Selectors.p(6) -> messagesForLanguage.feedback
+            Selectors.button -> messagesForLanguage.returnToAtAGlance,
+            Selectors.p(5) -> messagesForLanguage.feedback
           ))
         }
 
@@ -77,7 +79,9 @@ class ConfirmationViewSpec extends ViewSpecBase with ViewBehaviours {
 
           val view = app.injector.instanceOf[ConfirmationView]
 
-          implicit val doc: Document = Jsoup.parse(view(testConfirmationReference).toString())
+          val testConfirmationDetails = ConfirmationDetails(testConfirmationReference, testReceiptDate, Unsatisfactory.toString, hasMovementShortage = true, hasMovementExcess = true)
+
+          implicit val doc: Document = Jsoup.parse(view(testConfirmationDetails).toString())
 
           behave like pageWithExpectedElementsAndMessages(Seq(
             Selectors.title -> messagesForLanguage.title,
@@ -96,8 +100,8 @@ class ConfirmationViewSpec extends ViewSpecBase with ViewBehaviours {
             Selectors.bullet(1, 2) -> messagesForLanguage.excessDifferentGoodsBullet1,
             Selectors.bullet(2, 2) -> messagesForLanguage.excessDifferentGoodsBullet2,
             Selectors.p(7) -> messagesForLanguage.contactHmrc,
-            Selectors.p(8) -> messagesForLanguage.returnToMovement,
-            Selectors.p(9) -> messagesForLanguage.feedback
+            Selectors.button -> messagesForLanguage.returnToAtAGlance,
+            Selectors.p(8) -> messagesForLanguage.feedback
           ))
         }
 
@@ -115,7 +119,9 @@ class ConfirmationViewSpec extends ViewSpecBase with ViewBehaviours {
 
           val view = app.injector.instanceOf[ConfirmationView]
 
-          implicit val doc: Document = Jsoup.parse(view(testConfirmationReference).toString())
+          val testConfirmationDetails = ConfirmationDetails(testConfirmationReference, testReceiptDate, Refused.toString, hasItemExcess = true, hasItemShortage = true)
+
+          implicit val doc: Document = Jsoup.parse(view(testConfirmationDetails).toString())
 
           behave like pageWithExpectedElementsAndMessages(Seq(
             Selectors.title -> messagesForLanguage.title,
@@ -139,8 +145,8 @@ class ConfirmationViewSpec extends ViewSpecBase with ViewBehaviours {
             Selectors.bullet(1, 3) -> messagesForLanguage.excessDifferentGoodsBullet1,
             Selectors.bullet(2, 3) -> messagesForLanguage.excessDifferentGoodsBullet2,
             Selectors.p(8) -> messagesForLanguage.contactHmrc,
-            Selectors.p(9) -> messagesForLanguage.returnToMovement,
-            Selectors.p(10) -> messagesForLanguage.feedback
+            Selectors.button -> messagesForLanguage.returnToAtAGlance,
+            Selectors.p(9) -> messagesForLanguage.feedback
           ))
         }
       }

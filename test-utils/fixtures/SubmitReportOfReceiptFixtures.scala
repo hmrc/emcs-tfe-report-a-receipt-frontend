@@ -61,7 +61,7 @@ trait SubmitReportOfReceiptFixtures extends BaseFixtures
     otherInformation = None
   )
 
-  val successResponse = SubmitReportOfReceiptResponse(receipt = testConfirmationReference)
-  val successResponseJson = Json.obj("receipt" -> testConfirmationReference)
+  val successResponse = SubmitReportOfReceiptResponse(receipt = testConfirmationReference, receiptDate = testReceiptDate)
+  val successResponseJson = Json.obj("receipt" -> testConfirmationReference, "receiptDate" -> testReceiptDate)
 
 }

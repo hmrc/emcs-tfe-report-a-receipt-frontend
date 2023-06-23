@@ -30,6 +30,7 @@ trait BaseFixtures {
   val testArc: String = "arc"
   val testDateOfArrival: LocalDate = LocalDate.now()
   val testConfirmationReference = "UYVQBLMXCYK6HAEBZI7TSWAQ6XDTXFYU"
+  val testReceiptDate = "2023-06-07T10:11:12.000"
   val testOnwardRoute = Call("GET", "/foo")
 
   val emptyUserAnswers: UserAnswers = UserAnswers(

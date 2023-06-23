@@ -16,11 +16,12 @@
 
 package pages
 
+import models.ConfirmationDetails
 import play.api.libs.json.JsPath
 
-case object ConfirmationPage extends QuestionPage[String] {
+case object ConfirmationPage extends QuestionPage[ConfirmationDetails] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "submissionReceiptReference"
+  override def toString: String = "confirmationDetails"
 }

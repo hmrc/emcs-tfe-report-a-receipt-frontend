@@ -17,9 +17,9 @@
 package viewmodels.checkAnswers
 
 import models.AcceptMovement.{Refused, Unsatisfactory}
-import models.{AcceptMovement, CheckMode}
 import models.WrongWithMovement.{BrokenSeals, Damaged, Excess, Other, Shortage}
 import models.requests.DataRequest
+import models.{AcceptMovement, CheckMode}
 import pages.unsatisfactory._
 import pages.{AcceptMovementPage, MoreInformationPage}
 import play.api.i18n.Messages
@@ -65,7 +65,7 @@ class CheckAnswersHelper @Inject()(acceptMovementSummary: AcceptMovementSummary,
           page = MoreInformationPage,
           changeAction = controllers.routes.MoreInformationController.loadMoreInformation(request.ern, request.arc, CheckMode)
         )
-    ).withCssClass("govuk-!-margin-bottom-9")
+    )
   }
 
   private def shortageInformation()(implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] =

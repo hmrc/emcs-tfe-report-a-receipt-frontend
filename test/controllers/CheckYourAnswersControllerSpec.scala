@@ -21,10 +21,14 @@ import fixtures.SubmitReportOfReceiptFixtures
 import handlers.ErrorHandler
 import mocks.services.{MockGetCnCodeInformationService, MockSubmitReportOfReceiptService, MockUserAnswersService}
 import mocks.viewmodels.MockCheckAnswersHelper
-import models.AcceptMovement.Satisfactory
+import models.AcceptMovement.{Refused, Satisfactory, Unsatisfactory}
+import models.HowGiveInformation.{IndividualItem, TheWholeMovement}
 import models.UserAnswers
+import models.WrongWithMovement.BrokenSeals
 import models.response.{MissingMandatoryPage, SubmitReportOfReceiptException}
 import navigation.{FakeNavigator, Navigator}
+import pages.unsatisfactory.HowGiveInformationPage
+import pages.unsatisfactory.individualItems.{CheckAnswersItemPage, SelectItemsPage, WrongWithItemPage}
 import pages.{AcceptMovementPage, ConfirmationPage, DateOfArrivalPage}
 import play.api.inject
 import play.api.test.FakeRequest
@@ -61,21 +65,121 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency wi
     ".onPageLoad" - {
 
       def request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad(testErn, testArc).url)
-      val link = routes.SelectItemsController.onPageLoad(testErn, testArc).url
+      def selectItemsRoute = routes.SelectItemsController.onPageLoad(testErn, testArc).url
 
-      "must return OK and the correct view for a GET" in new Fixture(Some(emptyUserAnswers)) {
+      "must return OK and the correct view for a GET (when satisfactory)" in new Fixture(Some(
+        emptyUserAnswers
+          .set(AcceptMovementPage, Satisfactory)
+      )) {
 
         running(application) {
 
           val list = SummaryListViewModel(Seq.empty)
-          val itemList = Seq.empty[(String, SummaryList)]
+          val itemList = Seq.empty[(Int, SummaryList)]
 
           MockCheckAnswersHelper.summaryList().returns(list)
 
           val result = route(application, request).value
 
           status(result) mustBe OK
-          contentAsString(result) mustBe view(routes.CheckYourAnswersController.onSubmit(testErn, testArc), link, list, itemList, false)(dataRequest(request), messages(application)).toString
+          contentAsString(result) mustBe view(routes.CheckYourAnswersController.onSubmit(testErn, testArc), selectItemsRoute, list, itemList, false)(dataRequest(request), messages(application)).toString
+        }
+      }
+
+      "must return OK and the correct view for a GET (when unsatisfactory, with added items)" in new Fixture(Some(
+        emptyUserAnswers
+          .set(AcceptMovementPage, Unsatisfactory)
+          .set(SelectItemsPage(item1.itemUniqueReference), item1.itemUniqueReference)
+          .set(WrongWithItemPage(item1.itemUniqueReference), Set(BrokenSeals))
+          .set(CheckAnswersItemPage(item1.itemUniqueReference), true)
+      )) {
+
+        running(application) {
+
+          val list = SummaryListViewModel(Seq.empty)
+          val itemList = Seq.empty[(Int, SummaryList)]
+
+          MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1))
+            .returns(Future.successful(Seq()))
+          MockCheckAnswersHelper.summaryList().returns(list)
+
+          val result = route(application, request).value
+
+          status(result) mustBe OK
+          contentAsString(result) mustBe view(routes.CheckYourAnswersController.onSubmit(testErn, testArc), selectItemsRoute, list, itemList, true)(dataRequest(request), messages(application)).toString
+        }
+      }
+
+      "must return SEE_OTHER and redirect to Select Items (when unsatisfactory AND NO added items)" in new Fixture(Some(
+        emptyUserAnswers
+          .set(AcceptMovementPage, Unsatisfactory)
+      )) {
+
+        running(application) {
+
+          val result = route(application, request).value
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(selectItemsRoute)
+        }
+      }
+
+      "must return OK and the correct view for a GET (when refused with individual items, with added items)" in new Fixture(Some(
+        emptyUserAnswers
+          .set(AcceptMovementPage, Refused)
+          .set(HowGiveInformationPage, IndividualItem)
+          .set(SelectItemsPage(item1.itemUniqueReference), item1.itemUniqueReference)
+          .set(WrongWithItemPage(item1.itemUniqueReference), Set(BrokenSeals))
+          .set(CheckAnswersItemPage(item1.itemUniqueReference), true)
+      )) {
+
+        running(application) {
+
+          val list = SummaryListViewModel(Seq.empty)
+          val itemList = Seq.empty[(Int, SummaryList)]
+
+          MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1))
+            .returns(Future.successful(Seq()))
+          MockCheckAnswersHelper.summaryList().returns(list)
+
+          val result = route(application, request).value
+
+          status(result) mustBe OK
+          contentAsString(result) mustBe view(routes.CheckYourAnswersController.onSubmit(testErn, testArc), selectItemsRoute, list, itemList, true)(dataRequest(request), messages(application)).toString
+        }
+      }
+
+      "must return SEE_OTHER and redirect to Select Items (when refused individual items AND NO added items)" in new Fixture(Some(
+        emptyUserAnswers
+          .set(AcceptMovementPage, Refused)
+      )) {
+
+        running(application) {
+
+          val result = route(application, request).value
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(selectItemsRoute)
+        }
+      }
+
+      "must return OK and the correct view for a GET (when refused whole movement, no added items)" in new Fixture(Some(
+        emptyUserAnswers
+          .set(AcceptMovementPage, Refused)
+          .set(HowGiveInformationPage, TheWholeMovement)
+      )) {
+
+        running(application) {
+
+          val list = SummaryListViewModel(Seq.empty)
+          val itemList = Seq.empty[(Int, SummaryList)]
+
+          MockCheckAnswersHelper.summaryList().returns(list)
+
+          val result = route(application, request).value
+
+          status(result) mustBe OK
+          contentAsString(result) mustBe view(routes.CheckYourAnswersController.onSubmit(testErn, testArc), selectItemsRoute, list, itemList, false)(dataRequest(request), messages(application)).toString
         }
       }
 

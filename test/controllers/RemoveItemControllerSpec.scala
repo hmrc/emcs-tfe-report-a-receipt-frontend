@@ -20,7 +20,7 @@ import base.SpecBase
 import forms.AddMoreInformationFormProvider
 import mocks.services.MockUserAnswersService
 import models.HowGiveInformation.IndividualItem
-import models.UserAnswers
+import models.{Mode, NormalMode, ReviewMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import pages.QuestionPage
 import pages.unsatisfactory.HowGiveInformationPage
@@ -43,8 +43,8 @@ class RemoveItemControllerSpec extends SpecBase with MockUserAnswersService {
 
   val formProvider = new AddMoreInformationFormProvider()
 
-  lazy val removeItemRoute: Call = routes.RemoveItemController.onPageLoad(testErn, testArc, idx)
-  lazy val removeItemSubmitAction: Call = routes.RemoveItemController.onSubmit(testErn, testArc, idx)
+  def removeItemRoute(mode: Mode = NormalMode): Call = routes.RemoveItemController.onPageLoad(testErn, testArc, idx, mode)
+  def removeItemSubmitAction(mode: Mode = NormalMode): Call = routes.RemoveItemController.onSubmit(testErn, testArc, idx, mode)
 
   lazy val page: QuestionPage[Boolean] = RemoveItemPage(1)
 
@@ -64,14 +64,14 @@ class RemoveItemControllerSpec extends SpecBase with MockUserAnswersService {
         val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
         running(application) {
-          val request = FakeRequest(GET, removeItemRoute.url)
+          val request = FakeRequest(GET, removeItemRoute().url)
 
           val result = route(application, request).value
 
           val view = application.injector.instanceOf[AddMoreInformationView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form, page, removeItemSubmitAction)(dataRequest(request), messages(application)).toString
+          contentAsString(result) mustEqual view(form, page, removeItemSubmitAction())(dataRequest(request), messages(application)).toString
         }
       }
 
@@ -96,7 +96,7 @@ class RemoveItemControllerSpec extends SpecBase with MockUserAnswersService {
 
         running(application) {
           val request =
-            FakeRequest(POST, removeItemSubmitAction.url)
+            FakeRequest(POST, removeItemSubmitAction().url)
               .withFormUrlEncodedBody(("value", "true"))
 
           val result = route(application, request).value
@@ -106,7 +106,7 @@ class RemoveItemControllerSpec extends SpecBase with MockUserAnswersService {
         }
       }
 
-      "must redirect to the AddedItems page when valid data is submitted (false) without removing the item" in {
+      "must redirect to the AddedItems page when valid data is submitted (false) without removing the item (in NormalMode)" in {
 
         val application =
           applicationBuilder(userAnswers = Some(baseAnswers))
@@ -118,7 +118,7 @@ class RemoveItemControllerSpec extends SpecBase with MockUserAnswersService {
 
         running(application) {
           val request =
-            FakeRequest(POST, removeItemSubmitAction.url)
+            FakeRequest(POST, removeItemSubmitAction().url)
               .withFormUrlEncodedBody(("value", "false"))
 
           val result = route(application, request).value
@@ -128,13 +128,35 @@ class RemoveItemControllerSpec extends SpecBase with MockUserAnswersService {
         }
       }
 
+      "must redirect to the CheckAnswers page when valid data is submitted (false) without removing the item (in ReviewMode)" in {
+
+        val application =
+          applicationBuilder(userAnswers = Some(baseAnswers))
+            .overrides(
+              bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+              bind[UserAnswersService].toInstance(mockUserAnswersService)
+            )
+            .build()
+
+        running(application) {
+          val request =
+            FakeRequest(POST, removeItemSubmitAction(ReviewMode).url)
+              .withFormUrlEncodedBody(("value", "false"))
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual routes.CheckYourAnswersController.onPageLoad(testErn, testArc).url
+        }
+      }
+
       "must return a Bad Request and errors when invalid data is submitted" in {
 
         val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
         running(application) {
           val request =
-            FakeRequest(POST, removeItemSubmitAction.url)
+            FakeRequest(POST, removeItemSubmitAction().url)
               .withFormUrlEncodedBody(("value", ""))
 
           val boundForm = form.bind(Map("value" -> ""))
@@ -144,7 +166,7 @@ class RemoveItemControllerSpec extends SpecBase with MockUserAnswersService {
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, page, removeItemSubmitAction)(dataRequest(request), messages(application)).toString
+          contentAsString(result) mustEqual view(boundForm, page, removeItemSubmitAction())(dataRequest(request), messages(application)).toString
         }
       }
 
@@ -153,7 +175,7 @@ class RemoveItemControllerSpec extends SpecBase with MockUserAnswersService {
         val application = applicationBuilder(userAnswers = None).build()
 
         running(application) {
-          val request = FakeRequest(GET, removeItemRoute.url)
+          val request = FakeRequest(GET, removeItemRoute().url)
 
           val result = route(application, request).value
 
@@ -168,7 +190,7 @@ class RemoveItemControllerSpec extends SpecBase with MockUserAnswersService {
 
         running(application) {
           val request =
-            FakeRequest(POST, removeItemSubmitAction.url)
+            FakeRequest(POST, removeItemSubmitAction().url)
               .withFormUrlEncodedBody(("value", "true"))
 
           val result = route(application, request).value

@@ -16,7 +16,7 @@
 
 package forms
 
-import fixtures.messages.{wrongWithItemMessages, WrongWithMovementMessages}
+import fixtures.messages.{WrongWithItemMessages, WrongWithMovementMessages}
 import forms.behaviours.CheckboxFieldBehaviours
 import models.WrongWithMovement
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -76,7 +76,7 @@ class WrongWithMovementFormProviderSpec extends CheckboxFieldBehaviours with Gui
 
     "for the wrongWithItemPage" - {
 
-      Seq(wrongWithItemMessages.English, wrongWithItemMessages.Welsh) foreach { messagesForLanguage =>
+      Seq(WrongWithItemMessages.English, WrongWithItemMessages.Welsh) foreach { messagesForLanguage =>
 
         implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(messagesForLanguage.lang))
 

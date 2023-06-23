@@ -18,13 +18,18 @@ package controllers
 
 import controllers.actions._
 import handlers.ErrorHandler
+import models.AcceptMovement.{Refused, Satisfactory}
+import models.HowGiveInformation.TheWholeMovement
+import models.requests.DataRequest
 import models.{NormalMode, UserAnswers}
 import models.response.MissingMandatoryPage
+import models.response.emcsTfe.MovementItem
 import navigation.Navigator
-import pages.{CheckAnswersPage, ConfirmationPage}
+import pages.unsatisfactory.HowGiveInformationPage
+import pages.{AcceptMovementPage, CheckAnswersPage, ConfirmationPage}
 import play.api.i18n.MessagesApi
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.{GetCnCodeInformationService, SubmitReportOfReceiptService, UserAnswersService}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import uk.gov.hmrc.http.HeaderCarrier
@@ -53,16 +58,16 @@ class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi
 
   def onPageLoad(ern: String, arc: String): Action[AnyContent] =
     authorisedDataRequestWithUpToDateMovementAsync(ern, arc) { implicit request =>
-      withAllCompletedItemsAsync() {
-        items =>
-          val formattedAnswersFuture: Future[Seq[(String, SummaryList)]] = {
+      withAllCompletedItemsAsync() { items =>
+        guardPageAccess(items) {
+          val formattedAnswersFuture: Future[Seq[(Int, SummaryList)]] = {
             if (items.nonEmpty) {
               getCnCodeInformationService.getCnCodeInformationWithMovementItems(items).map {
                 serviceResult =>
                   serviceResult.map {
                     case (item, cnCodeInformation) =>
                       (
-                        cnCodeInformation.cnCodeDescription,
+                        item.itemUniqueReference,
                         checkAnswersItemHelper.summaryList(
                           idx = item.itemUniqueReference,
                           unitOfMeasure = cnCodeInformation.unitOfMeasureCode.toUnitOfMeasure,
@@ -88,7 +93,15 @@ class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi
                 moreItemsToAdd,
               ))
           }
+        }
       }
+    }
+
+  private[controllers] def guardPageAccess(items: Seq[MovementItem])(block: => Future[Result])(implicit request: DataRequest[_]): Future[Result] =
+    (request.userAnswers.get(AcceptMovementPage), request.userAnswers.get(HowGiveInformationPage)) match {
+      case (Some(Satisfactory), _) | (Some(Refused), Some(TheWholeMovement)) => block
+      case _ if items.nonEmpty => block
+      case _ => Future.successful(Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc)))
     }
 
   def onSubmit(ern: String, arc: String): Action[AnyContent] =
@@ -109,10 +122,10 @@ class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi
 
 
   private def deleteDraftAndSetConfirmationFlow(internalId: String,
-                                                    ern: String,
-                                                    arc: String,
-                                                    receipt: String)
-                                                   (implicit req: HeaderCarrier): Future[UserAnswers] =
+                                                ern: String,
+                                                arc: String,
+                                                receipt: String)
+                                               (implicit req: HeaderCarrier): Future[UserAnswers] =
     userAnswersService.set(
       UserAnswers(internalId,
         ern,

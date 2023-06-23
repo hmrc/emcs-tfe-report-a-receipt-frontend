@@ -17,7 +17,7 @@
 package views
 
 import base.ViewSpecBase
-import fixtures.messages.{wrongWithItemMessages, WrongWithMovementMessages}
+import fixtures.messages.{WrongWithItemMessages, WrongWithMovementMessages}
 import forms.WrongWithMovementFormProvider
 import org.jsoup.Jsoup
 import pages.unsatisfactory.WrongWithMovementPage
@@ -61,7 +61,7 @@ class WrongWithMovementViewSpec extends ViewSpecBase with ViewBehaviours {
 
   "WrongWithMovement view for an Individual Item" - {
 
-    Seq(wrongWithItemMessages.English, wrongWithItemMessages.Welsh).foreach { messagesForLanguage =>
+    Seq(WrongWithItemMessages.English, WrongWithItemMessages.Welsh).foreach { messagesForLanguage =>
 
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
 

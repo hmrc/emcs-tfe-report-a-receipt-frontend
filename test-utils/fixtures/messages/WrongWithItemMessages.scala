@@ -16,7 +16,7 @@
 
 package fixtures.messages
 
-object wrongWithItemMessages {
+object WrongWithItemMessages {
 
   sealed trait ViewMessages { _: i18n =>
     val title: String
@@ -45,7 +45,7 @@ object wrongWithItemMessages {
     override val requiredError: String = "Select what’s wrong with this item"
     override val checkYourAnswersLabel: String = "What was wrong"
     override val checkYourAnswersMoreOrLess: String = "Shortage"
-    override val checkYourAnswersDamaged: String = "Damaged items"
+    override val checkYourAnswersDamaged: String = "Damaged goods"
     override val checkYourAnswersBrokenSeals: String = "Broken seal(s)"
     override val checkYourAnswersOther: String = "Other"
     override val hiddenChangeLinkText: String = "what was wrong"
@@ -62,7 +62,7 @@ object wrongWithItemMessages {
     override val requiredError: String = "Select what’s wrong with this item"
     override val checkYourAnswersLabel: String = "What was wrong"
     override val checkYourAnswersMoreOrLess: String = "Shortage"
-    override val checkYourAnswersDamaged: String = "Damaged items"
+    override val checkYourAnswersDamaged: String = "Damaged goods"
     override val checkYourAnswersBrokenSeals: String = "Broken seal(s)"
     override val checkYourAnswersOther: String = "Other"
     override val hiddenChangeLinkText: String = "what was wrong"

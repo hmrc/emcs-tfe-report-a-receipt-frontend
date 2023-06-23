@@ -81,7 +81,7 @@ class CheckAnswersHelperSpec extends SpecBase
           dateOfArrivalAnswer,
           acceptMovementAnswer,
           moreInformationAnswer
-        )).withCssClass("govuk-!-margin-bottom-9")
+        ))
       }
     }
 
@@ -149,7 +149,7 @@ class CheckAnswersHelperSpec extends SpecBase
                 sealsInformationAnswer,
                 otherInformationAnswer,
                 moreInformationAnswer
-              )).withCssClass("govuk-!-margin-bottom-9")
+              ))
             }
           }
 
@@ -184,7 +184,7 @@ class CheckAnswersHelperSpec extends SpecBase
                   howGiveInformationAnswer,
                   wrongWithMovementAnswer,
                   moreInformationAnswer
-                )).withCssClass("govuk-!-margin-bottom-9")
+                ))
               }
             }
           }

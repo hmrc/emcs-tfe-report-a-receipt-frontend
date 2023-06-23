@@ -18,7 +18,7 @@ package viewmodels
 
 import base.SpecBase
 import controllers.routes
-import models.ListItemWithProductCode
+import models.{ListItemWithProductCode, NormalMode}
 import pages.unsatisfactory.individualItems.{CheckAnswersItemPage, SelectItemsPage}
 import play.api.test.FakeRequest
 
@@ -43,13 +43,13 @@ class AddedItemsSummarySpec extends SpecBase {
           productCode = item1.productCode,
           cnCode = item1.cnCode,
           changeUrl = routes.CheckYourAnswersItemController.onPageLoad(answers.ern, answers.arc, 1).url,
-          removeUrl = routes.RemoveItemController.onPageLoad(answers.ern, answers.arc, 1).url
+          removeUrl = routes.RemoveItemController.onPageLoad(answers.ern, answers.arc, 1, NormalMode).url
         ),
         ListItemWithProductCode(
           productCode = item2.productCode,
           cnCode = item2.cnCode,
           changeUrl = routes.CheckYourAnswersItemController.onPageLoad(answers.ern, answers.arc, 2).url,
-          removeUrl = routes.RemoveItemController.onPageLoad(answers.ern, answers.arc, 2).url
+          removeUrl = routes.RemoveItemController.onPageLoad(answers.ern, answers.arc, 2, NormalMode).url
         )
       )
     }
@@ -69,7 +69,7 @@ class AddedItemsSummarySpec extends SpecBase {
             productCode = item2.productCode,
             cnCode = item2.cnCode,
             changeUrl = routes.CheckYourAnswersItemController.onPageLoad(answers.ern, answers.arc, 2).url,
-            removeUrl = routes.RemoveItemController.onPageLoad(answers.ern, answers.arc, 2).url
+            removeUrl = routes.RemoveItemController.onPageLoad(answers.ern, answers.arc, 2, NormalMode).url
           )
         )
       }

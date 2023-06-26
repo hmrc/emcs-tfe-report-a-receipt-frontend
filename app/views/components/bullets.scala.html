@@ -16,14 +16,18 @@
 
 @this()
 
-@(content: Seq[Html])
+@(content: Seq[Html], numbered: Boolean = false)
 
-<ul class="govuk-list govuk-list--bullet">
-    @content.map { bullet =>
-        <li>@bullet</li>
-    }
-</ul>
+  @if(numbered) {
+    <ol class="govuk-list govuk-list--number">
+      @content.map { bullet => <li>@bullet</li> }
+    </ol>
+  } else {
+    <ul class="govuk-list govuk-list--bullet">
+      @content.map { bullet => <li>@bullet</li> }
+    </ul>
+  }
 
-@{
- //$COVERAGE-OFF$
-}
+ @{
+  //$COVERAGE-OFF$
+ }

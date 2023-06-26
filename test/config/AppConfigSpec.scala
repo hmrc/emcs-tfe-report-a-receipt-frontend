@@ -81,6 +81,24 @@ class AppConfigSpec extends SpecBase with FeatureSwitching {
         }
       }
     }
-  }
 
+    ".emcsMovementsUrl()" - {
+
+      "when ReturnToLegacy is enabled" - {
+
+        "must return to the legacy URL" in {
+          enable(ReturnToLegacy)
+          config.emcsMovementsUrl(testErn) mustBe s"http://localhost:8080/emcs/trader/$testErn/movements"
+        }
+      }
+
+      "when ReturnToLegacy is disabled" - {
+
+        "must return to the new URL" in {
+          disable(ReturnToLegacy)
+          config.emcsMovementsUrl(testErn) mustBe s"http://localhost:8310/emcs-tfe/movements-in/$testErn"
+        }
+      }
+    }
+  }
 }

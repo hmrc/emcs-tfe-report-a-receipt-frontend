@@ -379,7 +379,7 @@ class ItemShortageOrExcessControllerSpec extends SpecBase with MockUserAnswersSe
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad(testErn, testArc).url
       }
     }
 
@@ -397,7 +397,7 @@ class ItemShortageOrExcessControllerSpec extends SpecBase with MockUserAnswersSe
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad(testErn, testArc).url
       }
     }
   }

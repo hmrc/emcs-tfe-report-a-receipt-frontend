@@ -19,11 +19,13 @@ package controllers
 import controllers.actions._
 import forms.AddMoreInformationFormProvider
 import models.Mode
+import models.requests.DataRequest
 import navigation.Navigator
 import pages.QuestionPage
 import pages.unsatisfactory.individualItems.{AddItemDamageInformationPage, ItemDamageInformationPage}
+import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
 import services.{GetCnCodeInformationService, GetPackagingTypesService, UserAnswersService}
 import utils.JsonOptionFormatter
 import viewmodels.ItemDetailsHelper
@@ -32,21 +34,19 @@ import views.html.AddItemMoreInformationView
 import javax.inject.Inject
 import scala.concurrent.Future
 
-class AddItemMoreInformationController @Inject()(
-                                                  override val messagesApi: MessagesApi,
-                                                  override val userAnswersService: UserAnswersService,
-                                                  override val navigator: Navigator,
-                                                  override val auth: AuthAction,
-                                                  override val userAllowList: UserAllowListAction,
-                                                  override val withMovement: MovementAction,
-                                                  override val getData: DataRetrievalAction,
-                                                  override val requireData: DataRequiredAction,
-                                                  formProvider: AddMoreInformationFormProvider,
-                                                  val controllerComponents: MessagesControllerComponents,
-                                                  view: AddItemMoreInformationView,
-                                                  itemDetailsSummaryHelper: ItemDetailsHelper,
-                                                  getCnCodeInformationService: GetCnCodeInformationService,
-                                                  getPackagingTypesService: GetPackagingTypesService
+class AddItemMoreInformationController @Inject()(override val messagesApi: MessagesApi,
+                                                 override val userAnswersService: UserAnswersService,
+                                                 override val navigator: Navigator,
+                                                 override val auth: AuthAction,
+                                                 override val userAllowList: UserAllowListAction,
+                                                 override val withMovement: MovementAction,
+                                                 override val getData: DataRetrievalAction,
+                                                 override val requireData: DataRequiredAction,
+                                                 formProvider: AddMoreInformationFormProvider,
+                                                 val controllerComponents: MessagesControllerComponents,
+                                                 view: AddItemMoreInformationView,
+                                                 getCnCodeInformationService: GetCnCodeInformationService,
+                                                 getPackagingTypesService: GetPackagingTypesService
                                                 ) extends BaseNavigationController with AuthActionHelper with JsonOptionFormatter {
 
   def loadItemDamageInformation(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
@@ -62,25 +62,7 @@ class AddItemMoreInformationController @Inject()(
                          submitAction: Call,
                          itemReference: Int): Action[AnyContent] =
     authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
-      request.movementDetails.item(itemReference) match {
-        case Some(item) =>
-          getPackagingTypesService.getPackagingTypes(Seq(item)).flatMap {
-            getCnCodeInformationService.getCnCodeInformationWithMovementItems(_).map {
-              case (item, cnCodeInformation) :: Nil =>
-                Ok(view(
-                  fillForm(yesNoPage, formProvider(yesNoPage)),
-                  yesNoPage,
-                  submitAction,
-                  item,
-                  cnCodeInformation
-                ))
-              case _ =>
-                Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url)
-            }
-          }
-        case _ =>
-          Future.successful(Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url))
-      }
+      renderViewWithItemDetails(Ok, fillForm(yesNoPage, formProvider(yesNoPage)), yesNoPage, submitAction, itemReference)
     }
 
   private def onSubmit(ern: String,
@@ -93,32 +75,32 @@ class AddItemMoreInformationController @Inject()(
     authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
       formProvider(yesNoPage).bindFromRequest().fold(
         formWithErrors =>
-          request.movementDetails.item(itemReference) match {
-            case Some(item) =>
-              getPackagingTypesService.getPackagingTypes(Seq(item)).flatMap {
-                getCnCodeInformationService.getCnCodeInformationWithMovementItems(_).map {
-                  case (item, cnCodeInformation) :: Nil =>
-                    BadRequest(view(
-                      formWithErrors,
-                      yesNoPage,
-                      submitAction,
-                      item,
-                      cnCodeInformation
-                    ))
-                  case _ =>
-                    Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url)
-                }
-              }
-            case _ =>
-              Future.successful(Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url))
-          },
+          renderViewWithItemDetails(BadRequest, formWithErrors, yesNoPage, submitAction, itemReference),
         {
           case true =>
             saveAndRedirect(yesNoPage, true, mode)
           case false =>
-            val removedMoreInfo = request.userAnswers.set(infoPage, None)
-            saveAndRedirect(yesNoPage, false, removedMoreInfo, mode)
+            saveAndRedirect(yesNoPage, false, request.userAnswers.set(infoPage, None), mode)
         }
       )
+    }
+
+  private def renderViewWithItemDetails(status: Status,
+                                        form: Form[_],
+                                        yesNoPage: QuestionPage[Boolean],
+                                        submitAction: Call,
+                                        itemReference: Int)(implicit request: DataRequest[_]): Future[Result] =
+    request.movementDetails.item(itemReference) match {
+      case Some(item) =>
+        getPackagingTypesService.getPackagingTypes(Seq(item)).flatMap {
+          getCnCodeInformationService.getCnCodeInformationWithMovementItems(_).map {
+            case (item, cnCodeInformation) :: Nil =>
+              status(view(form, yesNoPage, submitAction, item, cnCodeInformation))
+            case _ =>
+              Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url)
+          }
+        }
+      case _ =>
+        Future.successful(Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url))
     }
 }

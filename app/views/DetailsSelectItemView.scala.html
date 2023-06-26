@@ -17,7 +17,7 @@
 @import models.requests.DataRequest
 @import models.response.emcsTfe.MovementItem
 @import models.response.referenceData.CnCodeInformation
-@import viewmodels.DetailsSelectItemHelper
+@import viewmodels.ItemDetailsHelper
 @import views.html.components.table
 
 @this(
@@ -25,13 +25,14 @@
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
-    govukTable: GovukTable,
+    govukButton: GovukButton,
+    govukSummaryList: GovukSummaryList,
     continueOrExit: components.continueOrExit,
     h1: components.h1,
     p: components.p,
     table: table,
     link: components.link,
-    helper: DetailsSelectItemHelper
+    helper: ItemDetailsHelper
 )
 
 @(form: Form[_], item: MovementItem, cnCodeInformation: CnCodeInformation)(implicit request: DataRequest[_], messages: Messages)
@@ -46,10 +47,7 @@
 
         @h1(messages("itemDetails.heading", item.itemUniqueReference), Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
 
-        @govukTable(Table(
-            rows = helper.constructItemSummaryRows(item, cnCodeInformation),
-            firstCellIsHeader = true
-        ))
+        @govukSummaryList(SummaryList(helper.constructItemSummaryRows(item, cnCodeInformation)))
 
         @p() {
             @link(

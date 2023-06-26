@@ -29,13 +29,13 @@ class DataRequiredActionImpl @Inject()(implicit val executionContext: ExecutionC
 
   override protected def refine[A](request: OptionalDataRequest[A]): Future[Either[Result, DataRequest[A]]] = {
 
-    val currentlyOnTheConfirmationPage = request.uri contains routes.ConfirmationController.onPageLoad( request.ern, request.arc ).url
+    val currentlyOnTheConfirmationPage = request.uri contains routes.ConfirmationController.onPageLoad(request.ern, request.arc).url
 
     request.userAnswers match {
       case None =>
-        Future.successful(Left(Redirect(routes.JourneyRecoveryController.onPageLoad())))
+        Future.successful(Left(Redirect(routes.JourneyRecoveryController.onPageLoad(request.ern, request.arc))))
       case Some(data) if data.get(ConfirmationPage).isDefined && !currentlyOnTheConfirmationPage =>
-        Future.successful(Left(Redirect(routes.NotPermittedPageController.onPageLoad( request.ern, request.arc ))))
+        Future.successful(Left(Redirect(routes.NotPermittedPageController.onPageLoad(request.ern, request.arc))))
       case Some(data) =>
         Future.successful(Right(DataRequest(request.request, data)))
     }

@@ -65,12 +65,19 @@ error.number = Please enter a valid number
 error.required = Please enter a value
 error.summary.title = There is a problem
 
-journeyRecovery.continue.title = Sorry, there is a problem with the service
-journeyRecovery.continue.heading = Sorry, there is a problem with the service
-journeyRecovery.continue.guidance = [Add content to explain how to proceed.]
-journeyRecovery.startAgain.title = Sorry, there is a problem with the service
-journeyRecovery.startAgain.heading = Sorry, there is a problem with the service
-journeyRecovery.startAgain.guidance = [Add content to explain why the user needs to start again.]
+journeyRecovery.title = There is a problem
+journeyRecovery.heading = There is a problem
+journeyRecovery.p1 = You have not added any information to this report of receipt yet.
+journeyRecovery.p2 = To submit a report of receipt you must:
+journeyRecovery.numbered1.preLink = Go to the
+journeyRecovery.numbered1.link = View undischarged movements
+journeyRecovery.numbered1.afterLink = page
+journeyRecovery.numbered2 = Select to view the details of the movement you want to receipt
+journeyRecovery.numbered3 = Select to ‘Submit report of receipt’
+journeyRecovery.p3 = You can also choose to
+journeyRecovery.p3.viewAccountLink = view all your account information
+journeyRecovery.p3.or = or
+journeyRecovery.p3.signOutLink = sign out
 
 signedOut.title = For your security, we signed you out
 signedOut.heading = For your security, we signed you out

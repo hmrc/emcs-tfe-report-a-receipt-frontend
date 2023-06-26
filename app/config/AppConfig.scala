@@ -71,6 +71,13 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig, configuration: Configu
       configuration.get[String]("urls.emcsTfeMovementDetails") + s"/$ern/$arc"
     }
 
+  def emcsMovementsUrl(ern: String): String =
+    if (isEnabled(ReturnToLegacy)) {
+      configuration.get[String]("urls.legacy.movements").replace(":ern", ern)
+    } else {
+      configuration.get[String]("urls.emcsTfeMovementsIn") + s"/$ern"
+    }
+
   def languageMap: Map[String, Lang] = Map(
     "en" -> Lang("en"),
     "cy" -> Lang("cy")

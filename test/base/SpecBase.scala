@@ -45,11 +45,15 @@ trait SpecBase
   def messages(app: Application): Messages = messagesApi(app).preferred(FakeRequest())
   def messages(app: Application, lang: Lang): Messages = messagesApi(app).preferred(Seq(lang))
 
+  def userRequest[A](request: Request[A]): UserRequest[A] = UserRequest(request, testErn, testInternalId, testCredId)
+
+  def movementRequest[A](request: Request[A]): MovementRequest[A] = MovementRequest(userRequest(request), testArc, getMovementResponseModel)
+
   def optionalDataRequest[A](request: Request[A], answers: Option[UserAnswers] = None): OptionalDataRequest[A] =
-    OptionalDataRequest(MovementRequest(UserRequest(request, testErn, testInternalId, testCredId), testArc, getMovementResponseModel), answers)
+    OptionalDataRequest(movementRequest(request), answers)
 
   def dataRequest[A](request: Request[A], answers: UserAnswers = emptyUserAnswers): DataRequest[A] =
-    DataRequest(MovementRequest(UserRequest(request, testErn, testInternalId, testCredId), testArc, getMovementResponseModel), answers)
+    DataRequest(movementRequest(request), answers)
 
   protected def applicationBuilder(userAnswers: Option[UserAnswers] = None): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()

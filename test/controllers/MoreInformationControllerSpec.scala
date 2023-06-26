@@ -197,7 +197,7 @@ class MoreInformationControllerSpec extends SpecBase with JsonOptionFormatter wi
             val result = route(application, request).value
 
             status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+            redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad(testErn, testArc).url
           }
         }
 
@@ -213,7 +213,7 @@ class MoreInformationControllerSpec extends SpecBase with JsonOptionFormatter wi
             val result = route(application, request).value
 
             status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+            redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad(testErn, testArc).url
           }
         }
       }

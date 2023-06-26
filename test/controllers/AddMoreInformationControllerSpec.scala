@@ -195,7 +195,7 @@ class AddMoreInformationControllerSpec extends SpecBase with MockUserAnswersServ
             val result = route(application, request).value
 
             status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+            redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad(testErn, testArc).url
           }
         }
 
@@ -211,7 +211,7 @@ class AddMoreInformationControllerSpec extends SpecBase with MockUserAnswersServ
             val result = route(application, request).value
 
             status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+            redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad(testErn, testArc).url
           }
         }
       }

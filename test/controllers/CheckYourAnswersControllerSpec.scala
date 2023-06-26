@@ -190,7 +190,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency wi
           val result = route(application, request).value
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result).value mustBe routes.JourneyRecoveryController.onPageLoad().url
+          redirectLocation(result).value mustBe routes.JourneyRecoveryController.onPageLoad(testErn, testArc).url
         }
       }
     }

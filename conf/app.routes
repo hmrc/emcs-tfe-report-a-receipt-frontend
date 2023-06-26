@@ -171,7 +171,6 @@ POST        /:ern/:arc/item/:idx/how-much-refuse-item/review                    
 
 
 GET         /:ern/:arc/item/:idx/check-answers-item                              controllers.CheckYourAnswersItemController.onPageLoad(ern: String, arc: String, idx: Int)
-POST        /:ern/:arc/item/:idx/check-answers-item                              controllers.CheckYourAnswersItemController.onSubmit(ern: String, arc: String, idx: Int)
 
 GET         /:ern/:arc/item/:idx/remove-from-list                                controllers.RemoveItemController.onPageLoad(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
 POST        /:ern/:arc/item/:idx/remove-from-list                                controllers.RemoveItemController.onSubmit(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)

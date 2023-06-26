@@ -22,9 +22,7 @@ import navigation.Navigator
 import pages.unsatisfactory.individualItems.CheckAnswersItemPage
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{GetCnCodeInformationService, UserAnswersService}
-import viewmodels.checkAnswers.CheckAnswersItemHelper
-import views.html.CheckYourAnswersItemView
+import services.UserAnswersService
 
 import javax.inject.Inject
 
@@ -37,30 +35,10 @@ class CheckYourAnswersItemController @Inject()(
                                             override val requireData: DataRequiredAction,
                                             val controllerComponents: MessagesControllerComponents,
                                             val navigator: Navigator,
-                                            view: CheckYourAnswersItemView,
-                                            checkAnswersItemHelper: CheckAnswersItemHelper,
-                                            getCnCodeInformationService: GetCnCodeInformationService,
                                             val userAnswersService: UserAnswersService
                                           ) extends BaseNavigationController with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String, idx: Int): Action[AnyContent] =
-    authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
-      withItemAsync(idx) {
-        item =>
-          getCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item)).map {
-            serviceResult =>
-              val unitOfMeasure = serviceResult.head._2.unitOfMeasureCode.toUnitOfMeasure
-
-              Ok(view(
-                submitAction = routes.CheckYourAnswersItemController.onSubmit(ern, arc, idx),
-                itemName = serviceResult.head._2.cnCodeDescription,
-                list = checkAnswersItemHelper.summaryList(idx, unitOfMeasure)
-              ))
-          }
-      }
-    }
-
-  def onSubmit(ern: String, arc: String, idx: Int): Action[AnyContent] =
     authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
       withItemAsync(idx) {
         _ =>

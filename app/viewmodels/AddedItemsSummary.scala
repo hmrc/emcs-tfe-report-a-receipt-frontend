@@ -30,7 +30,8 @@ class AddedItemsSummary  {
           ListItemWithProductCode(
             productCode = item.productCode,
             cnCode = item.cnCode,
-            changeUrl = routes.CheckYourAnswersItemController.onPageLoad(request.ern, request.arc, uniqueReference).url,
+            // TODO: This will be updated as part of the add-to-list alignment story
+            changeUrl = testOnly.controllers.routes.UnderConstructionController.onPageLoad().url,
             removeUrl = routes.RemoveItemController.onPageLoad(request.ern, request.arc, uniqueReference, NormalMode).url
           )
         }

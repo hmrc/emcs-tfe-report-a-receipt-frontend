@@ -148,16 +148,16 @@ class Navigator @Inject()() extends BaseNavigator {
   }
 
   private[navigation] val checkRouteMap: Page => UserAnswers => Call = {
-    case ItemShortageOrExcessPage(idx) =>
-      (userAnswers: UserAnswers) => routes.CheckYourAnswersItemController.onPageLoad(userAnswers.ern, userAnswers.arc, idx)
-    case RefusedAmountPage(idx) =>
-      (userAnswers: UserAnswers) => routes.CheckYourAnswersItemController.onPageLoad(userAnswers.ern, userAnswers.arc, idx)
-    case ItemSealsInformationPage(idx) =>
-      (userAnswers: UserAnswers) => routes.CheckYourAnswersItemController.onPageLoad(userAnswers.ern, userAnswers.arc, idx)
-    case ItemDamageInformationPage(idx) =>
-      (userAnswers: UserAnswers) => routes.CheckYourAnswersItemController.onPageLoad(userAnswers.ern, userAnswers.arc, idx)
-    case ItemOtherInformationPage(idx) =>
-      (userAnswers: UserAnswers) => routes.CheckYourAnswersItemController.onPageLoad(userAnswers.ern, userAnswers.arc, idx)
+    case ItemShortageOrExcessPage(_) =>
+      (userAnswers: UserAnswers) => routes.AddedItemsController.onPageLoad(userAnswers.ern, userAnswers.arc)
+    case RefusedAmountPage(_) =>
+      (userAnswers: UserAnswers) => routes.AddedItemsController.onPageLoad(userAnswers.ern, userAnswers.arc)
+    case ItemSealsInformationPage(_) =>
+      (userAnswers: UserAnswers) => routes.AddedItemsController.onPageLoad(userAnswers.ern, userAnswers.arc)
+    case ItemDamageInformationPage(_) =>
+      (userAnswers: UserAnswers) => routes.AddedItemsController.onPageLoad(userAnswers.ern, userAnswers.arc)
+    case ItemOtherInformationPage(_) =>
+      (userAnswers: UserAnswers) => routes.AddedItemsController.onPageLoad(userAnswers.ern, userAnswers.arc)
     case _ =>
       (userAnswers: UserAnswers) => routes.CheckYourAnswersController.onPageLoad(userAnswers.ern, userAnswers.arc)
   }

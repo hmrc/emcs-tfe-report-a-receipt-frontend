@@ -26,7 +26,7 @@ import views.html.components.{link, list}
 
 import javax.inject.Inject
 
-class DetailsSelectItemHelper @Inject()(link: link, list: list, appConfig: AppConfig) {
+class DetailsSelectItemHelper {
   //noinspection ScalaStyle
   def constructItemSummaryRows(item: MovementItem, cnCodeInformation: CnCodeInformation)(implicit messages: Messages): Seq[Seq[TableRow]] = {
 
@@ -51,19 +51,21 @@ class DetailsSelectItemHelper @Inject()(link: link, list: list, appConfig: AppCo
       )
     )
 
-    val brandName = Some(
-      createTableRow(
-        messages("detailsSelectItem.key.brandNameOfProduct"),
-        item.brandNameOfProduct.getOrElse("")
-      )
-    )
+    val brandName = item.brandNameOfProduct map {
+      brandNameOfProduct =>
+        createTableRow(
+          messages("detailsSelectItem.key.brandNameOfProduct"),
+          brandNameOfProduct
+        )
+    }
 
-    val commercialDescription = Some(
-      createTableRow(
-        messages("detailsSelectItem.key.commercialDescription"),
-        item.commercialDescription.getOrElse("")
-      )
-    )
+    val commercialDescription = item.commercialDescription map {
+      commercialDescription =>
+        createTableRow(
+          messages("detailsSelectItem.key.commercialDescription"),
+          commercialDescription
+        )
+    }
 
     val quantity = Some(
       createTableRow(

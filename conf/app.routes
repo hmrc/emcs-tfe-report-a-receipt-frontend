@@ -183,3 +183,4 @@ POST        /:ern/:arc/add-to-list                                              
 
 GET         /:ern/:arc/not-permitted                                             controllers.NotPermittedPageController.onPageLoad(ern, arc)
 
+GET         /timeout                                                             controllers.TimeoutController.onPageLoad()

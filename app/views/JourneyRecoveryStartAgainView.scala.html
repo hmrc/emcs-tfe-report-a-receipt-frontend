@@ -44,7 +44,7 @@
     @bullets(Seq(
         HtmlFormat.fill(Seq(
             Html(messages("journeyRecovery.numbered1.preLink")),
-            link(config.emcsMovementsUrl(request.ern), "journeyRecovery.numbered1.link", withSingleQuotes = true),
+            link(config.emcsUndischargedMovementsUrl(request.ern), "journeyRecovery.numbered1.link", withSingleQuotes = true),
             Html(messages("journeyRecovery.numbered1.afterLink"))
         )),
         Html(messages("journeyRecovery.numbered2")),

@@ -59,7 +59,7 @@ class JourneyRecoveryViewSpec extends ViewSpecBase with ViewBehaviours {
         "have a link to view the movements" in {
 
           doc.select(Selectors.numbered(1)).select("a").attr("href") mustBe
-            config.emcsMovementsUrl(testErn)
+            config.emcsUndischargedMovementsUrl(testErn)
         }
 
         "have a link back to the EMCS home" in {

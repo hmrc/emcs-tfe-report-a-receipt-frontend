@@ -88,7 +88,7 @@ class AppConfigSpec extends SpecBase with FeatureSwitching {
 
         "must return to the legacy URL" in {
           enable(ReturnToLegacy)
-          config.emcsMovementsUrl(testErn) mustBe s"http://localhost:8080/emcs/trader/$testErn/movements"
+          config.emcsMovementsUrl(testErn) mustBe s"http://localhost:8080/emcs/trader/$testErn/movements?movementtype=all"
         }
       }
 

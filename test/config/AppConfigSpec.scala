@@ -82,13 +82,13 @@ class AppConfigSpec extends SpecBase with FeatureSwitching {
       }
     }
 
-    ".emcsUndischargedMovementsUrl()" - {
+    ".emcsMovementsUrl()" - {
 
       "when ReturnToLegacy is enabled" - {
 
         "must return to the legacy URL" in {
           enable(ReturnToLegacy)
-          config.emcsUndischargedMovementsUrl(testErn) mustBe s"http://localhost:8080/emcs/trader/$testErn/movements?movementtype=undischarged"
+          config.emcsMovementsUrl(testErn) mustBe s"http://localhost:8080/emcs/trader/$testErn/movements?movementtype=all"
         }
       }
 
@@ -96,7 +96,7 @@ class AppConfigSpec extends SpecBase with FeatureSwitching {
 
         "must return to the new URL" in {
           disable(ReturnToLegacy)
-          config.emcsUndischargedMovementsUrl(testErn) mustBe s"http://localhost:8310/emcs-tfe/movements-in/$testErn"
+          config.emcsMovementsUrl(testErn) mustBe s"http://localhost:8310/emcs-tfe/movements-in/$testErn"
         }
       }
     }

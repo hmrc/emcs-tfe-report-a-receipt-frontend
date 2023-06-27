@@ -19,10 +19,12 @@ package controllers
 import controllers.actions._
 import forms.RefusingAnyAmountOfItemFormProvider
 import models.Mode
+import models.requests.DataRequest
 import navigation.Navigator
 import pages.unsatisfactory.individualItems.RefusingAnyAmountOfItemPage
+import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.{GetCnCodeInformationService, GetPackagingTypesService, GetWineOperationsService, UserAnswersService}
 import views.html.RefusingAnyAmountOfItemView
 
@@ -46,69 +48,47 @@ class RefusingAnyAmountOfItemController @Inject()(override val messagesApi: Mess
 
   def onPageLoad(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] = {
     authorisedDataRequestWithUpToDateMovementAsync(ern, arc) { implicit request =>
-      request.movementDetails.item(idx) match {
-        case Some(item) =>
-          getPackagingTypesService.getPackagingTypes(Seq(item)).flatMap {
-            getWineOperationsService.getWineOperations(_).flatMap {
-              getCnCodeInformationService.getCnCodeInformationWithMovementItems(_).map {
-                case (item, cnCodeInformation) :: Nil => Ok(view(
-                  form = fillForm(RefusingAnyAmountOfItemPage(idx), formProvider()),
-                  action = routes.RefusingAnyAmountOfItemController.onSubmit(ern, arc, idx, mode),
-                  item = item,
-                  cnCodeInfo = cnCodeInformation
-                ))
-                case _ =>
-                  logger.warn(s"[onPageLoad] Problem retrieving reference data for item idx: $idx against ERN: $ern and ARC: $arc")
-                  Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url)
-              }
-            }
-          }
-        case None =>
-          logger.warn(s"[onPageLoad] Unable to find item with idx: $idx against ERN: $ern and ARC: $arc")
-          Future.successful(Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url))
-      }
+      renderView(Ok, fillForm(RefusingAnyAmountOfItemPage(idx), formProvider()), idx, mode)
     }
   }
 
-
-
   def onSubmit(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
-    authorisedDataRequestWithUpToDateMovementAsync(ern, arc) { implicit request =>
-      request.movementDetails.item(idx) match {
-        case Some(item) =>
-          getPackagingTypesService.getPackagingTypes(Seq(item)).flatMap {
-            getCnCodeInformationService.getCnCodeInformationWithMovementItems(_).flatMap {
-              case (item, cnCodeInformation) :: Nil => formProvider().bindFromRequest().fold(
-                formWithErrors =>
-                  getPackagingTypesService.getPackagingTypes(Seq(item)).flatMap {
-                    getCnCodeInformationService.getCnCodeInformationWithMovementItems(_).map {
-                      case (item, cnCodeInformation) :: Nil =>
-                        BadRequest(
-                          view(
-                            formWithErrors,
-                            routes.RefusingAnyAmountOfItemController.onSubmit(ern, arc, idx, mode),
-                            item,
-                            cnCodeInformation
-
-                          )
-                        )
-                    }
-                  },
-                value => {
-                  val newUserAnswers = cleanseUserAnswersIfValueHasChanged(
-                    page = RefusingAnyAmountOfItemPage(idx),
-                    newAnswer = value,
-                    cleansingFunction = request.userAnswers.resetItem(idx)
-                  )
-
-                  saveAndRedirect(RefusingAnyAmountOfItemPage(idx), value, newUserAnswers, mode)
-                }
-              )
-            }
+    authorisedDataRequestWithUpToDateMovementAsync(ern, arc) {
+      implicit request =>
+        formProvider().bindFromRequest().fold(
+          formWithErrors => renderView(BadRequest, formWithErrors, idx, mode),
+          value => {
+            val newUserAnswers = cleanseUserAnswersIfValueHasChanged(
+              page = RefusingAnyAmountOfItemPage(idx),
+              newAnswer = value,
+              cleansingFunction = request.userAnswers.resetItem(idx)
+            )
+            saveAndRedirect(RefusingAnyAmountOfItemPage(idx), value, newUserAnswers, mode)
           }
-        case None => logger.warn(s"[onSubmit] Unable to find item with idx: $idx against ERN: $ern and ARC: $arc")
-          Future.successful(Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url))
-      }
+        )
     }
 
+  private def renderView(status: Status, form: Form[_], idx: Int, mode: Mode)(implicit request: DataRequest[_]): Future[Result] =
+    request.movementDetails.item(idx) match {
+      case Some(item) =>
+        getPackagingTypesService.getPackagingTypes(Seq(item)).flatMap {
+          getWineOperationsService.getWineOperations(_).flatMap {
+            getCnCodeInformationService.getCnCodeInformationWithMovementItems(_).map {
+              case (item, cnCodeInformation) :: Nil =>
+                status(view(
+                  form = form,
+                  action = routes.RefusingAnyAmountOfItemController.onSubmit(request.ern, request.arc, idx, mode),
+                  item = item,
+                  cnCodeInfo = cnCodeInformation
+                ))
+              case _ =>
+                logger.warn(s"[renderView] Problem retrieving reference data for item idx: $idx against ERN: ${request.ern} and ARC: ${request.arc}")
+                Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url)
+            }
+          }
+        }
+      case None =>
+        logger.warn(s"[renderView] Unable to find item with idx: $idx against ERN: ${request.ern} and ARC: ${request.arc}")
+        Future.successful(Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url))
+    }
 }

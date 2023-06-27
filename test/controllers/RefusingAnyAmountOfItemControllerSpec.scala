@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import forms.RefusingAnyAmountOfItemFormProvider
 import mocks.services.{MockGetCnCodeInformationService, MockGetPackagingTypesService, MockGetWineOperationsService, MockUserAnswersService}
-import models.NormalMode
+import models.{NormalMode, UserAnswers}
 import models.ReferenceDataUnitOfMeasure.`1`
 import models.response.referenceData.CnCodeInformation
 import navigation.{FakeNavigator, Navigator}
@@ -38,6 +38,23 @@ class RefusingAnyAmountOfItemControllerSpec extends SpecBase with MockGetCnCodeI
   with MockGetWineOperationsService
   with MockGetPackagingTypesService {
 
+  class Fixture(answers: Option[UserAnswers] = Some(emptyUserAnswers)) {
+    val application =
+      applicationBuilder(answers)
+        .overrides(
+          bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService),
+          bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+          bind[UserAnswersService].toInstance(mockUserAnswersService),
+          bind[GetPackagingTypesService].toInstance(mockGetPackagingTypesService),
+          bind[GetWineOperationsService].toInstance(mockGetWineOperationsService)
+        )
+        .build()
+
+    lazy val view = application.injector.instanceOf[RefusingAnyAmountOfItemView]
+
+    val cnCodeInfo = CnCodeInformation("", "", `1`)
+  }
+
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new RefusingAnyAmountOfItemFormProvider()
@@ -48,247 +65,137 @@ class RefusingAnyAmountOfItemControllerSpec extends SpecBase with MockGetCnCodeI
 
   "RefusingAnyAmountOfItem Controller" - {
 
-    "must return OK and the correct view for a GET" in {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .overrides(
-          bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService),
-          bind[GetWineOperationsService].toInstance(mockGetWineOperationsService),
-          bind[GetPackagingTypesService].toInstance(mockGetPackagingTypesService))
-        .build()
+    "must return OK and the correct view for a GET" in new Fixture() {
 
       MockGetPackagingTypesService.getPackagingTypes(Seq(item1)).returns(Future.successful(Seq(item1)))
       MockGetWineOperationsService.getWineOperations(Seq(item1)).returns(Future.successful(Seq(item1)))
+      MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq((item1, cnCodeInfo))))
 
-      MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
-        (item1, CnCodeInformation("", "", `1`))
-      )))
+      val request = FakeRequest(GET, refusingAnyAmountOfItemRoute)
 
-      running(application) {
-        val request = FakeRequest(GET, refusingAnyAmountOfItemRoute)
+      val result = route(application, request).value
 
-        val result = route(application, request).value
-
-        val view = application.injector.instanceOf[RefusingAnyAmountOfItemView]
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, submitAction, item1, CnCodeInformation("", "", `1`))(dataRequest(request), messages(application)).toString
-      }
+      status(result) mustEqual OK
+      contentAsString(result) mustEqual view(form, submitAction, item1, cnCodeInfo)(dataRequest(request), messages(application)).toString
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = emptyUserAnswers.set(RefusingAnyAmountOfItemPage(1), true)
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers))
-        .overrides(
-          bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService),
-          bind[GetWineOperationsService].toInstance(mockGetWineOperationsService),
-          bind[GetPackagingTypesService].toInstance(mockGetPackagingTypesService))
-        .build()
+    "must populate the view correctly on a GET when the question has previously been answered" in new Fixture(
+      Some(emptyUserAnswers.set(RefusingAnyAmountOfItemPage(1), true))
+    ) {
 
       MockGetPackagingTypesService.getPackagingTypes(Seq(item1)).returns(Future.successful(Seq(item1)))
       MockGetWineOperationsService.getWineOperations(Seq(item1)).returns(Future.successful(Seq(item1)))
+      MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq((item1, cnCodeInfo))))
 
-      MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
-        (item1, CnCodeInformation("", "", `1`))
-      )))
+      val request = FakeRequest(GET, refusingAnyAmountOfItemRoute)
 
-      running(application) {
-        val request = FakeRequest(GET, refusingAnyAmountOfItemRoute)
+      val result = route(application, request).value
 
-        val view = application.injector.instanceOf[RefusingAnyAmountOfItemView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), submitAction, item1, CnCodeInformation("", "", `1`))(dataRequest(request), messages(application)).toString
-      }
+      status(result) mustEqual OK
+      contentAsString(result) mustEqual view(form.fill(true), submitAction, item1, cnCodeInfo)(dataRequest(request), messages(application)).toString
     }
 
     "must redirect to the next page when valid data is submitted" - {
 
-      "and delete the rest of the answers when the input answer isn't the same as the current answer" in {
+      "and delete the rest of the answers when the input answer isn't the same as the current answer" in new Fixture(
+        Some(emptyUserAnswers.set(RefusingAnyAmountOfItemPage(1), false))
+      ) {
+
         val updatedAnswers = emptyUserAnswers
           .set(SelectItemsPage(1), 1)
           .set(RefusingAnyAmountOfItemPage(1), true)
 
         MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
-        MockGetPackagingTypesService.getPackagingTypes(Seq(item1)).returns(Future.successful(Seq(item1)))
-        MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
-          (item1, CnCodeInformation("", "", `1`))
-        )))
 
-        val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers.set(RefusingAnyAmountOfItemPage(1), false)))
-            .overrides(
-              bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService),
-              bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-              bind[UserAnswersService].toInstance(mockUserAnswersService),
-              bind[GetPackagingTypesService].toInstance(mockGetPackagingTypesService),
-              bind[GetWineOperationsService].toInstance(mockGetWineOperationsService)
-            )
-            .build()
+        val request = FakeRequest(POST, refusingAnyAmountOfItemRoute).withFormUrlEncodedBody(("value", "true"))
 
-        running(application) {
-          val request =
-            FakeRequest(POST, refusingAnyAmountOfItemRoute)
-              .withFormUrlEncodedBody(("value", "true"))
+        val result = route(application, request).value
 
-          val result = route(application, request).value
-
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual onwardRoute.url
-        }
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual onwardRoute.url
       }
 
-      "and not delete the rest of the answers when the input answer is the same as the current answer" in {
+      "and not delete the rest of the answers when the input answer is the same as the current answer" in new Fixture(
+        Some(emptyUserAnswers.set(RefusingAnyAmountOfItemPage(1), true))
+      ) {
 
         MockUserAnswersService.set().never()
-        MockGetPackagingTypesService.getPackagingTypes(Seq(item1)).returns(Future.successful(Seq(item1)))
-        MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
-          (item1, CnCodeInformation("", "", `1`))
-        )))
 
-        val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers.set(RefusingAnyAmountOfItemPage(1), true)))
-            .overrides(
-              bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService),
-              bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-              bind[UserAnswersService].toInstance(mockUserAnswersService),
-              bind[GetPackagingTypesService].toInstance(mockGetPackagingTypesService),
-              bind[GetWineOperationsService].toInstance(mockGetWineOperationsService)
-            )
-            .build()
+        val request = FakeRequest(POST, refusingAnyAmountOfItemRoute).withFormUrlEncodedBody(("value", "true"))
 
-        running(application) {
-          val request =
-            FakeRequest(POST, refusingAnyAmountOfItemRoute)
-              .withFormUrlEncodedBody(("value", "true"))
+        val result = route(application, request).value
 
-          val result = route(application, request).value
-
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual onwardRoute.url
-        }
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual onwardRoute.url
       }
     }
 
     "must redirect to /select-items" - {
 
-      "when the item doesn't exist in UserAnswers" in {
+      "when the item doesn't exist in UserAnswers" in new Fixture() {
+
         MockGetWineOperationsService.getWineOperations(Seq(item1)).returns(Future.successful(Seq(item1)))
         MockGetPackagingTypesService.getPackagingTypes(Seq(item1)).returns(Future.successful(Seq(item1)))
         MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq.empty))
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService),
-            bind[GetPackagingTypesService].toInstance(mockGetPackagingTypesService),
-            bind[GetWineOperationsService].toInstance(mockGetWineOperationsService))
-          .build()
-
-        running(application) {
-
-          val request = FakeRequest(GET, refusingAnyAmountOfItemRoute)
-          val result = route(application, request).value
-
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual routes.SelectItemsController.onPageLoad(testErn, testArc).url
-        }
-      }
-
-      "when the call to get CN information returned no data" in {
-        MockGetPackagingTypesService.getPackagingTypes(Seq(item1)).returns(Future.successful(Seq(item1)))
-        MockGetWineOperationsService.getWineOperations(Seq(item1)).returns(Future.successful(Seq(item1)))
-
-        MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq.empty))
-
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService),
-            bind[GetPackagingTypesService].toInstance(mockGetPackagingTypesService),
-            bind[GetWineOperationsService].toInstance(mockGetWineOperationsService))
-          .build()
-
-
-
-        running(application) {
-
-          val request = FakeRequest(GET, refusingAnyAmountOfItemRoute)
-          val result = route(application, request).value
-
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual routes.SelectItemsController.onPageLoad(testErn, testArc).url
-        }
-      }
-
-    }
-
-    "must return a Bad Request and errors when invalid data is submitted" in {
-
-      MockGetPackagingTypesService.getPackagingTypes(Seq(item1)).returns(Future.successful(Seq(item1)))
-      MockGetPackagingTypesService.getPackagingTypes(Seq(item1)).returns(Future.successful(Seq(item1)))
-      MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
-        (item1, CnCodeInformation("", "", `1`))
-      )))
-      MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
-        (item1, CnCodeInformation("", "", `1`))
-      )))
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .overrides(
-          bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService),
-          bind[GetPackagingTypesService].toInstance(mockGetPackagingTypesService),
-          bind[GetWineOperationsService].toInstance(mockGetWineOperationsService)
-        )
-        .build()
-
-
-      running(application) {
-        val request =
-          FakeRequest(POST, refusingAnyAmountOfItemRoute)
-            .withFormUrlEncodedBody(("value", ""))
-
-        val boundForm = form.bind(Map("value" -> ""))
-
-        val view = application.injector.instanceOf[RefusingAnyAmountOfItemView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, submitAction, item1, CnCodeInformation("", "", `1`))(dataRequest(request), messages(application)).toString
-      }
-    }
-
-    "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
         val request = FakeRequest(GET, refusingAnyAmountOfItemRoute)
-
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad(testErn, testArc).url
+        redirectLocation(result).value mustEqual routes.SelectItemsController.onPageLoad(testErn, testArc).url
       }
+
+      "when the call to get CN information returned no data" in new Fixture() {
+
+        MockGetPackagingTypesService.getPackagingTypes(Seq(item1)).returns(Future.successful(Seq(item1)))
+        MockGetWineOperationsService.getWineOperations(Seq(item1)).returns(Future.successful(Seq(item1)))
+        MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq.empty))
+
+        val request = FakeRequest(GET, refusingAnyAmountOfItemRoute)
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual routes.SelectItemsController.onPageLoad(testErn, testArc).url
+      }
+
     }
 
-    "must redirect to Journey Recovery for a POST if no existing data is found" in {
+    "must return a Bad Request and errors when invalid data is submitted" in new Fixture() {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      MockGetPackagingTypesService.getPackagingTypes(Seq(item1)).returns(Future.successful(Seq(item1)))
+      MockGetWineOperationsService.getWineOperations(Seq(item1)).returns(Future.successful(Seq(item1)))
+      MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
+        (item1, cnCodeInfo)
+      )))
 
-      running(application) {
-        val request =
-          FakeRequest(POST, refusingAnyAmountOfItemRoute)
-            .withFormUrlEncodedBody(("value", "true"))
+      val request = FakeRequest(POST, refusingAnyAmountOfItemRoute).withFormUrlEncodedBody(("value", ""))
 
-        val result = route(application, request).value
+      val boundForm = form.bind(Map("value" -> ""))
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad(testErn, testArc).url
-      }
+      val result = route(application, request).value
+
+      status(result) mustEqual BAD_REQUEST
+      contentAsString(result) mustEqual view(boundForm, submitAction, item1, cnCodeInfo)(dataRequest(request), messages(application)).toString
+    }
+
+    "must redirect to Journey Recovery for a GET if no existing data is found" in new Fixture(None) {
+
+      val request = FakeRequest(GET, refusingAnyAmountOfItemRoute)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad(testErn, testArc).url
+    }
+
+    "must redirect to Journey Recovery for a POST if no existing data is found" in new Fixture(None) {
+
+      val request = FakeRequest(POST, refusingAnyAmountOfItemRoute).withFormUrlEncodedBody(("value", "true"))
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad(testErn, testArc).url
     }
   }
 }

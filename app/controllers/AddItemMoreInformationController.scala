@@ -25,10 +25,9 @@ import pages.QuestionPage
 import pages.unsatisfactory.individualItems.{AddItemDamageInformationPage, ItemDamageInformationPage}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
+import play.api.mvc._
 import services.{GetCnCodeInformationService, GetPackagingTypesService, UserAnswersService}
 import utils.JsonOptionFormatter
-import viewmodels.ItemDetailsHelper
 import views.html.AddItemMoreInformationView
 
 import javax.inject.Inject

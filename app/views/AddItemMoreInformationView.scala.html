@@ -27,11 +27,9 @@
         govukErrorSummary: GovukErrorSummary,
         govukRadios: GovukRadios,
         govukButton: GovukButton,
-        govukDetails: GovukDetails,
-        govukSummaryList: GovukSummaryList,
         h1: components.h1,
         continueOrExit: components.continueOrExit,
-        itemDetailsHelper: ItemDetailsHelper
+        itemDetails: components.itemDetailSection
 )
 
 @(
@@ -52,10 +50,7 @@
 
         @h1(messages(AddMoreInformationHelper.headingKey(page), item.itemUniqueReference), Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
 
-        @govukDetails(Details(
-            summary = Text(messages(AddMoreInformationHelper.itemDetailsKey(page), item.itemUniqueReference)),
-            content = HtmlContent(govukSummaryList(SummaryList(itemDetailsHelper.constructItemSummaryRows(item, cnCodeInformation))))
-        ))
+        @itemDetails(AddMoreInformationHelper.itemDetailsKey(page), item, cnCodeInformation)
 
         @govukRadios(
             RadiosViewModel.yesNo(

@@ -28,12 +28,10 @@
         govukErrorSummary: GovukErrorSummary,
         govukCharacterCount : GovukCharacterCount,
         govukButton: GovukButton,
-        govukSummaryList: GovukSummaryList,
-        govukDetails: GovukDetails,
         h1: components.h1,
         h2: components.h2,
         continueOrExit: components.continueOrExit,
-        itemDetailsHelper: ItemDetailsHelper
+        itemDetails: components.itemDetailSection
 )
 
 @(
@@ -54,10 +52,7 @@
 
         @h1(messages(s"$page.heading", item.itemUniqueReference), Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
 
-        @govukDetails(Details(
-            summary = Text(messages(s"$page.itemDetails", item.itemUniqueReference)),
-            content = HtmlContent(govukSummaryList(SummaryList(itemDetailsHelper.constructItemSummaryRows(item, cnCodeInformation))))
-        ))
+        @itemDetails(s"$page.itemDetails", item, cnCodeInformation)
 
         @{
             govukCharacterCount(CharacterCount(

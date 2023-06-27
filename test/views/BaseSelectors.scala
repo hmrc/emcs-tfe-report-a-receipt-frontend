@@ -47,6 +47,8 @@ trait BaseSelectors {
 
   val inputSuffix = ".govuk-input__suffix"
 
+  def detailsSummary(i: Int) = s"main details:nth-of-type($i) summary"
+
   def id(i: String) = s"#$i"
 }
 

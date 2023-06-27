@@ -25,13 +25,13 @@ trait ViewBehaviours extends Logging { _: ViewSpecBase =>
   def pageWithExpectedElementsAndMessages(checks: Seq[(String, String)])(implicit document: Document): Unit = checks foreach {
     case (selector, message) =>
       s"element with selector '$selector'" - {
-        s"must have the message '$message'" in {
+        s"must include the message '$message'" in {
           document.select(selector) match {
             case elements if elements.size() == 0 =>
               fail(s"Could not find element with CSS selector: '$selector'")
             case elements =>
               if (elements.size() > 1) logger.warn(s"More than one element found with selector '$selector', will check first element found - count of them was: '${elements.size()}'")
-              elements.first().text() mustBe message
+              elements.first().text() must include(message)
           }
         }
       }

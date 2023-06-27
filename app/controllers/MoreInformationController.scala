@@ -21,7 +21,7 @@ import forms.MoreInformationFormProvider
 import models.Mode
 import navigation.Navigator
 import pages.unsatisfactory._
-import pages.unsatisfactory.individualItems.{ItemDamageInformationPage, AddItemSealsInformationPage, AddItemDamageInformationPage, ItemSealsInformationPage}
+import pages.unsatisfactory.individualItems.{AddItemSealsInformationPage, ItemSealsInformationPage}
 import pages.{AddMoreInformationPage, MoreInformationPage, QuestionPage}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}

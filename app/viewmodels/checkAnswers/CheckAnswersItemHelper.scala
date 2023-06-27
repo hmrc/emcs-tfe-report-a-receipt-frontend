@@ -158,7 +158,7 @@ class CheckAnswersItemHelper @Inject()(
             actions = Seq(
               ActionItemViewModel(
                 "site.change",
-                routes.MoreInformationController.loadItemDamageInformation(request.userAnswers.ern, request.userAnswers.arc, idx, mode).url,
+                routes.ItemMoreInformationController.loadItemDamageInformation(request.userAnswers.ern, request.userAnswers.arc, idx, mode).url,
                 id = ItemDamageInformationPage(idx) + additionalLinkIdSignifier
               ).withVisuallyHiddenText(messages(s"${ItemDamageInformationPage(idx)}.checkYourAnswers.change.hidden"))
             )
@@ -167,7 +167,7 @@ class CheckAnswersItemHelper @Inject()(
           SummaryListRowViewModel(
             key = s"${ItemDamageInformationPage(idx)}.checkYourAnswers.label",
             value = ValueViewModel(HtmlContent(link(
-              link = routes.MoreInformationController.loadItemDamageInformation(request.userAnswers.ern, request.userAnswers.arc, idx, mode).url,
+              link = routes.ItemMoreInformationController.loadItemDamageInformation(request.userAnswers.ern, request.userAnswers.arc, idx, mode).url,
               messageKey = s"${ItemDamageInformationPage(idx)}.checkYourAnswers.addMoreInformation")))
           )
       }

@@ -28,7 +28,6 @@ object ItemSealsInformationMessages {
     val checkYourAnswersLabel: String
     val hiddenChangeLink: String
     val addMoreInformation: String
-    val savePreviousAnswersAndExitLinkText: String
   }
 
   object English extends ViewMessages with BaseEnglish {
@@ -41,7 +40,6 @@ object ItemSealsInformationMessages {
     override val checkYourAnswersLabel = "Information about broken seal(s)"
     override val hiddenChangeLink = "information about broken seal(s)"
     override val addMoreInformation = "Enter more information about broken seal(s) (optional)"
-    override val savePreviousAnswersAndExitLinkText = "Save previous answers and exit"
   }
 
   object Welsh extends ViewMessages with BaseWelsh {
@@ -54,6 +52,5 @@ object ItemSealsInformationMessages {
     override val checkYourAnswersLabel = "Information about broken seal(s)"
     override val hiddenChangeLink = "information about broken seal(s)"
     override val addMoreInformation = "Enter more information about broken seal(s) (optional)"
-    override val savePreviousAnswersAndExitLinkText = "Save previous answers and exit"
   }
 }

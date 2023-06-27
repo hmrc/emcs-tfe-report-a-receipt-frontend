@@ -82,13 +82,6 @@ class MoreInformationController @Inject()(
   def submitItemSealsInformation(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
     onSubmit(ern, arc, ItemSealsInformationPage(idx), AddItemSealsInformationPage(idx), routes.MoreInformationController.submitItemSealsInformation(ern, arc, idx, mode), mode)
 
-  def loadItemDamageInformation(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
-    onPageLoad(ern, arc, ItemDamageInformationPage(idx), routes.MoreInformationController.submitItemDamageInformation(ern, arc, idx, mode))
-
-  def submitItemDamageInformation(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
-    onSubmit(ern, arc, ItemDamageInformationPage(idx), AddItemDamageInformationPage(idx),
-      routes.MoreInformationController.submitItemDamageInformation(ern, arc, idx, mode), mode)
-
   private def onPageLoad(ern: String, arc: String, page: QuestionPage[Option[String]], action: Call): Action[AnyContent] =
     authorisedDataRequestWithCachedMovement(ern, arc) { implicit request =>
       Ok(view(fillForm(page, formProvider(page)), page, action))

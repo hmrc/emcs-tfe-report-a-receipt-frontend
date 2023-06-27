@@ -23,7 +23,7 @@ import navigation.Navigator
 import pages.unsatisfactory.individualItems.RefusingAnyAmountOfItemPage
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.UserAnswersService
+import services.{GetCnCodeInformationService, GetPackagingTypesService, GetWineOperationsService, UserAnswersService}
 import views.html.RefusingAnyAmountOfItemView
 
 import javax.inject.Inject
@@ -39,30 +39,76 @@ class RefusingAnyAmountOfItemController @Inject()(override val messagesApi: Mess
                                                   override val requireData: DataRequiredAction,
                                                   formProvider: RefusingAnyAmountOfItemFormProvider,
                                                   val controllerComponents: MessagesControllerComponents,
+                                                  getCnCodeInformationService: GetCnCodeInformationService,
+                                                  getPackagingTypesService: GetPackagingTypesService,
+                                                  getWineOperationsService: GetWineOperationsService,
                                                   view: RefusingAnyAmountOfItemView) extends BaseNavigationController with AuthActionHelper {
 
-  def onPageLoad(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
-    authorisedDataRequestWithCachedMovement(ern, arc) { implicit request =>
-      Ok(view(
-        form = fillForm(RefusingAnyAmountOfItemPage(idx), formProvider()),
-        action = routes.RefusingAnyAmountOfItemController.onSubmit(ern, arc, idx, mode)
-      ))
+  def onPageLoad(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] = {
+    authorisedDataRequestWithUpToDateMovementAsync(ern, arc) { implicit request =>
+      request.movementDetails.item(idx) match {
+        case Some(item) =>
+          getPackagingTypesService.getPackagingTypes(Seq(item)).flatMap {
+            getWineOperationsService.getWineOperations(_).flatMap {
+              getCnCodeInformationService.getCnCodeInformationWithMovementItems(_).map {
+                case (item, cnCodeInformation) :: Nil => Ok(view(
+                  form = fillForm(RefusingAnyAmountOfItemPage(idx), formProvider()),
+                  action = routes.RefusingAnyAmountOfItemController.onSubmit(ern, arc, idx, mode),
+                  item = item,
+                  cnCodeInfo = cnCodeInformation
+                ))
+                case _ =>
+                  logger.warn(s"[onPageLoad] Problem retrieving reference data for item idx: $idx against ERN: $ern and ARC: $arc")
+                  Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url)
+              }
+            }
+          }
+        case None =>
+          logger.warn(s"[onPageLoad] Unable to find item with idx: $idx against ERN: $ern and ARC: $arc")
+          Future.successful(Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url))
+      }
     }
+  }
+
+
 
   def onSubmit(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
-    authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
-      formProvider().bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, routes.RefusingAnyAmountOfItemController.onSubmit(ern, arc, idx, mode)))),
-        value => {
-          val newUserAnswers = cleanseUserAnswersIfValueHasChanged(
-            page = RefusingAnyAmountOfItemPage(idx),
-            newAnswer = value,
-            cleansingFunction = request.userAnswers.resetItem(idx)
-          )
+    authorisedDataRequestWithUpToDateMovementAsync(ern, arc) { implicit request =>
+      request.movementDetails.item(idx) match {
+        case Some(item) =>
+          getPackagingTypesService.getPackagingTypes(Seq(item)).flatMap {
+            getCnCodeInformationService.getCnCodeInformationWithMovementItems(_).flatMap {
+              case (item, cnCodeInformation) :: Nil => formProvider().bindFromRequest().fold(
+                formWithErrors =>
+                  getPackagingTypesService.getPackagingTypes(Seq(item)).flatMap {
+                    getCnCodeInformationService.getCnCodeInformationWithMovementItems(_).map {
+                      case (item, cnCodeInformation) :: Nil =>
+                        BadRequest(
+                          view(
+                            formWithErrors,
+                            routes.RefusingAnyAmountOfItemController.onSubmit(ern, arc, idx, mode),
+                            item,
+                            cnCodeInformation
 
-          saveAndRedirect(RefusingAnyAmountOfItemPage(idx), value, newUserAnswers, mode)
-        }
-      )
+                          )
+                        )
+                    }
+                  },
+                value => {
+                  val newUserAnswers = cleanseUserAnswersIfValueHasChanged(
+                    page = RefusingAnyAmountOfItemPage(idx),
+                    newAnswer = value,
+                    cleansingFunction = request.userAnswers.resetItem(idx)
+                  )
+
+                  saveAndRedirect(RefusingAnyAmountOfItemPage(idx), value, newUserAnswers, mode)
+                }
+              )
+            }
+          }
+        case None => logger.warn(s"[onSubmit] Unable to find item with idx: $idx against ERN: $ern and ARC: $arc")
+          Future.successful(Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url))
+      }
     }
+
 }

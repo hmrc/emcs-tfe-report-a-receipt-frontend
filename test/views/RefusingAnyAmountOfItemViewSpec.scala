@@ -19,6 +19,8 @@ package views
 import base.ViewSpecBase
 import fixtures.messages.RefusingAnyAmountOfItemMessages
 import forms.RefusingAnyAmountOfItemFormProvider
+import models.ReferenceDataUnitOfMeasure.`1`
+import models.response.referenceData.CnCodeInformation
 import org.jsoup.Jsoup
 import play.api.test.FakeRequest
 import views.html.RefusingAnyAmountOfItemView
@@ -39,7 +41,7 @@ class RefusingAnyAmountOfItemViewSpec extends ViewSpecBase with ViewBehaviours {
 
         implicit val msgs = messages(app, messagesForLanguage.lang)
         implicit val request = dataRequest(FakeRequest(), emptyUserAnswers)
-        implicit val doc = Jsoup.parse(view(form, testOnwardRoute).toString())
+        implicit val doc = Jsoup.parse(view(form, testOnwardRoute, item1, CnCodeInformation("", "", `1`)).toString())
 
         behave like pageWithExpectedElementsAndMessages(Seq(
           Selectors.title -> messagesForLanguage.title,

@@ -393,8 +393,8 @@ class UserAnswersSpec extends SpecBase {
             .set(ItemShortageOrExcessPage(1), ItemShortageOrExcessModel(WrongWithMovement.Damaged, 3, Some("info")))
 
           withData.items mustBe Seq(
-            ItemModel(1, Some(true), Some(ItemShortageOrExcessModel(WrongWithMovement.Damaged, 3, Some("info")))),
-            ItemModel(2, None, None)
+            ItemModel(1, Some(ItemShortageOrExcessModel(WrongWithMovement.Damaged, 3, Some("info")))),
+            ItemModel(2, None)
           )
         }
       }
@@ -408,7 +408,7 @@ class UserAnswersSpec extends SpecBase {
             .set(CheckAnswersItemPage(1), true)
             .set(ItemShortageOrExcessPage(1), ItemShortageOrExcessModel(WrongWithMovement.Damaged, 3, Some("info")))
 
-          withData.items mustBe Seq(ItemModel(2, None, None))
+          withData.items mustBe Seq(ItemModel(2, None))
         }
 
         "when no item references are in user answers" in {
@@ -442,7 +442,7 @@ class UserAnswersSpec extends SpecBase {
             .set(ItemShortageOrExcessPage(1), ItemShortageOrExcessModel(WrongWithMovement.Damaged, 3, Some("info")))
 
           withData.completedItems mustBe Seq(
-            ItemModel(1, Some(true), Some(ItemShortageOrExcessModel(WrongWithMovement.Damaged, 3, Some("info"))))
+            ItemModel(1, Some(ItemShortageOrExcessModel(WrongWithMovement.Damaged, 3, Some("info"))))
           )
         }
       }
@@ -466,7 +466,7 @@ class UserAnswersSpec extends SpecBase {
 
           withData.completedItems mustBe Seq(
             // only item 1 is returned
-            ItemModel(1, Some(true), Some(ItemShortageOrExcessModel(WrongWithMovement.Damaged, 3, Some("info"))))
+            ItemModel(1, Some(ItemShortageOrExcessModel(WrongWithMovement.Damaged, 3, Some("info"))))
           )
         }
       }

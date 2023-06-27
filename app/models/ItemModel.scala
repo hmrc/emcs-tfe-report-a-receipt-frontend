@@ -19,7 +19,6 @@ package models
 import play.api.libs.json.{Json, Reads}
 
 case class ItemModel(itemUniqueReference: Int,
-                     checkAnswersItem: Option[Boolean],
                      itemShortageOrExcess: Option[ItemShortageOrExcessModel])
 
 object ItemModel {

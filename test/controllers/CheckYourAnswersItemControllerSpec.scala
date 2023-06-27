@@ -19,10 +19,8 @@ package controllers
 import base.SpecBase
 import mocks.services.{MockGetCnCodeInformationService, MockUserAnswersService}
 import mocks.viewmodels.MockCheckAnswersItemHelper
-import models.ReferenceDataUnitOfMeasure.`1`
 import models.WrongWithMovement
 import models.WrongWithMovement.Damaged
-import models.response.referenceData.CnCodeInformation
 import navigation.{FakeNavigator, Navigator}
 import pages.unsatisfactory.individualItems.{AddItemDamageInformationPage, CheckAnswersItemPage, SelectItemsPage, WrongWithItemPage}
 import play.api.inject
@@ -30,9 +28,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{GetCnCodeInformationService, UserAnswersService}
-import viewmodels.checkAnswers.CheckAnswersItemHelper
 import viewmodels.govuk.SummaryListFluency
-import views.html.CheckYourAnswersItemView
 
 import scala.concurrent.Future
 
@@ -51,75 +47,6 @@ class CheckYourAnswersItemControllerSpec extends SpecBase
 
     ".onPageLoad" - {
 
-      "must return OK and the correct view for a GET" in {
-
-        val application = applicationBuilder(userAnswers = Some(userAnswers))
-          .overrides(
-            inject.bind[CheckAnswersItemHelper].toInstance(mockCheckAnswersItemHelper),
-            inject.bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService)
-          )
-          .build()
-
-        MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
-          (item1, CnCodeInformation("name", "", `1`))
-        )))
-
-        running(application) {
-
-          val list = SummaryListViewModel(Seq.empty)
-
-          MockCheckAnswersItemHelper.summaryList().returns(list)
-
-          val request = FakeRequest(GET, routes.CheckYourAnswersItemController.onPageLoad(testErn, testArc, 1).url)
-
-          val result = route(application, request).value
-
-          val view = application.injector.instanceOf[CheckYourAnswersItemView]
-
-          status(result) mustEqual OK
-          contentAsString(result) mustEqual view(
-            routes.CheckYourAnswersItemController.onSubmit(testErn, testArc, 1),
-            "name",
-            list
-          )(dataRequest(request), messages(application)).toString
-        }
-      }
-
-      "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
-        val application = applicationBuilder(userAnswers = None)
-          .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService))
-          .build()
-
-        running(application) {
-          val request = FakeRequest(GET, routes.CheckYourAnswersItemController.onPageLoad(testErn, testArc, 1).url)
-
-          val result = route(application, request).value
-
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad(testErn, testArc).url
-        }
-      }
-
-      "must redirect to Journey Recovery for a GET if no item is found in userAnswers" in {
-
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService))
-          .build()
-
-        running(application) {
-          val request = FakeRequest(GET, routes.CheckYourAnswersItemController.onPageLoad(testErn, testArc, 1).url)
-
-          val result = route(application, request).value
-
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual routes.SelectItemsController.onPageLoad(testErn, testArc).url
-        }
-      }
-    }
-
-    ".onSubmit" - {
-
       "must redirect to the onward route" in {
 
         val updatedAnswers = userAnswers.set(CheckAnswersItemPage(1), true)
@@ -137,7 +64,7 @@ class CheckYourAnswersItemControllerSpec extends SpecBase
 
         running(application) {
 
-          val request = FakeRequest(POST, routes.CheckYourAnswersItemController.onSubmit(testErn, testArc, 1).url)
+          val request = FakeRequest(GET, routes.CheckYourAnswersItemController.onPageLoad(testErn, testArc, 1).url)
 
           val result = route(application, request).value
 
@@ -153,7 +80,7 @@ class CheckYourAnswersItemControllerSpec extends SpecBase
           .build()
 
         running(application) {
-          val request = FakeRequest(POST, routes.CheckYourAnswersItemController.onSubmit(testErn, testArc, 1).url)
+          val request = FakeRequest(GET, routes.CheckYourAnswersItemController.onPageLoad(testErn, testArc, 1).url)
 
           val result = route(application, request).value
 

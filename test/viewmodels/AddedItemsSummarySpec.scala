@@ -42,13 +42,13 @@ class AddedItemsSummarySpec extends SpecBase {
         ListItemWithProductCode(
           productCode = item1.productCode,
           cnCode = item1.cnCode,
-          changeUrl = routes.CheckYourAnswersItemController.onPageLoad(answers.ern, answers.arc, 1).url,
+          changeUrl = testOnly.controllers.routes.UnderConstructionController.onPageLoad().url,
           removeUrl = routes.RemoveItemController.onPageLoad(answers.ern, answers.arc, 1, NormalMode).url
         ),
         ListItemWithProductCode(
           productCode = item2.productCode,
           cnCode = item2.cnCode,
-          changeUrl = routes.CheckYourAnswersItemController.onPageLoad(answers.ern, answers.arc, 2).url,
+          changeUrl = testOnly.controllers.routes.UnderConstructionController.onPageLoad().url,
           removeUrl = routes.RemoveItemController.onPageLoad(answers.ern, answers.arc, 2, NormalMode).url
         )
       )
@@ -68,7 +68,7 @@ class AddedItemsSummarySpec extends SpecBase {
           ListItemWithProductCode(
             productCode = item2.productCode,
             cnCode = item2.cnCode,
-            changeUrl = routes.CheckYourAnswersItemController.onPageLoad(answers.ern, answers.arc, 2).url,
+            changeUrl = testOnly.controllers.routes.UnderConstructionController.onPageLoad().url,
             removeUrl = routes.RemoveItemController.onPageLoad(answers.ern, answers.arc, 2, NormalMode).url
           )
         )

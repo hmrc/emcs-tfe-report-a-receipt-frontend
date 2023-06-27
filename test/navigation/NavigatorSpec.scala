@@ -670,12 +670,12 @@ class NavigatorSpec extends SpecBase {
 
     "in Check mode" - {
 
-      "must go to the CheckYourAnswersItem page" - {
+      "must go to the AddToList page" - {
         Seq(ItemShortageOrExcessPage(1), ItemSealsInformationPage(1), ItemDamageInformationPage(1), ItemOtherInformationPage(1)).foreach {
           page: QuestionPage[_] =>
             s"when the previous page is $page" in {
               navigator.nextPage(page, CheckMode, emptyUserAnswers) mustBe
-                routes.CheckYourAnswersItemController.onPageLoad(testErn, testArc, 1)
+                routes.AddedItemsController.onPageLoad(testErn, testArc)
             }
         }
       }

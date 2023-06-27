@@ -23,7 +23,7 @@ import mocks.services.{MockGetCnCodeInformationService, MockSubmitReportOfReceip
 import mocks.viewmodels.MockCheckAnswersHelper
 import models.AcceptMovement.{Refused, Satisfactory, Unsatisfactory}
 import models.HowGiveInformation.{IndividualItem, TheWholeMovement}
-import models.UserAnswers
+import models.{ConfirmationDetails, UserAnswers}
 import models.WrongWithMovement.BrokenSeals
 import models.response.{MissingMandatoryPage, SubmitReportOfReceiptException}
 import navigation.{FakeNavigator, Navigator}
@@ -217,7 +217,18 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency wi
               MockUserAnswersService.set()
                 .returns(
                   Future.successful(
-                    emptyUserAnswers.set(ConfirmationPage, successResponse.receipt)
+                    emptyUserAnswers.set(
+                      ConfirmationPage,
+                      ConfirmationDetails(
+                        successResponse.receipt,
+                        successResponse.receiptDate,
+                        Satisfactory.toString,
+                        hasMovementShortage =  false,
+                        hasItemShortage = false,
+                        hasMovementExcess = false,
+                        hasItemExcess = false
+                      )
+                    )
                   )
                 )
 

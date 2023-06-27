@@ -17,9 +17,10 @@
 package viewmodels
 
 import base.SpecBase
+import fixtures.SubmitReportOfReceiptFixtures
 import models.AcceptMovement.{PartiallyRefused, Refused, Satisfactory}
 import models.WrongWithMovement.{Excess, Shortage}
-import models.{ItemShortageOrExcessModel, UserAnswers, WrongWithMovement}
+import models.{ConfirmationDetails, ItemShortageOrExcessModel, UserAnswers, WrongWithMovement}
 import pages.AcceptMovementPage
 import pages.unsatisfactory.WrongWithMovementPage
 import pages.unsatisfactory.individualItems.{ItemShortageOrExcessPage, SelectItemsPage}
@@ -27,9 +28,15 @@ import play.api.i18n.MessagesApi
 import play.api.test.FakeRequest
 import views.html.partials.confirmation.{ExcessContent, RefusedContent, ShortageContent}
 
-class ConfirmationContentHelperSpec extends SpecBase {
+class ConfirmationContentHelperSpec extends SpecBase with SubmitReportOfReceiptFixtures {
 
-  class Fixture(userAnswers: UserAnswers = emptyUserAnswers) {
+  class Fixture(
+                 userAnswers: UserAnswers = emptyUserAnswers,
+                 hasMovementShortage: Boolean = false,
+                 hasItemShortage: Boolean = false,
+                 hasMovementExcess: Boolean = false,
+                 hasItemExcess: Boolean = false
+               ) {
 
     implicit lazy val app = applicationBuilder(Some(userAnswers)).build()
     implicit lazy val request = dataRequest(FakeRequest(), userAnswers)
@@ -39,6 +46,15 @@ class ConfirmationContentHelperSpec extends SpecBase {
     lazy val refusedContent = app.injector.instanceOf[RefusedContent]
     lazy val shortageContent = app.injector.instanceOf[ShortageContent]
     lazy val excessContent = app.injector.instanceOf[ExcessContent]
+
+    lazy val testConfirmationDetails = ConfirmationDetails(
+      testConfirmationReference,
+      testReceiptDate,
+      userAnswers.get(AcceptMovementPage).getOrElse(Satisfactory).toString,
+      hasMovementShortage,
+      hasItemShortage,
+      hasMovementExcess,
+      hasItemExcess)
   }
 
   "ConfirmationContentHelper" - {
@@ -50,7 +66,7 @@ class ConfirmationContentHelperSpec extends SpecBase {
         lazy val userAnswers = emptyUserAnswers.set(AcceptMovementPage, Refused)
 
         "must render the expected content" in new Fixture(userAnswers) {
-          confirmationHelper.renderRefusedContent() mustBe Some(refusedContent())
+          confirmationHelper.renderRefusedContent(testConfirmationDetails) mustBe Some(refusedContent())
         }
       }
 
@@ -59,7 +75,7 @@ class ConfirmationContentHelperSpec extends SpecBase {
         lazy val userAnswers = emptyUserAnswers.set(AcceptMovementPage, PartiallyRefused)
 
         "must render the expected content" in new Fixture(userAnswers) {
-          confirmationHelper.renderRefusedContent() mustBe Some(refusedContent())
+          confirmationHelper.renderRefusedContent(testConfirmationDetails) mustBe Some(refusedContent())
         }
       }
 
@@ -68,7 +84,7 @@ class ConfirmationContentHelperSpec extends SpecBase {
         lazy val userAnswers = emptyUserAnswers.set(AcceptMovementPage, Satisfactory)
 
         "must return None" in new Fixture(userAnswers) {
-          confirmationHelper.renderRefusedContent() mustBe None
+          confirmationHelper.renderRefusedContent(testConfirmationDetails) mustBe None
         }
       }
     }
@@ -79,8 +95,9 @@ class ConfirmationContentHelperSpec extends SpecBase {
 
         lazy val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, Set[WrongWithMovement](Shortage))
 
-        "must render the expected content" in new Fixture(userAnswers) {
-          confirmationHelper.renderShortageContent() mustBe Some(shortageContent())
+        "must render the expected content" in new Fixture(userAnswers, hasMovementShortage = true) {
+
+          confirmationHelper.renderShortageContent(testConfirmationDetails) mustBe Some(shortageContent())
         }
       }
 
@@ -90,8 +107,8 @@ class ConfirmationContentHelperSpec extends SpecBase {
           .set(SelectItemsPage(1), item1.itemUniqueReference)
           .set(ItemShortageOrExcessPage(1), ItemShortageOrExcessModel(Shortage, 1, None))
 
-        "must render the expected content" in new Fixture(userAnswers) {
-          confirmationHelper.renderShortageContent() mustBe Some(shortageContent())
+        "must render the expected content" in new Fixture(userAnswers, hasItemShortage = true) {
+          confirmationHelper.renderShortageContent(testConfirmationDetails) mustBe Some(shortageContent())
         }
       }
 
@@ -100,7 +117,7 @@ class ConfirmationContentHelperSpec extends SpecBase {
         lazy val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, Set[WrongWithMovement](Excess))
 
         "must return None" in new Fixture(userAnswers) {
-          confirmationHelper.renderShortageContent() mustBe None
+          confirmationHelper.renderShortageContent(testConfirmationDetails) mustBe None
         }
       }
 
@@ -111,7 +128,7 @@ class ConfirmationContentHelperSpec extends SpecBase {
           .set(ItemShortageOrExcessPage(1), ItemShortageOrExcessModel(Excess, 1, None))
 
         "must return None" in new Fixture(userAnswers) {
-          confirmationHelper.renderShortageContent() mustBe None
+          confirmationHelper.renderShortageContent(testConfirmationDetails) mustBe None
         }
       }
     }
@@ -122,8 +139,8 @@ class ConfirmationContentHelperSpec extends SpecBase {
 
         lazy val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, Set[WrongWithMovement](Excess))
 
-        "must render the expected content" in new Fixture(userAnswers) {
-          confirmationHelper.renderExcessContent() mustBe Some(excessContent())
+        "must render the expected content" in new Fixture(userAnswers, hasMovementExcess = true) {
+          confirmationHelper.renderExcessContent(testConfirmationDetails) mustBe Some(excessContent())
         }
       }
 
@@ -133,8 +150,8 @@ class ConfirmationContentHelperSpec extends SpecBase {
           .set(SelectItemsPage(1), item1.itemUniqueReference)
           .set(ItemShortageOrExcessPage(1), ItemShortageOrExcessModel(Excess, 1, None))
 
-        "must render the expected content" in new Fixture(userAnswers) {
-          confirmationHelper.renderExcessContent() mustBe Some(excessContent())
+        "must render the expected content" in new Fixture(userAnswers, hasItemExcess = true) {
+          confirmationHelper.renderExcessContent(testConfirmationDetails) mustBe Some(excessContent())
         }
       }
 
@@ -143,7 +160,7 @@ class ConfirmationContentHelperSpec extends SpecBase {
         lazy val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, Set[WrongWithMovement](Shortage))
 
         "must return None" in new Fixture(userAnswers) {
-          confirmationHelper.renderExcessContent() mustBe None
+          confirmationHelper.renderExcessContent(testConfirmationDetails) mustBe None
         }
       }
 
@@ -154,9 +171,11 @@ class ConfirmationContentHelperSpec extends SpecBase {
           .set(ItemShortageOrExcessPage(1), ItemShortageOrExcessModel(Shortage, 1, None))
 
         "must return None" in new Fixture(userAnswers) {
-          confirmationHelper.renderExcessContent() mustBe None
+          confirmationHelper.renderExcessContent(testConfirmationDetails) mustBe None
         }
       }
     }
   }
 }
+
+

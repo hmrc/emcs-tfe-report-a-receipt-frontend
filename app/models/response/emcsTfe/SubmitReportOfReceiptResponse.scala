@@ -18,7 +18,7 @@ package models.response.emcsTfe
 
 import play.api.libs.json.{Format, Json}
 
-case class SubmitReportOfReceiptResponse(receipt: String)
+case class SubmitReportOfReceiptResponse(receipt: String, receiptDate: String)
 object SubmitReportOfReceiptResponse {
   implicit val format: Format[SubmitReportOfReceiptResponse] = Json.format
 }

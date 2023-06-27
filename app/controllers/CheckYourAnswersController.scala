@@ -20,12 +20,13 @@ import controllers.actions._
 import handlers.ErrorHandler
 import models.AcceptMovement.{Refused, Satisfactory}
 import models.HowGiveInformation.TheWholeMovement
+import models.WrongWithMovement.{Excess, Shortage}
 import models.requests.DataRequest
-import models.{NormalMode, UserAnswers}
 import models.response.MissingMandatoryPage
-import models.response.emcsTfe.MovementItem
+import models.response.emcsTfe.{MovementItem, SubmitReportOfReceiptResponse}
+import models.{ConfirmationDetails, NormalMode, UserAnswers}
 import navigation.Navigator
-import pages.unsatisfactory.HowGiveInformationPage
+import pages.unsatisfactory.{HowGiveInformationPage, WrongWithMovementPage}
 import pages.{AcceptMovementPage, CheckAnswersPage, ConfirmationPage}
 import play.api.i18n.MessagesApi
 import play.api.libs.json.Json
@@ -108,7 +109,7 @@ class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi
     authorisedDataRequestWithUpToDateMovementAsync(ern, arc) { implicit request =>
       submitReportOfReceiptService.submit(ern, arc).flatMap { response =>
 
-        deleteDraftAndSetConfirmationFlow(request.internalId, request.ern, request.arc, response.receipt).map { _ =>
+        deleteDraftAndSetConfirmationFlow(request.internalId, request.ern, request.arc, response).map { _ =>
           Redirect(navigator.nextPage(CheckAnswersPage, NormalMode, request.userAnswers))
         }
 
@@ -124,12 +125,23 @@ class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi
   private def deleteDraftAndSetConfirmationFlow(internalId: String,
                                                 ern: String,
                                                 arc: String,
-                                                receipt: String)
-                                               (implicit req: HeaderCarrier): Future[UserAnswers] =
+                                                response: SubmitReportOfReceiptResponse)
+                                               (implicit hc: HeaderCarrier, request: DataRequest[_]): Future[UserAnswers] = {
     userAnswersService.set(
       UserAnswers(internalId,
         ern,
         arc,
-        data = Json.obj(ConfirmationPage.toString -> receipt))
-    )
+        data = Json.obj(ConfirmationPage.toString ->
+          ConfirmationDetails(
+            receipt = response.receipt,
+            receiptDate = response.receiptDate,
+            receiptStatus = request.userAnswers.get(AcceptMovementPage).getOrElse().toString,
+            hasMovementShortage = request.userAnswers.get(WrongWithMovementPage).exists(_.contains(Shortage)),
+            hasItemShortage = request.userAnswers.items.exists(_.itemShortageOrExcess.exists(_.wrongWithItem == Shortage)),
+            hasMovementExcess = request.userAnswers.get(WrongWithMovementPage).exists(_.contains(Excess)),
+            hasItemExcess = request.userAnswers.items.exists(_.itemShortageOrExcess.exists(_.wrongWithItem == Excess))
+          ))
+      ))
+  }
+
 }

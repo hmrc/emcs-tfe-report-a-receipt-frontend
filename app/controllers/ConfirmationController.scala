@@ -18,6 +18,7 @@ package controllers
 
 import controllers.actions._
 import handlers.ErrorHandler
+import models.ConfirmationDetails
 import pages.ConfirmationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -42,8 +43,8 @@ class ConfirmationController @Inject()(
   def onPageLoad(ern: String, arc: String): Action[AnyContent] =
     authorisedDataRequestWithCachedMovement(ern, arc) { implicit request =>
       request.userAnswers.get(ConfirmationPage) match {
-        case Some(reference) =>
-          Ok(view(reference))
+        case Some(confirmationDetails: ConfirmationDetails) =>
+          Ok(view(confirmationDetails))
         case None =>
           logger.warn("[onPageLoad] Could not retrieve submission receipt reference from Users session")
           BadRequest(errorHandler.badRequestTemplate)

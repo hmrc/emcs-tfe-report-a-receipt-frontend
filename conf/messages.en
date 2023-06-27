@@ -234,10 +234,13 @@ checkYourAnswersItem.heading = Check your answers for {0}
 
 confirmation.title = Report of receipt submitted
 confirmation.heading = Report of receipt submitted
-confirmation.reference = Your reference is
+confirmation.movementInformation.arc.label = Movement ARC
+confirmation.movementInformation.receiptStatus.label = Receipt status
+confirmation.movementInformation.receiptDate.label = Receipt date
+confirmation.reference = Your submission reference is
 confirmation.next.h2 = What happens next
-confirmation.next.p1 = The movement will be updated to show you have successfully submitted a report of receipt. This can take up to 15 minutes.
-confirmation.next.p3.link = Print this receipt
+confirmation.next.p1 = The movement will be updated to show you have successfully submitted a report of receipt. This may not happen straight away.
+confirmation.next.p3.link = Print this screen
 confirmation.next.p3.afterLink = to make a record of your submission.
 confirmation.returnToMovement.link = Return to view your movement
 confirmation.feedback.link = What did you think of this service?
@@ -258,6 +261,10 @@ confirmation.excess.differentGoods.bullet1 = a duty point will be created for th
 confirmation.excess.differentGoods.bullet2 = the person or organisation holding the goods must immediately pay the duty on them
 confirmation.contactHmrc.link = Contact the HMRC excise helpline
 confirmation.contactHmrc.afterLink = if you need more help or information about excise duties.
+confirmation.acceptMovement.satisfactory = Accepted and satisfactory
+confirmation.acceptMovement.unsatisfactory = Accepted and unsatisfactory
+confirmation.acceptMovement.refused = Refused
+confirmation.acceptMovement.partiallyRefused = Partially refused
 
 howGiveInformation.title = How do you want to give information about this movement?
 howGiveInformation.heading = How do you want to give information about this movement?

@@ -16,11 +16,7 @@
 
 package viewmodels
 
-import models.AcceptMovement.{PartiallyRefused, Refused}
-import models.WrongWithMovement.{Excess, Shortage}
-import models.requests.DataRequest
-import pages.AcceptMovementPage
-import pages.unsatisfactory.WrongWithMovementPage
+import models.{AcceptMovement, ConfirmationDetails}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import views.html.partials.confirmation._
@@ -30,10 +26,13 @@ import javax.inject.Inject
 class ConfirmationContentHelper @Inject()(shortageContent: ShortageContent,
                                           excessContent: ExcessContent,
                                           refusedContent: RefusedContent)  {
-  def renderRefusedContent()(implicit request: DataRequest[_], messages: Messages): Option[HtmlFormat.Appendable] = {
-    val isRefusedOrPartiallyRefused = request.userAnswers.get(AcceptMovementPage).exists(
-      acceptMovement => acceptMovement == Refused || acceptMovement == PartiallyRefused
-    )
+  def renderRefusedContent(confirmationDetails: ConfirmationDetails)(implicit messages: Messages): Option[HtmlFormat.Appendable] = {
+    val isRefusedOrPartiallyRefused = confirmationDetails.receiptStatus match {
+      case AcceptMovement.Refused.toString => true
+      case AcceptMovement.PartiallyRefused.toString => true
+      case _ => false
+    }
+
     if (isRefusedOrPartiallyRefused) {
       Some(refusedContent())
     } else {
@@ -41,10 +40,9 @@ class ConfirmationContentHelper @Inject()(shortageContent: ShortageContent,
     }
   }
 
-  def renderShortageContent()(implicit request: DataRequest[_], messages: Messages): Option[HtmlFormat.Appendable] = {
-
-    val hasMovementShortage = request.userAnswers.get(WrongWithMovementPage).exists(_.contains(Shortage))
-    val hasItemShortage = request.userAnswers.items.exists(_.itemShortageOrExcess.exists(_.wrongWithItem == Shortage))
+  def renderShortageContent(confirmationDetails: ConfirmationDetails)(implicit messages: Messages): Option[HtmlFormat.Appendable] = {
+    val hasMovementShortage = confirmationDetails.hasMovementShortage
+    val hasItemShortage = confirmationDetails.hasItemShortage
 
     if(hasMovementShortage || hasItemShortage) {
       Some(shortageContent())
@@ -53,9 +51,10 @@ class ConfirmationContentHelper @Inject()(shortageContent: ShortageContent,
     }
   }
 
-  def renderExcessContent()(implicit request: DataRequest[_], messages: Messages): Option[HtmlFormat.Appendable] = {
-    val hasMovementExcess = request.userAnswers.get(WrongWithMovementPage).exists(_.contains(Excess))
-    val hasItemExcess = request.userAnswers.items.exists(_.itemShortageOrExcess.exists(_.wrongWithItem == Excess))
+  def renderExcessContent(confirmationDetails: ConfirmationDetails)(implicit messages: Messages): Option[HtmlFormat.Appendable] = {
+    val hasMovementExcess = confirmationDetails.hasMovementExcess
+    val hasItemExcess = confirmationDetails.hasItemExcess
+
     if (hasMovementExcess || hasItemExcess) {
       Some(excessContent())
     } else {

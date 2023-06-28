@@ -17,34 +17,36 @@
 package views
 
 import base.ViewSpecBase
-import fixtures.messages.AddedItemsMessages
+import fixtures.messages.{AddedItemsMessages, CheckYourAnswersMessages}
 import forms.AddAnotherItemFormProvider
-import models.ReferenceDataUnitOfMeasure.`1`
 import models.requests.DataRequest
-import models.response.referenceData.CnCodeInformation
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import pages.unsatisfactory.individualItems.{CheckAnswersItemPage, SelectItemsPage}
 import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import viewmodels.AddedItemsSummary
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+import viewmodels.checkAnswers.CheckAnswersItemHelper
 import views.html.AddedItemsView
 
 class AddedItemsViewSpec extends ViewSpecBase with ViewBehaviours {
 
   lazy val form = new AddAnotherItemFormProvider()()
-  lazy val listHelper = new AddedItemsSummary()
+  lazy val checkItemsHelper = app.injector.instanceOf[CheckAnswersItemHelper]
 
   object Selectors extends BaseSelectors {
-    val itemCnCode = (n: Int) => s"main dl div:nth-of-type($n) > :nth-child(1)"
-    val itemChangeLink = (n: Int) => s"main dl div:nth-of-type($n) > :nth-child(2) > ul > li:nth-of-type(1)"
-    val itemRemoveLink = (n: Int) => s"main dl div:nth-of-type($n) > :nth-child(2) > ul > li:nth-of-type(2)"
+    val itemCardTitle = (n: Int) => s"main div.govuk-summary-card:nth-of-type($n) h2"
+    val itemCardDetailsLink = (n: Int) => s"main div.govuk-summary-card:nth-of-type($n) ul.govuk-summary-card__actions li:nth-of-type(1)"
+    val itemCardRemoveLink = (n: Int) => s"main div.govuk-summary-card:nth-of-type($n) ul.govuk-summary-card__actions li:nth-of-type(2)"
   }
 
   "AddedItemsView" - {
 
-    Seq(AddedItemsMessages.English, AddedItemsMessages.Welsh).foreach { messagesForLanguage =>
+    Seq(
+      AddedItemsMessages.English -> CheckYourAnswersMessages.English,
+      AddedItemsMessages.Welsh -> CheckYourAnswersMessages.Welsh
+    ).foreach { case (messagesForLanguage, checkAnswersMessages) =>
 
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
 
@@ -61,10 +63,7 @@ class AddedItemsViewSpec extends ViewSpecBase with ViewBehaviours {
 
           implicit val doc: Document = Jsoup.parse(view(
             Some(form),
-            listHelper
-              .itemList()
-              .zipWithIndex
-              .map { case (l, i) => (l, CnCodeInformation(s"testdata${i + 1}", "", `1`)) },
+            Seq(1 -> SummaryList()),
             allItemsAdded = false,
             testOnwardRoute
           ).toString())
@@ -73,9 +72,9 @@ class AddedItemsViewSpec extends ViewSpecBase with ViewBehaviours {
             Selectors.title -> messagesForLanguage.titleSingular,
             Selectors.h1 -> messagesForLanguage.headingSingular,
             Selectors.button -> messagesForLanguage.saveAndContinue,
-            Selectors.itemCnCode(1) -> "testdata1",
-            Selectors.itemChangeLink(1) -> messagesForLanguage.change,
-            Selectors.itemRemoveLink(1) -> messagesForLanguage.remove,
+            Selectors.itemCardTitle(1) -> checkAnswersMessages.item(1),
+            Selectors.itemCardDetailsLink(1) -> checkAnswersMessages.itemDetails(1),
+            Selectors.itemCardRemoveLink(1) -> checkAnswersMessages.itemRemove(1),
             Selectors.radioButton(1) -> messagesForLanguage.yes,
             Selectors.radioButton(2) -> messagesForLanguage.no,
             Selectors.id("save-and-exit") -> messagesForLanguage.savePreviousAnswersAndExit
@@ -97,10 +96,7 @@ class AddedItemsViewSpec extends ViewSpecBase with ViewBehaviours {
 
           implicit val doc: Document = Jsoup.parse(view(
             None,
-            listHelper
-              .itemList()
-              .zipWithIndex
-              .map { case (l, i) => (l, CnCodeInformation(s"testdata${i + 1}", "", `1`)) },
+            Seq(1 -> SummaryList(), 2 -> SummaryList()),
             allItemsAdded = true,
             testOnwardRoute,
           ).toString())
@@ -109,12 +105,12 @@ class AddedItemsViewSpec extends ViewSpecBase with ViewBehaviours {
             Selectors.title -> messagesForLanguage.titlePlural(2),
             Selectors.h1 -> messagesForLanguage.headingPlural(2),
             Selectors.button -> messagesForLanguage.saveAndContinue,
-            Selectors.itemCnCode(1) -> "testdata1",
-            Selectors.itemChangeLink(1) -> messagesForLanguage.change,
-            Selectors.itemRemoveLink(1) -> messagesForLanguage.remove,
-            Selectors.itemCnCode(2) -> "testdata2",
-            Selectors.itemChangeLink(2) -> messagesForLanguage.change,
-            Selectors.itemRemoveLink(2) -> messagesForLanguage.remove,
+            Selectors.itemCardTitle(1) -> checkAnswersMessages.item(1),
+            Selectors.itemCardDetailsLink(1) -> checkAnswersMessages.itemDetails(1),
+            Selectors.itemCardRemoveLink(1) -> checkAnswersMessages.itemRemove(1),
+            Selectors.itemCardTitle(2) -> checkAnswersMessages.item(2),
+            Selectors.itemCardDetailsLink(2) -> checkAnswersMessages.itemDetails(2),
+            Selectors.itemCardRemoveLink(2) -> checkAnswersMessages.itemRemove(2),
             Selectors.id("save-and-exit") -> messagesForLanguage.savePreviousAnswersAndExit
           ))
         }

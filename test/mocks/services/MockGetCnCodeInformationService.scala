@@ -40,12 +40,5 @@ trait MockGetCnCodeInformationService extends MockFactory {
           (_items: Seq[MovementItem], _) =>
             (_items.map(_.cnCode) == items.map(_.cnCode)) && (_items.map(_.productCode) == items.map(_.productCode))
         })
-
-    def getCnCodeInformationWithListItems(items: Seq[ListItemWithProductCode]): Output[ListItemWithProductCode] =
-      (mockGetCnCodeInformationService.getCnCodeInformationWithListItems(_: Seq[ListItemWithProductCode])(_: HeaderCarrier))
-        .expects(where {
-          (_items: Seq[ListItemWithProductCode], _) =>
-            (_items.map(_.cnCode) == items.map(_.cnCode)) && (_items.map(_.productCode) == items.map(_.productCode))
-        })
   }
 }

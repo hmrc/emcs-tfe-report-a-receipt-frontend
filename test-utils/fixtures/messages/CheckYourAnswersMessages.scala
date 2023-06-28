@@ -23,6 +23,7 @@ object CheckYourAnswersMessages {
     val heading: String
     val movementDetailsH2: String
     val itemsH2: String
+    val item: Int => String
     val itemDetails: Int => String
     val itemRemove: Int => String
     val addAnotherItem: String
@@ -38,6 +39,7 @@ object CheckYourAnswersMessages {
     override val heading = "Check your answers before submitting your receipt"
     override val movementDetailsH2 = "Movement"
     override val itemsH2 = "Items"
+    override val item = (itemReference: Int) => s"Item $itemReference"
     override val itemDetails = (itemReference: Int) => s"Item details for item $itemReference"
     override val itemRemove = (itemReference: Int) => s"Remove item $itemReference"
     override val addAnotherItem = "Add another item"
@@ -53,6 +55,7 @@ object CheckYourAnswersMessages {
     override val heading = "Check your answers before submitting your receipt"
     override val movementDetailsH2 = "Movement"
     override val itemsH2 = "Items"
+    override val item = (itemReference: Int) => s"Item $itemReference"
     override val itemDetails = (itemReference: Int) => s"Item details for item $itemReference"
     override val itemRemove = (itemReference: Int) => s"Remove item $itemReference"
     override val addAnotherItem = "Add another item"

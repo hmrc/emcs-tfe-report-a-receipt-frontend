@@ -44,24 +44,7 @@ class GetCnCodeInformationService @Inject()(connector: GetCnCodeInformationConne
     }
   }
 
-  def getCnCodeInformationWithListItems(items: Seq[ListItemWithProductCode])(implicit hc: HeaderCarrier): ServiceOutcome[ListItemWithProductCode] = {
-    connector.getCnCodeInformation(generateRequestModelFromListItem(items)).map {
-      case Right(response) =>
-        matchListItemsWithReferenceDataValues(response, items).map {
-          case (item, Some(information)) => (item, information)
-          case (item, _) => throw ReferenceDataException(s"Failed to match item with CN Code information: $item")
-        }
-      case Left(errorResponse) => throw ReferenceDataException(s"Failed to retrieve CN Code information: $errorResponse")
-    }
-  }
-
   private def generateRequestModelFromMovementItem(items: Seq[MovementItem]): CnCodeInformationRequest = {
-    val productCodes = items.map(_.productCode)
-    val cnCodes = items.map(_.cnCode)
-    CnCodeInformationRequest(productCodeList = productCodes, cnCodeList = cnCodes)
-  }
-
-  private def generateRequestModelFromListItem(items: Seq[ListItemWithProductCode]): CnCodeInformationRequest = {
     val productCodes = items.map(_.productCode)
     val cnCodes = items.map(_.cnCode)
     CnCodeInformationRequest(productCodeList = productCodes, cnCodeList = cnCodes)
@@ -71,18 +54,6 @@ class GetCnCodeInformationService @Inject()(connector: GetCnCodeInformationConne
                                                          response: CnCodeInformationResponse,
                                                          items: Seq[MovementItem]
                                                        ): Seq[(MovementItem, Option[CnCodeInformation])] = {
-    val data = response.data
-    items.map {
-      case movementItem if data.contains(movementItem.cnCode) =>
-        (movementItem, Some(data(movementItem.cnCode)))
-      case movementItem => (movementItem, None)
-    }
-  }
-
-  private def matchListItemsWithReferenceDataValues(
-                                                     response: CnCodeInformationResponse,
-                                                     items: Seq[ListItemWithProductCode]
-                                                   ): Seq[(ListItemWithProductCode, Option[CnCodeInformation])] = {
     val data = response.data
     items.map {
       case movementItem if data.contains(movementItem.cnCode) =>

@@ -28,7 +28,7 @@ object RefusedAmountMessages {
   }
 
   object English extends ViewMessages with BaseEnglish {
-    override def heading(unitOfMeasureMsg: String) = s"How much of this item are you refusing, in $unitOfMeasureMsg?"
+    override def heading(unitOfMeasureMsg: String) = s"How many $unitOfMeasureMsg of item 1 are you refusing?"
     override def title(unitOfMeasureMsg: String) = super.title(heading(unitOfMeasureMsg))
 
     override val requiredError: String = "Enter the amount you are refusing"
@@ -38,7 +38,7 @@ object RefusedAmountMessages {
   }
 
   object Welsh extends ViewMessages with BaseWelsh {
-    override def heading(unitOfMeasureMsg: String) = s"How much of this item are you refusing, in $unitOfMeasureMsg?"
+    override def heading(unitOfMeasureMsg: String) = s"How many $unitOfMeasureMsg of item 1 are you refusing?"
     override def title(unitOfMeasureMsg: String) = super.title(heading(unitOfMeasureMsg))
 
     override val requiredError: String = "Enter the amount you are refusing"

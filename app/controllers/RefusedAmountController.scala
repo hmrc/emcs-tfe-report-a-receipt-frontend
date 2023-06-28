@@ -53,7 +53,10 @@ class RefusedAmountController @Inject()(
             Ok(view(
               fillForm(RefusedAmountPage(idx), formProvider(item.quantity, shortageAmount)),
               routes.RefusedAmountController.onSubmit(ern, arc, idx, mode),
-              cnCodeInformation.unitOfMeasureCode.toUnitOfMeasure
+              cnCodeInformation.unitOfMeasureCode.toUnitOfMeasure,
+              item,
+              cnCodeInformation,
+              idx
             ))
         }
       }
@@ -71,7 +74,10 @@ class RefusedAmountController @Inject()(
                 BadRequest(view(
                   formWithErrors,
                   routes.RefusedAmountController.onSubmit(ern, arc, idx, mode),
-                  cnCodeInformation.unitOfMeasureCode.toUnitOfMeasure
+                  cnCodeInformation.unitOfMeasureCode.toUnitOfMeasure,
+                  item,
+                  cnCodeInformation,
+                  idx
                 ))
             }
           },
@@ -81,3 +87,4 @@ class RefusedAmountController @Inject()(
       }
     }
 }
+

@@ -16,6 +16,9 @@
 
 @import models.requests.DataRequest
 @import viewmodels.InputWidth._
+@import models.response.emcsTfe.MovementItem
+@import models.response.referenceData.CnCodeInformation
+@import views.html.components.itemDetailSection
 
 @this(
         layout: templates.Layout,
@@ -24,12 +27,14 @@
         govukInput: GovukInput,
         govukButton: GovukButton,
         continueOrExit: components.continueOrExit,
-        h1: components.h1
+        h1: components.h1,
+        p: components.p,
+        itemDetailSection: itemDetailSection
 )
 
-@(form: Form[_], action: Call, unitOfMeasure: UnitOfMeasure)(implicit request: DataRequest[_], messages: Messages)
+@(form: Form[_], action: Call, unitOfMeasure: UnitOfMeasure, item: MovementItem, cnCodeInfo: CnCodeInformation, idx: Int)(implicit request: DataRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("refusedAmount.title", messages(s"unitOfMeasure.$unitOfMeasure.long")))) {
+@layout(pageTitle = title(form, messages("refusedAmount.title", messages(s"unitOfMeasure.$unitOfMeasure.long"), idx))) {
 
     @formHelper(action, 'autoComplete -> "off") {
 
@@ -37,21 +42,28 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        @h1(messages("refusedAmount.heading", messages(s"unitOfMeasure.$unitOfMeasure.long")), Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
+        @h1(messages("refusedAmount.heading", messages(s"unitOfMeasure.$unitOfMeasure.long"), idx), Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
 
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(Text(messages("refusedAmount.heading", messages(s"unitOfMeasure.$unitOfMeasure.long")))).hidden
+                label = LabelViewModel(Text(messages("refusedAmount.heading", messages(s"unitOfMeasure.$unitOfMeasure.long"), idx))).hidden
             )
             .withWidth(Fixed10)
             .withSuffix(PrefixOrSuffix(
                 content = Text(messages(s"unitOfMeasure.$unitOfMeasure.short"))
             ))
-            .withHint(HintViewModel(Text(messages("refusedAmount.hint"))))
+            .withHint(HintViewModel(HtmlContent(hint)))
         )
 
         @continueOrExit()
+    }
+}
+
+@hint = {
+    @itemDetailSection("refusingAnyAmountOfItem.item", item, cnCodeInfo)
+    @p(classes = "govuk-hint") {
+        @messages("refusedAmount.hint")
     }
 }
 

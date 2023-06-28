@@ -459,8 +459,8 @@ removeItem.title = Are you sure you want to remove information about this item?
 removeItem.heading = Are you sure you want to remove information about this item?
 removeItem.error.required = Select yes if you want to remove information about this item
 
-refusedAmount.title = How much of this item are you refusing, in {0}?
-refusedAmount.heading = How much of this item are you refusing, in {0}?
+refusedAmount.title = How many {0} of item {1} are you refusing?
+refusedAmount.heading = How many {0} of item {1} are you refusing?
 refusedAmount.hint = For example, 150 or 12.694.
 refusedAmount.error.nonNumeric = The amount you are refusing must be a number, like 150 or 12.694
 refusedAmount.error.required = Enter the amount you are refusing

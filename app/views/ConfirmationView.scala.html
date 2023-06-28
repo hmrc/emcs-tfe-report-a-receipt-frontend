@@ -87,6 +87,7 @@
 
     @govukButton(
         ButtonViewModel("Return to at a glance")
+                .withCssClass("govuk-!-margin-top-4 no-print")
                 .asLink(appConfig.emcsTfeHomeUrl(Some(request.ern)))
     )
 

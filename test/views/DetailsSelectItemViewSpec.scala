@@ -66,7 +66,9 @@ class DetailsSelectItemViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.tableRow(6, 1) -> messagesForLanguage.tableAlcoholStrengthKey,
           Selectors.tableRow(6, 2) -> messagesForLanguage.alcoholStrength(item1.alcoholicStrength),
           Selectors.tableRow(7, 1) -> messagesForLanguage.tableDensityKey,
-          Selectors.tableRow(7, 2) -> messagesForLanguage.density(item1.density)
+          Selectors.tableRow(7, 2) -> messagesForLanguage.density(item1.density),
+          Selectors.button -> messagesForLanguage.saveAndContinue,
+          Selectors.id("save-and-exit") -> messagesForLanguage.savePreviousAnswersAndExit
         ))
         // scalastyle:on magic.number
       }

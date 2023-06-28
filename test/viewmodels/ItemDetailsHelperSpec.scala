@@ -22,16 +22,17 @@ import models.ReferenceDataUnitOfMeasure
 import models.response.emcsTfe.MovementItem
 import models.response.referenceData.CnCodeInformation
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.TableRow
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, SummaryListRow}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.Value
 
-class DetailsSelectItemHelperSpec extends SpecBase {
+class ItemDetailsHelperSpec extends SpecBase {
 
   lazy val app = applicationBuilder().build()
   implicit lazy val msgs = messages(app)
 
 
-  "DetailsSelectItemHelperHelper" - {
+  "ItemDetailsHelper" - {
 
     Seq(DetailsSelectItemMessages.English, DetailsSelectItemMessages.Welsh).foreach { langMessages =>
 
@@ -40,9 +41,9 @@ class DetailsSelectItemHelperSpec extends SpecBase {
         implicit lazy val app = applicationBuilder().build()
         implicit lazy val messages: Messages = messagesApi(app).preferred(Seq(langMessages.lang))
 
-        lazy val helper = new DetailsSelectItemHelper
+        lazy val helper = new ItemDetailsHelper
 
-        "should create the TableRows" - {
+        "should create the SummaryListRows" - {
 
           val cnCodeInformation = CnCodeInformation("cn code description", "excise product code description", ReferenceDataUnitOfMeasure.`2`)
 
@@ -51,49 +52,48 @@ class DetailsSelectItemHelperSpec extends SpecBase {
                                     includeBrandName: Boolean = true,
                                     includeCommercialDescription: Boolean = true,
                                     includeAlcoholicStrength: Boolean = true,
-                                    includeDensity: Boolean = true): Seq[Seq[TableRow]] = {
+                                    includeDensity: Boolean = true): Seq[SummaryListRow] = {
 
-            def createTableRow(key: String, value: String): Option[Seq[TableRow]] = {
+            def createSummaryListRow(key: String, value: String): Option[Seq[SummaryListRow]] = {
               Some(
                 Seq(
-                  TableRow(content = Text(key)),
-                  TableRow(content = HtmlContent(value))
+                  SummaryListRow(Key(Text(key)), Value(HtmlContent(value)))
                 )
               )
             }
 
             Seq(
-              createTableRow(langMessages.tableProductCategoryKey, cnCodeInformation.exciseProductCodeDescription),
+              createSummaryListRow(langMessages.tableProductCategoryKey, cnCodeInformation.exciseProductCodeDescription),
 
-              createTableRow(langMessages.tableCNCodeKey, item.cnCode),
+              createSummaryListRow(langMessages.tableCNCodeKey, item.cnCode),
 
               if (includeBrandName) {
-                createTableRow(langMessages.tableBrandNameKey, item.brandNameOfProduct.get)
+                createSummaryListRow(langMessages.tableBrandNameKey, item.brandNameOfProduct.get)
               } else {
                 None
               },
 
               if (includeCommercialDescription) {
-                createTableRow(langMessages.tableCommercialDescriptionKey, item.commercialDescription.get)
+                createSummaryListRow(langMessages.tableCommercialDescriptionKey, item.commercialDescription.get)
               } else {
                 None
               },
-              createTableRow(langMessages.tableQuantityKey, langMessages.quantityValue(item.quantity)),
+              createSummaryListRow(langMessages.tableQuantityKey, langMessages.quantityValue(item.quantity)),
 
               if (includeAlcoholicStrength) {
-                createTableRow(langMessages.tableAlcoholStrengthKey, langMessages.alcoholicStrengthValue(item.alcoholicStrength.get))
+                createSummaryListRow(langMessages.tableAlcoholStrengthKey, langMessages.alcoholicStrengthValue(item.alcoholicStrength.get))
               } else {
                 None
               },
 
               if (includeDensity) {
-                createTableRow(langMessages.tableDensityKey, langMessages.densityValue(item.density.get))
+                createSummaryListRow(langMessages.tableDensityKey, langMessages.densityValue(item.density.get))
               } else {
                 None
               },
 
-              createTableRow(langMessages.tablePackaging, s"${item.packaging.head.quantity.get} ${item.packaging.head.typeOfPackage}")
-            ).flatten
+              createSummaryListRow(langMessages.tablePackaging, s"${item.packaging.head.quantity.get} ${item.packaging.head.typeOfPackage}")
+            ).flatten.flatten
           }
 
           "when brandName is not empty" in {

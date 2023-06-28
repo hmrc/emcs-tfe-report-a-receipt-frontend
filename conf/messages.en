@@ -138,9 +138,10 @@ addDamageInformation.title = Do you want to give more information about being se
 addDamageInformation.heading = Do you want to give more information about being sent damaged item(s)?
 addDamageInformation.error.required = Select yes if you want to give more information about being sent damaged item(s)
 
-addItemDamageInformation.title = Do you want to give more information about being sent damaged item(s)?
-addItemDamageInformation.heading = Do you want to give more information about being sent damaged item(s)?
-addItemDamageInformation.error.required = Select yes if you want to give more information about being sent damaged item(s)
+addItemDamageInformation.title = Do you want to give information about item {0} being damaged?
+addItemDamageInformation.heading = Do you want to give information about item {0} being damaged?
+addItemDamageInformation.itemDetails = View item {0} details
+addItemDamageInformation.error.required = Select yes if you want to give more information
 
 addSealsInformation.title = Do you want to give more information about being sent item(s) with broken seal(s)?
 addSealsInformation.heading = Do you want to give more information about being sent item(s) with broken seal(s)?

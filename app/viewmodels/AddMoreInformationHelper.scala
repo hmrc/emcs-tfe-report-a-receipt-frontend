@@ -31,5 +31,8 @@ object AddMoreInformationHelper {
   def headingKey(page: QuestionPage[Boolean])(implicit request: DataRequest[_]): String =
     s"$page${infix()}.heading"
 
+  def itemDetailsKey(page: QuestionPage[Boolean])(implicit request: DataRequest[_]): String =
+    s"$page${infix()}.itemDetails"
+
 
 }

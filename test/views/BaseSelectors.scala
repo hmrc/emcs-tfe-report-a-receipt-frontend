@@ -40,10 +40,14 @@ trait BaseSelectors {
 
   val tableHeader: Int => String = i => s"main table thead tr th:nth-of-type($i)"
   val tableRow: (Int, Int) => String = (x, y) => s"main table tbody tr:nth-of-type($x) > :nth-child($y)"
+  val summaryRowKey: Int => String = i => s"main dl div:nth-of-type($i) dt"
+  val summaryRowValue: Int => String = i => s"main dl div:nth-of-type($i) dd"
 
   val cardHeader: Int => String = i => s".govuk-summary-card:nth-of-type($i) h2"
 
   val inputSuffix = ".govuk-input__suffix"
+
+  def detailsSummary(i: Int) = s"main details:nth-of-type($i) summary"
 
   def id(i: String) = s"#$i"
 }

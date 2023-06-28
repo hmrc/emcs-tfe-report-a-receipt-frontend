@@ -16,7 +16,6 @@
 
 package mocks.services
 
-import models.ListItemWithProductCode
 import models.response.emcsTfe.MovementItem
 import models.response.referenceData.CnCodeInformation
 import org.scalamock.handlers.CallHandler2

@@ -19,23 +19,21 @@ package controllers
 import base.SpecBase
 import forms.AddAnotherItemFormProvider
 import mocks.services.MockGetCnCodeInformationService
-import mocks.viewmodels.{MockCheckAnswersHelper, MockCheckAnswersItemHelper}
+import mocks.viewmodels.MockCheckAnswersItemHelper
 import models.AcceptMovement.{PartiallyRefused, Refused}
 import models.ReferenceDataUnitOfMeasure.`1`
 import models.requests.DataRequest
 import models.response.emcsTfe.MovementItem
 import models.response.referenceData.CnCodeInformation
-import models.{ListItemWithProductCode, NormalMode, UserAnswers}
+import models.{NormalMode, UserAnswers}
 import pages.AcceptMovementPage
 import pages.unsatisfactory.individualItems.{CheckAnswersItemPage, RefusedAmountPage, SelectItemsPage}
-import play.api.inject
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.GetCnCodeInformationService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
-import viewmodels.AddedItemsSummary
-import viewmodels.checkAnswers.{CheckAnswersHelper, CheckAnswersItemHelper}
+import viewmodels.checkAnswers.CheckAnswersItemHelper
 import views.html.AddedItemsView
 
 import scala.concurrent.Future
@@ -45,7 +43,6 @@ class AddedItemsControllerSpec extends SpecBase
   with MockCheckAnswersItemHelper {
 
   lazy val form = new AddAnotherItemFormProvider()()
-  lazy val itemListSummary = new AddedItemsSummary()
 
   lazy val url = "testurl"
 

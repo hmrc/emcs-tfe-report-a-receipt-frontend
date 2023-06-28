@@ -19,19 +19,15 @@ package controllers
 import controllers.actions._
 import forms.AddAnotherItemFormProvider
 import models.AcceptMovement.PartiallyRefused
+import models.NormalMode
 import models.requests.DataRequest
-import models.response.emcsTfe.MovementItem
-import models.response.referenceData.CnCodeInformation
-import models.{ListItemWithProductCode, NormalMode}
 import navigation.Navigator
 import pages.AcceptMovementPage
 import pages.unsatisfactory.individualItems.{AddedItemsPage, RefusedAmountPage}
-import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.{GetCnCodeInformationService, UserAnswersService}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
-import viewmodels.AddedItemsSummary
 import viewmodels.checkAnswers.CheckAnswersItemHelper
 import views.html.AddedItemsView
 
@@ -48,7 +44,6 @@ class AddedItemsController @Inject()(
                                       override val controllerComponents: MessagesControllerComponents,
                                       view: AddedItemsView,
                                       formProvider: AddAnotherItemFormProvider,
-                                      addedItemsSummary: AddedItemsSummary,
                                       getCnCodeInformationService: GetCnCodeInformationService,
                                       checkAnswersItemHelper: CheckAnswersItemHelper,
                                       override val userAnswersService: UserAnswersService,
@@ -107,7 +102,7 @@ class AddedItemsController @Inject()(
     }
 
   private def atLeastOneItemGuard(f: => Future[Result])(implicit request: DataRequest[_]): Future[Result] =
-    addedItemsSummary.itemList() match {
+    request.getAllCompletedItemDetails match {
       case items if items.isEmpty => Future.successful(addAnotherItemRedirect())
       case _ => f
     }

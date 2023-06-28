@@ -28,7 +28,6 @@ object ShortageInformationMessages {
     val checkYourAnswersLabel: String
     val hiddenChangeLink: String
     val addMoreInformation: String
-    val savePreviousAnswersAndExitLinkText: String
   }
 
   object English extends ViewMessages with BaseEnglish {
@@ -41,7 +40,6 @@ object ShortageInformationMessages {
     override val checkYourAnswersLabel = "Information about shortage"
     override val hiddenChangeLink = "information about shortage"
     override val addMoreInformation = "Enter more information about shortage (optional)"
-    override val savePreviousAnswersAndExitLinkText = "Save previous answers and exit"
   }
 
   object Welsh extends ViewMessages with BaseWelsh {
@@ -54,6 +52,5 @@ object ShortageInformationMessages {
     override val checkYourAnswersLabel = "Information about shortage"
     override val hiddenChangeLink = "information about shortage"
     override val addMoreInformation = "Enter more information about shortage (optional)"
-    override val savePreviousAnswersAndExitLinkText = "Save previous answers and exit"
   }
 }

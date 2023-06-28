@@ -455,7 +455,7 @@ class NavigatorSpec extends SpecBase {
             val userAnswers = emptyUserAnswers.set(AddItemDamageInformationPage(1), true)
 
             navigator.nextPage(AddItemDamageInformationPage(1), NormalMode, userAnswers) mustBe
-              routes.MoreInformationController.loadItemDamageInformation(testErn, testArc, 1, NormalMode)
+              routes.ItemMoreInformationController.loadItemDamageInformation(testErn, testArc, 1, NormalMode)
           }
         }
 

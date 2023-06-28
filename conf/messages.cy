@@ -392,8 +392,9 @@ itemOtherInformation.error.character = Information must contain letters or numbe
 itemOtherInformation.checkYourAnswers.label = Information about other reason(s)
 itemOtherInformation.checkYourAnswers.change.hidden = information about other reason(s)
 
-itemDamageInformation.title = Give more information about being sent damaged items
-itemDamageInformation.heading = Give more information about being sent damaged items
+itemDamageInformation.title = Give information about item {0} being damaged
+itemDamageInformation.heading = Give information about item {0} being damaged
+itemDamageInformation.itemDetails = View item {0} details
 itemDamageInformation.hint = Give more information (optional)
 itemDamageInformation.error.length = Information must be 350 characters or less
 itemDamageInformation.error.required = Enter more information

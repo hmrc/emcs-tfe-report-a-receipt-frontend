@@ -48,7 +48,7 @@ class HowGiveInformationViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.radioButton(1) -> messagesForLanguage.wholeMovement,
           Selectors.radioButton(2) -> messagesForLanguage.individualItem,
           Selectors.button -> messagesForLanguage.saveAndContinue,
-          Selectors.id("save-and-exit") -> messagesForLanguage.savePreviousAnswersAndExitLinkText
+          Selectors.id("save-and-exit") -> messagesForLanguage.savePreviousAnswersAndExit
         ))
       }
     }

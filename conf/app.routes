@@ -141,12 +141,12 @@ POST        /:ern/:arc/item/:idx/choose-give-reason-item-damage/change          
 GET         /:ern/:arc/item/:idx/choose-give-reason-item-damage/review           controllers.AddItemMoreInformationController.loadItemDamageInformation(ern: String, arc: String, idx: Int, mode: Mode = ReviewMode)
 POST        /:ern/:arc/item/:idx/choose-give-reason-item-damage/review           controllers.AddItemMoreInformationController.submitItemDamageInformation(ern: String, arc: String, idx: Int, mode: Mode = ReviewMode)
 
-GET         /:ern/:arc/item/:idx/give-reason-item-damage                         controllers.MoreInformationController.loadItemDamageInformation(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
-POST        /:ern/:arc/item/:idx/give-reason-item-damage                         controllers.MoreInformationController.submitItemDamageInformation(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
-GET         /:ern/:arc/item/:idx/give-reason-item-damage/change                  controllers.MoreInformationController.loadItemDamageInformation(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)
-POST        /:ern/:arc/item/:idx/give-reason-item-damage/change                  controllers.MoreInformationController.submitItemDamageInformation(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)
-GET         /:ern/:arc/item/:idx/give-reason-item-damage/review                  controllers.MoreInformationController.loadItemDamageInformation(ern: String, arc: String, idx: Int, mode: Mode = ReviewMode)
-POST        /:ern/:arc/item/:idx/give-reason-item-damage/review                  controllers.MoreInformationController.submitItemDamageInformation(ern: String, arc: String, idx: Int, mode: Mode = ReviewMode)
+GET         /:ern/:arc/item/:idx/give-reason-item-damage                         controllers.ItemMoreInformationController.loadItemDamageInformation(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
+POST        /:ern/:arc/item/:idx/give-reason-item-damage                         controllers.ItemMoreInformationController.submitItemDamageInformation(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
+GET         /:ern/:arc/item/:idx/give-reason-item-damage/change                  controllers.ItemMoreInformationController.loadItemDamageInformation(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)
+POST        /:ern/:arc/item/:idx/give-reason-item-damage/change                  controllers.ItemMoreInformationController.submitItemDamageInformation(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)
+GET         /:ern/:arc/item/:idx/give-reason-item-damage/review                  controllers.ItemMoreInformationController.loadItemDamageInformation(ern: String, arc: String, idx: Int, mode: Mode = ReviewMode)
+POST        /:ern/:arc/item/:idx/give-reason-item-damage/review                  controllers.ItemMoreInformationController.submitItemDamageInformation(ern: String, arc: String, idx: Int, mode: Mode = ReviewMode)
 
 GET         /:ern/:arc/item/:idx/give-reason-item-other                          controllers.OtherInformationController.loadItemOtherInformation(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
 POST        /:ern/:arc/item/:idx/give-reason-item-other                          controllers.OtherInformationController.submitItemOtherInformation(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)

@@ -99,7 +99,7 @@ class Navigator @Inject()() extends BaseNavigator {
     case AddItemDamageInformationPage(idx) =>
       (userAnswers: UserAnswers) =>
         userAnswers.get(AddItemDamageInformationPage(idx)) match {
-          case Some(true) => routes.MoreInformationController.loadItemDamageInformation(userAnswers.ern, userAnswers.arc, idx, NormalMode)
+          case Some(true) => routes.ItemMoreInformationController.loadItemDamageInformation(userAnswers.ern, userAnswers.arc, idx, NormalMode)
           case Some(false) => redirectToNextItemWrongMovementPage(WrongWithItemPage(idx), Some(Damaged))(userAnswers)
           case _ => routes.AddItemMoreInformationController.loadItemDamageInformation(userAnswers.ern, userAnswers.arc, idx, NormalMode)
         }

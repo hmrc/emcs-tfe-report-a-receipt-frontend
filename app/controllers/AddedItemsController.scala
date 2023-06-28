@@ -21,6 +21,7 @@ import forms.AddAnotherItemFormProvider
 import models.AcceptMovement.PartiallyRefused
 import models.NormalMode
 import models.requests.DataRequest
+import models.response.emcsTfe.MovementItem
 import navigation.Navigator
 import pages.AcceptMovementPage
 import pages.unsatisfactory.individualItems.{AddedItemsPage, RefusedAmountPage}
@@ -52,30 +53,30 @@ class AddedItemsController @Inject()(
 
   def onPageLoad(ern: String, arc: String): Action[AnyContent] =
     authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
-      atLeastOneItemGuard {
-        formattedItems().map { items =>
-          val allItemsAdded = items.size == request.movementDetails.items.size
-          Ok(view(Some(formProvider()), items, allItemsAdded, routes.AddedItemsController.onSubmit(ern, arc)))
+      withCompletedItems { items =>
+        formattedItems(items).map { formattedItems =>
+          val allItemsAdded = formattedItems.size == request.movementDetails.items.size
+          Ok(view(Some(formProvider()), formattedItems, allItemsAdded, routes.AddedItemsController.onSubmit(ern, arc)))
         }
       }
     }
 
   def onSubmit(ern: String, arc: String): Action[AnyContent] =
     authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
-      atLeastOneItemGuard {
+      withCompletedItems { items =>
         val isPartiallyRefused = request.userAnswers.get(AcceptMovementPage).contains(PartiallyRefused)
-        formattedItems().map { items =>
-          val allItemsAdded = items.size == request.movementDetails.items.size
+        formattedItems(items).map { formattedItems =>
+          val allItemsAdded = formattedItems.size == request.movementDetails.items.size
           if (allItemsAdded) {
-            onwardRedirect(items, allItemsAdded, isPartiallyRefused)
+            onwardRedirect(formattedItems, allItemsAdded, isPartiallyRefused)
           } else {
             formProvider().bindFromRequest().fold(
               formWithErrors =>
-                BadRequest(view(Some(formWithErrors), items, allItemsAdded, routes.AddedItemsController.onSubmit(ern, arc)))
+                BadRequest(view(Some(formWithErrors), formattedItems, allItemsAdded, routes.AddedItemsController.onSubmit(ern, arc)))
               ,
               {
                 case true => addAnotherItemRedirect()
-                case _ => onwardRedirect(items, allItemsAdded, isPartiallyRefused)
+                case _ => onwardRedirect(formattedItems, allItemsAdded, isPartiallyRefused)
               }
             )
           }
@@ -83,28 +84,21 @@ class AddedItemsController @Inject()(
       }
     }
 
-  private def formattedItems()(implicit request: DataRequest[_]): Future[Seq[(Int, SummaryList)]] =
-    request.getAllCompletedItemDetails match {
-      case items if items.nonEmpty =>
-        getCnCodeInformationService.getCnCodeInformationWithMovementItems(items).map { serviceResult =>
-          serviceResult.map {
-            case (item, cnCodeInformation) =>
-              (
-                item.itemUniqueReference,
-                checkAnswersItemHelper.summaryList(
-                  idx = item.itemUniqueReference,
-                  unitOfMeasure = cnCodeInformation.unitOfMeasureCode.toUnitOfMeasure
-                )
-              )
-          }
-        }
-      case _ => Future.successful(Seq())
+  private def formattedItems(items: Seq[MovementItem])(implicit request: DataRequest[_]): Future[Seq[(Int, SummaryList)]] =
+    getCnCodeInformationService.getCnCodeInformationWithMovementItems(items).map { serviceResult =>
+      serviceResult.map {
+        case (item, cnCodeInformation) =>
+          item.itemUniqueReference -> checkAnswersItemHelper.summaryList(
+            idx = item.itemUniqueReference,
+            unitOfMeasure = cnCodeInformation.unitOfMeasureCode.toUnitOfMeasure
+          )
+      }
     }
 
-  private def atLeastOneItemGuard(f: => Future[Result])(implicit request: DataRequest[_]): Future[Result] =
+  private def withCompletedItems(f: Seq[MovementItem] => Future[Result])(implicit request: DataRequest[_]): Future[Result] =
     request.getAllCompletedItemDetails match {
       case items if items.isEmpty => Future.successful(addAnotherItemRedirect())
-      case _ => f
+      case items => f(items)
     }
 
   private def addAnotherItemRedirect()(implicit request: DataRequest[_]): Result =

@@ -21,11 +21,9 @@
         layout: templates.Layout,
         formHelper: FormWithCSRF,
         govukErrorSummary: GovukErrorSummary,
-        govukSummaryList: GovukSummaryList,
-        addToList: components.addToListSummary,
         govukRadios: GovukRadios,
         h1: components.h1,
-        summaryCard: components.summaryCard,
+        checkAnswersItems: components.checkAnswersItems,
         continueOrExit: components.continueOrExit
 )
 
@@ -43,28 +41,7 @@
 
         @h1(pluralSingular("addedItems.heading", itemList.size), Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
 
-        @itemList.map { case (itemReference, item) =>
-            @summaryCard(
-                card = Card(
-                    Some(CardTitle(Text(messages("checkYourAnswers.item.cardTitle", itemReference)))),
-                    actions = Some(Actions(
-                        items = Seq(
-                            ActionItem(
-                                href = routes.ItemDetailsController.onPageLoad(request.ern, request.arc, itemReference).url,
-                                content = Text(messages("checkYourAnswers.item.details")),
-                                visuallyHiddenText = Some(messages("checkYourAnswers.item.details.hidden", itemReference))
-                            ),
-                            ActionItem(
-                                href = routes.RemoveItemController.onPageLoad(request.ern, request.arc, itemReference, ReviewMode).url,
-                                content = Text(messages("checkYourAnswers.item.remove")),
-                                visuallyHiddenText = Some(messages("checkYourAnswers.item.remove.hidden", itemReference)),
-                            )
-                        )
-                    ))
-                ),
-                summaryListRows = item.rows
-            )
-        }
+        @checkAnswersItems(itemList, NormalMode)
 
         @if(!allItemsAdded) {
             @form.map { form =>

@@ -18,8 +18,8 @@
 
 @this(
         layout: templates.Layout,
-        summaryCard: components.summaryCard,
         summaryCardNoTitle: components.summaryCardNoTitle,
+        checkAnswersItems: components.checkAnswersItems,
         formHelper: FormWithCSRF,
         h1: components.h1,
         h2: components.h2,
@@ -43,28 +43,7 @@
         @h2(messages("checkYourAnswers.items.h2"))
     }
 
-    @itemList.map { case (itemReference, item) =>
-        @summaryCard(
-            card = Card(
-                Some(CardTitle(Text(messages("checkYourAnswers.item.cardTitle", itemReference)))),
-                actions = Some(Actions(
-                    items = Seq(
-                        ActionItem(
-                            href = routes.ItemDetailsController.onPageLoad(request.ern, request.arc, itemReference).url,
-                            content = Text(messages("checkYourAnswers.item.details")),
-                            visuallyHiddenText = Some(messages("checkYourAnswers.item.details.hidden", itemReference))
-                        ),
-                        ActionItem(
-                            href = routes.RemoveItemController.onPageLoad(request.ern, request.arc, itemReference, ReviewMode).url,
-                            content = Text(messages("checkYourAnswers.item.remove")),
-                            visuallyHiddenText = Some(messages("checkYourAnswers.item.remove.hidden", itemReference)),
-                        )
-                    )
-                ))
-            ),
-            summaryListRows = item.rows
-        )
-    }
+    @checkAnswersItems(itemList, ReviewMode)
 
     @if(itemsToAdd) {
         <p class="govuk-body">

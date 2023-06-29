@@ -34,11 +34,11 @@ object OtherInformationMessages {
   }
 
   object English extends ViewMessages with BaseEnglish {
-    override val refusedHeading = "Give more information about other reason(s) you are refusing this movement"
+    override val refusedHeading = "Give information about other reason(s) you are refusing this movement"
     override val refusedTitle: String = title(refusedHeading)
     override val heading = "Give more information about other reason(s) you are unsatisfied with this movement"
     override val title: String = title(heading)
-    override val hint = "Give more information"
+    override val hint = "Give information."
     override val validationErrorInvalidChars = "Information must not include < and > and : and ;"
     override val validationError = "Information must contain letters or numbers"
     override val lengthError = "Information must be 350 characters or less"
@@ -49,11 +49,11 @@ object OtherInformationMessages {
   }
 
   object Welsh extends ViewMessages with BaseWelsh {
-    override val refusedHeading = "Give more information about other reason(s) you are refusing this movement"
+    override val refusedHeading = "Give information about other reason(s) you are refusing this movement"
     override val refusedTitle: String = title(refusedHeading)
     override val heading = "Give more information about other reason(s) you are unsatisfied with this movement"
     override val title: String = title(heading)
-    override val hint = "Give more information"
+    override val hint = "Give information."
     override val validationErrorInvalidChars = "Information must not include < and > and : and ;"
     override val validationError = "Information must contain letters or numbers"
     override val lengthError = "Information must be 350 characters or less"

@@ -25,7 +25,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.UserAnswersService
 import utils.JsonOptionFormatter
-import views.html.AddMoreInformationView
+import views.html.RemoveItemView
 
 import javax.inject.Inject
 import scala.concurrent.Future
@@ -41,7 +41,7 @@ class RemoveItemController @Inject()(
                                       override val requireData: DataRequiredAction,
                                       formProvider: AddMoreInformationFormProvider,
                                       val controllerComponents: MessagesControllerComponents,
-                                      view: AddMoreInformationView
+                                      view: RemoveItemView
                                     ) extends BaseNavigationController with AuthActionHelper with JsonOptionFormatter {
 
   def onPageLoad(ern: String,

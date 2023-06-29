@@ -59,7 +59,7 @@
                 name = "more-information",
                 maxLength = Some(350),
                 label = LabelViewModel(Text(messages(s"$page.heading", item.itemUniqueReference))).asPageHeading(LabelSize.Large),
-                hint = Some(HintViewModel(HtmlContent(hint))),
+                hint = Some(HintViewModel(HtmlContent(hint)).withCssClass("govuk-!-margin-top-5")),
                 value = form("more-information").value,
                 errorMessage = form.errors("more-information") match {
                     case Nil => None

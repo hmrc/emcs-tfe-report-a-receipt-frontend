@@ -27,12 +27,12 @@ object RemoveItemMessages {
   object English extends ViewMessages with BaseEnglish {
     override val heading = "Are you sure you want to remove information about this item?"
     override val title = title(heading)
-    override val requiredError: String = "Select yes if you want to remove information about this item"
+    override val requiredError: String = "Select yes if you want to remove this item"
   }
 
   object Welsh extends ViewMessages with BaseWelsh {
     override val heading = "Are you sure you want to remove information about this item?"
     override val title = title(heading)
-    override val requiredError: String = "Select yes if you want to remove information about this item"
+    override val requiredError: String = "Select yes if you want to remove this item"
   }
 }

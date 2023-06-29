@@ -457,7 +457,7 @@ refusingAnyAmountOfItem.error.required = Select yes if you want to refuse an amo
 
 removeItem.title = Are you sure you want to remove information about this item?
 removeItem.heading = Are you sure you want to remove information about this item?
-removeItem.error.required = Select yes if you want to remove information about this item
+removeItem.error.required = Select yes if you want to remove this item
 
 refusedAmount.title = How many {0} of item {1} are you refusing?
 refusedAmount.heading = How many {0} of item {1} are you refusing?

@@ -169,8 +169,8 @@ shortageInformation.checkYourAnswers.label = Information about shortage
 shortageInformation.checkYourAnswers.change.hidden = information about shortage
 shortageInformation.checkYourAnswers.addMoreInformation = Enter more information about shortage (optional)
 
-excessInformation.title = Give more information about being sent more items than expected
-excessInformation.heading = Give more information about being sent more items than expected
+excessInformation.title = Give information about receiving more goods than expected
+excessInformation.heading = Give information about receiving more goods than expected
 excessInformation.hint = Give more information (optional)
 excessInformation.error.length = Information must be 350 characters or less
 excessInformation.error.invalidCharacter = Information must not include < and > and : and ;

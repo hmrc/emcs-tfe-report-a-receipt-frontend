@@ -31,7 +31,7 @@ object ExcessInformationMessages {
   }
 
   object English extends ViewMessages with BaseEnglish {
-    override val heading = "Give more information about being sent more items than expected"
+    override val heading = "Give information about receiving more goods than expected"
     override val title: String = title(heading)
     override val hint = "Give more information (optional)"
     override val validationErrorInvalidChars = "Information must not include < and > and : and ;"
@@ -43,7 +43,7 @@ object ExcessInformationMessages {
   }
 
   object Welsh extends ViewMessages with BaseWelsh {
-    override val heading = "Give more information about being sent more items than expected"
+    override val heading = "Give information about receiving more goods than expected"
     override val title: String = title(heading)
     override val hint = "Give more information (optional)"
     override val validationErrorInvalidChars = "Information must not include < and > and : and ;"

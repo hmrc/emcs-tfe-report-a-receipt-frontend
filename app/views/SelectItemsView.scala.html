@@ -24,7 +24,9 @@
         layout: templates.Layout,
         govukButton: GovukButton,
         h1: h1,
+        p: components.p,
         table: table,
+        link: components.link,
         helper: SelectItemsTableHelper
 )
 
@@ -33,6 +35,17 @@
 @layout(pageTitle = titleNoForm(messages("selectItems.title")), fullWidthContent = true) {
 
     @h1("selectItems.heading", Some(messages("arc.subHeading", request.arc)), "govuk-heading-xl")
+
+    @if(request.userAnswers.items.nonEmpty) {
+        @p(classes = "govuk-body govuk-!-margin-bottom-9", id = Some("already-added-items-info")) {
+            @messages(pluralSingular("selectItems.alreadyAddedItems.paragraph", request.userAnswers.items.size))
+            @link(
+                routes.AddedItemsController.onPageLoad(request.ern, request.arc).url,
+                "selectItems.alreadyAddedItems.paragraph.link.text",
+                id = Some("view-already-added-items")
+            )
+        }
+    }
 
     @table(helper.constructTable(items))
 }

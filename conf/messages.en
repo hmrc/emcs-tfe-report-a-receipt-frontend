@@ -311,6 +311,9 @@ wrongWithItem.checkYourAnswers.change.hidden = what was wrong
 
 selectItems.title = Select an item to give information about
 selectItems.heading = Select an item to give information about
+selectItems.alreadyAddedItems.paragraph.singular = You have given information for 1 item.
+selectItems.alreadyAddedItems.paragraph.plural = You have given information for {0} items.
+selectItems.alreadyAddedItems.paragraph.link.text = View and manage the items you''ve already given information about.
 selectItems.table.heading.item = Item
 selectItems.table.heading.description = Commercial description
 selectItems.table.heading.quantity = Quantity

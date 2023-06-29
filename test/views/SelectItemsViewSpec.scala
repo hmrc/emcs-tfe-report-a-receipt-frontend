@@ -23,6 +23,7 @@ import models.requests.DataRequest
 import models.response.referenceData.CnCodeInformation
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import pages.unsatisfactory.individualItems.{CheckAnswersItemPage, SelectItemsPage}
 import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
@@ -38,32 +39,109 @@ class SelectItemsViewSpec extends ViewSpecBase with ViewBehaviours {
 
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
 
-        implicit val msgs: Messages = messages(app, messagesForLanguage.lang)
-        implicit val request: DataRequest[AnyContentAsEmpty.type] = dataRequest(FakeRequest(), emptyUserAnswers)
+        "when 0 items already added" - {
 
-        val view = app.injector.instanceOf[SelectItemsView]
+          val userAnswers = emptyUserAnswers
 
-        implicit val doc: Document = Jsoup.parse(view(
-          Seq(item1, item2)
-            .zipWithIndex
-            .map { case (l, i) => (l, CnCodeInformation(s"testdata${i + 1}", "", `1`)) }
-        ).toString())
+          implicit val msgs: Messages = messages(app, messagesForLanguage.lang)
+          implicit val request: DataRequest[AnyContentAsEmpty.type] = dataRequest(FakeRequest(), userAnswers)
 
-        behave like pageWithExpectedElementsAndMessages(Seq(
-          Selectors.title -> messagesForLanguage.title,
-          Selectors.h2(1) -> messagesForLanguage.arcSubheading(testArc),
-          Selectors.h1 -> messagesForLanguage.heading,
-          Selectors.tableHeader(1) -> messagesForLanguage.tableHeadItem,
-          Selectors.tableHeader(2) -> messagesForLanguage.tableHeadDescription,
-          Selectors.tableHeader(3) -> messagesForLanguage.tableHeadQuantity,
-          Selectors.tableHeader(4) -> messagesForLanguage.tableHeadPackaging,
-          Selectors.tableRow(1, 1) -> messagesForLanguage.tableRowItem(item1.itemUniqueReference),
-          Selectors.tableRow(1, 2) -> "testdata1",
-          Selectors.tableRow(1, 3) -> (item1.quantity.toString() + " kg"),
-          Selectors.tableRow(2, 1) -> messagesForLanguage.tableRowItem(item2.itemUniqueReference),
-          Selectors.tableRow(2, 2) -> "testdata2",
-          Selectors.tableRow(2, 3) -> (item2.quantity.toString() + " kg")
-        ))
+          val view = app.injector.instanceOf[SelectItemsView]
+
+          implicit val doc: Document = Jsoup.parse(view(
+            Seq(item1)
+              .zipWithIndex
+              .map { case (l, i) => (l, CnCodeInformation(s"testdata${i + 1}", "", `1`)) }
+          ).toString())
+
+          behave like pageWithExpectedElementsAndMessages(Seq(
+            Selectors.title -> messagesForLanguage.title,
+            Selectors.h2(1) -> messagesForLanguage.arcSubheading(testArc),
+            Selectors.h1 -> messagesForLanguage.heading,
+            Selectors.tableHeader(1) -> messagesForLanguage.tableHeadItem,
+            Selectors.tableHeader(2) -> messagesForLanguage.tableHeadDescription,
+            Selectors.tableHeader(3) -> messagesForLanguage.tableHeadQuantity,
+            Selectors.tableHeader(4) -> messagesForLanguage.tableHeadPackaging
+          ))
+
+          doc.select(Selectors.id("already-added-items-info")).size mustBe 0
+        }
+
+        "when 1 item already added" - {
+
+          val userAnswers = emptyUserAnswers
+            .set(SelectItemsPage(1), item1.itemUniqueReference)
+            .set(CheckAnswersItemPage(1), true)
+
+          implicit val msgs: Messages = messages(app, messagesForLanguage.lang)
+          implicit val request: DataRequest[AnyContentAsEmpty.type] = dataRequest(FakeRequest(), userAnswers)
+
+          val view = app.injector.instanceOf[SelectItemsView]
+
+          implicit val doc: Document = Jsoup.parse(view(
+            Seq(item1)
+              .zipWithIndex
+              .map { case (l, i) => (l, CnCodeInformation(s"testdata${i + 1}", "", `1`)) }
+          ).toString())
+
+          behave like pageWithExpectedElementsAndMessages(Seq(
+            Selectors.title -> messagesForLanguage.title,
+            Selectors.h2(1) -> messagesForLanguage.arcSubheading(testArc),
+            Selectors.h1 -> messagesForLanguage.heading,
+            Selectors.id("already-added-items-info") -> messagesForLanguage.givenInformationInfo(1),
+            Selectors.id("view-already-added-items") -> messagesForLanguage.viewAlreadyAddedItems,
+            Selectors.tableHeader(1) -> messagesForLanguage.tableHeadItem,
+            Selectors.tableHeader(2) -> messagesForLanguage.tableHeadDescription,
+            Selectors.tableHeader(3) -> messagesForLanguage.tableHeadQuantity,
+            Selectors.tableHeader(4) -> messagesForLanguage.tableHeadPackaging,
+            Selectors.tableRow(1, 1) -> messagesForLanguage.tableRowItem(item1.itemUniqueReference),
+            Selectors.tableRow(1, 2) -> "testdata1",
+            Selectors.tableRow(1, 3) -> (item1.quantity.toString() + " kg")
+          ))
+
+          doc.select(Selectors.id("already-added-items-info")).size mustBe 1
+        }
+
+        "when 2 items already added" - {
+
+          val userAnswers = emptyUserAnswers
+            .set(SelectItemsPage(1), item1.itemUniqueReference)
+            .set(CheckAnswersItemPage(1), true)
+            .set(SelectItemsPage(2), item2.itemUniqueReference)
+            .set(CheckAnswersItemPage(2), true)
+
+          implicit val msgs: Messages = messages(app, messagesForLanguage.lang)
+          implicit val request: DataRequest[AnyContentAsEmpty.type] = dataRequest(FakeRequest(), userAnswers)
+
+          val view = app.injector.instanceOf[SelectItemsView]
+
+          implicit val doc: Document = Jsoup.parse(view(
+            Seq(item1, item2)
+              .zipWithIndex
+              .map { case (l, i) => (l, CnCodeInformation(s"testdata${i + 1}", "", `1`)) }
+          ).toString())
+
+          behave like pageWithExpectedElementsAndMessages(Seq(
+            Selectors.title -> messagesForLanguage.title,
+            Selectors.h2(1) -> messagesForLanguage.arcSubheading(testArc),
+            Selectors.h1 -> messagesForLanguage.heading,
+            Selectors.id("already-added-items-info") -> messagesForLanguage.givenInformationInfo(2),
+            Selectors.id("view-already-added-items") -> messagesForLanguage.viewAlreadyAddedItems,
+            Selectors.tableHeader(1) -> messagesForLanguage.tableHeadItem,
+            Selectors.tableHeader(2) -> messagesForLanguage.tableHeadDescription,
+            Selectors.tableHeader(3) -> messagesForLanguage.tableHeadQuantity,
+            Selectors.tableHeader(4) -> messagesForLanguage.tableHeadPackaging,
+            Selectors.tableRow(1, 1) -> messagesForLanguage.tableRowItem(item1.itemUniqueReference),
+            Selectors.tableRow(1, 2) -> "testdata1",
+            Selectors.tableRow(1, 3) -> (item1.quantity.toString() + " kg"),
+            Selectors.tableRow(2, 1) -> messagesForLanguage.tableRowItem(item2.itemUniqueReference),
+            Selectors.tableRow(2, 2) -> "testdata2",
+            Selectors.tableRow(2, 3) -> (item2.quantity.toString() + " kg")
+          ))
+
+          doc.select(Selectors.id("already-added-items-info")).size mustBe 1
+        }
+
       }
     }
   }

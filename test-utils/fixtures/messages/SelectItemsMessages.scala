@@ -21,6 +21,8 @@ object SelectItemsMessages {
   sealed trait ViewMessages { _: i18n =>
     val title: String
     val heading: String
+    val givenInformationInfo: Int => String
+    val viewAlreadyAddedItems: String
     val tableHeadItem: String
     val tableHeadDescription: String
     val tableHeadQuantity: String
@@ -31,6 +33,12 @@ object SelectItemsMessages {
   object English extends ViewMessages with UnitOfMeasureMessages.English {
     override val heading = "Select an item to give information about"
     override val title = title(heading)
+    override val givenInformationInfo = {
+      case 0 => ""
+      case n@1 => s"You have given information for $n item."
+      case n => s"You have given information for $n items."
+    }
+    override val viewAlreadyAddedItems: String = "View and manage the items you've already given information about."
     override val tableHeadItem = "Item"
     override val tableHeadDescription = "Commercial description"
     override val tableHeadQuantity = "Quantity"
@@ -41,6 +49,12 @@ object SelectItemsMessages {
   object Welsh extends ViewMessages with UnitOfMeasureMessages.Welsh {
     override val heading = "Select an item to give information about"
     override val title = title(heading)
+    override val givenInformationInfo = {
+      case 0 => ""
+      case n@1 => s"You have given information for $n item."
+      case n => s"You have given information for $n items."
+    }
+    override val viewAlreadyAddedItems: String = "View and manage the items you've already given information about."
     override val tableHeadItem = "Item"
     override val tableHeadDescription = "Commercial description"
     override val tableHeadQuantity = "Quantity"

@@ -189,8 +189,8 @@ damageInformation.checkYourAnswers.label = Information about damaged items
 damageInformation.checkYourAnswers.change.hidden = information about damaged items
 damageInformation.checkYourAnswers.addMoreInformation = Enter more information about damaged items (optional)
 
-sealsInformation.title = Give more information about being sent items with broken seal(s)
-sealsInformation.heading = Give more information about being sent items with broken seal(s)
+sealsInformation.title = Give information about receiving goods with broken seal(s)
+sealsInformation.heading = Give information about receiving goods with broken seal(s)
 sealsInformation.hint = Give more information (optional)
 sealsInformation.error.length = Information must be 350 characters or less
 sealsInformation.error.invalidCharacter = Information must not include < and > and : and ;

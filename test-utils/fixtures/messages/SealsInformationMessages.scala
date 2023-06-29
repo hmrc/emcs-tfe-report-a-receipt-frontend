@@ -31,7 +31,7 @@ object SealsInformationMessages {
   }
 
   object English extends ViewMessages with BaseEnglish {
-    override val heading = "Give more information about being sent items with broken seal(s)"
+    override val heading = "Give information about receiving goods with broken seal(s)"
     override val title: String = title(heading)
     override val hint = "Give more information (optional)"
     override val validationErrorInvalidChars = "Information must not include < and > and : and ;"
@@ -43,7 +43,7 @@ object SealsInformationMessages {
   }
 
   object Welsh extends ViewMessages with BaseWelsh {
-    override val heading = "Give more information about being sent items with broken seal(s)"
+    override val heading = "Give information about receiving goods with broken seal(s)"
     override val title: String = title(heading)
     override val hint = "Give more information (optional)"
     override val validationErrorInvalidChars = "Information must not include < and > and : and ;"

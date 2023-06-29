@@ -19,8 +19,10 @@ package views
 import base.ViewSpecBase
 import fixtures.messages.{RefusedAmountMessages, UnitOfMeasureMessages}
 import forms.RefusedAmountFormProvider
+import models.ReferenceDataUnitOfMeasure.`1`
 import models.UnitOfMeasure.{Kilograms, Litres15, Litres20, Thousands}
 import models.requests.DataRequest
+import models.response.referenceData.CnCodeInformation
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.i18n.Messages
@@ -47,7 +49,7 @@ class RefusedAmountViewSpec extends ViewSpecBase with ViewBehaviours {
         val form = app.injector.instanceOf[RefusedAmountFormProvider].apply(itemQuantity = 20, None)
         val view = app.injector.instanceOf[RefusedAmountView]
 
-        implicit val doc: Document = Jsoup.parse(view(form, testOnwardRoute, Kilograms).toString())
+        implicit val doc: Document = Jsoup.parse(view(form, testOnwardRoute, Kilograms, item1, CnCodeInformation("", "", `1`), 1).toString())
 
         behave like pageWithExpectedElementsAndMessages(Seq(
           Selectors.title -> viewMessagesForLanguage.title(unitOfMeasureMessagesForLanguage.kilogramsLong),
@@ -81,7 +83,7 @@ class RefusedAmountViewSpec extends ViewSpecBase with ViewBehaviours {
         val form = app.injector.instanceOf[RefusedAmountFormProvider].apply(itemQuantity = 20, None)
         val view = app.injector.instanceOf[RefusedAmountView]
 
-        implicit val doc: Document = Jsoup.parse(view(form, testOnwardRoute, Litres15).toString())
+        implicit val doc: Document = Jsoup.parse(view(form, testOnwardRoute, Litres15, item1, CnCodeInformation("", "", `1`), 1).toString())
 
         behave like pageWithExpectedElementsAndMessages(Seq(
           Selectors.title -> viewMessagesForLanguage.title(unitOfMeasureMessagesForLanguage.litres15Long),
@@ -111,7 +113,7 @@ class RefusedAmountViewSpec extends ViewSpecBase with ViewBehaviours {
         val form = app.injector.instanceOf[RefusedAmountFormProvider].apply(itemQuantity = 20, None)
         val view = app.injector.instanceOf[RefusedAmountView]
 
-        implicit val doc: Document = Jsoup.parse(view(form, testOnwardRoute, Litres20).toString())
+        implicit val doc: Document = Jsoup.parse(view(form, testOnwardRoute, Litres20, item1, CnCodeInformation("", "", `1`), 1).toString())
 
         behave like pageWithExpectedElementsAndMessages(Seq(
           Selectors.title -> viewMessagesForLanguage.title(unitOfMeasureMessagesForLanguage.litres20Long),
@@ -141,7 +143,7 @@ class RefusedAmountViewSpec extends ViewSpecBase with ViewBehaviours {
         val form = app.injector.instanceOf[RefusedAmountFormProvider].apply(itemQuantity = 20, None)
         val view = app.injector.instanceOf[RefusedAmountView]
 
-        implicit val doc: Document = Jsoup.parse(view(form, testOnwardRoute, Thousands).toString())
+        implicit val doc: Document = Jsoup.parse(view(form, testOnwardRoute, Thousands, item1, CnCodeInformation("", "", `1`), 1).toString())
 
         behave like pageWithExpectedElementsAndMessages(Seq(
           Selectors.title -> viewMessagesForLanguage.title(unitOfMeasureMessagesForLanguage.thousandsLong),

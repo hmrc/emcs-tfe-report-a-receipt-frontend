@@ -69,7 +69,7 @@ class RefusedAmountControllerSpec extends SpecBase with MockUserAnswersService w
         val view = application.injector.instanceOf[RefusedAmountView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, refusedAmountSubmitAction, Kilograms)(dataRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, refusedAmountSubmitAction, Kilograms, item1, CnCodeInformation("", "", `1`), 1)(dataRequest(request), messages(application)).toString
       }
     }
 
@@ -95,7 +95,7 @@ class RefusedAmountControllerSpec extends SpecBase with MockUserAnswersService w
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), refusedAmountSubmitAction, Kilograms)(dataRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validAnswer), refusedAmountSubmitAction, Kilograms, item1, CnCodeInformation("", "", `1`), 1)(dataRequest(request), messages(application)).toString
       }
     }
 
@@ -149,7 +149,7 @@ class RefusedAmountControllerSpec extends SpecBase with MockUserAnswersService w
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, refusedAmountSubmitAction, Kilograms)(dataRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, refusedAmountSubmitAction, Kilograms, item1, CnCodeInformation("", "", `1`), 1)(dataRequest(request), messages(application)).toString
       }
     }
 

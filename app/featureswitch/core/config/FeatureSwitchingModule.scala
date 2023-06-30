@@ -25,7 +25,7 @@ import javax.inject.Singleton
 @Singleton
 class FeatureSwitchingModule extends Module with FeatureSwitchRegistry {
 
-  val switches: Seq[FeatureSwitch] = Seq(WelshLanguage, UserAllowList, ReturnToLegacy)
+  val switches: Seq[FeatureSwitch] = Seq(WelshLanguage, UserAllowList, ReturnToLegacy, ShortageExcessFlow)
 
   override def bindings(environment: Environment, configuration: Configuration): Seq[Binding[_]] = {
     Seq(
@@ -49,7 +49,7 @@ case object ReturnToLegacy extends FeatureSwitch {
   override val displayName: String = "Return the User to the Legacy EMCS service"
 }
 
-case object NewShortageExcessFlow extends FeatureSwitch {
+case object ShortageExcessFlow extends FeatureSwitch {
   override val configName: String = "features.enableNewItemShortageExcessFlow"
   override val displayName: String = "Enable New Item Shortage / Excess Flow"
 }

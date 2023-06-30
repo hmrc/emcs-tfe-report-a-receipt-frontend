@@ -25,8 +25,8 @@ import pages.QuestionPage
 import pages.unsatisfactory.individualItems.{AddItemDamageInformationPage, ItemDamageInformationPage}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
-import services.{GetCnCodeInformationService, GetPackagingTypesService, UserAnswersService, ReferenceDataService}
+import play.api.mvc._
+import services.{ReferenceDataService, UserAnswersService}
 import utils.JsonOptionFormatter
 import views.html.ItemMoreInformationView
 
@@ -82,16 +82,11 @@ class ItemMoreInformationController @Inject()(
                                         form: Form[_],
                                         page: QuestionPage[Option[String]],
                                         submitAction: Call,
-                                        itemReference: Int)(implicit request: DataRequest[_]): Future[Result] =
-    request.movementDetails.item(itemReference) match {
-      case Some(item) =>
-        referenceDataService.getMovementItemsWithReferenceData(Seq(item)).map {
-          case (item, cnCodeInformation) :: Nil =>
-            status(view(form, page, submitAction, item, cnCodeInformation))
-          case _ =>
-            Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url)
-        }
-      case _ =>
-        Future.successful(Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url))
+                                        itemReference: Int)(implicit request: DataRequest[_]): Future[Result] = {
+    withAddedItemAsync(itemReference) {
+      referenceDataService.itemWithReferenceData(_) { (item, cnCodeInformation) =>
+        Future.successful(status(view(form, page, submitAction, item, cnCodeInformation)))
+      }
     }
+  }
 }

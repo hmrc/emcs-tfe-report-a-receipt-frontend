@@ -40,22 +40,13 @@ class ItemDetailsController @Inject()(
                                        view: ItemDetailsView
                                      ) extends BaseNavigationController with AuthActionHelper {
 
-  def onPageLoad(ern: String, arc: String, idx: Int): Action[AnyContent] = {
+  def onPageLoad(ern: String, arc: String, idx: Int): Action[AnyContent] =
     authorisedDataRequestWithUpToDateMovementAsync(ern, arc) { implicit request =>
-      request.movementDetails.item(idx) match {
-        case Some(item) =>
-          referenceDataService.getMovementItemsWithReferenceData(Seq(item)).map {
-            case (item, cnCodeInformation) :: Nil =>
-              Ok(view(item, cnCodeInformation))
-            case _ =>
-              logger.warn(s"[onPageLoad] Problem retrieving reference data for item idx: $idx against ERN: $ern and ARC: $arc")
-              Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url)
-          }
-        case None =>
-          logger.warn(s"[onPageLoad] Unable to find item with idx: $idx against ERN: $ern and ARC: $arc")
-          Future.successful(Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url))
+      withMovementItemAsync(idx) {
+        referenceDataService.itemWithReferenceData(_) { (item, cnCodeInformation) =>
+          Future.successful(Ok(view(item, cnCodeInformation)))
+        }
       }
     }
-  }
 
 }

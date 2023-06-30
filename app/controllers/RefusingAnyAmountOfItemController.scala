@@ -54,7 +54,7 @@ class RefusingAnyAmountOfItemController @Inject()(override val messagesApi: Mess
     authorisedDataRequestWithUpToDateMovementAsync(ern, arc) {
       implicit request =>
         formProvider().bindFromRequest().fold(
-          formWithErrors => renderView(BadRequest, formWithErrors, idx, mode),
+          renderView(BadRequest, _, idx, mode),
           value => {
             val newUserAnswers = cleanseUserAnswersIfValueHasChanged(
               page = RefusingAnyAmountOfItemPage(idx),
@@ -66,23 +66,16 @@ class RefusingAnyAmountOfItemController @Inject()(override val messagesApi: Mess
         )
     }
 
-  private def renderView(status: Status, form: Form[_], idx: Int, mode: Mode)(implicit request: DataRequest[_]): Future[Result] =
-    request.movementDetails.item(idx) match {
-      case Some(item) =>
-        referenceDataService.getMovementItemsWithReferenceData(Seq(item)).map {
-          case (item, cnCodeInformation) :: Nil =>
-            status(view(
-              form = form,
-              action = routes.RefusingAnyAmountOfItemController.onSubmit(request.ern, request.arc, idx, mode),
-              item = item,
-              cnCodeInfo = cnCodeInformation
-            ))
-          case _ =>
-            logger.warn(s"[renderView] Problem retrieving reference data for item idx: $idx against ERN: ${request.ern} and ARC: ${request.arc}")
-            Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url)
-        }
-      case None =>
-        logger.warn(s"[renderView] Unable to find item with idx: $idx against ERN: ${request.ern} and ARC: ${request.arc}")
-        Future.successful(Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url))
+  private def renderView(status: Status, form: Form[_], idx: Int, mode: Mode)(implicit request: DataRequest[_]): Future[Result] = {
+    withAddedItemAsync(idx) {
+      referenceDataService.itemWithReferenceData(_) { (item, cnCodeInformation) =>
+        Future.successful(status(view(
+          form = form,
+          action = routes.RefusingAnyAmountOfItemController.onSubmit(request.ern, request.arc, idx, mode),
+          item = item,
+          cnCodeInfo = cnCodeInformation
+        )))
+      }
     }
+  }
 }

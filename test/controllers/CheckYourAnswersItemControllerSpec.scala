@@ -73,7 +73,7 @@ class CheckYourAnswersItemControllerSpec extends SpecBase
         }
       }
 
-      "must redirect to Journey Recovery for a POST if no existing data is found" in {
+      "must redirect to SelectItemsController for a GET if no items are added" in {
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService))

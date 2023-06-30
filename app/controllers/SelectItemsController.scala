@@ -17,7 +17,6 @@
 package controllers
 
 import controllers.actions._
-import models.ItemModel
 import models.requests.DataRequest
 import models.response.emcsTfe.MovementItem
 import navigation.Navigator
@@ -44,25 +43,23 @@ class SelectItemsController @Inject()(override val messagesApi: MessagesApi,
 
   def onPageLoad(ern: String, arc: String): Action[AnyContent] =
     authorisedDataRequestWithUpToDateMovementAsync(ern, arc) { implicit request =>
-      withFilteredItems { filteredItems =>
-        referenceDataService.getMovementItemsWithReferenceData(filteredItems).map { serviceResult =>
+      withAtLeastOneIncompleteItem {
+        referenceDataService.getMovementItemsWithReferenceData(_).map { serviceResult =>
           Ok(view(serviceResult))
         }
       }
     }
 
-  private[controllers] def withFilteredItems(f: Seq[MovementItem] => Future[Result])(implicit request: DataRequest[_]): Future[Result] =
-    if (request.userAnswers.itemReferences.isEmpty) {
-      f(request.movementDetails.items)
-    } else {
-      request.movementDetails.items.filterNot { movementDetailsItem =>
-        request.userAnswers.completedItems.exists(_.itemUniqueReference == movementDetailsItem.itemUniqueReference)
-      } match {
-        case filteredItems if filteredItems.nonEmpty =>
-          f(filteredItems)
-        case _ =>
-          Future.successful(Redirect(routes.AddedItemsController.onPageLoad(request.ern, request.arc)))
-      }
+  private[controllers] def withAtLeastOneIncompleteItem(f: Seq[MovementItem] => Future[Result])(implicit request: DataRequest[_]): Future[Result] =
+    incompleteItems() match {
+      case incompleteItems if incompleteItems.nonEmpty =>
+        f(incompleteItems)
+      case _ =>
+        Future.successful(Redirect(routes.AddedItemsController.onPageLoad(request.ern, request.arc)))
     }
 
+  private[controllers] def incompleteItems()(implicit request: DataRequest[_]): Seq[MovementItem] =
+    request.movementDetails.items.filterNot { movementDetailsItem =>
+      request.userAnswers.completedItems.exists(_.itemUniqueReference == movementDetailsItem.itemUniqueReference)
+    }
 }

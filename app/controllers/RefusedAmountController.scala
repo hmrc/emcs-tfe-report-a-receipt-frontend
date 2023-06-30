@@ -45,7 +45,7 @@ class RefusedAmountController @Inject()(
 
   def onPageLoad(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
     authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
-      withItemAsync(idx) { item =>
+      withAddedItemAsync(idx) { item =>
         getCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item)).map {
           serviceResult =>
             val (item, cnCodeInformation) = serviceResult.head
@@ -64,7 +64,7 @@ class RefusedAmountController @Inject()(
 
   def onSubmit(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
     authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
-      withItemAsync(idx) { item =>
+      withAddedItemAsync(idx) { item =>
         val shortageAmount = request.userAnswers.get(ItemShortageOrExcessPage(item.itemUniqueReference)).flatMap(_.shortageAmount)
         formProvider(item.quantity, shortageAmount).bindFromRequest().fold(
           formWithErrors => {

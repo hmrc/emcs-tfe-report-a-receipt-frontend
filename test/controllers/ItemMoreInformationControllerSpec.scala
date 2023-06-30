@@ -23,7 +23,7 @@ import models.ReferenceDataUnitOfMeasure.`1`
 import models.response.referenceData.CnCodeInformation
 import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import pages.unsatisfactory.individualItems.{AddItemDamageInformationPage, ItemDamageInformationPage}
+import pages.unsatisfactory.individualItems.{AddItemDamageInformationPage, ItemDamageInformationPage, SelectItemsPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -38,7 +38,7 @@ class ItemMoreInformationControllerSpec extends SpecBase
   with MockUserAnswersService
   with MockGetPackagingTypesService {
 
-  class Fixture(answers: Option[UserAnswers] = Some(emptyUserAnswers)) {
+  class Fixture(val answers: Option[UserAnswers] = Some(emptyUserAnswers.set(SelectItemsPage(item1.itemUniqueReference), item1.itemUniqueReference))) {
     val application = applicationBuilder(userAnswers = answers)
       .overrides(
         bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService),
@@ -86,7 +86,11 @@ class ItemMoreInformationControllerSpec extends SpecBase
           contentAsString(result) mustEqual view(form, page, submitAction, itemWithPackaging, cnCodeInfo)(dataRequest(request), messages(application)).toString
         }
 
-        "must populate the view correctly on a GET when the question has previously been answered" in new Fixture(Some(emptyUserAnswers.set(page, Some("answer")))) {
+        "must populate the view correctly on a GET when the question has previously been answered" in new Fixture(Some(
+          emptyUserAnswers
+            .set(SelectItemsPage(item1.itemUniqueReference), item1.itemUniqueReference)
+            .set(page, Some("answer"))
+        )) {
 
           MockGetPackagingTypesService.getPackagingTypes(Seq(item1)).returns(Future.successful(Seq(itemWithPackaging)))
 
@@ -104,7 +108,7 @@ class ItemMoreInformationControllerSpec extends SpecBase
 
         "must redirect to the next page when valid data is submitted" in new Fixture() {
 
-          val updatedAnswers = emptyUserAnswers
+          val updatedAnswers = answers.get
             .set(yesNoPage, true)
             .set(page, Some("answer"))
 
@@ -120,7 +124,7 @@ class ItemMoreInformationControllerSpec extends SpecBase
 
         "must redirect to the next page when NO data is submitted" in new Fixture() {
 
-          val updatedAnswers = emptyUserAnswers
+          val updatedAnswers = answers.get
             .set(yesNoPage, false)
             .set(page, None)
 

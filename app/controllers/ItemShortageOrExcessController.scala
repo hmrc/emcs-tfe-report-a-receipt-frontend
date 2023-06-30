@@ -53,7 +53,7 @@ class ItemShortageOrExcessController @Inject()(
 
   def onPageLoad(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
     authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
-      withItemAsync(idx) { item =>
+      withAddedItemAsync(idx) { item =>
         getCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item)).map {
           serviceResult =>
             val unitOfMeasure = serviceResult.head._2.unitOfMeasureCode.toUnitOfMeasure
@@ -64,7 +64,7 @@ class ItemShortageOrExcessController @Inject()(
 
   def onSubmit(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
     authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
-      withItemAsync(idx) { item =>
+      withAddedItemAsync(idx) { item =>
         getCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item)).flatMap {
           serviceResult =>
             val unitOfMeasure = serviceResult.head._2.unitOfMeasureCode.toUnitOfMeasure

@@ -49,3 +49,7 @@ case object ReturnToLegacy extends FeatureSwitch {
   override val displayName: String = "Return the User to the Legacy EMCS service"
 }
 
+case object NewShortageExcessFlow extends FeatureSwitch {
+  override val configName: String = "features.enableNewItemShortageExcessFlow"
+  override val displayName: String = "Enable New Item Shortage / Excess Flow"
+}

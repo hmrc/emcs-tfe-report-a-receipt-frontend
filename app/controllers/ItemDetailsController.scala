@@ -20,7 +20,7 @@ import controllers.actions._
 import navigation.Navigator
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{GetCnCodeInformationService, GetPackagingTypesService, GetWineOperationsService, UserAnswersService}
+import services.{UserAnswersService, ReferenceDataService}
 import views.html.ItemDetailsView
 
 import javax.inject.Inject
@@ -36,9 +36,7 @@ class ItemDetailsController @Inject()(
                                        override val getData: DataRetrievalAction,
                                        override val requireData: DataRequiredAction,
                                        val controllerComponents: MessagesControllerComponents,
-                                       getCnCodeInformationService: GetCnCodeInformationService,
-                                       getPackagingTypesService: GetPackagingTypesService,
-                                       getWineOperationsService: GetWineOperationsService,
+                                       referenceDataService: ReferenceDataService,
                                        view: ItemDetailsView
                                      ) extends BaseNavigationController with AuthActionHelper {
 
@@ -46,15 +44,12 @@ class ItemDetailsController @Inject()(
     authorisedDataRequestWithUpToDateMovementAsync(ern, arc) { implicit request =>
       request.movementDetails.item(idx) match {
         case Some(item) =>
-          getPackagingTypesService.getPackagingTypes(Seq(item)).flatMap {
-            getWineOperationsService.getWineOperations(_).flatMap {
-              getCnCodeInformationService.getCnCodeInformationWithMovementItems(_).map {
-                case (item, cnCodeInformation) :: Nil => Ok(view(item, cnCodeInformation))
-                case _ =>
-                  logger.warn(s"[onPageLoad] Problem retrieving reference data for item idx: $idx against ERN: $ern and ARC: $arc")
-                  Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url)
-              }
-            }
+          referenceDataService.getMovementItemsWithReferenceData(Seq(item)).map {
+            case (item, cnCodeInformation) :: Nil =>
+              Ok(view(item, cnCodeInformation))
+            case _ =>
+              logger.warn(s"[onPageLoad] Problem retrieving reference data for item idx: $idx against ERN: $ern and ARC: $arc")
+              Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url)
           }
         case None =>
           logger.warn(s"[onPageLoad] Unable to find item with idx: $idx against ERN: $ern and ARC: $arc")

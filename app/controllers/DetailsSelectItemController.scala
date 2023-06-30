@@ -25,7 +25,7 @@ import pages.unsatisfactory.individualItems.SelectItemsPage
 import play.api.i18n.MessagesApi
 import play.api.libs.json.Format.GenericFormat
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.{GetCnCodeInformationService, GetPackagingTypesService, UserAnswersService}
+import services.{UserAnswersService, ReferenceDataService}
 import views.html.DetailsSelectItemView
 
 import javax.inject.Inject
@@ -42,57 +42,50 @@ class DetailsSelectItemController @Inject()(
                                              override val userAllowList: UserAllowListAction,
                                              formProvider: DetailsSelectItemFormProvider,
                                              val controllerComponents: MessagesControllerComponents,
-                                             getCnCodeInformationService: GetCnCodeInformationService,
-                                             getPackagingTypesService: GetPackagingTypesService,
+                                             referenceDataService: ReferenceDataService,
                                              view: DetailsSelectItemView
                                            ) extends BaseNavigationController with AuthActionHelper {
 
-  def onPageLoad(ern: String, arc: String, idx: Int): Action[AnyContent] = {
+  def onPageLoad(ern: String, arc: String, idx: Int): Action[AnyContent] =
     authorisedDataRequestWithUpToDateMovementAsync(ern, arc) { implicit request =>
       request.movementDetails.item(idx) match {
         case Some(item) =>
-          getPackagingTypesService.getPackagingTypes(Seq(item)).flatMap {
-            getCnCodeInformationService.getCnCodeInformationWithMovementItems(_).flatMap {
-              case (item, cnCodeInformation) :: Nil =>
-                Future.successful(Ok(view(formProvider(), item, cnCodeInformation)))
-              case _ =>
-                redirectToSelectItems(Some(s"[onPageLoad] Problem retrieving reference data for item idx: $idx against ERN: $ern and ARC: $arc"))
-            }
+          referenceDataService.getMovementItemsWithReferenceData(Seq(item)).map {
+            case (item, cnCodeInformation) :: Nil =>
+              Ok(view(formProvider(), item, cnCodeInformation))
+            case _ =>
+              redirectToSelectItems(Some(s"[onPageLoad] Problem retrieving reference data for item idx: $idx against ERN: $ern and ARC: $arc"))
           }
         case None =>
-          redirectToSelectItems(None)
+          Future.successful(redirectToSelectItems(None))
       }
-
     }
-  }
-
 
   def onSubmit(ern: String, arc: String, idx: Int): Action[AnyContent] =
     authorisedDataRequestWithUpToDateMovementAsync(ern, arc) { implicit request =>
       request.movementDetails.item(idx) match {
         case Some(item) =>
-          getPackagingTypesService.getPackagingTypes(Seq(item)).flatMap {
-            getCnCodeInformationService.getCnCodeInformationWithMovementItems(_).flatMap {
-              case (item, cnCodeInformation) :: Nil => formProvider().bindFromRequest().fold(
-                formWithErrors => {
-                  Future.successful(BadRequest(view(formWithErrors, item, cnCodeInformation)))
-                },
-                {
-                  case true => addItemToListAndRedirect(idx)
-                  case false => redirectToSelectItems(None)
-                }
-              )
-              case _ =>
-                redirectToSelectItems(Some(s"[onSubmit] Problem retrieving reference data for item idx: $idx against ERN: $ern and ARC: $arc"))
+          formProvider().bindFromRequest().fold(
+            formWithErrors =>
+              referenceDataService.getMovementItemsWithReferenceData(Seq(item)).map {
+                case (item, cnCodeInformation) :: Nil =>
+                  BadRequest(view(formWithErrors, item, cnCodeInformation))
+                case _ =>
+                  redirectToSelectItems(Some(s"[onSubmit] Problem retrieving reference data for item idx: $idx against ERN: $ern and ARC: $arc"))
+              },
+            {
+              case true => addItemToListAndRedirect(idx)
+              case false => Future.successful(redirectToSelectItems(None))
             }
-          }
-        case None => redirectToSelectItems(None)
+          )
+        case None =>
+          Future.successful(redirectToSelectItems(None))
       }
     }
 
-  private def redirectToSelectItems(warningMsg: Option[String])(implicit request: DataRequest[_]): Future[Result] = {
+  private def redirectToSelectItems(warningMsg: Option[String])(implicit request: DataRequest[_]): Result = {
     warningMsg.foreach(logger.warn(_))
-    Future.successful(Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url))
+    Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url)
   }
 
   private def addItemToListAndRedirect(idx: Int)(implicit request: DataRequest[_]): Future[Result] = {

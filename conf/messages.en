@@ -134,9 +134,9 @@ addExcessInformation.title = Do you want to give more information about being se
 addExcessInformation.heading = Do you want to give more information about being sent more items than expected?
 addExcessInformation.error.required = Select yes if you want to give more information about being sent more items than expected
 
-addDamageInformation.title = Do you want to give more information about being sent damaged item(s)?
-addDamageInformation.heading = Do you want to give more information about being sent damaged item(s)?
-addDamageInformation.error.required = Select yes if you want to give more information about being sent damaged item(s)
+addDamageInformation.title = Do you want to give information about receiving damaged goods?
+addDamageInformation.heading = Do you want to give information about receiving damaged goods?
+addDamageInformation.error.required = Select yes if you want to give more information about receiving damaged goods
 
 addItemDamageInformation.title = Do you want to give information about item {0} being damaged?
 addItemDamageInformation.heading = Do you want to give information about item {0} being damaged?

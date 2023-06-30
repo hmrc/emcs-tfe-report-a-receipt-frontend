@@ -25,14 +25,14 @@ object AddDamageInformationMessages {
   }
 
   object English extends ViewMessages with BaseEnglish {
-    override val heading = "Do you want to give more information about being sent damaged item(s)?"
+    override val heading = "Do you want to give information about receiving damaged goods?"
     override val title = title(heading)
-    override val requiredError: String = "Select yes if you want to give more information about being sent damaged item(s)"
+    override val requiredError: String = "Select yes if you want to give more information about receiving damaged goods"
   }
 
   object Welsh extends ViewMessages with BaseWelsh {
-    override val heading = "Do you want to give more information about being sent damaged item(s)?"
+    override val heading = "Do you want to give information about receiving damaged goods?"
     override val title = title(heading)
-    override val requiredError: String = "Select yes if you want to give more information about being sent damaged item(s)"
+    override val requiredError: String = "Select yes if you want to give more information about receiving damaged goods"
   }
 }

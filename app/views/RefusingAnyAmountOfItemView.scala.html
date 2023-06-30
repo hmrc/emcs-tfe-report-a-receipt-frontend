@@ -46,7 +46,7 @@
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(HtmlContent(heading)).withCssClass("govuk-fieldset__legend govuk-fieldset__legend--l")
+                legend = LegendViewModel(HtmlContent(heading)).withCssClass("govuk-!-margin-bottom-0")
             ).withHint(HintViewModel(HtmlContent(itemDetailSection("refusingAnyAmountOfItem.item", item, cnCodeInfo))))
         )
 

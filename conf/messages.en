@@ -130,9 +130,9 @@ addShortageInformation.title = Do you want to give information about receiving l
 addShortageInformation.heading = Do you want to give information about receiving less goods than expected?
 addShortageInformation.error.required = Select if you want to give information about receiving less goods than expected
 
-addExcessInformation.title = Do you want to give more information about being sent more items than expected?
-addExcessInformation.heading = Do you want to give more information about being sent more items than expected?
-addExcessInformation.error.required = Select yes if you want to give more information about being sent more items than expected
+addExcessInformation.title = Do you want to give information about receiving more goods than expected?
+addExcessInformation.heading = Do you want to give information about receiving more goods than expected?
+addExcessInformation.error.required = Select yes if you want to give information about receiving more goods than expected
 
 addDamageInformation.title = Do you want to give information about receiving damaged goods?
 addDamageInformation.heading = Do you want to give information about receiving damaged goods?

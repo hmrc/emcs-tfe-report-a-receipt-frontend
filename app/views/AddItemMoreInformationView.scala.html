@@ -51,8 +51,7 @@
             @govukRadios(
                 RadiosViewModel.yesNo(
                     field = form("value"),
-                    legend = LegendViewModel(HtmlContent(heading))
-                            .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--l")
+                    legend = LegendViewModel(HtmlContent(heading)).withCssClass("govuk-!-margin-bottom-0")
                 ).withHint(HintViewModel(HtmlContent(itemDetails(AddMoreInformationHelper.itemDetailsKey(page), item, cnCodeInformation))))
             )
 
@@ -60,10 +59,10 @@
         }
     }
 
-    @{
-        //$COVERAGE-OFF$
-    }
-
     @heading = {
         @h1(messages(AddMoreInformationHelper.headingKey(page), item.itemUniqueReference), Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
     }
+
+@{
+    //$COVERAGE-OFF$
+}

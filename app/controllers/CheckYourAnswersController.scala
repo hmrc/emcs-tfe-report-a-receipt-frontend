@@ -137,9 +137,9 @@ class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi
             receiptDate = response.receiptDate,
             receiptStatus = request.userAnswers.get(AcceptMovementPage).getOrElse().toString,
             hasMovementShortage = request.userAnswers.get(WrongWithMovementPage).exists(_.contains(Shortage)),
-            hasItemShortage = request.userAnswers.items.exists(_.itemShortageOrExcess.exists(_.wrongWithItem == Shortage)),
+            hasItemShortage = request.userAnswers.completedItems.exists(_.itemShortageOrExcess.exists(_.wrongWithItem == Shortage)),
             hasMovementExcess = request.userAnswers.get(WrongWithMovementPage).exists(_.contains(Excess)),
-            hasItemExcess = request.userAnswers.items.exists(_.itemShortageOrExcess.exists(_.wrongWithItem == Excess))
+            hasItemExcess = request.userAnswers.completedItems.exists(_.itemShortageOrExcess.exists(_.wrongWithItem == Excess))
           ))
       ))
   }

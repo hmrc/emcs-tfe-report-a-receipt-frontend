@@ -36,9 +36,9 @@
 
     @h1("selectItems.heading", Some(messages("arc.subHeading", request.arc)), "govuk-heading-xl")
 
-    @if(request.userAnswers.items.nonEmpty) {
+    @if(request.userAnswers.completedItems.nonEmpty) {
         @p(classes = "govuk-body govuk-!-margin-bottom-9", id = Some("already-added-items-info")) {
-            @messages(pluralSingular("selectItems.alreadyAddedItems.paragraph", request.userAnswers.items.size))
+            @messages(pluralSingular("selectItems.alreadyAddedItems.paragraph", request.userAnswers.completedItems.size))
             @link(
                 routes.AddedItemsController.onPageLoad(request.ern, request.arc).url,
                 "selectItems.alreadyAddedItems.paragraph.link.text",

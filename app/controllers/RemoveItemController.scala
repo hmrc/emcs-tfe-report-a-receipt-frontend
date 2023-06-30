@@ -49,7 +49,7 @@ class RemoveItemController @Inject()(
                  idx: Int,
                  mode: Mode = NormalMode): Action[AnyContent] =
     authorisedDataRequestWithCachedMovement(ern, arc) { implicit request =>
-      withItem(idx) {
+      withAddedItem(idx) {
         _ => Ok(view(
           form = formProvider(RemoveItemPage(idx)),
           page = RemoveItemPage(idx),
@@ -63,7 +63,7 @@ class RemoveItemController @Inject()(
                idx: Int,
                mode: Mode = NormalMode): Action[AnyContent] =
     authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
-      withItemAsync(idx) {
+      withAddedItemAsync(idx) {
         _ =>
           formProvider(RemoveItemPage(idx)).bindFromRequest().fold(
             formWithErrors =>

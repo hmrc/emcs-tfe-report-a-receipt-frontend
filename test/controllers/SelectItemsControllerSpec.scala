@@ -132,12 +132,12 @@ class SelectItemsControllerSpec extends SpecBase
             .set(SelectItemsPage(2), 2)
             .set(WrongWithItemPage(2), Set[WrongWithMovement](Damaged))
             .set(AddItemDamageInformationPage(2), false)
-          controller.withFilteredItems(dataRequest(FakeRequest(), userAnswers)) mustBe Seq(item1, item2)
+          controller.incompleteItems()(dataRequest(FakeRequest(), userAnswers)) mustBe Seq(item1, item2)
         }
 
         "when nothing has been selected yet" in {
           val userAnswers = emptyUserAnswers
-          controller.withFilteredItems(dataRequest(FakeRequest(), userAnswers)) mustBe Seq(item1, item2)
+          controller.incompleteItems()(dataRequest(FakeRequest(), userAnswers)) mustBe Seq(item1, item2)
         }
       }
 
@@ -151,7 +151,7 @@ class SelectItemsControllerSpec extends SpecBase
             .set(SelectItemsPage(2), 2)
             .set(WrongWithItemPage(2), Set[WrongWithMovement](Damaged))
             .set(AddItemDamageInformationPage(2), false)
-          controller.withFilteredItems(dataRequest(FakeRequest(), userAnswers)) mustBe Seq(item2)
+          controller.incompleteItems()(dataRequest(FakeRequest(), userAnswers)) mustBe Seq(item2)
         }
 
         "when the second item has checkAnswersItem = true" in {
@@ -163,7 +163,7 @@ class SelectItemsControllerSpec extends SpecBase
             .set(WrongWithItemPage(2), Set[WrongWithMovement](Damaged))
             .set(AddItemDamageInformationPage(2), false)
             .set(CheckAnswersItemPage(2), true)
-          controller.withFilteredItems(dataRequest(FakeRequest(), userAnswers)) mustBe Seq(item1)
+          controller.incompleteItems()(dataRequest(FakeRequest(), userAnswers)) mustBe Seq(item1)
         }
 
         "when both items have checkAnswersItem = true" in {
@@ -176,7 +176,7 @@ class SelectItemsControllerSpec extends SpecBase
             .set(WrongWithItemPage(2), Set[WrongWithMovement](Damaged))
             .set(AddItemDamageInformationPage(2), false)
             .set(CheckAnswersItemPage(2), true)
-          controller.withFilteredItems(dataRequest(FakeRequest(), userAnswers)) mustBe Seq()
+          controller.incompleteItems()(dataRequest(FakeRequest(), userAnswers)) mustBe Seq()
         }
       }
     }

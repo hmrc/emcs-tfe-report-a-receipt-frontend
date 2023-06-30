@@ -65,7 +65,9 @@ class RefusingAnyAmountOfItemControllerSpec extends SpecBase with MockGetCnCodeI
 
   "RefusingAnyAmountOfItem Controller" - {
 
-    "must return OK and the correct view for a GET" in new Fixture() {
+    "must return OK and the correct view for a GET" in new Fixture(
+      Some(emptyUserAnswers.set(SelectItemsPage(1), 1))
+    ) {
 
       MockGetPackagingTypesService.getPackagingTypes(Seq(item1)).returns(Future.successful(Seq(item1)))
       MockGetWineOperationsService.getWineOperations(Seq(item1)).returns(Future.successful(Seq(item1)))
@@ -80,7 +82,9 @@ class RefusingAnyAmountOfItemControllerSpec extends SpecBase with MockGetCnCodeI
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in new Fixture(
-      Some(emptyUserAnswers.set(RefusingAnyAmountOfItemPage(1), true))
+      Some(emptyUserAnswers
+        .set(SelectItemsPage(1), 1)
+        .set(RefusingAnyAmountOfItemPage(1), true))
     ) {
 
       MockGetPackagingTypesService.getPackagingTypes(Seq(item1)).returns(Future.successful(Seq(item1)))
@@ -98,7 +102,10 @@ class RefusingAnyAmountOfItemControllerSpec extends SpecBase with MockGetCnCodeI
     "must redirect to the next page when valid data is submitted" - {
 
       "and delete the rest of the answers when the input answer isn't the same as the current answer" in new Fixture(
-        Some(emptyUserAnswers.set(RefusingAnyAmountOfItemPage(1), false))
+        Some(emptyUserAnswers
+          .set(SelectItemsPage(1), 1)
+          .set(RefusingAnyAmountOfItemPage(1), false)
+        )
       ) {
 
         val updatedAnswers = emptyUserAnswers
@@ -116,7 +123,10 @@ class RefusingAnyAmountOfItemControllerSpec extends SpecBase with MockGetCnCodeI
       }
 
       "and not delete the rest of the answers when the input answer is the same as the current answer" in new Fixture(
-        Some(emptyUserAnswers.set(RefusingAnyAmountOfItemPage(1), true))
+        Some(emptyUserAnswers
+          .set(SelectItemsPage(1), 1)
+          .set(RefusingAnyAmountOfItemPage(1), true)
+        )
       ) {
 
         MockUserAnswersService.set().never()
@@ -134,33 +144,17 @@ class RefusingAnyAmountOfItemControllerSpec extends SpecBase with MockGetCnCodeI
 
       "when the item doesn't exist in UserAnswers" in new Fixture() {
 
-        MockGetWineOperationsService.getWineOperations(Seq(item1)).returns(Future.successful(Seq(item1)))
-        MockGetPackagingTypesService.getPackagingTypes(Seq(item1)).returns(Future.successful(Seq(item1)))
-        MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq.empty))
-
         val request = FakeRequest(GET, refusingAnyAmountOfItemRoute)
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.SelectItemsController.onPageLoad(testErn, testArc).url
       }
-
-      "when the call to get CN information returned no data" in new Fixture() {
-
-        MockGetPackagingTypesService.getPackagingTypes(Seq(item1)).returns(Future.successful(Seq(item1)))
-        MockGetWineOperationsService.getWineOperations(Seq(item1)).returns(Future.successful(Seq(item1)))
-        MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq.empty))
-
-        val request = FakeRequest(GET, refusingAnyAmountOfItemRoute)
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.SelectItemsController.onPageLoad(testErn, testArc).url
-      }
-
     }
 
-    "must return a Bad Request and errors when invalid data is submitted" in new Fixture() {
+    "must return a Bad Request and errors when invalid data is submitted" in new Fixture(
+      Some(emptyUserAnswers.set(SelectItemsPage(1), 1))
+    ) {
 
       MockGetPackagingTypesService.getPackagingTypes(Seq(item1)).returns(Future.successful(Seq(item1)))
       MockGetWineOperationsService.getWineOperations(Seq(item1)).returns(Future.successful(Seq(item1)))

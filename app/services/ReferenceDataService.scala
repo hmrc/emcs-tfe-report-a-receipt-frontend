@@ -17,20 +17,46 @@
 package services
 
 import com.google.inject.Inject
+import models.requests.DataRequest
 import models.response.emcsTfe.MovementItem
 import models.response.referenceData.CnCodeInformation
+import play.api.mvc.Result
+import play.api.mvc.Results.Redirect
 import uk.gov.hmrc.http.HeaderCarrier
+import utils.Logging
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class ReferenceDataService @Inject()(packagingTypesService: GetPackagingTypesService,
                                      wineOperationsService: GetWineOperationsService,
-                                     cnCodeInformation: GetCnCodeInformationService) {
+                                     cnCodeInformation: GetCnCodeInformationService) extends Logging {
   def getMovementItemsWithReferenceData(items: Seq[MovementItem])
                                        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[(MovementItem, CnCodeInformation)]] =
     packagingTypesService.getPackagingTypes(items).flatMap {
       wineOperationsService.getWineOperations(_).flatMap {
         cnCodeInformation.getCnCodeInformationWithMovementItems(_)
       }
+    }
+
+  def itemsWithReferenceData(items: Seq[MovementItem])(f: Seq[(MovementItem, CnCodeInformation)] => Future[Result])
+                            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Result] =
+    packagingTypesService.getPackagingTypes(items).flatMap {
+      wineOperationsService.getWineOperations(_).flatMap {
+        cnCodeInformation.getCnCodeInformationWithMovementItems(_).flatMap {
+          f(_)
+        }
+      }
+    }
+
+  def itemWithReferenceData(item: MovementItem)(f: (MovementItem, CnCodeInformation) => Future[Result])
+                           (implicit hc: HeaderCarrier, ec: ExecutionContext, request: DataRequest[_]): Future[Result] =
+    getMovementItemsWithReferenceData(Seq(item)).flatMap {
+      case (item, cnCodeInformation) +: Nil =>
+        f(item, cnCodeInformation)
+      case _ =>
+        logger.warn(s"[itemWithReferenceData] Problem retrieving reference data for" +
+          s" item idx: ${item.itemUniqueReference} against ERN: ${request.ern} and ARC: ${request.ern}"
+        )
+        Future.successful(Redirect(controllers.routes.SelectItemsController.onPageLoad(request.ern, request.arc)))
     }
 }

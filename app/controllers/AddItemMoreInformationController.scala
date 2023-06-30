@@ -72,8 +72,7 @@ class AddItemMoreInformationController @Inject()(override val messagesApi: Messa
                        mode: Mode): Action[AnyContent] =
     authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
       formProvider(yesNoPage).bindFromRequest().fold(
-        formWithErrors =>
-          renderViewWithItemDetails(BadRequest, formWithErrors, yesNoPage, submitAction, itemReference),
+        renderViewWithItemDetails(BadRequest, _, yesNoPage, submitAction, itemReference),
         {
           case true =>
             saveAndRedirect(yesNoPage, true, mode)
@@ -88,15 +87,9 @@ class AddItemMoreInformationController @Inject()(override val messagesApi: Messa
                                         yesNoPage: QuestionPage[Boolean],
                                         submitAction: Call,
                                         itemReference: Int)(implicit request: DataRequest[_]): Future[Result] =
-    request.movementDetails.item(itemReference) match {
-      case Some(item) =>
-        referenceDataService.getMovementItemsWithReferenceData(Seq(item)).map {
-          case (item, cnCodeInformation) :: Nil =>
-            status(view(form, yesNoPage, submitAction, item, cnCodeInformation))
-          case _ =>
-            Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url)
-        }
-      case _ =>
-        Future.successful(Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url))
+    withMovementItemAsync(itemReference) {
+      referenceDataService.itemWithReferenceData(_) { (item, cnCodeInformation) =>
+        Future.successful(status(view(form, yesNoPage, submitAction, item, cnCodeInformation)))
+      }
     }
 }

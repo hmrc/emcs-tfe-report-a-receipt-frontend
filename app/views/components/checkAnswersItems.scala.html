@@ -32,12 +32,14 @@
                     ActionItem(
                         href = routes.ItemDetailsController.onPageLoad(request.ern, request.arc, itemReference).url,
                         content = Text(messages("checkYourAnswers.item.details")),
-                        visuallyHiddenText = Some(messages("checkYourAnswers.item.details.hidden", itemReference))
+                        visuallyHiddenText = Some(messages("checkYourAnswers.item.details.hidden", itemReference)),
+                        attributes = Map("id" -> s"itemDetails$itemReference")
                     ),
                     ActionItem(
                         href = routes.RemoveItemController.onPageLoad(request.ern, request.arc, itemReference, removeMode).url,
                         content = Text(messages("checkYourAnswers.item.remove")),
                         visuallyHiddenText = Some(messages("checkYourAnswers.item.remove.hidden", itemReference)),
+                        attributes = Map("id" -> s"removeItem$itemReference")
                     )
                 )
             ))

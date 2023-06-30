@@ -392,7 +392,7 @@ class UserAnswersSpec extends SpecBase {
             .set(CheckAnswersItemPage(1), true)
             .set(ItemShortageOrExcessPage(1), ItemShortageOrExcessModel(WrongWithMovement.Damaged, 3, Some("info")))
 
-          withData.items mustBe Seq(
+          withData.allItemsIncludingIncomplete mustBe Seq(
             ItemModel(1, Some(ItemShortageOrExcessModel(WrongWithMovement.Damaged, 3, Some("info")))),
             ItemModel(2, None)
           )
@@ -408,7 +408,7 @@ class UserAnswersSpec extends SpecBase {
             .set(CheckAnswersItemPage(1), true)
             .set(ItemShortageOrExcessPage(1), ItemShortageOrExcessModel(WrongWithMovement.Damaged, 3, Some("info")))
 
-          withData.items mustBe Seq(ItemModel(2, None))
+          withData.allItemsIncludingIncomplete mustBe Seq(ItemModel(2, None))
         }
 
         "when no item references are in user answers" in {
@@ -417,14 +417,14 @@ class UserAnswersSpec extends SpecBase {
             .set(CheckAnswersItemPage(1), true)
             .set(ItemShortageOrExcessPage(1), ItemShortageOrExcessModel(WrongWithMovement.Damaged, 3, Some("info")))
 
-          withData.items mustBe Seq()
+          withData.allItemsIncludingIncomplete mustBe Seq()
         }
 
         "when user answers is empty" in {
 
           val withData = emptyUserAnswers
 
-          withData.items mustBe Seq()
+          withData.allItemsIncludingIncomplete mustBe Seq()
         }
       }
     }

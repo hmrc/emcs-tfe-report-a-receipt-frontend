@@ -89,14 +89,14 @@ final case class UserAnswers(internalId: String,
     }.sorted
   }
 
-  def items: Seq[ItemModel] = {
+  def allItemsIncludingIncomplete: Seq[ItemModel] = {
     itemKeys.flatMap {
       getItemWithReads(_)(ItemModel.reads)
     }.sortBy(_.itemUniqueReference)
   }
 
   def completedItems: Seq[ItemModel] =
-    items.filter(item => get(CheckAnswersItemPage(item.itemUniqueReference)).contains(true))
+    allItemsIncludingIncomplete.filter(item => get(CheckAnswersItemPage(item.itemUniqueReference)).contains(true))
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).asOpt.flatten

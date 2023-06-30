@@ -181,8 +181,8 @@ excessInformation.checkYourAnswers.label = Information about excess
 excessInformation.checkYourAnswers.change.hidden = information about excess
 excessInformation.checkYourAnswers.addMoreInformation = Enter more information about excess (optional)
 
-damageInformation.title = Give more information about being sent damaged items
-damageInformation.heading = Give more information about being sent damaged items
+damageInformation.title = Give information about receiving damaged goods
+damageInformation.heading = Give information about receiving damaged goods
 damageInformation.hint = Give more information (optional)
 damageInformation.error.length = Information must be 350 characters or less
 damageInformation.error.invalidCharacter = Information must not include < and > and : and ;

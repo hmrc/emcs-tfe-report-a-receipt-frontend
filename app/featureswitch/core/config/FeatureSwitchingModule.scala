@@ -51,5 +51,5 @@ case object ReturnToLegacy extends FeatureSwitch {
 
 case object ShortageExcessFlow extends FeatureSwitch {
   override val configName: String = "features.enableNewItemShortageExcessFlow"
-  override val displayName: String = "Enable New Item Shortage / Excess Flow"
+  override val displayName: String = "Enable the new Item Shortage/Excess flow"
 }

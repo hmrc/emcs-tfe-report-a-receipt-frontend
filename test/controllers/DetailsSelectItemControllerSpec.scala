@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import forms.DetailsSelectItemFormProvider
-import mocks.services.{MockGetCnCodeInformationService, MockGetPackagingTypesService, MockUserAnswersService}
+import mocks.services.{MockGetCnCodeInformationService, MockGetPackagingTypesService, MockGetWineOperationsService, MockUserAnswersService}
 import models.AcceptMovement.{PartiallyRefused, Unsatisfactory}
 import models.{NormalMode, UserAnswers}
 import models.ReferenceDataUnitOfMeasure.`1`
@@ -29,7 +29,7 @@ import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.{GetCnCodeInformationService, GetPackagingTypesService, UserAnswersService}
+import services.{GetCnCodeInformationService, GetPackagingTypesService, GetWineOperationsService, UserAnswersService}
 import views.html.DetailsSelectItemView
 
 import scala.concurrent.Future
@@ -37,13 +37,15 @@ import scala.concurrent.Future
 class DetailsSelectItemControllerSpec extends SpecBase
   with MockGetCnCodeInformationService
   with MockUserAnswersService
-  with MockGetPackagingTypesService {
+  with MockGetPackagingTypesService
+  with MockGetWineOperationsService {
 
   class Fixture(val userAnswers: Option[UserAnswers] = Some(emptyUserAnswers)) {
     val application = applicationBuilder(userAnswers)
       .overrides(
         bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService),
         bind[GetPackagingTypesService].toInstance(mockGetPackagingTypesService),
+        bind[GetWineOperationsService].toInstance(mockGetWineOperationsService),
         bind[UserAnswersService].toInstance(mockUserAnswersService)
       ).build()
 
@@ -72,6 +74,8 @@ class DetailsSelectItemControllerSpec extends SpecBase
           (item1, CnCodeInformation("", "", `1`))
         )))
 
+        MockGetWineOperationsService.getWineOperations(Seq(item1)).returns(Future.successful(Seq(item1)))
+
         val request = FakeRequest(GET, detailsSelectItemRoute)
         val result = route(application, request).value
 
@@ -97,6 +101,7 @@ class DetailsSelectItemControllerSpec extends SpecBase
           )))
 
           MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq.empty))
+          MockGetWineOperationsService.getWineOperations(Seq(item1)).returns(Future.successful(Seq(item1)))
 
           val request = FakeRequest(GET, detailsSelectItemRoute)
           val result = route(application, request).value
@@ -177,6 +182,8 @@ class DetailsSelectItemControllerSpec extends SpecBase
         MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
           (item1, CnCodeInformation("", "", `1`))
         )))
+
+        MockGetWineOperationsService.getWineOperations(Seq(item1)).returns(Future.successful(Seq(item1)))
 
         val boundForm = form.bind(Map("value" -> ""))
         val request = FakeRequest(POST, detailsSelectItemRoute).withFormUrlEncodedBody(("value", ""))

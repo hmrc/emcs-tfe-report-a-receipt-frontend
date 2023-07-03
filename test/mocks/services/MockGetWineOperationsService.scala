@@ -34,7 +34,7 @@ trait MockGetWineOperationsService extends MockFactory {
       (mockGetWineOperationsService.getWineOperations(_: Seq[MovementItem])(_: HeaderCarrier))
         .expects(where {
           (_items: Seq[MovementItem], _) =>
-            _items.flatMap(_.packaging.map(_.typeOfPackage)) == items.flatMap(_.packaging.map(_.typeOfPackage))
+            _items.flatMap(_.wineProduct.map(_.wineOperations)) == items.flatMap(_.wineProduct.map(_.wineOperations))
         })
   }
 }

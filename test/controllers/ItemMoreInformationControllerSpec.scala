@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import forms.MoreInformationFormProvider
-import mocks.services.{MockGetCnCodeInformationService, MockGetPackagingTypesService, MockUserAnswersService}
+import mocks.services.{MockGetCnCodeInformationService, MockGetPackagingTypesService, MockGetWineOperationsService, MockUserAnswersService}
 import models.ReferenceDataUnitOfMeasure.`1`
 import models.response.referenceData.CnCodeInformation
 import models.{NormalMode, UserAnswers}
@@ -28,7 +28,7 @@ import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.{GetCnCodeInformationService, GetPackagingTypesService, UserAnswersService}
+import services.{GetCnCodeInformationService, GetPackagingTypesService, GetWineOperationsService, UserAnswersService}
 import views.html.ItemMoreInformationView
 
 import scala.concurrent.Future
@@ -36,13 +36,15 @@ import scala.concurrent.Future
 class ItemMoreInformationControllerSpec extends SpecBase
   with MockGetCnCodeInformationService
   with MockUserAnswersService
-  with MockGetPackagingTypesService {
+  with MockGetPackagingTypesService
+  with MockGetWineOperationsService {
 
   class Fixture(val answers: Option[UserAnswers] = Some(emptyUserAnswers.set(SelectItemsPage(item1.itemUniqueReference), item1.itemUniqueReference))) {
     val application = applicationBuilder(userAnswers = answers)
       .overrides(
         bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService),
         bind[GetPackagingTypesService].toInstance(mockGetPackagingTypesService),
+        bind[GetWineOperationsService].toInstance(mockGetWineOperationsService),
         bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
         bind[UserAnswersService].toInstance(mockUserAnswersService)
       ).build()
@@ -78,6 +80,8 @@ class ItemMoreInformationControllerSpec extends SpecBase
             (itemWithPackaging, cnCodeInfo)
           )))
 
+          MockGetWineOperationsService.getWineOperations(Seq(item1)).returns(Future.successful(Seq(item1)))
+
           val request = FakeRequest(GET, url)
 
           val result = route(application, request).value
@@ -97,6 +101,8 @@ class ItemMoreInformationControllerSpec extends SpecBase
           MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(itemWithPackaging)).returns(Future.successful(Seq(
             (itemWithPackaging, cnCodeInfo)
           )))
+
+          MockGetWineOperationsService.getWineOperations(Seq(item1)).returns(Future.successful(Seq(item1)))
 
           val request = FakeRequest(GET, url)
 
@@ -146,6 +152,8 @@ class ItemMoreInformationControllerSpec extends SpecBase
           MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(itemWithPackaging)).returns(Future.successful(Seq(
             (itemWithPackaging, cnCodeInfo)
           )))
+
+          MockGetWineOperationsService.getWineOperations(Seq(item1)).returns(Future.successful(Seq(item1)))
 
           val request = FakeRequest(POST, url).withFormUrlEncodedBody(("more-information", "<>"))
 

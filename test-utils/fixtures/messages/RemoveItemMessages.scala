@@ -19,20 +19,20 @@ package fixtures.messages
 object RemoveItemMessages {
 
   sealed trait ViewMessages { _: i18n =>
-    val title: String
-    val heading: String
+    val title: Int => String
+    val heading: Int => String
     val requiredError: String
   }
 
   object English extends ViewMessages with BaseEnglish {
-    override val heading = "Are you sure you want to remove information about this item?"
-    override val title = title(heading)
-    override val requiredError: String = "Select yes if you want to remove information about this item"
+    override val heading: Int => String = i => s"Are you sure you want to remove item $i?"
+    override val title: Int => String = i => title(heading(i))
+    override val requiredError: String = "Select yes if you want to remove this item"
   }
 
   object Welsh extends ViewMessages with BaseWelsh {
-    override val heading = "Are you sure you want to remove information about this item?"
-    override val title = title(heading)
-    override val requiredError: String = "Select yes if you want to remove information about this item"
+    override val heading: Int => String = i => s"Are you sure you want to remove item $i?"
+    override val title: Int => String = i => title(heading(i))
+    override val requiredError: String = "Select yes if you want to remove this item"
   }
 }

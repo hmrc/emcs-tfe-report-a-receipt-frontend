@@ -24,7 +24,7 @@ import pages.AddMoreInformationPage
 import pages.unsatisfactory.individualItems.RemoveItemPage
 import pages.unsatisfactory.{AddDamageInformationPage, AddExcessInformationPage, AddSealsInformationPage, AddShortageInformationPage}
 import play.api.test.FakeRequest
-import views.html.AddMoreInformationView
+import views.html.{AddMoreInformationView, RemoveItemView}
 
 class AddMoreInformationViewSpec extends ViewSpecBase with ViewBehaviours {
 
@@ -165,14 +165,16 @@ class AddMoreInformationViewSpec extends ViewSpecBase with ViewBehaviours {
 
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
 
+        val removeItemView = app.injector.instanceOf[RemoveItemView]
+
         implicit val msgs = messages(app, messagesForLanguage.lang)
         implicit val request = dataRequest(FakeRequest(), emptyUserAnswers)
-        implicit val doc = Jsoup.parse(view(form, RemoveItemPage(1), testOnwardRoute).toString())
+        implicit val doc = Jsoup.parse(removeItemView(form, RemoveItemPage(1), testOnwardRoute).toString())
 
         behave like pageWithExpectedElementsAndMessages(Seq(
-          Selectors.title -> messagesForLanguage.title,
+          Selectors.title -> messagesForLanguage.title(1),
           Selectors.h2(1) -> messagesForLanguage.arcSubheading(testArc),
-          Selectors.h1 -> messagesForLanguage.heading,
+          Selectors.h1 -> messagesForLanguage.heading(1),
           Selectors.radioButton(1) -> messagesForLanguage.yes,
           Selectors.radioButton(2) -> messagesForLanguage.no,
           Selectors.button -> messagesForLanguage.saveAndContinue,

@@ -461,9 +461,9 @@ refusingAnyAmountOfItem.heading = Are you refusing any amount of item {0}?
 refusingAnyAmountOfItem.item = View item {0} details
 refusingAnyAmountOfItem.error.required = Select yes if you want to refuse an amount of this item
 
-removeItem.title = Are you sure you want to remove information about this item?
-removeItem.heading = Are you sure you want to remove information about this item?
-removeItem.error.required = Select yes if you want to remove information about this item
+removeItem.title = Are you sure you want to remove item {0}?
+removeItem.heading = Are you sure you want to remove item {0}?
+removeItem.error.required = Select yes if you want to remove this item
 
 refusedAmount.title = How many {0} of item {1} are you refusing?
 refusedAmount.heading = How many {0} of item {1} are you refusing?

@@ -31,7 +31,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.UserAnswersService
-import views.html.AddMoreInformationView
+import views.html.RemoveItemView
 
 import scala.concurrent.Future
 
@@ -46,7 +46,7 @@ class RemoveItemControllerSpec extends SpecBase with MockUserAnswersService {
   def removeItemRoute(mode: Mode = NormalMode): Call = routes.RemoveItemController.onPageLoad(testErn, testArc, idx, mode)
   def removeItemSubmitAction(mode: Mode = NormalMode): Call = routes.RemoveItemController.onSubmit(testErn, testArc, idx, mode)
 
-  lazy val page: QuestionPage[Boolean] = RemoveItemPage(1)
+  lazy val page: RemoveItemPage = RemoveItemPage(1)
 
   lazy val baseAnswers: UserAnswers = emptyUserAnswers
     .set(HowGiveInformationPage, IndividualItem)
@@ -68,7 +68,7 @@ class RemoveItemControllerSpec extends SpecBase with MockUserAnswersService {
 
           val result = route(application, request).value
 
-          val view = application.injector.instanceOf[AddMoreInformationView]
+          val view = application.injector.instanceOf[RemoveItemView]
 
           status(result) mustEqual OK
           contentAsString(result) mustEqual view(form, page, removeItemSubmitAction())(dataRequest(request), messages(application)).toString
@@ -161,7 +161,7 @@ class RemoveItemControllerSpec extends SpecBase with MockUserAnswersService {
 
           val boundForm = form.bind(Map("value" -> ""))
 
-          val view = application.injector.instanceOf[AddMoreInformationView]
+          val view = application.injector.instanceOf[RemoveItemView]
 
           val result = route(application, request).value
 

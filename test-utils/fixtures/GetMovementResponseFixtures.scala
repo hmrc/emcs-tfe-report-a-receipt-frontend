@@ -69,6 +69,11 @@ trait GetMovementResponseFixtures { _: BaseFixtures =>
     wineProduct = Some(wineProduct)
   )
 
+  val item1WithReferenceData = item1.copy(
+    packaging = Seq(boxPackage.copy(typeOfPackage = "Box")),
+    wineProduct = Some(wineProduct.copy(wineOperations = Some(Seq("Acidification"))))
+  )
+
   val item2 = MovementItem(
     itemUniqueReference = 2,
     productCode = "W300",
@@ -87,6 +92,11 @@ trait GetMovementResponseFixtures { _: BaseFixtures =>
     maturationAge = None,
     packaging = Seq(boxPackage, cratePackage),
     wineProduct = Some(wineProduct)
+  )
+
+  val item2WithReferenceData = item1.copy(
+    packaging = Seq(boxPackage.copy(typeOfPackage = "Box"), cratePackage.copy(typeOfPackage = "Crate")),
+    wineProduct = Some(wineProduct.copy(wineOperations = Some(Seq("Acidification"))))
   )
 
   val getMovementResponseModel: GetMovementResponse = GetMovementResponse(

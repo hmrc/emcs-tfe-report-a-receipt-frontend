@@ -18,39 +18,34 @@ package controllers
 
 import base.SpecBase
 import forms.AddMoreInformationFormProvider
-import mocks.services.{MockGetCnCodeInformationService, MockGetPackagingTypesService, MockGetWineOperationsService, MockUserAnswersService}
-import models.{NormalMode, UserAnswers}
+import mocks.services.{MockReferenceDataService, MockUserAnswersService}
 import models.ReferenceDataUnitOfMeasure.`1`
 import models.response.referenceData.CnCodeInformation
+import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import pages.unsatisfactory.individualItems.{AddItemDamageInformationPage, ItemDamageInformationPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.{GetCnCodeInformationService, GetPackagingTypesService, GetWineOperationsService, UserAnswersService}
+import services.{ReferenceDataService, UserAnswersService}
 import views.html.AddItemMoreInformationView
 
 import scala.concurrent.Future
 
 class AddItemMoreInformationControllerSpec extends SpecBase
-  with MockGetCnCodeInformationService
-  with MockUserAnswersService
-  with MockGetPackagingTypesService
-  with MockGetWineOperationsService {
-
+  with MockReferenceDataService
+  with MockUserAnswersService {
 
   class Fixture(answers: Option[UserAnswers] = Some(emptyUserAnswers)) {
     val application = applicationBuilder(userAnswers = answers)
       .overrides(
-        bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService),
-        bind[GetPackagingTypesService].toInstance(mockGetPackagingTypesService),
-        bind[GetWineOperationsService].toInstance(mockGetWineOperationsService),
+        bind[ReferenceDataService].toInstance(mockReferenceDataService),
         bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
         bind[UserAnswersService].toInstance(mockUserAnswersService)
       ).build()
 
-    val itemWithPackaging = item1.copy(packaging = Seq(boxPackage.copy(typeOfPackage = "Box")))
+    lazy val view = application.injector.instanceOf[AddItemMoreInformationView]
   }
 
   private val idx = 1
@@ -74,44 +69,30 @@ class AddItemMoreInformationControllerSpec extends SpecBase
 
         "must return OK and the correct view for a GET" in new Fixture() {
 
-          MockGetPackagingTypesService.getPackagingTypes(Seq(item1)).returns(Future.successful(Seq(itemWithPackaging)))
-
-          MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(itemWithPackaging)).returns(Future.successful(Seq(
-            (itemWithPackaging, CnCodeInformation("", "", `1`))
-          )))
-
-          MockGetWineOperationsService.getWineOperations(Seq(item1)).returns(Future.successful(Seq(item1)))
+          MockReferenceDataService.itemWithReferenceData(item1).onCall(
+            MockReferenceDataService.itemWithReferenceDataSuccessHandler(item1WithReferenceData, cnCodeInfo)
+          )
 
           val request = FakeRequest(GET, url)
-
           val result = route(application, request).value
-
-          val view = application.injector.instanceOf[AddItemMoreInformationView]
 
           status(result) mustEqual OK
           contentAsString(result) mustEqual view(
             form = form,
             page = yesNoPage,
             action = submitAction,
-            item = itemWithPackaging,
-            cnCodeInformation = CnCodeInformation("", "", `1`)
+            item = item1WithReferenceData,
+            cnCodeInformation = cnCodeInfo
           )(dataRequest(request), messages(application)).toString
         }
 
         "must populate the view correctly on a GET when the question has previously been answered" in new Fixture(Some(emptyUserAnswers.set(yesNoPage, true))) {
 
-          MockGetPackagingTypesService.getPackagingTypes(Seq(item1)).returns(Future.successful(Seq(itemWithPackaging)))
-
-          MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(itemWithPackaging)).returns(Future.successful(Seq(
-            (itemWithPackaging, CnCodeInformation("", "", `1`))
-          )))
-
-          MockGetWineOperationsService.getWineOperations(Seq(item1)).returns(Future.successful(Seq(item1)))
+          MockReferenceDataService.itemWithReferenceData(item1).onCall(
+            MockReferenceDataService.itemWithReferenceDataSuccessHandler(item1WithReferenceData, cnCodeInfo)
+          )
 
           val request = FakeRequest(GET, url)
-
-          val view = application.injector.instanceOf[AddItemMoreInformationView]
-
           val result = route(application, request).value
 
           status(result) mustEqual OK
@@ -119,8 +100,8 @@ class AddItemMoreInformationControllerSpec extends SpecBase
             form = form.fill(true),
             page = yesNoPage,
             action = submitAction,
-            item = itemWithPackaging,
-            cnCodeInformation = CnCodeInformation("", "", `1`)
+            item = item1WithReferenceData,
+            cnCodeInformation = cnCodeInfo
           )(dataRequest(request), messages(application)).toString
         }
 
@@ -130,7 +111,6 @@ class AddItemMoreInformationControllerSpec extends SpecBase
           MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers)).once()
 
           val request = FakeRequest(POST, url).withFormUrlEncodedBody(("value", "true"))
-
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
@@ -146,7 +126,6 @@ class AddItemMoreInformationControllerSpec extends SpecBase
           MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers)).once()
 
           val request = FakeRequest(POST, url).withFormUrlEncodedBody(("value", "false"))
-
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
@@ -155,20 +134,12 @@ class AddItemMoreInformationControllerSpec extends SpecBase
 
         "must return a Bad Request and errors when invalid data is submitted" in new Fixture() {
 
-          MockGetPackagingTypesService.getPackagingTypes(Seq(item1)).returns(Future.successful(Seq(itemWithPackaging)))
-
-          MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(itemWithPackaging)).returns(Future.successful(Seq(
-            (itemWithPackaging, CnCodeInformation("", "", `1`))
-          )))
-
-          MockGetWineOperationsService.getWineOperations(Seq(item1)).returns(Future.successful(Seq(item1)))
+          MockReferenceDataService.itemWithReferenceData(item1).onCall(
+            MockReferenceDataService.itemWithReferenceDataSuccessHandler(item1WithReferenceData, cnCodeInfo)
+          )
 
           val request = FakeRequest(POST, url).withFormUrlEncodedBody(("value", ""))
-
           val boundForm = form.bind(Map("value" -> ""))
-
-          val view = application.injector.instanceOf[AddItemMoreInformationView]
-
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
@@ -176,15 +147,14 @@ class AddItemMoreInformationControllerSpec extends SpecBase
             form = boundForm,
             page = yesNoPage,
             action = submitAction,
-            item = itemWithPackaging,
-            cnCodeInformation = CnCodeInformation("", "", `1`)
+            item = item1WithReferenceData,
+            cnCodeInformation = cnCodeInfo
           )(dataRequest(request), messages(application)).toString
         }
 
         "must redirect to Journey Recovery for a GET if no existing data is found" in new Fixture(None) {
 
           val request = FakeRequest(GET, url)
-
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
@@ -194,7 +164,6 @@ class AddItemMoreInformationControllerSpec extends SpecBase
         "must redirect to Journey Recovery for a POST if no existing data is found" in new Fixture(None) {
 
           val request = FakeRequest(POST, url).withFormUrlEncodedBody(("value", "true"))
-
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER

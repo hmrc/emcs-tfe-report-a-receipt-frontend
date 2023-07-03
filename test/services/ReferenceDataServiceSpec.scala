@@ -38,7 +38,6 @@ class ReferenceDataServiceSpec extends SpecBase
 
   val itemWithPackaging = item1.copy(packaging = Seq(boxPackage.copy(typeOfPackage = "Box")))
   val itemWithPackagingAndWine = itemWithPackaging.copy(wineProduct = Some(wineProduct.copy(wineOperations = Some(Seq("Acidification")))))
-  val cnCodeInfo = CnCodeInformation("", "", `1`)
 
   ".getMovementItemsWithReferenceData(items: Seq[MovementItem])" - {
 

@@ -17,13 +17,15 @@
 package controllers
 
 import base.SpecBase
-import mocks.services.{MockGetCnCodeInformationService, MockGetPackagingTypesService, MockGetWineOperationsService, MockUserAnswersService}
+import mocks.services.{MockGetCnCodeInformationService, MockGetPackagingTypesService, MockGetWineOperationsService, MockReferenceDataService, MockUserAnswersService}
 import models.ReferenceDataUnitOfMeasure.`1`
+import models.UserAnswers
 import models.response.referenceData.CnCodeInformation
 import play.api.inject.bind
+import play.api.mvc.Results.Redirect
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.{GetCnCodeInformationService, GetPackagingTypesService, GetWineOperationsService}
+import services.{GetCnCodeInformationService, GetPackagingTypesService, GetWineOperationsService, ReferenceDataService}
 import utils.JsonOptionFormatter
 import views.html.ItemDetailsView
 
@@ -32,9 +34,17 @@ import scala.concurrent.Future
 class ItemDetailsControllerSpec extends SpecBase
   with JsonOptionFormatter
   with MockUserAnswersService
-  with MockGetCnCodeInformationService
-  with MockGetPackagingTypesService
-  with MockGetWineOperationsService {
+  with MockReferenceDataService {
+
+  class Fixture(val userAnswers: Option[UserAnswers] = Some(emptyUserAnswers)) {
+    val application = applicationBuilder(userAnswers)
+      .overrides(
+        bind[ReferenceDataService].toInstance(mockReferenceDataService)
+      )
+      .build()
+
+    lazy val view = application.injector.instanceOf[ItemDetailsView]
+  }
 
   def onPageLoadUrl(idx: Int): String = routes.ItemDetailsController.onPageLoad(testErn, testArc, idx).url
 
@@ -42,91 +52,51 @@ class ItemDetailsControllerSpec extends SpecBase
 
     "when calling .onPageLoad()" - {
 
-      "must return OK and the correct view for a GET" in {
+      "must return OK and the correct view for a GET" in new Fixture() {
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService),
-            bind[GetPackagingTypesService].toInstance(mockGetPackagingTypesService),
-            bind[GetWineOperationsService].toInstance(mockGetWineOperationsService)
-          )
-          .build()
+        MockReferenceDataService.itemWithReferenceData(item1).onCall(
+          MockReferenceDataService.itemWithReferenceDataSuccessHandler(item1WithReferenceData, cnCodeInfo)
+        )
 
-        MockGetPackagingTypesService.getPackagingTypes(Seq(item1)).returns(Future.successful(Seq(item1)))
+        val request = FakeRequest(GET, onPageLoadUrl(idx = 1))
+        val result = route(application, request).value
 
-        MockGetWineOperationsService.getWineOperations(Seq(item1)).returns(Future.successful(Seq(item1)))
-
-        MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq((item1, CnCodeInformation("", "", `1`)))))
-
-        running(application) {
-          val request = FakeRequest(GET, onPageLoadUrl(idx = 1))
-
-          val result = route(application, request).value
-
-          val view = application.injector.instanceOf[ItemDetailsView]
-
-          status(result) mustEqual OK
-          contentAsString(result) mustEqual view(item1, CnCodeInformation("", "", `1`))(dataRequest(request), messages(application)).toString
-        }
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(item1WithReferenceData, cnCodeInfo)(dataRequest(request), messages(application)).toString
       }
 
       "must redirect to /select-items-give-information" - {
 
-        "when the item doesn't exist in UserAnswers" in {
-          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-            .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService),
-              bind[GetPackagingTypesService].toInstance(mockGetPackagingTypesService),
-              bind[GetWineOperationsService].toInstance(mockGetWineOperationsService))
-            .build()
+        "when the item doesn't exist in UserAnswers" in new Fixture() {
 
-          running(application) {
-            val request = FakeRequest(GET, onPageLoadUrl(idx = 3))
-
-            val result = route(application, request).value
-
-            status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustEqual routes.SelectItemsController.onPageLoad(testErn, testArc).url
-          }
-        }
-
-        "when one of the service calls returns no data" in {
-          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-            .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService),
-              bind[GetPackagingTypesService].toInstance(mockGetPackagingTypesService),
-              bind[GetWineOperationsService].toInstance(mockGetWineOperationsService))
-            .build()
-
-          MockGetPackagingTypesService.getPackagingTypes(Seq(item1)).returns(Future.successful(Seq()))
-
-          MockGetWineOperationsService.getWineOperations(Seq()).returns(Future.successful(Seq()))
-
-          MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq()).returns(Future.successful(Seq()))
-
-          running(application) {
-            val request = FakeRequest(GET, onPageLoadUrl(idx = 1))
-
-            val result = route(application, request).value
-
-            status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustEqual routes.SelectItemsController.onPageLoad(testErn, testArc).url
-          }
-        }
-      }
-
-      "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
-        val application = applicationBuilder(userAnswers = None)
-          .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService))
-          .build()
-
-        running(application) {
-          val request = FakeRequest(GET, onPageLoadUrl(3))
-
+          val request = FakeRequest(GET, onPageLoadUrl(idx = 3))
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad(testErn, testArc).url
+          redirectLocation(result).value mustEqual routes.SelectItemsController.onPageLoad(testErn, testArc).url
         }
+
+        "when one of the service calls returns no data" in new Fixture() {
+
+          MockReferenceDataService.itemWithReferenceData(item1).returns(
+            Future.successful(Redirect(routes.SelectItemsController.onPageLoad(testErn, testArc)))
+          )
+
+          val request = FakeRequest(GET, onPageLoadUrl(idx = 1))
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual routes.SelectItemsController.onPageLoad(testErn, testArc).url
+        }
+      }
+
+      "must redirect to Journey Recovery for a GET if no existing data is found" in new Fixture(None) {
+
+        val request = FakeRequest(GET, onPageLoadUrl(3))
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad(testErn, testArc).url
       }
     }
   }

@@ -38,20 +38,10 @@ class ReferenceDataService @Inject()(packagingTypesService: GetPackagingTypesSer
       }
     }
 
-  def itemsWithReferenceData(items: Seq[MovementItem])(f: Seq[(MovementItem, CnCodeInformation)] => Future[Result])
-                            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Result] =
-    packagingTypesService.getPackagingTypes(items).flatMap {
-      wineOperationsService.getWineOperations(_).flatMap {
-        cnCodeInformation.getCnCodeInformationWithMovementItems(_).flatMap {
-          f(_)
-        }
-      }
-    }
-
   def itemWithReferenceData(item: MovementItem)(f: (MovementItem, CnCodeInformation) => Future[Result])
                            (implicit hc: HeaderCarrier, ec: ExecutionContext, request: DataRequest[_]): Future[Result] =
     getMovementItemsWithReferenceData(Seq(item)).flatMap {
-      case (item, cnCodeInformation) +: Nil =>
+      case (item, cnCodeInformation) :: Nil =>
         f(item, cnCodeInformation)
       case _ =>
         logger.warn(s"[itemWithReferenceData] Problem retrieving reference data for" +

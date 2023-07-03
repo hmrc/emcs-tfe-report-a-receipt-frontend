@@ -17,7 +17,7 @@
 package controllers
 
 import base.SpecBase
-import mocks.services.{MockGetCnCodeInformationService, MockGetPackagingTypesService, MockUserAnswersService}
+import mocks.services.{MockGetCnCodeInformationService, MockGetPackagingTypesService, MockGetWineOperationsService, MockUserAnswersService}
 import models.ReferenceDataUnitOfMeasure.`1`
 import models.WrongWithMovement
 import models.WrongWithMovement.Damaged
@@ -27,7 +27,7 @@ import pages.unsatisfactory.individualItems.{AddItemDamageInformationPage, Check
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.{GetCnCodeInformationService, GetPackagingTypesService}
+import services.{GetCnCodeInformationService, GetPackagingTypesService, GetWineOperationsService}
 import utils.JsonOptionFormatter
 import views.html.SelectItemsView
 
@@ -37,6 +37,7 @@ class SelectItemsControllerSpec extends SpecBase
   with JsonOptionFormatter
   with MockUserAnswersService
   with MockGetCnCodeInformationService
+  with MockGetWineOperationsService
   with MockGetPackagingTypesService {
 
   lazy val loadListUrl: String = routes.SelectItemsController.onPageLoad(testErn, testArc).url
@@ -50,7 +51,8 @@ class SelectItemsControllerSpec extends SpecBase
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
             bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService),
-            bind[GetPackagingTypesService].toInstance(mockGetPackagingTypesService)
+            bind[GetPackagingTypesService].toInstance(mockGetPackagingTypesService),
+            bind[GetWineOperationsService].toInstance(mockGetWineOperationsService)
           )
           .build()
 
@@ -67,6 +69,8 @@ class SelectItemsControllerSpec extends SpecBase
           item1.copy(packaging = Seq(updatedBoxPackage)),
           item2.copy(packaging = Seq(updatedBoxPackage, updatedCratePackage))
         )))
+
+        MockGetWineOperationsService.getWineOperations(Seq(item1, item2)).returns(Future.successful(Seq(item1, item2)))
 
         running(application) {
           val request = FakeRequest(GET, loadListUrl)

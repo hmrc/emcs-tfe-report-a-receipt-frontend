@@ -27,8 +27,8 @@ import play.api.mvc.{Action, AnyContent, InjectedController}
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class FeatureSwitchApiController @Inject()(featureSwitchService: FeatureSwitchService,
-                                           override val config: AppConfig) extends InjectedController with FeatureSwitching {
+class FeatureSwitchApiController @Inject()(featureSwitchService: FeatureSwitchService)
+                                          (implicit val config: AppConfig) extends InjectedController with FeatureSwitching {
 
   def getFeatureSwitches: Action[AnyContent] = Action {
     Ok(Json.toJson(featureSwitchService.getFeatureSwitches()))

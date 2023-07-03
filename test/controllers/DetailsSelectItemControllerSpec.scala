@@ -166,7 +166,7 @@ class DetailsSelectItemControllerSpec extends SpecBase
               val result = route(application, request).value
 
               status(result) mustEqual SEE_OTHER
-              redirectLocation(result).value mustEqual routes.WrongWithMovementController.loadWrongWithItem(testErn, testArc, 1, NormalMode).url
+              redirectLocation(result).value mustEqual routes.WrongWithItemController.loadWrongWithItem(testErn, testArc, 1, NormalMode).url
             }
           }
         }

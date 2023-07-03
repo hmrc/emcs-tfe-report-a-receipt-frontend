@@ -54,7 +54,7 @@ class WrongWithMovementControllerSpec extends SpecBase with MockUserAnswersServi
   lazy val wrongWithMovementRoute: String = routes.WrongWithMovementController.loadWrongWithMovement(testErn, testArc, NormalMode).url
   lazy val wrongWithMovementSubmitAction: Call = routes.WrongWithMovementController.submitWrongWithMovement(testErn, testArc, NormalMode)
 
-  def wrongWithItemRoute(idx: Int): String = routes.WrongWithMovementController.loadWrongWithItem(testErn, testArc, idx, NormalMode).url
+  def wrongWithItemRoute(idx: Int): String = routes.WrongWithItemController.loadWrongWithItem(testErn, testArc, idx, NormalMode).url
 
   def wrongWithItemSubmitAction(idx: Int): Call = routes.WrongWithMovementController.submitWrongWithItem(testErn, testArc, idx, NormalMode)
 

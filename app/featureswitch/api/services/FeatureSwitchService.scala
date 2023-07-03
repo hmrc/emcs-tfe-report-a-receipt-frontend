@@ -23,8 +23,8 @@ import featureswitch.core.models.FeatureSwitchSetting
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class FeatureSwitchService @Inject()(featureSwitchRegistry: FeatureSwitchRegistry,
-                                     override val config: AppConfig) extends FeatureSwitching {
+class FeatureSwitchService @Inject()(featureSwitchRegistry: FeatureSwitchRegistry)
+                                     (implicit val config: AppConfig) extends FeatureSwitching {
 
   def getFeatureSwitches(): Seq[FeatureSwitchSetting] =
     featureSwitchRegistry.switches.map(

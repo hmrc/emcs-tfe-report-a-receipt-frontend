@@ -147,7 +147,7 @@ class NavigatorSpec extends SpecBase {
           "must go to the WrongWithItem page at the specified index" in {
 
             navigator.nextPage(SelectItemsPage(3), NormalMode, emptyUserAnswers) mustBe
-              routes.WrongWithMovementController.loadWrongWithItem(testErn, testArc, 3, NormalMode)
+              routes.WrongWithItemController.loadWrongWithItem(testErn, testArc, 3, NormalMode)
           }
         }
       }
@@ -172,7 +172,7 @@ class NavigatorSpec extends SpecBase {
             val userAnswers = emptyUserAnswers.set(RefusingAnyAmountOfItemPage(1), false)
 
             navigator.nextPage(RefusingAnyAmountOfItemPage(1), NormalMode, userAnswers) mustBe
-              routes.WrongWithMovementController.loadWrongWithItem(testErn, testArc, 1, NormalMode)
+              routes.WrongWithItemController.loadWrongWithItem(testErn, testArc, 1, NormalMode)
           }
         }
       }
@@ -182,7 +182,7 @@ class NavigatorSpec extends SpecBase {
         "must go to the WrongWithItem page" in {
 
           navigator.nextPage(RefusedAmountPage(1), NormalMode, emptyUserAnswers) mustBe
-            routes.WrongWithMovementController.loadWrongWithItem(testErn, testArc, 1, NormalMode)
+            routes.WrongWithItemController.loadWrongWithItem(testErn, testArc, 1, NormalMode)
         }
       }
 
@@ -253,7 +253,7 @@ class NavigatorSpec extends SpecBase {
 
           "must go back to the wrongWithItem page" in {
             navigator.nextPage(WrongWithItemPage(1), NormalMode, emptyUserAnswers) mustBe
-              routes.WrongWithMovementController.loadWrongWithItem(testErn, testArc, idx = 1, mode = NormalMode)
+              routes.WrongWithItemController.loadWrongWithItem(testErn, testArc, idx = 1, mode = NormalMode)
           }
         }
 
@@ -549,7 +549,7 @@ class NavigatorSpec extends SpecBase {
               .set(AddItemSealsInformationPage(1), false)
 
             navigator.nextPage(AddItemSealsInformationPage(1), NormalMode, userAnswers) mustBe
-              routes.WrongWithMovementController.loadWrongWithItem(userAnswers.ern, userAnswers.arc, 1, NormalMode)
+              routes.WrongWithItemController.loadWrongWithItem(userAnswers.ern, userAnswers.arc, 1, NormalMode)
           }
         }
 

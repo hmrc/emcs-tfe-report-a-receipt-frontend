@@ -35,7 +35,7 @@ object WrongWithItemMessages {
     val hiddenChangeLinkText: String
   }
   object English extends ViewMessages with BaseEnglish {
-    override val heading = "What’s wrong with this item?"
+    override val heading = "What’s wrong with item {0}?"
     override val title = title(heading)
     override val hint = "Select all that apply."
     override val moreOrLessThanExpected: String = "I received a shortage or excess"
@@ -52,7 +52,7 @@ object WrongWithItemMessages {
   }
 
   object Welsh extends ViewMessages with BaseWelsh {
-    override val heading = "What’s wrong with this item?"
+    override val heading = "What’s wrong with item {0}?"
     override val title = title(heading)
     override val hint = "Select all that apply."
     override val moreOrLessThanExpected: String = "I received a shortage or excess"

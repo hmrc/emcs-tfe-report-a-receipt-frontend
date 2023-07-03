@@ -17,6 +17,8 @@
 @import models.requests.DataRequest
 @import pages.QuestionPage
 @import config.AppConfig
+@import models.response.emcsTfe.MovementItem
+@import models.response.referenceData.CnCodeInformation
 
 @this(
         layout: templates.Layout,
@@ -25,12 +27,20 @@
         govukCheckboxes: GovukCheckboxes,
         govukButton: GovukButton,
         h1: components.h1,
-        continueOrExit: components.continueOrExit
+        p: components.p,
+        continueOrExit: components.continueOrExit,
+        itemDetailSection: components.itemDetailSection
 )
 
-@(page: QuestionPage[Set[WrongWithMovement]], form: Form[_], action: Call)(implicit request: DataRequest[_], messages: Messages, config: AppConfig)
+@(
+        page: QuestionPage[Set[WrongWithMovement]],
+        form: Form[_],
+        action: Call,
+        item: MovementItem,
+        cnCodeInfo: CnCodeInformation
+)(implicit request: DataRequest[_], messages: Messages, config: AppConfig)
 
-@layout(pageTitle = title(form, messages(s"$page.title"))) {
+@layout(pageTitle = title(form, messages(s"$page.title", item.itemUniqueReference))) {
 
     @formHelper(action, 'autoComplete -> "off") {
 
@@ -44,7 +54,7 @@
                 name   = "value",
                 legend = LegendViewModel(HtmlContent(heading)).withCssClass("govuk-fieldset__legend govuk-fieldset__legend--l"),
                 items  = WrongWithMovement.checkboxItems(page)
-            ).withHint(HintViewModel(Text(messages(s"$page.hint"))))
+            ).withHint(HintViewModel(HtmlContent(hint)))
         )
 
         @continueOrExit()
@@ -52,7 +62,14 @@
 }
 
 @heading = {
-    @h1(s"$page.heading", Some(messages("arc.subHeading", request.arc)), "govuk-fieldset__heading")
+    @h1(messages(s"$page.heading", item.itemUniqueReference), Some(messages("arc.subHeading", request.arc)), "govuk-fieldset__heading")
+}
+
+@hint = {
+    @itemDetailSection(s"$page.item", item, cnCodeInfo)
+    @p(classes = "govuk-hint") {
+        @messages(s"$page.hint")
+    }
 }
 
 @{

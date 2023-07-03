@@ -16,6 +16,7 @@
 
 package controllers
 
+import config.AppConfig
 import controllers.actions._
 import forms.WrongWithMovementFormProvider
 import models.{Mode, UserAnswers, WrongWithMovement}
@@ -43,7 +44,7 @@ class WrongWithMovementController @Inject()(
                                              formProvider: WrongWithMovementFormProvider,
                                              val controllerComponents: MessagesControllerComponents,
                                              view: WrongWithMovementView
-                                           ) extends BaseNavigationController with AuthActionHelper {
+                                           )(implicit config: AppConfig) extends BaseNavigationController with AuthActionHelper {
 
   def loadWrongWithMovement(ern: String, arc: String, mode: Mode): Action[AnyContent] =
     onPageLoad(WrongWithMovementPage, ern, arc, routes.WrongWithMovementController.submitWrongWithMovement(ern, arc, mode))
@@ -91,51 +92,6 @@ class WrongWithMovementController @Inject()(
           )
 
           saveAndRedirect(WrongWithMovementPage, values, newUserAnswers, mode)
-        }
-      )
-    }
-  }
-
-  def loadWrongWithItem(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
-    onPageLoad(WrongWithItemPage(idx), ern, arc, routes.WrongWithMovementController.submitWrongWithItem(ern, arc, idx, mode))
-
-  def submitWrongWithItem(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] = {
-    authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
-      formProvider(WrongWithItemPage(idx)).bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(
-            WrongWithItemPage(idx),
-            formWithErrors,
-            routes.WrongWithMovementController.submitWrongWithItem(ern, arc, idx, mode)
-          ))),
-        (values: Set[WrongWithMovement]) => {
-
-          val newUserAnswers: UserAnswers = cleanseUserAnswersIfValueHasChanged(
-            page = WrongWithItemPage(idx),
-            newAnswer = values,
-            cleansingFunction = {
-              val allOptionsNotChecked: Seq[WrongWithMovement] = WrongWithMovement.individualItemValues.filterNot(values.contains)
-
-              allOptionsNotChecked.foldLeft(request.userAnswers) {
-                case (answers, WrongWithMovement.ShortageOrExcess) =>
-                  answers
-                    .remove(ItemShortageOrExcessPage(idx))
-                case (answers, WrongWithMovement.Damaged) =>
-                  answers
-                    .remove(AddItemDamageInformationPage(idx))
-                    .remove(ItemDamageInformationPage(idx))
-                case (answers, WrongWithMovement.BrokenSeals) =>
-                  answers
-                    .remove(AddItemSealsInformationPage(idx))
-                    .remove(ItemSealsInformationPage(idx))
-                case (answers, WrongWithMovement.Other) =>
-                  answers
-                    .remove(ItemOtherInformationPage(idx))
-                case (answers, _) => answers
-              }
-            }
-          )
-          saveAndRedirect(WrongWithItemPage(idx), values, newUserAnswers, mode)
         }
       )
     }

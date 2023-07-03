@@ -28,7 +28,7 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 @Singleton
 class AppConfig @Inject()(servicesConfig: ServicesConfig, configuration: Configuration) extends FeatureSwitching {
 
-  override lazy val config: AppConfig = this
+  implicit val config: AppConfig = this
 
   lazy val host: String    = configuration.get[String]("host")
   lazy val appName: String = configuration.get[String]("appName")

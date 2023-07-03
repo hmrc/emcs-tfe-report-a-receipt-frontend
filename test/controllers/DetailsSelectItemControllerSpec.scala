@@ -59,40 +59,46 @@ class DetailsSelectItemControllerSpec extends SpecBase
     "when calling .onPageLoad()" - {
 
       "must return OK and the correct view for a GET" in new Fixture() {
+        running(application) {
 
-        MockReferenceDataService.itemWithReferenceData(item1).onCall(
-          MockReferenceDataService.itemWithReferenceDataSuccessHandler(item1WithReferenceData, cnCodeInfo)
-        )
-
-        val request = FakeRequest(GET, detailsSelectItemRoute)
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, item1WithReferenceData, cnCodeInfo)(dataRequest(request), messages(application)).toString
-      }
-
-      "must redirect to /select-items" - {
-
-        "when the item doesn't exist in UserAnswers" in new Fixture() {
-
-          val request = FakeRequest(GET, routes.DetailsSelectItemController.onPageLoad(testErn, testArc, 3).url)
-          val result = route(application, request).value
-
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual routes.SelectItemsController.onPageLoad(testErn, testArc).url
-        }
-
-        "when the call to get CN information returned no data" in new Fixture() {
-
-          MockReferenceDataService.itemWithReferenceData(item1).returns(
-            Future.successful(Redirect(routes.SelectItemsController.onPageLoad(testErn, testArc)))
+          MockReferenceDataService.itemWithReferenceData(item1).onCall(
+            MockReferenceDataService.itemWithReferenceDataSuccessHandler(item1WithReferenceData, cnCodeInfo)
           )
 
           val request = FakeRequest(GET, detailsSelectItemRoute)
           val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual routes.SelectItemsController.onPageLoad(testErn, testArc).url
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view(form, item1WithReferenceData, cnCodeInfo)(dataRequest(request), messages(application)).toString
+        }
+      }
+
+      "must redirect to /select-items" - {
+
+        "when the item doesn't exist in UserAnswers" in new Fixture() {
+          running(application) {
+
+            val request = FakeRequest(GET, routes.DetailsSelectItemController.onPageLoad(testErn, testArc, 3).url)
+            val result = route(application, request).value
+
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustEqual routes.SelectItemsController.onPageLoad(testErn, testArc).url
+          }
+        }
+
+        "when the call to get CN information returned no data" in new Fixture() {
+          running(application) {
+
+            MockReferenceDataService.itemWithReferenceData(item1).returns(
+              Future.successful(Redirect(routes.SelectItemsController.onPageLoad(testErn, testArc)))
+            )
+
+            val request = FakeRequest(GET, detailsSelectItemRoute)
+            val result = route(application, request).value
+
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustEqual routes.SelectItemsController.onPageLoad(testErn, testArc).url
+          }
         }
       }
 
@@ -103,21 +109,25 @@ class DetailsSelectItemControllerSpec extends SpecBase
       "must redirect to /select-items" - {
 
         "when the item doesn't exist in UserAnswers" in new Fixture() {
+          running(application) {
 
-          val request = FakeRequest(POST, routes.DetailsSelectItemController.onPageLoad(testErn, testArc, 3).url)
-          val result = route(application, request).value
+            val request = FakeRequest(POST, routes.DetailsSelectItemController.onPageLoad(testErn, testArc, 3).url)
+            val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual routes.SelectItemsController.onPageLoad(testErn, testArc).url
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustEqual routes.SelectItemsController.onPageLoad(testErn, testArc).url
+          }
         }
 
         "when the user answer NO to the question on the page" in new Fixture() {
+          running(application) {
 
-          val request = FakeRequest(POST, detailsSelectItemRoute).withFormUrlEncodedBody(("value", "false"))
-          val result = route(application, request).value
+            val request = FakeRequest(POST, detailsSelectItemRoute).withFormUrlEncodedBody(("value", "false"))
+            val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual routes.SelectItemsController.onPageLoad(testErn, testArc).url
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustEqual routes.SelectItemsController.onPageLoad(testErn, testArc).url
+          }
         }
       }
 
@@ -126,16 +136,18 @@ class DetailsSelectItemControllerSpec extends SpecBase
         "must redirect to /choose-refuse-item" - {
 
           "when the user answers YES to the question on the page" in new Fixture(Some(emptyUserAnswers.set(AcceptMovementPage, PartiallyRefused))) {
+            running(application) {
 
-            val updatedAnswers = userAnswers.get.set(SelectItemsPage(1), item1.itemUniqueReference)
+              val updatedAnswers = userAnswers.get.set(SelectItemsPage(1), item1.itemUniqueReference)
 
-            MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
+              MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
 
-            val request = FakeRequest(POST, detailsSelectItemRoute).withFormUrlEncodedBody(("value", "true"))
-            val result = route(application, request).value
+              val request = FakeRequest(POST, detailsSelectItemRoute).withFormUrlEncodedBody(("value", "true"))
+              val result = route(application, request).value
 
-            status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustEqual routes.RefusingAnyAmountOfItemController.onPageLoad(testErn, testArc, 1, NormalMode).url
+              status(result) mustEqual SEE_OTHER
+              redirectLocation(result).value mustEqual routes.RefusingAnyAmountOfItemController.onPageLoad(testErn, testArc, 1, NormalMode).url
+            }
           }
         }
       }
@@ -145,31 +157,35 @@ class DetailsSelectItemControllerSpec extends SpecBase
         "must redirect to /what-wrong-item" - {
 
           "when the user answers YES to the question on the page" in new Fixture(Some(emptyUserAnswers.set(AcceptMovementPage, Unsatisfactory))) {
+            running(application) {
 
-            val updatedAnswers = userAnswers.get.set(SelectItemsPage(1), item1.itemUniqueReference)
-            MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
+              val updatedAnswers = userAnswers.get.set(SelectItemsPage(1), item1.itemUniqueReference)
+              MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
 
-            val request = FakeRequest(POST, detailsSelectItemRoute).withFormUrlEncodedBody(("value", "true"))
-            val result = route(application, request).value
+              val request = FakeRequest(POST, detailsSelectItemRoute).withFormUrlEncodedBody(("value", "true"))
+              val result = route(application, request).value
 
-            status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustEqual routes.WrongWithMovementController.loadWrongWithItem(testErn, testArc, 1, NormalMode).url
+              status(result) mustEqual SEE_OTHER
+              redirectLocation(result).value mustEqual routes.WrongWithMovementController.loadWrongWithItem(testErn, testArc, 1, NormalMode).url
+            }
           }
         }
       }
 
       "must return a Bad Request and errors when invalid data is submitted" in new Fixture() {
+        running(application) {
 
-        MockReferenceDataService.itemWithReferenceData(item1).onCall(
-          MockReferenceDataService.itemWithReferenceDataSuccessHandler(item1WithReferenceData, cnCodeInfo)
-        )
+          MockReferenceDataService.itemWithReferenceData(item1).onCall(
+            MockReferenceDataService.itemWithReferenceDataSuccessHandler(item1WithReferenceData, cnCodeInfo)
+          )
 
-        val boundForm = form.bind(Map("value" -> ""))
-        val request = FakeRequest(POST, detailsSelectItemRoute).withFormUrlEncodedBody(("value", ""))
-        val result = route(application, request).value
+          val boundForm = form.bind(Map("value" -> ""))
+          val request = FakeRequest(POST, detailsSelectItemRoute).withFormUrlEncodedBody(("value", ""))
+          val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, item1WithReferenceData, cnCodeInfo)(dataRequest(request), messages(application)).toString
+          status(result) mustEqual BAD_REQUEST
+          contentAsString(result) mustEqual view(boundForm, item1WithReferenceData, cnCodeInfo)(dataRequest(request), messages(application)).toString
+        }
       }
     }
   }

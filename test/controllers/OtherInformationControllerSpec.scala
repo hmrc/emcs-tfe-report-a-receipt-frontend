@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import forms.OtherInformationFormProvider
 import mocks.services.MockUserAnswersService
-import models.NormalMode
+import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import pages.unsatisfactory._
 import pages.unsatisfactory.individualItems.ItemOtherInformationPage
@@ -30,11 +30,21 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.UserAnswersService
 import utils.JsonOptionFormatter
-import views.html.OtherInformationView
+import views.html.{MoreInformationView, OtherInformationView}
 
 import scala.concurrent.Future
 
 class OtherInformationControllerSpec extends SpecBase with JsonOptionFormatter with MockUserAnswersService {
+
+  class Fixture(val userAnswers: Option[UserAnswers] = Some(emptyUserAnswers)) {
+    val application = applicationBuilder(userAnswers)
+      .overrides(
+        bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+        bind[UserAnswersService].toInstance(mockUserAnswersService)
+      ).build()
+
+    lazy val view = application.injector.instanceOf[OtherInformationView]
+  }
 
   def onwardRoute: Call = Call("GET", "/foo")
 
@@ -55,33 +65,23 @@ class OtherInformationControllerSpec extends SpecBase with JsonOptionFormatter w
 
       val form = formProvider(Some(page))
 
-      "must return OK and the correct view for a GET" in {
-
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
+      "must return OK and the correct view for a GET" in new Fixture() {
         running(application) {
+
           val request = FakeRequest(GET, url)
-
           val result = route(application, request).value
-
-          val view = application.injector.instanceOf[OtherInformationView]
 
           status(result) mustEqual OK
           contentAsString(result) mustEqual view(page, form, submitAction)(dataRequest(request), messages(application)).toString
         }
       }
 
-      "must populate the view correctly on a GET when the question has previously been answered" in {
-
-        val userAnswers = emptyUserAnswers.set(page, "answer")
-
-        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
+      "must populate the view correctly on a GET when the question has previously been answered" in new Fixture(Some(
+        emptyUserAnswers.set(page, "answer")
+      )) {
         running(application) {
+
           val request = FakeRequest(GET, url)
-
-          val view = application.injector.instanceOf[OtherInformationView]
-
           val result = route(application, request).value
 
           status(result) mustEqual OK
@@ -89,21 +89,12 @@ class OtherInformationControllerSpec extends SpecBase with JsonOptionFormatter w
         }
       }
 
-      "must redirect to the next page when valid data is submitted" in {
-
-        val updatedAnswers = emptyUserAnswers.set(page, "answer")
-
-        MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
-
-        val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers))
-            .overrides(
-              bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-              bind[UserAnswersService].toInstance(mockUserAnswersService)
-            )
-            .build()
-
+      "must redirect to the next page when valid data is submitted" in new Fixture() {
         running(application) {
+
+          val updatedAnswers = emptyUserAnswers.set(page, "answer")
+          MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
+
           val request =
             FakeRequest(POST, url)
               .withFormUrlEncodedBody(("more-information", "answer"))
@@ -115,25 +106,14 @@ class OtherInformationControllerSpec extends SpecBase with JsonOptionFormatter w
         }
       }
 
-      "must return a Bad Request and errors when NO data is submitted" in {
-
-        val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers))
-            .overrides(
-              bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-              bind[UserAnswersService].toInstance(mockUserAnswersService)
-            )
-            .build()
-
+      "must return a Bad Request and errors when NO data is submitted" in new Fixture() {
         running(application) {
+
           val request =
             FakeRequest(POST, url)
               .withFormUrlEncodedBody(("more-information", ""))
 
           val boundForm = form.bind(Map("more-information" -> ""))
-
-          val view = application.injector.instanceOf[OtherInformationView]
-
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
@@ -141,17 +121,9 @@ class OtherInformationControllerSpec extends SpecBase with JsonOptionFormatter w
         }
       }
 
-      "must return a Bad Request and errors when only whitespace is submitted" in {
-
-        val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers))
-            .overrides(
-              bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-              bind[UserAnswersService].toInstance(mockUserAnswersService)
-            )
-            .build()
-
+      "must return a Bad Request and errors when only whitespace is submitted" in new Fixture() {
         running(application) {
+
           val request =
             FakeRequest(POST, url)
               .withFormUrlEncodedBody(("more-information",
@@ -166,9 +138,6 @@ class OtherInformationControllerSpec extends SpecBase with JsonOptionFormatter w
                   |""".stripMargin))
 
           val boundForm = form.bind(Map("more-information" -> ""))
-
-          val view = application.injector.instanceOf[OtherInformationView]
-
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
@@ -176,25 +145,14 @@ class OtherInformationControllerSpec extends SpecBase with JsonOptionFormatter w
         }
       }
 
-      "must return a Bad Request and errors when a non-FormUrlEncodedBody is submitted" in {
-
-        val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers))
-            .overrides(
-              bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-              bind[UserAnswersService].toInstance(mockUserAnswersService)
-            )
-            .build()
-
+      "must return a Bad Request and errors when a non-FormUrlEncodedBody is submitted" in new Fixture() {
         running(application) {
+
           val request =
             FakeRequest(POST, url)
               .withJsonBody(Json.obj("more-information" -> ""))
 
           val boundForm = form.bind(Map("more-information" -> ""))
-
-          val view = application.injector.instanceOf[OtherInformationView]
-
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
@@ -202,19 +160,14 @@ class OtherInformationControllerSpec extends SpecBase with JsonOptionFormatter w
         }
       }
 
-      "must return a Bad Request and errors when invalid data is submitted" in {
-
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
+      "must return a Bad Request and errors when invalid data is submitted" in new Fixture() {
         running(application) {
+
           val request =
             FakeRequest(POST, url)
               .withFormUrlEncodedBody(("more-information", "<>"))
 
           val boundForm = form.bind(Map("more-information" -> "<>"))
-
-          val view = application.injector.instanceOf[OtherInformationView]
-
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
@@ -222,13 +175,10 @@ class OtherInformationControllerSpec extends SpecBase with JsonOptionFormatter w
         }
       }
 
-      "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
-        val application = applicationBuilder(userAnswers = None).build()
-
+      "must redirect to Journey Recovery for a GET if no existing data is found" in new Fixture(None) {
         running(application) {
-          val request = FakeRequest(GET, url)
 
+          val request = FakeRequest(GET, url)
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
@@ -236,11 +186,9 @@ class OtherInformationControllerSpec extends SpecBase with JsonOptionFormatter w
         }
       }
 
-      "must redirect to Journey Recovery for a POST if no existing data is found" in {
-
-        val application = applicationBuilder(userAnswers = None).build()
-
+      "must redirect to Journey Recovery for a POST if no existing data is found" in new Fixture(None) {
         running(application) {
+
           val request =
             FakeRequest(POST, url)
               .withFormUrlEncodedBody(("more-information", "answer"))

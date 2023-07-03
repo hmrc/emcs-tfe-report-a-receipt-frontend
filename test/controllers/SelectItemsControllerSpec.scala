@@ -52,22 +52,24 @@ class SelectItemsControllerSpec extends SpecBase
     "when calling .onPageLoad()" - {
 
       "must return OK and the correct view for a GET" in new Fixture() {
+        running(application) {
 
-        MockReferenceDataService.getCnCodeInformationWithMovementItems(Seq(item1, item2)).returns(
-          Future.successful(Seq(
+          MockReferenceDataService.getCnCodeInformationWithMovementItems(Seq(item1, item2)).returns(
+            Future.successful(Seq(
+              item1WithReferenceData -> cnCodeInfo,
+              item2WithReferenceData -> cnCodeInfo
+            ))
+          )
+
+          val request = FakeRequest(GET, loadListUrl)
+          val result = route(application, request).value
+
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view(Seq(
             item1WithReferenceData -> cnCodeInfo,
             item2WithReferenceData -> cnCodeInfo
-          ))
-        )
-
-        val request = FakeRequest(GET, loadListUrl)
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(Seq(
-          item1WithReferenceData -> cnCodeInfo,
-          item2WithReferenceData -> cnCodeInfo
-        ))(dataRequest(request), messages(application)).toString
+          ))(dataRequest(request), messages(application)).toString
+        }
       }
 
       "must redirect to /add-to-list if filteredItems is empty" - {
@@ -79,22 +81,26 @@ class SelectItemsControllerSpec extends SpecBase
             .set(SelectItemsPage(2), 2)
             .set(CheckAnswersItemPage(2), true)
         )) {
+          running(application) {
+
+            val request = FakeRequest(GET, loadListUrl)
+            val result = route(application, request).value
+
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustEqual routes.AddedItemsController.onPageLoad(testErn, testArc).url
+          }
+        }
+      }
+
+      "must redirect to Journey Recovery for a GET if no existing data is found" in new Fixture(None) {
+        running(application) {
 
           val request = FakeRequest(GET, loadListUrl)
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual routes.AddedItemsController.onPageLoad(testErn, testArc).url
+          redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad(testErn, testArc).url
         }
-      }
-
-      "must redirect to Journey Recovery for a GET if no existing data is found" in new Fixture(None) {
-
-        val request = FakeRequest(GET, loadListUrl)
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad(testErn, testArc).url
       }
     }
 

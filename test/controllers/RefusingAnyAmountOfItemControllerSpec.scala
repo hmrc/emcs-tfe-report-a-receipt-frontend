@@ -18,17 +18,15 @@ package controllers
 
 import base.SpecBase
 import forms.RefusingAnyAmountOfItemFormProvider
-import mocks.services.{MockGetCnCodeInformationService, MockGetPackagingTypesService, MockGetWineOperationsService, MockReferenceDataService, MockUserAnswersService}
+import mocks.services.{MockReferenceDataService, MockUserAnswersService}
 import models.{NormalMode, UserAnswers}
-import models.ReferenceDataUnitOfMeasure.`1`
-import models.response.referenceData.CnCodeInformation
 import navigation.{FakeNavigator, Navigator}
 import pages.unsatisfactory.individualItems.{RefusingAnyAmountOfItemPage, SelectItemsPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.{GetCnCodeInformationService, GetPackagingTypesService, GetWineOperationsService, ReferenceDataService, UserAnswersService}
+import services.{ReferenceDataService, UserAnswersService}
 import views.html.RefusingAnyAmountOfItemView
 
 import scala.concurrent.Future
@@ -63,16 +61,18 @@ class RefusingAnyAmountOfItemControllerSpec extends SpecBase
     "must return OK and the correct view for a GET" in new Fixture(
       Some(emptyUserAnswers.set(SelectItemsPage(1), 1))
     ) {
+      running(application) {
 
-      MockReferenceDataService.itemWithReferenceData(item1).onCall {
-        MockReferenceDataService.itemWithReferenceDataSuccessHandler(item1WithReferenceData, cnCodeInfo)
+        MockReferenceDataService.itemWithReferenceData(item1).onCall {
+          MockReferenceDataService.itemWithReferenceDataSuccessHandler(item1WithReferenceData, cnCodeInfo)
+        }
+
+        val request = FakeRequest(GET, refusingAnyAmountOfItemRoute)
+        val result = route(application, request).value
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(form, submitAction, item1WithReferenceData, cnCodeInfo)(dataRequest(request), messages(application)).toString
       }
-
-      val request = FakeRequest(GET, refusingAnyAmountOfItemRoute)
-      val result = route(application, request).value
-
-      status(result) mustEqual OK
-      contentAsString(result) mustEqual view(form, submitAction, item1WithReferenceData, cnCodeInfo)(dataRequest(request), messages(application)).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in new Fixture(
@@ -80,16 +80,18 @@ class RefusingAnyAmountOfItemControllerSpec extends SpecBase
         .set(SelectItemsPage(1), 1)
         .set(RefusingAnyAmountOfItemPage(1), true))
     ) {
+      running(application) {
 
-      MockReferenceDataService.itemWithReferenceData(item1).onCall {
-        MockReferenceDataService.itemWithReferenceDataSuccessHandler(item1WithReferenceData, cnCodeInfo)
+        MockReferenceDataService.itemWithReferenceData(item1).onCall {
+          MockReferenceDataService.itemWithReferenceDataSuccessHandler(item1WithReferenceData, cnCodeInfo)
+        }
+
+        val request = FakeRequest(GET, refusingAnyAmountOfItemRoute)
+        val result = route(application, request).value
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(form.fill(true), submitAction, item1WithReferenceData, cnCodeInfo)(dataRequest(request), messages(application)).toString
       }
-
-      val request = FakeRequest(GET, refusingAnyAmountOfItemRoute)
-      val result = route(application, request).value
-
-      status(result) mustEqual OK
-      contentAsString(result) mustEqual view(form.fill(true), submitAction, item1WithReferenceData, cnCodeInfo)(dataRequest(request), messages(application)).toString
     }
 
     "must redirect to the next page when valid data is submitted" - {
@@ -100,18 +102,20 @@ class RefusingAnyAmountOfItemControllerSpec extends SpecBase
           .set(RefusingAnyAmountOfItemPage(1), false)
         )
       ) {
+        running(application) {
 
-        val updatedAnswers = emptyUserAnswers
-          .set(SelectItemsPage(1), 1)
-          .set(RefusingAnyAmountOfItemPage(1), true)
+          val updatedAnswers = emptyUserAnswers
+            .set(SelectItemsPage(1), 1)
+            .set(RefusingAnyAmountOfItemPage(1), true)
 
-        MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
+          MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
 
-        val request = FakeRequest(POST, refusingAnyAmountOfItemRoute).withFormUrlEncodedBody(("value", "true"))
-        val result = route(application, request).value
+          val request = FakeRequest(POST, refusingAnyAmountOfItemRoute).withFormUrlEncodedBody(("value", "true"))
+          val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual onwardRoute.url
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual onwardRoute.url
+        }
       }
 
       "and not delete the rest of the answers when the input answer is the same as the current answer" in new Fixture(
@@ -120,61 +124,71 @@ class RefusingAnyAmountOfItemControllerSpec extends SpecBase
           .set(RefusingAnyAmountOfItemPage(1), true)
         )
       ) {
+        running(application) {
 
-        MockUserAnswersService.set().never()
+          MockUserAnswersService.set().never()
 
-        val request = FakeRequest(POST, refusingAnyAmountOfItemRoute).withFormUrlEncodedBody(("value", "true"))
-        val result = route(application, request).value
+          val request = FakeRequest(POST, refusingAnyAmountOfItemRoute).withFormUrlEncodedBody(("value", "true"))
+          val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual onwardRoute.url
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual onwardRoute.url
+        }
       }
     }
 
     "must redirect to /select-items" - {
 
       "when the item doesn't exist in UserAnswers" in new Fixture() {
+        running(application) {
 
-        val request = FakeRequest(GET, refusingAnyAmountOfItemRoute)
-        val result = route(application, request).value
+          val request = FakeRequest(GET, refusingAnyAmountOfItemRoute)
+          val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.SelectItemsController.onPageLoad(testErn, testArc).url
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual routes.SelectItemsController.onPageLoad(testErn, testArc).url
+        }
       }
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in new Fixture(
       Some(emptyUserAnswers.set(SelectItemsPage(1), 1))
     ) {
+      running(application) {
 
-      MockReferenceDataService.itemWithReferenceData(item1).onCall {
-        MockReferenceDataService.itemWithReferenceDataSuccessHandler(item1WithReferenceData, cnCodeInfo)
+        MockReferenceDataService.itemWithReferenceData(item1).onCall {
+          MockReferenceDataService.itemWithReferenceDataSuccessHandler(item1WithReferenceData, cnCodeInfo)
+        }
+
+        val request = FakeRequest(POST, refusingAnyAmountOfItemRoute).withFormUrlEncodedBody(("value", ""))
+        val boundForm = form.bind(Map("value" -> ""))
+        val result = route(application, request).value
+
+        status(result) mustEqual BAD_REQUEST
+        contentAsString(result) mustEqual view(boundForm, submitAction, item1WithReferenceData, cnCodeInfo)(dataRequest(request), messages(application)).toString
       }
-
-      val request = FakeRequest(POST, refusingAnyAmountOfItemRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
-      val result = route(application, request).value
-
-      status(result) mustEqual BAD_REQUEST
-      contentAsString(result) mustEqual view(boundForm, submitAction, item1WithReferenceData, cnCodeInfo)(dataRequest(request), messages(application)).toString
     }
 
     "must redirect to Journey Recovery for a GET if no existing data is found" in new Fixture(None) {
+      running(application) {
 
-      val request = FakeRequest(GET, refusingAnyAmountOfItemRoute)
-      val result = route(application, request).value
+        val request = FakeRequest(GET, refusingAnyAmountOfItemRoute)
+        val result = route(application, request).value
 
-      status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad(testErn, testArc).url
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad(testErn, testArc).url
+      }
     }
 
     "must redirect to Journey Recovery for a POST if no existing data is found" in new Fixture(None) {
+      running(application) {
 
-      val request = FakeRequest(POST, refusingAnyAmountOfItemRoute).withFormUrlEncodedBody(("value", "true"))
-      val result = route(application, request).value
+        val request = FakeRequest(POST, refusingAnyAmountOfItemRoute).withFormUrlEncodedBody(("value", "true"))
+        val result = route(application, request).value
 
-      status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad(testErn, testArc).url
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad(testErn, testArc).url
+      }
     }
   }
 }

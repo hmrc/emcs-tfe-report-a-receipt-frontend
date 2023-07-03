@@ -41,20 +41,13 @@ class ConfirmationControllerSpec extends SpecBase {
       val testConfirmationDetails = ConfirmationDetails(
         testConfirmationReference,
         testReceiptDate,
-        Satisfactory.toString,
-        hasMovementShortage = false,
-        hasItemShortage = false,
-        hasMovementExcess = false,
-        hasItemExcess = false)
+        Satisfactory.toString
+      )
 
       "must return OK and the correct view for a GET" in new Fixture(Some(emptyUserAnswers.set(ConfirmationPage, testConfirmationDetails))) {
-
         running(application) {
-          val req = dataRequest(
-            request = request,
-            answers = emptyUserAnswers
-          )
 
+          val req = dataRequest(request, emptyUserAnswers)
           val result = route(application, request).value
 
           status(result) mustEqual OK
@@ -66,10 +59,9 @@ class ConfirmationControllerSpec extends SpecBase {
     "when NO confirmation receipt reference is held in session" - {
 
       "must return BadRequests" in new Fixture(Some(emptyUserAnswers)) {
-
         running(application) {
-          val req = dataRequest(request, emptyUserAnswers)
 
+          val req = dataRequest(request, emptyUserAnswers)
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST

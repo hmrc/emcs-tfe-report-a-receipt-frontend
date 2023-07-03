@@ -29,11 +29,23 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.UserAnswersService
-import views.html.WrongWithMovementView
+import views.html.{AddMoreInformationView, WrongWithMovementView}
 
 import scala.concurrent.Future
 
 class WrongWithMovementControllerSpec extends SpecBase with MockUserAnswersService {
+
+  class Fixture(val userAnswers: Option[UserAnswers] = Some(emptyUserAnswers)) {
+    val application =
+      applicationBuilder(userAnswers)
+        .overrides(
+          bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
+
+    lazy val view = application.injector.instanceOf[WrongWithMovementView]
+  }
 
   def onwardRoute: Call = Call("GET", "/foo")
 
@@ -59,33 +71,23 @@ class WrongWithMovementControllerSpec extends SpecBase with MockUserAnswersServi
 
         val form = formProvider(page)
 
-        "must return OK and the correct view for a GET" in {
-
-          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
+        "must return OK and the correct view for a GET" in new Fixture() {
           running(application) {
+
             val request = FakeRequest(GET, url)
-
             val result = route(application, request).value
-
-            val view = application.injector.instanceOf[WrongWithMovementView]
 
             status(result) mustEqual OK
             contentAsString(result) mustEqual view(page, form, submitAction)(dataRequest(request), messages(application)).toString
           }
         }
 
-        "must populate the view correctly on a GET when the question has previously been answered" in {
-
-          val userAnswers = emptyUserAnswers.set(page, WrongWithMovement.values.toSet)
-
-          val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
+        "must populate the view correctly on a GET when the question has previously been answered" in new Fixture(Some(
+          emptyUserAnswers.set(page, WrongWithMovement.values.toSet)
+        )) {
           running(application) {
+
             val request = FakeRequest(GET, url)
-
-            val view = application.injector.instanceOf[WrongWithMovementView]
-
             val result = route(application, request).value
 
             status(result) mustEqual OK
@@ -116,18 +118,16 @@ class WrongWithMovementControllerSpec extends SpecBase with MockUserAnswersServi
 
           options.foreach {
             option =>
-              s"and only keep option $option when $option is selected" in {
-
-                // startingAnswers has more pages than updatedAnswers to prove that ones which aren't used are filtered out
-                val startingAnswers: UserAnswers =
-                  if (page == WrongWithMovementPage) {
-                    emptyUserAnswers
-                      .set(page, options)
-                  } else {
-                    emptyUserAnswers
-                      .set(page, options)
-                      .set(SelectItemsPage(1), 1)
-                  }
+              s"and only keep option $option when $option is selected" in new Fixture(
+                Some(if (page == WrongWithMovementPage) {
+                  emptyUserAnswers
+                    .set(page, options)
+                } else {
+                  emptyUserAnswers
+                    .set(page, options)
+                    .set(SelectItemsPage(1), 1)
+                })
+              ) {
 
                 val updatedAnswers: UserAnswers =
                   if (page == WrongWithMovementPage) {
@@ -137,15 +137,8 @@ class WrongWithMovementControllerSpec extends SpecBase with MockUserAnswersServi
                       .set(page, Set(option))
                       .set(SelectItemsPage(1), 1)
                   }
-                MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
 
-                val application =
-                  applicationBuilder(userAnswers = Some(startingAnswers))
-                    .overrides(
-                      bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-                      bind[UserAnswersService].toInstance(mockUserAnswersService)
-                    )
-                    .build()
+                MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
 
                 running(application) {
                   val request =
@@ -161,19 +154,14 @@ class WrongWithMovementControllerSpec extends SpecBase with MockUserAnswersServi
           }
         }
 
-        "must return a Bad Request and errors when invalid data is submitted" in {
-
-          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
+        "must return a Bad Request and errors when invalid data is submitted" in new Fixture() {
           running(application) {
+
             val request =
               FakeRequest(POST, url)
                 .withFormUrlEncodedBody(("value", "invalid value"))
 
             val boundForm = form.bind(Map("value" -> "invalid value"))
-
-            val view = application.injector.instanceOf[WrongWithMovementView]
-
             val result = route(application, request).value
 
             status(result) mustEqual BAD_REQUEST
@@ -181,13 +169,10 @@ class WrongWithMovementControllerSpec extends SpecBase with MockUserAnswersServi
           }
         }
 
-        "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
-          val application = applicationBuilder(userAnswers = None).build()
-
+        "must redirect to Journey Recovery for a GET if no existing data is found" in new Fixture(None) {
           running(application) {
-            val request = FakeRequest(GET, url)
 
+            val request = FakeRequest(GET, url)
             val result = route(application, request).value
 
             status(result) mustEqual SEE_OTHER
@@ -195,11 +180,9 @@ class WrongWithMovementControllerSpec extends SpecBase with MockUserAnswersServi
           }
         }
 
-        "must redirect to Journey Recovery for a POST if no existing data is found" in {
-
-          val application = applicationBuilder(userAnswers = None).build()
-
+        "must redirect to Journey Recovery for a POST if no existing data is found" in new Fixture(None) {
           running(application) {
+
             val request =
               FakeRequest(POST, url)
                 .withFormUrlEncodedBody(("value[0]", WrongWithMovement.values.head.toString))

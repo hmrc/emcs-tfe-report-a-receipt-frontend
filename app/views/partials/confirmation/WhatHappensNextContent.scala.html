@@ -28,9 +28,9 @@
     @messages("confirmation.next.p1")
 }
 
-@p() {
+@p(classes = "govuk-body no-print") {
     @link(
-        "#",
+        "javascript:if(window.print)window.print()",
         "confirmation.next.p3.link",
         id = Some("print-page")
     )

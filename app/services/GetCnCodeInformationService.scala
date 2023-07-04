@@ -17,7 +17,6 @@
 package services
 
 import connectors.referenceData.GetCnCodeInformationConnector
-import models.ListItemWithProductCode
 import models.requests.CnCodeInformationRequest
 import models.response.ReferenceDataException
 import models.response.emcsTfe.MovementItem

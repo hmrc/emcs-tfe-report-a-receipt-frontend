@@ -18,11 +18,11 @@ package services
 
 import base.SpecBase
 import mocks.connectors.MockGetCnCodeInformationConnector
+import models.ReferenceDataUnitOfMeasure
 import models.requests.CnCodeInformationRequest
 import models.response.emcsTfe.MovementItem
 import models.response.referenceData.{CnCodeInformation, CnCodeInformationResponse}
 import models.response.{ReferenceDataException, UnexpectedDownstreamResponseError}
-import models.{ListItemWithProductCode, ReferenceDataUnitOfMeasure}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -37,7 +37,6 @@ class GetCnCodeInformationServiceSpec extends SpecBase with MockGetCnCodeInforma
 
   val request = CnCodeInformationRequest(productCodeList = Seq("T400"), cnCodeList = Seq("24029000"))
   val movementItems = Seq(MovementItem(1, "T400", "24029000", 1, 1, 1, None, None, None, None, None, None, None, None, None, Seq(), None))
-  val listItems = Seq(ListItemWithProductCode(productCode = "T400", cnCode = "24029000", changeUrl = "", removeUrl = ""))
 
   ".getCnCodeInformationWithMovementItems" - {
 

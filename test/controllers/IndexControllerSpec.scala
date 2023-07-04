@@ -19,15 +19,14 @@ package controllers
 import base.SpecBase
 import forms.ContinueDraftFormProvider
 import mocks.services.MockUserAnswersService
-import models.{NormalMode, UserAnswers}
 import models.requests.OptionalDataRequest
-import navigation.{FakeNavigator, Navigator}
+import models.{NormalMode, UserAnswers}
 import pages.DateOfArrivalPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.UserAnswersService
-import views.html.{ContinueDraftView, HowGiveInformationView}
+import views.html.ContinueDraftView
 
 import scala.concurrent.Future
 

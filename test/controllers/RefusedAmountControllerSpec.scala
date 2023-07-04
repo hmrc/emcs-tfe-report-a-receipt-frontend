@@ -19,10 +19,8 @@ package controllers
 import base.SpecBase
 import forms.RefusedAmountFormProvider
 import mocks.services.{MockGetCnCodeInformationService, MockUserAnswersService}
-import models.{NormalMode, UserAnswers}
-import models.ReferenceDataUnitOfMeasure.`1`
 import models.UnitOfMeasure.Kilograms
-import models.response.referenceData.CnCodeInformation
+import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import pages.unsatisfactory.individualItems.{RefusedAmountPage, SelectItemsPage}
 import play.api.inject.bind
@@ -30,7 +28,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{GetCnCodeInformationService, UserAnswersService}
-import views.html.{OtherInformationView, RefusedAmountView}
+import views.html.RefusedAmountView
 
 import scala.concurrent.Future
 

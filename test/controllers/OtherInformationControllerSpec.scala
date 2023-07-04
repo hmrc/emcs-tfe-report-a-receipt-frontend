@@ -30,7 +30,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.UserAnswersService
 import utils.JsonOptionFormatter
-import views.html.{MoreInformationView, OtherInformationView}
+import views.html.OtherInformationView
 
 import scala.concurrent.Future
 

@@ -18,7 +18,6 @@ package services
 
 import base.SpecBase
 import mocks.services.{MockGetCnCodeInformationService, MockGetPackagingTypesService, MockGetWineOperationsService}
-import models.ReferenceDataUnitOfMeasure.`1`
 import models.response.emcsTfe.MovementItem
 import models.response.referenceData.CnCodeInformation
 import models.response.{PackagingTypesException, ReferenceDataException, WineOperationsException}

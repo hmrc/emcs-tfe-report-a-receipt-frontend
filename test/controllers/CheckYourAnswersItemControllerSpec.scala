@@ -19,12 +19,11 @@ package controllers
 import base.SpecBase
 import mocks.services.{MockGetCnCodeInformationService, MockUserAnswersService}
 import mocks.viewmodels.MockCheckAnswersItemHelper
-import models.{UserAnswers, WrongWithMovement}
 import models.WrongWithMovement.Damaged
+import models.{UserAnswers, WrongWithMovement}
 import navigation.{FakeNavigator, Navigator}
 import pages.unsatisfactory.individualItems.{AddItemDamageInformationPage, CheckAnswersItemPage, SelectItemsPage, WrongWithItemPage}
 import play.api.inject
-import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{GetCnCodeInformationService, UserAnswersService}

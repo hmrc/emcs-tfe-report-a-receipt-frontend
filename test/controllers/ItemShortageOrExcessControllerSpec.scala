@@ -20,10 +20,8 @@ import base.SpecBase
 import forms.ItemShortageOrExcessFormProvider
 import mocks.services.{MockGetCnCodeInformationService, MockUserAnswersService}
 import models.AcceptMovement.PartiallyRefused
-import models.ReferenceDataUnitOfMeasure.`1`
 import models.UnitOfMeasure.Kilograms
 import models.WrongWithMovement.{Excess, Shortage}
-import models.response.referenceData.CnCodeInformation
 import models.{ItemShortageOrExcessModel, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import pages.AcceptMovementPage
@@ -33,8 +31,8 @@ import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.{GetCnCodeInformationService, ReferenceDataService, UserAnswersService}
-import views.html.{ItemMoreInformationView, ItemShortageOrExcessView}
+import services.{GetCnCodeInformationService, UserAnswersService}
+import views.html.ItemShortageOrExcessView
 
 import scala.concurrent.Future
 

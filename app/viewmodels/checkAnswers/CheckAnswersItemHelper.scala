@@ -90,7 +90,7 @@ class CheckAnswersItemHelper @Inject()(
             actions = Seq(
               ActionItemViewModel(
                 "site.change",
-                routes.MoreInformationController.loadItemSealsInformation(request.userAnswers.ern, request.userAnswers.arc, idx, mode).url,
+                routes.ItemMoreInformationController.loadItemSealsInformation(request.userAnswers.ern, request.userAnswers.arc, idx, mode).url,
                 id = ItemSealsInformationPage(idx) + additionalLinkIdSignifier
               ).withVisuallyHiddenText(messages(s"${ItemSealsInformationPage(idx)}.checkYourAnswers.change.hidden"))
             )
@@ -99,7 +99,7 @@ class CheckAnswersItemHelper @Inject()(
           SummaryListRowViewModel(
             key = s"${ItemSealsInformationPage(idx)}.checkYourAnswers.label",
             value = ValueViewModel(HtmlContent(link(
-              link = routes.MoreInformationController.loadItemSealsInformation(request.userAnswers.ern, request.userAnswers.arc, idx, mode).url,
+              link = routes.ItemMoreInformationController.loadItemSealsInformation(request.userAnswers.ern, request.userAnswers.arc, idx, mode).url,
               messageKey = s"${ItemSealsInformationPage(idx)}.checkYourAnswers.addMoreInformation")))
           )
       }

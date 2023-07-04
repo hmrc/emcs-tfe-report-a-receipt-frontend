@@ -53,22 +53,20 @@
 
         @h2(messages("arc.subHeading", request.arc), "govuk-caption-l")
 
-        @{
-            govukCharacterCount(CharacterCount(
-                id = "more-information",
-                name = "more-information",
-                maxLength = Some(350),
-                label = LabelViewModel(Text(messages(s"$page.heading", item.itemUniqueReference)))
-                        .asPageHeading(LabelSize.Large)
-                        .withCssClass("govuk-!-margin-bottom-5"),
-                hint = Some(HintViewModel(HtmlContent(hint))),
-                value = form("more-information").value,
-                errorMessage = form.errors("more-information") match {
-                    case Nil => None
-                    case errors => Some(ErrorMessage(content = HtmlContent(errors.map(err => messages(err.message)).mkString("<br>"))))
-                }
-            ))
-        }
+        @govukCharacterCount(CharacterCount(
+            id = "more-information",
+            name = "more-information",
+            maxLength = Some(350),
+            label = LabelViewModel(Text(messages(s"$page.heading", item.itemUniqueReference)))
+                    .asPageHeading(LabelSize.Large)
+                    .withCssClass("govuk-!-margin-bottom-5"),
+            hint = Some(HintViewModel(HtmlContent(hint))),
+            value = form("more-information").value,
+            errorMessage = form.errors("more-information") match {
+                case Nil => None
+                case errors => Some(ErrorMessage(content = HtmlContent(errors.map(err => messages(err.message)).mkString("<br>"))))
+            }
+        ))
 
         @continueOrExit()
 

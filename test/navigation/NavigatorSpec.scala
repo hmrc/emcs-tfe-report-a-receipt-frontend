@@ -536,7 +536,7 @@ class NavigatorSpec extends SpecBase {
             val userAnswers = emptyUserAnswers.set(AddItemSealsInformationPage(1), true)
 
             navigator.nextPage(AddItemSealsInformationPage(1), NormalMode, userAnswers) mustBe
-              routes.MoreInformationController.loadItemSealsInformation(testErn, testArc, 1, NormalMode)
+              routes.ItemMoreInformationController.loadItemSealsInformation(testErn, testArc, 1, NormalMode)
           }
         }
 

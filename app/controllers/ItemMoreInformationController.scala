@@ -22,7 +22,7 @@ import models.Mode
 import models.requests.DataRequest
 import navigation.Navigator
 import pages.QuestionPage
-import pages.unsatisfactory.individualItems.{AddItemDamageInformationPage, ItemDamageInformationPage}
+import pages.unsatisfactory.individualItems.{AddItemDamageInformationPage, AddItemSealsInformationPage, ItemDamageInformationPage, ItemSealsInformationPage}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc._
@@ -54,6 +54,12 @@ class ItemMoreInformationController @Inject()(
   def submitItemDamageInformation(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
     onSubmit(ern, arc, ItemDamageInformationPage(idx), AddItemDamageInformationPage(idx), idx,
       routes.ItemMoreInformationController.submitItemDamageInformation(ern, arc, idx, mode), mode)
+
+  def loadItemSealsInformation(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
+    onPageLoad(ern, arc, ItemSealsInformationPage(idx), idx, routes.ItemMoreInformationController.submitItemSealsInformation(ern, arc, idx, mode))
+
+  def submitItemSealsInformation(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
+    onSubmit(ern, arc, ItemSealsInformationPage(idx), AddItemSealsInformationPage(idx), idx, routes.ItemMoreInformationController.submitItemSealsInformation(ern, arc, idx, mode), mode)
 
   private def onPageLoad(ern: String, arc: String, page: QuestionPage[Option[String]], item: Int, action: Call): Action[AnyContent] =
     authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>

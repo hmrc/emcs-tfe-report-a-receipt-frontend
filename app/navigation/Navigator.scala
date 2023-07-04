@@ -117,7 +117,7 @@ class Navigator @Inject()() extends BaseNavigator {
     case AddItemSealsInformationPage(idx) =>
       (userAnswers: UserAnswers) =>
         userAnswers.get(AddItemSealsInformationPage(idx)) match {
-          case Some(true) => routes.MoreInformationController.loadItemSealsInformation(userAnswers.ern, userAnswers.arc, idx, NormalMode)
+          case Some(true) => routes.ItemMoreInformationController.loadItemSealsInformation(userAnswers.ern, userAnswers.arc, idx, NormalMode)
           case Some(false) => redirectToNextItemWrongMovementPage(WrongWithItemPage(idx), Some(BrokenSeals))(userAnswers)
           case _ => routes.AddMoreInformationController.loadItemSealsInformation(userAnswers.ern, userAnswers.arc, idx, NormalMode)
         }

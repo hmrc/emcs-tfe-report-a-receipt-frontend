@@ -407,8 +407,9 @@ itemDamageInformation.checkYourAnswers.label = Information about damaged items
 itemDamageInformation.checkYourAnswers.change.hidden = information about damaged items
 itemDamageInformation.checkYourAnswers.addMoreInformation = Enter more information about damaged items (optional)
 
-itemSealsInformation.title = Give more information about broken seal(s)
-itemSealsInformation.heading = Give more information about broken seal(s)
+itemSealsInformation.title = Give information about item {0} having broken seal(s)
+itemSealsInformation.heading = Give information about item {0} having broken seal(s)
+itemSealsInformation.itemDetails = View item {0} details
 itemSealsInformation.hint = Give more information (optional)
 itemSealsInformation.error.length = Information must be 350 characters or less
 itemSealsInformation.error.invalidCharacter = Information must not include < and > and : and ;

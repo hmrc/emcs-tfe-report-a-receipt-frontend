@@ -75,7 +75,7 @@
 
     @confirmationContentHelper.renderExcessContent(receiptDetails)
 
-    @p(classes = "govuk-body") {
+    @p(classes = "govuk-body no-print") {
         @link(
             appConfig.contactHmrcUrl,
             "confirmation.contactHmrc.link",
@@ -91,7 +91,7 @@
                 .asLink(appConfig.emcsTfeHomeUrl(Some(request.ern)))
     )
 
-    @p() {
+    @p(classes = "govuk-body no-print") {
         @link(
             appConfig.feedbackFrontendSurveyUrl,
             "confirmation.feedback.link",

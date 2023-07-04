@@ -32,7 +32,7 @@ object ItemSealsInformationMessages {
   }
 
   object English extends ViewMessages with BaseEnglish {
-    override val heading: Int => String = i => s"Give more information about item $i having broken seal(s)"
+    override val heading: Int => String = i => s"Give information about item $i having broken seal(s)"
     override val title: Int => String = i => title(heading(i))
     override val itemDetails: Int => String = i => s"View item $i details"
     override val hint = "Give more information (optional)"
@@ -45,7 +45,7 @@ object ItemSealsInformationMessages {
   }
 
   object Welsh extends ViewMessages with BaseWelsh {
-    override val heading: Int => String = i => s"Give more information about item $i having broken seal(s)"
+    override val heading: Int => String = i => s"Give information about item $i having broken seal(s)"
     override val title: Int => String = i => title(heading(i))
     override val itemDetails: Int => String = i => s"View item $i details"
     override val hint = "Give more information (optional)"

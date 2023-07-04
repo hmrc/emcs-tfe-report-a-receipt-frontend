@@ -21,16 +21,15 @@
         layout: templates.Layout,
         formHelper: FormWithCSRF,
         govukErrorSummary: GovukErrorSummary,
-        govukSummaryList: GovukSummaryList,
-        addToList: components.addToListSummary,
         govukRadios: GovukRadios,
         h1: components.h1,
+        checkAnswersItems: components.checkAnswersItems,
         continueOrExit: components.continueOrExit
 )
 
-@(form: Option[Form[Boolean]], items: Seq[(ListItemWithProductCode, CnCodeInformation)], allItemsAdded: Boolean, action: Call)(implicit request: DataRequest[_], messages: Messages)
+@(form: Option[Form[Boolean]], itemList: Seq[(Int, SummaryList)], allItemsAdded: Boolean, action: Call)(implicit request: DataRequest[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages(pluralSingular("addedItems.title", items.size)))) {
+@layout(pageTitle = titleNoForm(messages(pluralSingular("addedItems.title", itemList.size)))) {
 
     @formHelper(action, 'autoComplete -> "off") {
 
@@ -40,9 +39,9 @@
             }
         }
 
-        @h1(pluralSingular("addedItems.heading", items.size), Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
+        @h1(pluralSingular("addedItems.heading", itemList.size), Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
 
-        @addToList(items)
+        @checkAnswersItems(itemList, NormalMode)
 
         @if(!allItemsAdded) {
             @form.map { form =>

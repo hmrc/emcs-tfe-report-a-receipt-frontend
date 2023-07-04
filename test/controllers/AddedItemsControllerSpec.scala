@@ -19,35 +19,43 @@ package controllers
 import base.SpecBase
 import forms.AddAnotherItemFormProvider
 import mocks.services.MockGetCnCodeInformationService
+import mocks.viewmodels.MockCheckAnswersItemHelper
 import models.AcceptMovement.{PartiallyRefused, Refused}
 import models.ReferenceDataUnitOfMeasure.`1`
 import models.requests.DataRequest
+import models.response.emcsTfe.MovementItem
 import models.response.referenceData.CnCodeInformation
-import models.{ListItemWithProductCode, NormalMode, UserAnswers}
+import models.{NormalMode, UserAnswers}
 import pages.AcceptMovementPage
 import pages.unsatisfactory.individualItems.{CheckAnswersItemPage, RefusedAmountPage, SelectItemsPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.GetCnCodeInformationService
-import viewmodels.AddedItemsSummary
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+import viewmodels.checkAnswers.CheckAnswersItemHelper
 import views.html.AddedItemsView
 
 import scala.concurrent.Future
 
-class AddedItemsControllerSpec extends SpecBase with MockGetCnCodeInformationService {
+class AddedItemsControllerSpec extends SpecBase
+  with MockGetCnCodeInformationService
+  with MockCheckAnswersItemHelper {
+
+  lazy val form = new AddAnotherItemFormProvider()()
+
+  lazy val url = "testurl"
 
   class Fixture(val userAnswers: Option[UserAnswers] = Some(emptyUserAnswers)) {
     val application = applicationBuilder(userAnswers)
-      .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService))
+      .overrides(
+        bind[CheckAnswersItemHelper].toInstance(mockCheckAnswersItemHelper),
+        bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService)
+      )
       .build()
+
     lazy val view = application.injector.instanceOf[AddedItemsView]
   }
-
-  lazy val form = new AddAnotherItemFormProvider()()
-  lazy val itemListSummary = new AddedItemsSummary()
-
-  lazy val url = "testurl"
 
   "AddedItems Controller" - {
 
@@ -56,27 +64,24 @@ class AddedItemsControllerSpec extends SpecBase with MockGetCnCodeInformationSer
       "must redirect to the SelectItems page" - {
 
         "when no items have been added" in new Fixture() {
-          running(application) {
 
-            val request = FakeRequest(GET, routes.AddedItemsController.onPageLoad(testErn, testArc).url)
-            val result = route(application, request).value
+          val request = FakeRequest(GET, routes.AddedItemsController.onPageLoad(testErn, testArc).url)
+          val result = route(application, request).value
 
-            status(result) mustEqual SEE_OTHER
-            redirectLocation(result) mustBe Some(routes.SelectItemsController.onPageLoad(testErn, testArc).url)
-          }
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result) mustBe Some(routes.SelectItemsController.onPageLoad(testErn, testArc).url)
         }
 
         "when items have been added, but not completed" in new Fixture(Some(
-          emptyUserAnswers.set(SelectItemsPage(1), item1.itemUniqueReference)
+          emptyUserAnswers
+            .set(SelectItemsPage(1), item1.itemUniqueReference)
         )) {
-          running(application) {
 
-            val request = FakeRequest(GET, routes.AddedItemsController.onPageLoad(testErn, testArc).url)
-            val result = route(application, request).value
+          val request = FakeRequest(GET, routes.AddedItemsController.onPageLoad(testErn, testArc).url)
+          val result = route(application, request).value
 
-            status(result) mustEqual SEE_OTHER
-            redirectLocation(result) mustBe Some(routes.SelectItemsController.onPageLoad(testErn, testArc).url)
-          }
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result) mustBe Some(routes.SelectItemsController.onPageLoad(testErn, testArc).url)
         }
       }
 
@@ -87,31 +92,25 @@ class AddedItemsControllerSpec extends SpecBase with MockGetCnCodeInformationSer
             .set(SelectItemsPage(1), item1.itemUniqueReference)
             .set(CheckAnswersItemPage(1), true)
         )) {
-          running(application) {
 
-            val serviceResponse: Seq[(ListItemWithProductCode, CnCodeInformation)] =
-              Seq((
-                ListItemWithProductCode(productCode = item1.productCode, cnCode = item1.cnCode, changeUrl = url, removeUrl = url),
-                CnCodeInformation("", "", `1`)
-              ))
+          val serviceResponse: Seq[(MovementItem, CnCodeInformation)] = Seq(item1 -> CnCodeInformation("", "", `1`))
 
-            MockGetCnCodeInformationService.getCnCodeInformationWithListItems(Seq(
-              ListItemWithProductCode(productCode = item1.productCode, cnCode = item1.cnCode, changeUrl = url, removeUrl = url)
-            )).returns(Future.successful(serviceResponse))
+          MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(serviceResponse))
+          MockCheckAnswersItemHelper.summaryList().returns(SummaryList())
 
-            val request = FakeRequest(GET, routes.AddedItemsController.onPageLoad(testErn, testArc).url)
-            implicit val req: DataRequest[_] = dataRequest(request, userAnswers.get)
+          val request = FakeRequest(GET, routes.AddedItemsController.onPageLoad(testErn, testArc).url)
 
-            val result = route(application, request).value
+          implicit val req: DataRequest[_] = dataRequest(request, userAnswers.get)
 
-            status(result) mustEqual OK
-            contentAsString(result) mustEqual view(
-              form = Some(form),
-              items = serviceResponse,
-              allItemsAdded = false,
-              action = routes.AddedItemsController.onSubmit(testErn, testArc))(req, messages(application)
-            ).toString
-          }
+          val result = route(application, request).value
+
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view(
+            form = Some(form),
+            itemList = Seq[(Int, SummaryList)](1 -> SummaryList()),
+            allItemsAdded = false,
+            action = routes.AddedItemsController.onSubmit(testErn, testArc))(req, messages(application)
+          ).toString
         }
       }
 
@@ -124,40 +123,27 @@ class AddedItemsControllerSpec extends SpecBase with MockGetCnCodeInformationSer
             .set(SelectItemsPage(2), item2.itemUniqueReference)
             .set(CheckAnswersItemPage(2), true)
         )) {
-          running(application) {
 
-            val serviceResponse: Seq[(ListItemWithProductCode, CnCodeInformation)] =
-              Seq(
-                (
-                  ListItemWithProductCode(productCode = item1.productCode, cnCode = item1.cnCode, changeUrl = url, removeUrl = url),
-                  CnCodeInformation("", "", `1`)
-                ),
-                (
-                  ListItemWithProductCode(productCode = item2.productCode, cnCode = item2.cnCode, changeUrl = url, removeUrl = url),
-                  CnCodeInformation("", "", `1`)
-                )
-              )
+          MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1, item2))
+            .returns(Future.successful(Seq(
+              item1 -> CnCodeInformation("", "", `1`),
+              item2 -> CnCodeInformation("", "", `1`)
+            )))
+          MockCheckAnswersItemHelper.summaryList().returns(SummaryList()).anyNumberOfTimes()
 
-            MockGetCnCodeInformationService.getCnCodeInformationWithListItems(Seq(
-              ListItemWithProductCode(productCode = item1.productCode, cnCode = item1.cnCode, changeUrl = url, removeUrl = url),
-              ListItemWithProductCode(productCode = item2.productCode, cnCode = item2.cnCode, changeUrl = url, removeUrl = url),
-            )).returns(Future.successful(serviceResponse))
+          val request = FakeRequest(GET, routes.AddedItemsController.onPageLoad(testErn, testArc).url)
+          implicit val req: DataRequest[_] = dataRequest(request, userAnswers.get)
 
+          val result = route(application, request).value
 
-            val request = FakeRequest(GET, routes.AddedItemsController.onPageLoad(testErn, testArc).url)
-            implicit val req: DataRequest[_] = dataRequest(request, userAnswers.get)
+          status(result) mustEqual OK
 
-            val result = route(application, request).value
-
-            status(result) mustEqual OK
-
-            contentAsString(result) mustEqual view(
-              form = Some(form),
-              items = serviceResponse,
-              allItemsAdded = true,
-              action = routes.AddedItemsController.onSubmit(testErn, testArc))(req, messages(application)
-            ).toString
-          }
+          contentAsString(result) mustEqual view(
+            form = Some(form),
+            itemList = Seq[(Int, SummaryList)](1 -> SummaryList(), 2 -> SummaryList()),
+            allItemsAdded = true,
+            action = routes.AddedItemsController.onSubmit(testErn, testArc))(req, messages(application)
+          ).toString
         }
       }
     }
@@ -171,14 +157,12 @@ class AddedItemsControllerSpec extends SpecBase with MockGetCnCodeInformationSer
           "must redirect to the SelectItems page" in new Fixture(Some(
             emptyUserAnswers.set(AcceptMovementPage, Refused)
           )) {
-            running(application) {
 
-              val request = FakeRequest(POST, routes.AddedItemsController.onSubmit(testErn, testArc).url)
-              val result = route(application, request).value
+            val request = FakeRequest(POST, routes.AddedItemsController.onSubmit(testErn, testArc).url)
+            val result = route(application, request).value
 
-              status(result) mustEqual SEE_OTHER
-              redirectLocation(result) mustBe Some(routes.SelectItemsController.onPageLoad(testErn, testArc).url)
-            }
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result) mustBe Some(routes.SelectItemsController.onPageLoad(testErn, testArc).url)
           }
         }
 
@@ -192,32 +176,26 @@ class AddedItemsControllerSpec extends SpecBase with MockGetCnCodeInformationSer
                 .set(SelectItemsPage(1), item1.itemUniqueReference)
                 .set(CheckAnswersItemPage(1), true)
             )) {
-              running(application) {
 
-                val serviceResponse: Seq[(ListItemWithProductCode, CnCodeInformation)] =
-                  Seq((
-                    ListItemWithProductCode(productCode = item1.productCode, cnCode = item1.cnCode, changeUrl = url, removeUrl = url),
-                    CnCodeInformation("", "", `1`)
-                  ))
+              MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(
+                Seq(item1 -> CnCodeInformation("", "", `1`))
+              ))
+              MockCheckAnswersItemHelper.summaryList().returns(SummaryList()).anyNumberOfTimes()
 
-                MockGetCnCodeInformationService.getCnCodeInformationWithListItems(Seq(
-                  ListItemWithProductCode(productCode = item1.productCode, cnCode = item1.cnCode, changeUrl = url, removeUrl = url)
-                )).returns(Future.successful(serviceResponse))
+              val request = FakeRequest(POST, routes.AddedItemsController.onSubmit(testErn, testArc).url)
+              val result = route(application, request).value
 
-                val request = FakeRequest(POST, routes.AddedItemsController.onSubmit(testErn, testArc).url)
-                val result = route(application, request).value
-                val boundForm = form.bind(Map("value" -> ""))
+              val boundForm = form.bind(Map("value" -> ""))
 
-                implicit val req: DataRequest[_] = dataRequest(request, userAnswers.get)
+              implicit val req: DataRequest[_] = dataRequest(request, userAnswers.get)
 
-                status(result) mustEqual BAD_REQUEST
-                contentAsString(result) mustEqual view(
-                  form = Some(boundForm),
-                  items = serviceResponse,
-                  allItemsAdded = false,
-                  action = routes.AddedItemsController.onSubmit(testErn, testArc))(req, messages(application)
-                ).toString
-              }
+              status(result) mustEqual BAD_REQUEST
+              contentAsString(result) mustEqual view(
+                form = Some(boundForm),
+                itemList = Seq(1 -> SummaryList()),
+                allItemsAdded = false,
+                action = routes.AddedItemsController.onSubmit(testErn, testArc))(req, messages(application)
+              ).toString
             }
           }
 
@@ -229,26 +207,19 @@ class AddedItemsControllerSpec extends SpecBase with MockGetCnCodeInformationSer
                 .set(SelectItemsPage(1), item1.itemUniqueReference)
                 .set(CheckAnswersItemPage(1), true)
             )) {
-              running(application) {
 
-                val serviceResponse: Seq[(ListItemWithProductCode, CnCodeInformation)] =
-                  Seq((
-                    ListItemWithProductCode(productCode = item1.productCode, cnCode = item1.cnCode, changeUrl = url, removeUrl = url),
-                    CnCodeInformation("", "", `1`)
-                  ))
+              MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(
+                Seq(item1 -> CnCodeInformation("", "", `1`))
+              ))
+              MockCheckAnswersItemHelper.summaryList().returns(SummaryList()).anyNumberOfTimes()
 
-                MockGetCnCodeInformationService.getCnCodeInformationWithListItems(Seq(
-                  ListItemWithProductCode(productCode = item1.productCode, cnCode = item1.cnCode, changeUrl = url, removeUrl = url)
-                )).returns(Future.successful(serviceResponse))
+              val request = FakeRequest(POST, routes.AddedItemsController.onSubmit(testErn, testArc).url)
+                .withFormUrlEncodedBody("value" -> "true")
 
-                val request = FakeRequest(POST, routes.AddedItemsController.onSubmit(testErn, testArc).url)
-                  .withFormUrlEncodedBody("value" -> "true")
+              val result = route(application, request).value
 
-                val result = route(application, request).value
-
-                status(result) mustEqual SEE_OTHER
-                redirectLocation(result) mustBe Some(routes.SelectItemsController.onPageLoad(testErn, testArc).url)
-              }
+              status(result) mustEqual SEE_OTHER
+              redirectLocation(result) mustBe Some(routes.SelectItemsController.onPageLoad(testErn, testArc).url)
             }
           }
 
@@ -261,65 +232,48 @@ class AddedItemsControllerSpec extends SpecBase with MockGetCnCodeInformationSer
                 .set(RefusedAmountPage(1), BigDecimal(1))
                 .set(CheckAnswersItemPage(1), true)
             )) {
-              running(application) {
 
-                val serviceResponse: Seq[(ListItemWithProductCode, CnCodeInformation)] =
-                  Seq((
-                    ListItemWithProductCode(productCode = item1.productCode, cnCode = item1.cnCode, changeUrl = url, removeUrl = url),
-                    CnCodeInformation("", "", `1`)
-                  ))
+              MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(
+                Seq(item1 -> CnCodeInformation("", "", `1`))
+              ))
+              MockCheckAnswersItemHelper.summaryList().returns(SummaryList()).anyNumberOfTimes()
 
-                MockGetCnCodeInformationService.getCnCodeInformationWithListItems(Seq(
-                  ListItemWithProductCode(productCode = item1.productCode, cnCode = item1.cnCode, changeUrl = url, removeUrl = url)
-                )).returns(Future.successful(serviceResponse))
+              val request = FakeRequest(POST, routes.AddedItemsController.onSubmit(testErn, testArc).url)
+                .withFormUrlEncodedBody("value" -> "false")
 
-                val request = FakeRequest(POST, routes.AddedItemsController.onSubmit(testErn, testArc).url)
-                  .withFormUrlEncodedBody("value" -> "false")
+              val result = route(application, request).value
 
-                val result = route(application, request).value
-
-                status(result) mustEqual SEE_OTHER
-                redirectLocation(result) mustBe Some(routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode).url)
-              }
+              status(result) mustEqual SEE_OTHER
+              redirectLocation(result) mustBe Some(routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode).url)
             }
           }
+        }
 
-          "when all items have been added" - {
+        "when all items have been added" - {
 
-            "must redirect to the AddMoreInfo view" in new Fixture(Some(
-              emptyUserAnswers
-                .set(AcceptMovementPage, Refused)
-                .set(SelectItemsPage(1), item1.itemUniqueReference)
-                .set(CheckAnswersItemPage(1), true)
-                .set(SelectItemsPage(2), item2.itemUniqueReference)
-                .set(CheckAnswersItemPage(2), true)
-            )) {
-              running(application) {
+          "must redirect to the AddMoreInfo view" in new Fixture(Some(
+            emptyUserAnswers
+              .set(AcceptMovementPage, Refused)
+              .set(SelectItemsPage(1), item1.itemUniqueReference)
+              .set(CheckAnswersItemPage(1), true)
+              .set(SelectItemsPage(2), item2.itemUniqueReference)
+              .set(CheckAnswersItemPage(2), true)
+          )) {
 
-                val serviceResponse: Seq[(ListItemWithProductCode, CnCodeInformation)] =
-                  Seq(
-                    (
-                      ListItemWithProductCode(productCode = item1.productCode, cnCode = item1.cnCode, changeUrl = url, removeUrl = url),
-                      CnCodeInformation("", "", `1`)
-                    ),
-                    (
-                      ListItemWithProductCode(productCode = item2.productCode, cnCode = item2.cnCode, changeUrl = url, removeUrl = url),
-                      CnCodeInformation("", "", `1`)
-                    )
-                  )
+            MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1, item2)).returns(Future.successful(
+              Seq(
+                item1 -> CnCodeInformation("", "", `1`),
+                item2 -> CnCodeInformation("", "", `1`)
+              )
+            ))
+            MockCheckAnswersItemHelper.summaryList().returns(SummaryList()).anyNumberOfTimes()
 
-                MockGetCnCodeInformationService.getCnCodeInformationWithListItems(Seq(
-                  ListItemWithProductCode(productCode = item1.productCode, cnCode = item1.cnCode, changeUrl = url, removeUrl = url),
-                  ListItemWithProductCode(productCode = item2.productCode, cnCode = item2.cnCode, changeUrl = url, removeUrl = url)
-                )).returns(Future.successful(serviceResponse))
+            val request = FakeRequest(POST, routes.AddedItemsController.onSubmit(testErn, testArc).url).withFormUrlEncodedBody("value" -> "false")
 
-                val request = FakeRequest(POST, routes.AddedItemsController.onSubmit(testErn, testArc).url).withFormUrlEncodedBody("value" -> "false")
-                val result = route(application, request).value
+            val result = route(application, request).value
 
-                status(result) mustEqual SEE_OTHER
-                redirectLocation(result) mustBe Some(routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode).url)
-              }
-            }
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result) mustBe Some(routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode).url)
           }
         }
       }
@@ -331,14 +285,12 @@ class AddedItemsControllerSpec extends SpecBase with MockGetCnCodeInformationSer
           "must redirect to the SelectItems page" in new Fixture(Some(
             emptyUserAnswers.set(AcceptMovementPage, PartiallyRefused)
           )) {
-            running(application) {
 
-              val request = FakeRequest(POST, routes.AddedItemsController.onSubmit(testErn, testArc).url)
-              val result = route(application, request).value
+            val request = FakeRequest(POST, routes.AddedItemsController.onSubmit(testErn, testArc).url)
+            val result = route(application, request).value
 
-              status(result) mustEqual SEE_OTHER
-              redirectLocation(result) mustBe Some(routes.SelectItemsController.onPageLoad(testErn, testArc).url)
-            }
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result) mustBe Some(routes.SelectItemsController.onPageLoad(testErn, testArc).url)
           }
         }
 
@@ -352,32 +304,25 @@ class AddedItemsControllerSpec extends SpecBase with MockGetCnCodeInformationSer
                 .set(SelectItemsPage(1), item1.itemUniqueReference)
                 .set(CheckAnswersItemPage(1), true)
             )) {
-              running(application) {
 
-                val serviceResponse: Seq[(ListItemWithProductCode, CnCodeInformation)] =
-                  Seq((
-                    ListItemWithProductCode(productCode = item1.productCode, cnCode = item1.cnCode, changeUrl = url, removeUrl = url),
-                    CnCodeInformation("", "", `1`)
-                  ))
+              MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(
+                Seq(item1 -> CnCodeInformation("", "", `1`))
+              ))
+              MockCheckAnswersItemHelper.summaryList().returns(SummaryList()).anyNumberOfTimes()
 
-                MockGetCnCodeInformationService.getCnCodeInformationWithListItems(Seq(
-                  ListItemWithProductCode(productCode = item1.productCode, cnCode = item1.cnCode, changeUrl = url, removeUrl = url)
-                )).returns(Future.successful(serviceResponse))
+              val request = FakeRequest(POST, routes.AddedItemsController.onSubmit(testErn, testArc).url)
+              val result = route(application, request).value
+              val boundForm = form.bind(Map("value" -> ""))
 
-                val request = FakeRequest(POST, routes.AddedItemsController.onSubmit(testErn, testArc).url)
-                val result = route(application, request).value
-                val boundForm = form.bind(Map("value" -> ""))
+              implicit val req: DataRequest[_] = dataRequest(request, userAnswers.get)
 
-                implicit val req: DataRequest[_] = dataRequest(request, userAnswers.get)
-
-                status(result) mustEqual BAD_REQUEST
-                contentAsString(result) mustEqual view(
-                  form = Some(boundForm),
-                  items = serviceResponse,
-                  allItemsAdded = false,
-                  action = routes.AddedItemsController.onSubmit(testErn, testArc))(req, messages(application)
-                ).toString
-              }
+              status(result) mustEqual BAD_REQUEST
+              contentAsString(result) mustEqual view(
+                form = Some(boundForm),
+                itemList = Seq(1 -> SummaryList()),
+                allItemsAdded = false,
+                action = routes.AddedItemsController.onSubmit(testErn, testArc))(req, messages(application)
+              ).toString
             }
           }
 
@@ -389,26 +334,19 @@ class AddedItemsControllerSpec extends SpecBase with MockGetCnCodeInformationSer
                 .set(SelectItemsPage(1), item1.itemUniqueReference)
                 .set(CheckAnswersItemPage(1), true)
             )) {
-              running(application) {
 
-                val serviceResponse: Seq[(ListItemWithProductCode, CnCodeInformation)] =
-                  Seq((
-                    ListItemWithProductCode(productCode = item1.productCode, cnCode = item1.cnCode, changeUrl = url, removeUrl = url),
-                    CnCodeInformation("", "", `1`)
-                  ))
+              MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(
+                Seq(item1 -> CnCodeInformation("", "", `1`)))
+              )
+              MockCheckAnswersItemHelper.summaryList().returns(SummaryList()).anyNumberOfTimes()
 
-                MockGetCnCodeInformationService.getCnCodeInformationWithListItems(Seq(
-                  ListItemWithProductCode(productCode = item1.productCode, cnCode = item1.cnCode, changeUrl = url, removeUrl = url)
-                )).returns(Future.successful(serviceResponse))
+              val request = FakeRequest(POST, routes.AddedItemsController.onSubmit(testErn, testArc).url)
+                .withFormUrlEncodedBody("value" -> "true")
 
-                val request = FakeRequest(POST, routes.AddedItemsController.onSubmit(testErn, testArc).url)
-                  .withFormUrlEncodedBody("value" -> "true")
+              val result = route(application, request).value
 
-                val result = route(application, request).value
-
-                status(result) mustEqual SEE_OTHER
-                redirectLocation(result) mustBe Some(routes.SelectItemsController.onPageLoad(testErn, testArc).url)
-              }
+              status(result) mustEqual SEE_OTHER
+              redirectLocation(result) mustBe Some(routes.SelectItemsController.onPageLoad(testErn, testArc).url)
             }
           }
 
@@ -423,26 +361,19 @@ class AddedItemsControllerSpec extends SpecBase with MockGetCnCodeInformationSer
                   .set(RefusedAmountPage(1), BigDecimal(1))
                   .set(CheckAnswersItemPage(1), true)
               )) {
-                running(application) {
 
-                  val serviceResponse: Seq[(ListItemWithProductCode, CnCodeInformation)] =
-                    Seq((
-                      ListItemWithProductCode(productCode = item1.productCode, cnCode = item1.cnCode, changeUrl = url, removeUrl = url),
-                      CnCodeInformation("", "", `1`)
-                    ))
+                MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(
+                  Seq(item1 -> CnCodeInformation("", "", `1`))
+                ))
+                MockCheckAnswersItemHelper.summaryList().returns(SummaryList()).anyNumberOfTimes()
 
-                  MockGetCnCodeInformationService.getCnCodeInformationWithListItems(Seq(
-                    ListItemWithProductCode(productCode = item1.productCode, cnCode = item1.cnCode, changeUrl = url, removeUrl = url)
-                  )).returns(Future.successful(serviceResponse))
+                val request = FakeRequest(POST, routes.AddedItemsController.onSubmit(testErn, testArc).url)
+                  .withFormUrlEncodedBody("value" -> "false")
 
-                  val request = FakeRequest(POST, routes.AddedItemsController.onSubmit(testErn, testArc).url)
-                    .withFormUrlEncodedBody("value" -> "false")
+                val result = route(application, request).value
 
-                  val result = route(application, request).value
-
-                  status(result) mustEqual SEE_OTHER
-                  redirectLocation(result) mustBe Some(routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode).url)
-                }
+                status(result) mustEqual SEE_OTHER
+                redirectLocation(result) mustBe Some(routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode).url)
               }
             }
 
@@ -454,32 +385,25 @@ class AddedItemsControllerSpec extends SpecBase with MockGetCnCodeInformationSer
                   .set(SelectItemsPage(1), item1.itemUniqueReference)
                   .set(CheckAnswersItemPage(1), true)
               )) {
-                running(application) {
 
-                  val serviceResponse: Seq[(ListItemWithProductCode, CnCodeInformation)] =
-                    Seq((
-                      ListItemWithProductCode(productCode = item1.productCode, cnCode = item1.cnCode, changeUrl = url, removeUrl = url),
-                      CnCodeInformation("", "", `1`)
-                    ))
+                MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(
+                  Seq(item1 -> CnCodeInformation("", "", `1`))
+                ))
+                MockCheckAnswersItemHelper.summaryList().returns(SummaryList()).anyNumberOfTimes()
 
-                  MockGetCnCodeInformationService.getCnCodeInformationWithListItems(Seq(
-                    ListItemWithProductCode(productCode = item1.productCode, cnCode = item1.cnCode, changeUrl = url, removeUrl = url)
-                  )).returns(Future.successful(serviceResponse))
+                val request = FakeRequest(POST, routes.AddedItemsController.onSubmit(testErn, testArc).url).withFormUrlEncodedBody("value" -> "false")
+                val result = route(application, request).value
+                val boundForm = form.bind(Map("value" -> "false")).withGlobalError("addedItems.error.atLeastOneItem")
 
-                  val request = FakeRequest(POST, routes.AddedItemsController.onSubmit(testErn, testArc).url).withFormUrlEncodedBody("value" -> "false")
-                  val result = route(application, request).value
-                  val boundForm = form.bind(Map("value" -> "false")).withGlobalError("addedItems.error.atLeastOneItem")
+                implicit val req: DataRequest[_] = dataRequest(request, userAnswers.get)
 
-                  implicit val req: DataRequest[_] = dataRequest(request, userAnswers.get)
-
-                  status(result) mustEqual BAD_REQUEST
-                  contentAsString(result) mustEqual view(
-                    form = Some(boundForm),
-                    items = serviceResponse,
-                    allItemsAdded = false,
-                    action = routes.AddedItemsController.onSubmit(testErn, testArc))(req, messages(application)
-                  ).toString
-                }
+                status(result) mustEqual BAD_REQUEST
+                contentAsString(result) mustEqual view(
+                  form = Some(boundForm),
+                  itemList = Seq(1 -> SummaryList()),
+                  allItemsAdded = false,
+                  action = routes.AddedItemsController.onSubmit(testErn, testArc))(req, messages(application)
+                ).toString
               }
             }
           }
@@ -497,39 +421,28 @@ class AddedItemsControllerSpec extends SpecBase with MockGetCnCodeInformationSer
                 .set(SelectItemsPage(2), item2.itemUniqueReference)
                 .set(CheckAnswersItemPage(2), true)
             )) {
-              running(application) {
 
-                val serviceResponse: Seq[(ListItemWithProductCode, CnCodeInformation)] =
-                  Seq(
-                    (
-                      ListItemWithProductCode(productCode = item1.productCode, cnCode = item1.cnCode, changeUrl = url, removeUrl = url),
-                      CnCodeInformation("", "", `1`)
-                    ),
-                    (
-                      ListItemWithProductCode(productCode = item2.productCode, cnCode = item2.cnCode, changeUrl = url, removeUrl = url),
-                      CnCodeInformation("", "", `1`)
-                    )
-                  )
+              MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1, item2)).returns(Future.successful(
+                Seq(
+                  item1 -> CnCodeInformation("", "", `1`),
+                  item2 -> CnCodeInformation("", "", `1`)
+                )
+              ))
+              MockCheckAnswersItemHelper.summaryList().returns(SummaryList()).anyNumberOfTimes()
 
-                MockGetCnCodeInformationService.getCnCodeInformationWithListItems(Seq(
-                  ListItemWithProductCode(productCode = item1.productCode, cnCode = item1.cnCode, changeUrl = url, removeUrl = url),
-                  ListItemWithProductCode(productCode = item2.productCode, cnCode = item2.cnCode, changeUrl = url, removeUrl = url)
-                )).returns(Future.successful(serviceResponse))
+              val request = FakeRequest(POST, routes.AddedItemsController.onSubmit(testErn, testArc).url).withFormUrlEncodedBody("value" -> "false")
+              val result = route(application, request).value
+              val boundForm = form.bind(Map("value" -> "false")).withGlobalError("addedItems.error.atLeastOneItem")
 
-                val request = FakeRequest(POST, routes.AddedItemsController.onSubmit(testErn, testArc).url).withFormUrlEncodedBody("value" -> "false")
-                val result = route(application, request).value
-                val boundForm = form.bind(Map("value" -> "false")).withGlobalError("addedItems.error.atLeastOneItem")
+              implicit val req: DataRequest[_] = dataRequest(request, userAnswers.get)
 
-                implicit val req: DataRequest[_] = dataRequest(request, userAnswers.get)
-
-                status(result) mustEqual BAD_REQUEST
-                contentAsString(result) mustEqual view(
-                  form = Some(boundForm),
-                  items = serviceResponse,
-                  allItemsAdded = true,
-                  action = routes.AddedItemsController.onSubmit(testErn, testArc))(req, messages(application)
-                ).toString
-              }
+              status(result) mustEqual BAD_REQUEST
+              contentAsString(result) mustEqual view(
+                form = Some(boundForm),
+                itemList = Seq(1 -> SummaryList(), 2 -> SummaryList()),
+                allItemsAdded = true,
+                action = routes.AddedItemsController.onSubmit(testErn, testArc))(req, messages(application)
+              ).toString
             }
           }
 
@@ -542,34 +455,23 @@ class AddedItemsControllerSpec extends SpecBase with MockGetCnCodeInformationSer
                 .set(CheckAnswersItemPage(1), true)
                 .set(SelectItemsPage(2), item2.itemUniqueReference)
                 .set(CheckAnswersItemPage(2), true)
-                .set(RefusedAmountPage(2), BigDecimal(1)))
-            ) {
-              running(application) {
+                .set(RefusedAmountPage(2), BigDecimal(1))
+            )) {
 
-                val serviceResponse: Seq[(ListItemWithProductCode, CnCodeInformation)] =
-                  Seq(
-                    (
-                      ListItemWithProductCode(productCode = item1.productCode, cnCode = item1.cnCode, changeUrl = url, removeUrl = url),
-                      CnCodeInformation("", "", `1`)
-                    ),
-                    (
-                      ListItemWithProductCode(productCode = item2.productCode, cnCode = item2.cnCode, changeUrl = url, removeUrl = url),
-                      CnCodeInformation("", "", `1`)
-                    )
-                  )
+              MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1, item2)).returns(Future.successful(
+                Seq(
+                  item1 -> CnCodeInformation("", "", `1`),
+                  item2 -> CnCodeInformation("", "", `1`)
+                )
+              ))
+              MockCheckAnswersItemHelper.summaryList().returns(SummaryList()).anyNumberOfTimes()
 
-                MockGetCnCodeInformationService.getCnCodeInformationWithListItems(Seq(
-                  ListItemWithProductCode(productCode = item1.productCode, cnCode = item1.cnCode, changeUrl = url, removeUrl = url),
-                  ListItemWithProductCode(productCode = item2.productCode, cnCode = item2.cnCode, changeUrl = url, removeUrl = url)
-                )).returns(Future.successful(serviceResponse))
+              val request = FakeRequest(POST, routes.AddedItemsController.onSubmit(testErn, testArc).url).withFormUrlEncodedBody("value" -> "false")
 
+              val result = route(application, request).value
 
-                val request = FakeRequest(POST, routes.AddedItemsController.onSubmit(testErn, testArc).url).withFormUrlEncodedBody("value" -> "false")
-                val result = route(application, request).value
-
-                status(result) mustEqual SEE_OTHER
-                redirectLocation(result) mustBe Some(routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode).url)
-              }
+              status(result) mustEqual SEE_OTHER
+              redirectLocation(result) mustBe Some(routes.AddMoreInformationController.loadMoreInformation(testErn, testArc, NormalMode).url)
             }
           }
         }

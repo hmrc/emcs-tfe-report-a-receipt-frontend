@@ -18,11 +18,11 @@ package services
 
 import base.SpecBase
 import mocks.connectors.MockGetCnCodeInformationConnector
+import models.ReferenceDataUnitOfMeasure
 import models.requests.CnCodeInformationRequest
 import models.response.emcsTfe.MovementItem
 import models.response.referenceData.{CnCodeInformation, CnCodeInformationResponse}
 import models.response.{ReferenceDataException, UnexpectedDownstreamResponseError}
-import models.{ListItemWithProductCode, ReferenceDataUnitOfMeasure}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -37,7 +37,6 @@ class GetCnCodeInformationServiceSpec extends SpecBase with MockGetCnCodeInforma
 
   val request = CnCodeInformationRequest(productCodeList = Seq("T400"), cnCodeList = Seq("24029000"))
   val movementItems = Seq(MovementItem(1, "T400", "24029000", 1, 1, 1, None, None, None, None, None, None, None, None, None, Seq(), None))
-  val listItems = Seq(ListItemWithProductCode(productCode = "T400", cnCode = "24029000", changeUrl = "", removeUrl = ""))
 
   ".getCnCodeInformationWithMovementItems" - {
 
@@ -94,67 +93,6 @@ class GetCnCodeInformationServiceSpec extends SpecBase with MockGetCnCodeInforma
         )))))
 
         val result = intercept[ReferenceDataException](await(testService.getCnCodeInformationWithMovementItems(items)(hc)))
-
-        result.getMessage must include(s"Failed to match item with CN Code information")
-      }
-    }
-  }
-
-  ".getCnCodeInformationWithListItems" - {
-
-    "should return Success response" - {
-
-      "when Connector returns success from downstream" in {
-        MockGetCnCodeInformationConnector.getCnCodeInformation(request).returns(Future.successful(Right(CnCodeInformationResponse(data = Map(
-          "24029000" -> CnCodeInformation(
-            cnCodeDescription = "Cigars, cheroots, cigarillos and cigarettes not containing tobacco",
-            exciseProductCodeDescription = "Fine-cut tobacco for the rolling of cigarettes",
-            unitOfMeasureCode = ReferenceDataUnitOfMeasure.`1`
-          )
-        )))))
-
-        testService.getCnCodeInformationWithListItems(listItems)(hc).futureValue mustBe Seq((listItems.head, CnCodeInformation(
-          cnCodeDescription = "Cigars, cheroots, cigarillos and cigarettes not containing tobacco",
-          exciseProductCodeDescription = "Fine-cut tobacco for the rolling of cigarettes",
-          unitOfMeasureCode = ReferenceDataUnitOfMeasure.`1`
-        )))
-      }
-    }
-
-    "should return Failure response" - {
-
-      "when Connector returns failure from downstream" in {
-
-        MockGetCnCodeInformationConnector.getCnCodeInformation(request).returns(Future.successful(Left(UnexpectedDownstreamResponseError)))
-
-        val result = intercept[ReferenceDataException](await(testService.getCnCodeInformationWithListItems(listItems)(hc)))
-
-        result.getMessage must include(s"Failed to retrieve CN Code information")
-      }
-
-      "when not all items match something from the Connector" in {
-        val request = CnCodeInformationRequest(productCodeList = Seq("T400", "T401", "T402"), cnCodeList = Seq("24029000", "24029001", "24029002"))
-        val items = Seq(
-          ListItemWithProductCode("T400", "24029000", "", ""),
-          ListItemWithProductCode("T401", "24029001", "", ""),
-          ListItemWithProductCode("T402", "24029002", "", "")
-        )
-
-
-        MockGetCnCodeInformationConnector.getCnCodeInformation(request).returns(Future.successful(Right(CnCodeInformationResponse(data = Map(
-          "24029000" -> CnCodeInformation(
-            cnCodeDescription = "Cigars, cheroots, cigarillos and cigarettes not containing tobacco",
-            exciseProductCodeDescription = "Fine-cut tobacco for the rolling of cigarettes",
-            unitOfMeasureCode = ReferenceDataUnitOfMeasure.`1`
-          ),
-          "24029001" -> CnCodeInformation(
-            cnCodeDescription = "Cigars, cheroots, cigarillos and cigarettes not containing tobacco",
-            exciseProductCodeDescription = "Fine-cut tobacco for the rolling of cigarettes",
-            unitOfMeasureCode = ReferenceDataUnitOfMeasure.`1`
-          )
-        )))))
-
-        val result = intercept[ReferenceDataException](await(testService.getCnCodeInformationWithListItems(items)(hc)))
 
         result.getMessage must include(s"Failed to match item with CN Code information")
       }

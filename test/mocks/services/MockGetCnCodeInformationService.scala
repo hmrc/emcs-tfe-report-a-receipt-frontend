@@ -16,7 +16,6 @@
 
 package mocks.services
 
-import models.ListItemWithProductCode
 import models.response.emcsTfe.MovementItem
 import models.response.referenceData.CnCodeInformation
 import org.scalamock.handlers.CallHandler2
@@ -38,13 +37,6 @@ trait MockGetCnCodeInformationService extends MockFactory {
       (mockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(_: Seq[MovementItem])(_: HeaderCarrier))
         .expects(where {
           (_items: Seq[MovementItem], _) =>
-            (_items.map(_.cnCode) == items.map(_.cnCode)) && (_items.map(_.productCode) == items.map(_.productCode))
-        })
-
-    def getCnCodeInformationWithListItems(items: Seq[ListItemWithProductCode]): Output[ListItemWithProductCode] =
-      (mockGetCnCodeInformationService.getCnCodeInformationWithListItems(_: Seq[ListItemWithProductCode])(_: HeaderCarrier))
-        .expects(where {
-          (_items: Seq[ListItemWithProductCode], _) =>
             (_items.map(_.cnCode) == items.map(_.cnCode)) && (_items.map(_.productCode) == items.map(_.productCode))
         })
   }

@@ -24,7 +24,7 @@ import models.requests.DataRequest
 import models.response.referenceData.CnCodeInformation
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import pages.unsatisfactory.individualItems.ItemDamageInformationPage
+import pages.unsatisfactory.individualItems.{ItemDamageInformationPage, ItemSealsInformationPage}
 import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
@@ -47,6 +47,33 @@ class ItemMoreInformationViewSpec extends ViewSpecBase with ViewBehaviours {
         val view = app.injector.instanceOf[ItemMoreInformationView]
 
         implicit val doc: Document = Jsoup.parse(view(form, ItemDamageInformationPage(1), testOnwardRoute, item1, CnCodeInformation("","",`1`)).toString())
+
+        behave like pageWithExpectedElementsAndMessages(Seq(
+          Selectors.title -> messagesForLanguage.title(1),
+          Selectors.h2(1) -> messagesForLanguage.arcSubheading(testArc),
+          Selectors.h1 -> messagesForLanguage.heading(1),
+          Selectors.detailsSummary(1) -> messagesForLanguage.itemDetails(1),
+          Selectors.hint -> messagesForLanguage.hint,
+          Selectors.button -> messagesForLanguage.saveAndContinue,
+          Selectors.id("save-and-exit") -> messagesForLanguage.savePreviousAnswersAndExit
+        ))
+      }
+    }
+  }
+
+  "ItemSealsInformation variant of view" - {
+
+    Seq(ItemSealsInformationMessages.English, ItemSealsInformationMessages.Welsh).foreach { messagesForLanguage =>
+
+      s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
+
+        implicit val msgs: Messages = messages(app, messagesForLanguage.lang)
+        implicit val request: DataRequest[AnyContentAsEmpty.type] = dataRequest(FakeRequest(), emptyUserAnswers)
+
+        val form = app.injector.instanceOf[MoreInformationFormProvider].apply(ItemSealsInformationPage(1))
+        val view = app.injector.instanceOf[ItemMoreInformationView]
+
+        implicit val doc: Document = Jsoup.parse(view(form, ItemSealsInformationPage(1), testOnwardRoute, item1, CnCodeInformation("","",`1`)).toString())
 
         behave like pageWithExpectedElementsAndMessages(Seq(
           Selectors.title -> messagesForLanguage.title(1),

@@ -17,13 +17,12 @@
 package views
 
 import base.ViewSpecBase
-import fixtures.messages.{ExcessInformationMessages, ItemSealsInformationMessages, MoreInformationMessages, SealsInformationMessages, ShortageInformationMessages}
+import fixtures.messages.{ExcessInformationMessages, MoreInformationMessages, SealsInformationMessages, ShortageInformationMessages}
 import forms.MoreInformationFormProvider
 import models.requests.DataRequest
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import pages.MoreInformationPage
-import pages.unsatisfactory.individualItems.ItemSealsInformationPage
 import pages.unsatisfactory.{ExcessInformationPage, SealsInformationPage, ShortageInformationPage}
 import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
@@ -125,32 +124,6 @@ class MoreInformationViewSpec extends ViewSpecBase with ViewBehaviours {
         val view = app.injector.instanceOf[MoreInformationView]
 
         implicit val doc: Document = Jsoup.parse(view(form, SealsInformationPage, testOnwardRoute).toString())
-
-        behave like pageWithExpectedElementsAndMessages(Seq(
-          Selectors.title -> messagesForLanguage.title,
-          Selectors.h2(1) -> messagesForLanguage.arcSubheading(testArc),
-          Selectors.h1 -> messagesForLanguage.heading,
-          Selectors.hint -> messagesForLanguage.hint,
-          Selectors.button -> messagesForLanguage.saveAndContinue,
-          Selectors.id("save-and-exit") -> messagesForLanguage.savePreviousAnswersAndExit
-        ))
-      }
-    }
-  }
-
-  "ItemSealsInformation variant of view" - {
-
-    Seq(ItemSealsInformationMessages.English, ItemSealsInformationMessages.Welsh).foreach { messagesForLanguage =>
-
-      s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
-
-        implicit val msgs: Messages = messages(app, messagesForLanguage.lang)
-        implicit val request: DataRequest[AnyContentAsEmpty.type] = dataRequest(FakeRequest(), emptyUserAnswers)
-
-        val form = app.injector.instanceOf[MoreInformationFormProvider].apply(ItemSealsInformationPage(1))
-        val view = app.injector.instanceOf[MoreInformationView]
-
-        implicit val doc: Document = Jsoup.parse(view(form, ItemSealsInformationPage(1), testOnwardRoute).toString())
 
         behave like pageWithExpectedElementsAndMessages(Seq(
           Selectors.title -> messagesForLanguage.title,

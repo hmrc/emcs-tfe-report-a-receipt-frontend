@@ -66,16 +66,12 @@ class AddMoreInformationControllerSpec extends SpecBase with MockUserAnswersServ
   lazy val addSealsInformationRoute = routes.AddMoreInformationController.loadSealsInformation(testErn, testArc, NormalMode).url
   lazy val addSealsInformationSubmitAction = routes.AddMoreInformationController.submitSealsInformation(testErn, testArc, NormalMode)
 
-  lazy val addItemSealsInformationRoute = routes.AddMoreInformationController.loadItemSealsInformation(testErn, testArc, idx, NormalMode).url
-  lazy val addItemSealsInformationSubmitAction = routes.AddMoreInformationController.submitItemSealsInformation(testErn, testArc, idx, NormalMode)
-
   Seq(
     (AddMoreInformationPage, MoreInformationPage, addMoreInformationRoute, addMoreInformationSubmitAction),
     (AddShortageInformationPage, ShortageInformationPage, addShortageInformationRoute, addShortageInformationSubmitAction),
     (AddExcessInformationPage, ExcessInformationPage, addExcessInformationRoute, addExcessInformationSubmitAction),
     (AddDamageInformationPage, DamageInformationPage, addDamageInformationRoute, addDamageInformationSubmitAction),
     (AddSealsInformationPage, SealsInformationPage, addSealsInformationRoute, addSealsInformationSubmitAction),
-    (AddItemSealsInformationPage(idx), ItemSealsInformationPage(idx), addItemSealsInformationRoute, addItemSealsInformationSubmitAction),
   ) foreach { case (yesNoPage, infoPage, url, submitAction) =>
 
     s"for the '$yesNoPage' page" - {

@@ -22,7 +22,7 @@ import forms.AddMoreInformationFormProvider
 import models.ReferenceDataUnitOfMeasure.`1`
 import models.response.referenceData.CnCodeInformation
 import org.jsoup.Jsoup
-import pages.unsatisfactory.individualItems.{AddItemDamageInformationPage, RemoveItemPage}
+import pages.unsatisfactory.individualItems.{AddItemDamageInformationPage, RemoveItemPage, AddItemSealsInformationPage}
 import play.api.test.FakeRequest
 import views.html.AddItemMoreInformationView
 
@@ -32,28 +32,34 @@ class AddItemMoreInformationViewSpec extends ViewSpecBase with ViewBehaviours {
 
   object Selectors extends BaseSelectors
 
-  "For the AddItemDamagedInformation view" - {
+  lazy val form = app.injector.instanceOf[AddMoreInformationFormProvider].apply(RemoveItemPage(1))
 
-    lazy val form = app.injector.instanceOf[AddMoreInformationFormProvider].apply(RemoveItemPage(1))
+  Seq(
+    AddItemDamageInformationPage(1) -> Seq(AddItemDamageInformationMessages.English, AddItemDamageInformationMessages.Welsh),
+    AddItemSealsInformationPage(1) -> Seq(AddItemSealsInformationMessages.English, AddItemSealsInformationMessages.Welsh)
+  ) foreach {
 
-    Seq(AddItemDamageInformationMessages.English, AddItemDamageInformationMessages.Welsh).foreach { messagesForLanguage =>
+    case (page, langs) => langs foreach { messagesForLanguage =>
 
-      s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
+      s"For the $page view" - {
 
-        implicit val msgs = messages(app, messagesForLanguage.lang)
-        implicit val request = dataRequest(FakeRequest(), emptyUserAnswers)
-        implicit val doc = Jsoup.parse(view(form, AddItemDamageInformationPage(1), testOnwardRoute, item1, CnCodeInformation("", "", `1`)).toString())
+        s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
 
-        behave like pageWithExpectedElementsAndMessages(Seq(
-          Selectors.title -> messagesForLanguage.title(1),
-          Selectors.h2(1) -> messagesForLanguage.arcSubheading(testArc),
-          Selectors.h1 -> messagesForLanguage.heading(1),
-          Selectors.detailsSummary(1) -> messagesForLanguage.itemDetails(1),
-          Selectors.radioButton(1) -> messagesForLanguage.yes,
-          Selectors.radioButton(2) -> messagesForLanguage.no,
-          Selectors.button -> messagesForLanguage.saveAndContinue,
-          Selectors.id("save-and-exit") -> messagesForLanguage.savePreviousAnswersAndExit
-        ))
+          implicit val msgs = messages(app, messagesForLanguage.lang)
+          implicit val request = dataRequest(FakeRequest(), emptyUserAnswers)
+          implicit val doc = Jsoup.parse(view(form, page, testOnwardRoute, item1, CnCodeInformation("", "", `1`)).toString())
+
+          behave like pageWithExpectedElementsAndMessages(Seq(
+            Selectors.title -> messagesForLanguage.title(1),
+            Selectors.h2(1) -> messagesForLanguage.arcSubheading(testArc),
+            Selectors.h1 -> messagesForLanguage.heading(1),
+            Selectors.detailsSummary(1) -> messagesForLanguage.itemDetails(1),
+            Selectors.radioButton(1) -> messagesForLanguage.yes,
+            Selectors.radioButton(2) -> messagesForLanguage.no,
+            Selectors.button -> messagesForLanguage.saveAndContinue,
+            Selectors.id("save-and-exit") -> messagesForLanguage.savePreviousAnswersAndExit
+          ))
+        }
       }
     }
   }

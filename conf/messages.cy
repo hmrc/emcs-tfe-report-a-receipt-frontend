@@ -145,8 +145,9 @@ addSealsInformation.title = Do you want to give information about receiving good
 addSealsInformation.heading = Do you want to give information about receiving goods with broken seal(s)?
 addSealsInformation.error.required = Select yes if you want to give more information about receiving goods with broken seal(s)
 
-addItemSealsInformation.title = Do you want to give more information about broken seal(s)?
-addItemSealsInformation.heading = Do you want to give more information about broken seal(s)?
+addItemSealsInformation.title = Do you want to give information about item {0} having broken seal(s)?
+addItemSealsInformation.heading = Do you want to give information about item {0} having broken seal(s)?
+addItemSealsInformation.itemDetails = View item {0} details
 addItemSealsInformation.error.required = Select yes if you want to give more information about broken seal(s)
 
 moreInformation.title = Give more information about this movement

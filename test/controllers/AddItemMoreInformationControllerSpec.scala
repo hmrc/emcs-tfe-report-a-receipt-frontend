@@ -22,6 +22,7 @@ import mocks.services.{MockReferenceDataService, MockUserAnswersService}
 import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import pages.unsatisfactory.individualItems.{AddItemDamageInformationPage, ItemDamageInformationPage}
+import pages.unsatisfactory.individualItems.{AddItemSealsInformationPage, ItemSealsInformationPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -54,9 +55,12 @@ class AddItemMoreInformationControllerSpec extends SpecBase
 
   lazy val addItemDamageInformationRoute = controllers.routes.AddItemMoreInformationController.loadItemDamageInformation(testErn, testArc, idx, NormalMode).url
   lazy val addItemDamageInformationSubmitAction = controllers.routes.AddItemMoreInformationController.submitItemDamageInformation(testErn, testArc, idx, NormalMode)
+  lazy val addItemSealsInformationRoute = routes.AddItemMoreInformationController.loadItemSealsInformation(testErn, testArc, idx, NormalMode).url
+  lazy val addItemSealsInformationSubmitAction = routes.AddItemMoreInformationController.submitItemSealsInformation(testErn, testArc, idx, NormalMode)
 
   Seq(
-    (AddItemDamageInformationPage(idx), ItemDamageInformationPage(idx), addItemDamageInformationRoute, addItemDamageInformationSubmitAction)
+    (AddItemDamageInformationPage(idx), ItemDamageInformationPage(idx), addItemDamageInformationRoute, addItemDamageInformationSubmitAction),
+    (AddItemSealsInformationPage(idx), ItemSealsInformationPage(idx), addItemSealsInformationRoute, addItemSealsInformationSubmitAction)
   ) foreach { case (yesNoPage, infoPage, url, submitAction) =>
 
     s"for the '$yesNoPage' page" - {

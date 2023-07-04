@@ -48,13 +48,13 @@ class RemoveItemController @Inject()(
                  arc: String,
                  idx: Int,
                  mode: Mode = NormalMode): Action[AnyContent] =
-    authorisedDataRequestWithCachedMovement(ern, arc) { implicit request =>
-      withAddedItem(idx) {
-        _ => Ok(view(
+    authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
+      withAddedItemAsync(idx) {
+        _ => Future.successful(Ok(view(
           form = formProvider(RemoveItemPage(idx)),
           page = RemoveItemPage(idx),
           action = routes.RemoveItemController.onSubmit(ern, arc, idx, mode)
-        ))
+        )))
       }
     }
 

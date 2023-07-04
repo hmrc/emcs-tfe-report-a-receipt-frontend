@@ -20,11 +20,9 @@ import base.SpecBase
 import forms.ItemShortageOrExcessFormProvider
 import mocks.services.{MockGetCnCodeInformationService, MockUserAnswersService}
 import models.AcceptMovement.PartiallyRefused
-import models.ReferenceDataUnitOfMeasure.`1`
 import models.UnitOfMeasure.Kilograms
 import models.WrongWithMovement.{Excess, Shortage}
-import models.response.referenceData.CnCodeInformation
-import models.{ItemShortageOrExcessModel, NormalMode}
+import models.{ItemShortageOrExcessModel, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import pages.AcceptMovementPage
 import pages.unsatisfactory.individualItems.{ItemShortageOrExcessPage, RefusedAmountPage, RefusingAnyAmountOfItemPage, SelectItemsPage}
@@ -38,12 +36,28 @@ import views.html.ItemShortageOrExcessView
 
 import scala.concurrent.Future
 
-class ItemShortageOrExcessControllerSpec extends SpecBase with MockUserAnswersService with MockGetCnCodeInformationService {
+class ItemShortageOrExcessControllerSpec extends SpecBase
+  with MockUserAnswersService
+  with MockGetCnCodeInformationService {
+
+  lazy val defaultUserAnswers = emptyUserAnswers.set(SelectItemsPage(1), item1.itemUniqueReference)
+
+  class Fixture(val userAnswers: Option[UserAnswers] = Some(defaultUserAnswers)) {
+    val application = applicationBuilder(userAnswers)
+      .overrides(
+        bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+        bind[UserAnswersService].toInstance(mockUserAnswersService),
+        bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService)
+      ).build()
+
+    lazy val view = application.injector.instanceOf[ItemShortageOrExcessView]
+  }
 
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new ItemShortageOrExcessFormProvider()
   val form = formProvider()
+  val refusedAmount: BigDecimal = 10.125
 
   lazy val itemShortageOrExcess = ItemShortageOrExcessModel(
     wrongWithItem = Excess,
@@ -51,28 +65,19 @@ class ItemShortageOrExcessControllerSpec extends SpecBase with MockUserAnswersSe
     additionalInfo = Some("info")
   )
 
-  lazy val defaultUserAnswers = emptyUserAnswers.set(SelectItemsPage(1), item1.itemUniqueReference)
-
   lazy val itemShortageOrExcessRoute = routes.ItemShortageOrExcessController.onPageLoad(testErn, testArc, idx = 1, NormalMode).url
 
   "ItemShortageOrExcess Controller" - {
 
-    "must return OK and the correct view for a GET" in {
-
-      MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
-        (item1, CnCodeInformation("", "", `1`))
-      )))
-
-      val application = applicationBuilder(userAnswers = Some(defaultUserAnswers))
-        .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService))
-        .build()
-
+    "must return OK and the correct view for a GET" in new Fixture() {
       running(application) {
+
+        MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
+          (item1, cnCodeInfo)
+        )))
+
         val request = FakeRequest(GET, itemShortageOrExcessRoute)
-
         val result = route(application, request).value
-
-        val view = application.injector.instanceOf[ItemShortageOrExcessView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(
@@ -83,23 +88,16 @@ class ItemShortageOrExcessControllerSpec extends SpecBase with MockUserAnswersSe
       }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
-        (item1, CnCodeInformation("", "", `1`))
-      )))
-
-      val userAnswers = defaultUserAnswers.set(ItemShortageOrExcessPage(1), itemShortageOrExcess)
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers))
-        .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService))
-        .build()
-
+    "must populate the view correctly on a GET when the question has previously been answered" in new Fixture(Some(
+      defaultUserAnswers.set(ItemShortageOrExcessPage(1), itemShortageOrExcess)
+    )) {
       running(application) {
+
+        MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
+          (item1, cnCodeInfo)
+        )))
+
         val request = FakeRequest(GET, itemShortageOrExcessRoute)
-
-        val view = application.injector.instanceOf[ItemShortageOrExcessView]
-
         val result = route(application, request).value
 
         status(result) mustEqual OK
@@ -111,24 +109,15 @@ class ItemShortageOrExcessControllerSpec extends SpecBase with MockUserAnswersSe
       }
     }
 
-    "must redirect to the next page when valid data is submitted (shortage equal to Quantity)" in {
-
-      MockUserAnswersService.set().returns(Future.successful(defaultUserAnswers))
-
-      MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
-        (item1, CnCodeInformation("", "", `1`))
-      )))
-
-      val application =
-        applicationBuilder(userAnswers = Some(defaultUserAnswers))
-          .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[UserAnswersService].toInstance(mockUserAnswersService),
-            bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService)
-          )
-          .build()
+    "must redirect to the next page when valid data is submitted (shortage equal to Quantity)" in new Fixture() {
 
       running(application) {
+
+        MockUserAnswersService.set().returns(Future.successful(defaultUserAnswers))
+        MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
+          (item1, cnCodeInfo)
+        )))
+
         val request =
           FakeRequest(POST, itemShortageOrExcessRoute)
             .withFormUrlEncodedBody(
@@ -145,24 +134,14 @@ class ItemShortageOrExcessControllerSpec extends SpecBase with MockUserAnswersSe
     }
 
     "must redirect to the next page when valid data is submitted (shortage less than Quantity)" - {
-      "default" in {
-
-        MockUserAnswersService.set().returns(Future.successful(defaultUserAnswers))
-
-        MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
-          (item1, CnCodeInformation("", "", `1`))
-        )))
-
-        val application =
-          applicationBuilder(userAnswers = Some(defaultUserAnswers))
-            .overrides(
-              bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-              bind[UserAnswersService].toInstance(mockUserAnswersService),
-              bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService)
-            )
-            .build()
-
+      "default" in new Fixture() {
         running(application) {
+
+          MockUserAnswersService.set().returns(Future.successful(defaultUserAnswers))
+          MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
+            (item1, cnCodeInfo)
+          )))
+
           val request =
             FakeRequest(POST, itemShortageOrExcessRoute)
               .withFormUrlEncodedBody(
@@ -178,27 +157,18 @@ class ItemShortageOrExcessControllerSpec extends SpecBase with MockUserAnswersSe
         }
       }
 
-      "when Partially refused - no RefusedAmountPage value" in {
-
-        MockUserAnswersService.set().returns(Future.successful(defaultUserAnswers))
-
-        MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
-          (item1, CnCodeInformation("", "", `1`))
-        )))
-
-        val application =
-          applicationBuilder(userAnswers = Some(defaultUserAnswers
-            .set(RefusingAnyAmountOfItemPage(1), true)
-            .set(AcceptMovementPage, PartiallyRefused)
-          ))
-            .overrides(
-              bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-              bind[UserAnswersService].toInstance(mockUserAnswersService),
-              bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService)
-            )
-            .build()
-
+      "when Partially refused - no RefusedAmountPage value" in new Fixture(Some(
+        defaultUserAnswers
+          .set(RefusingAnyAmountOfItemPage(1), true)
+          .set(AcceptMovementPage, PartiallyRefused)
+      )) {
         running(application) {
+
+          MockUserAnswersService.set().returns(Future.successful(defaultUserAnswers))
+          MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
+            (item1, cnCodeInfo)
+          )))
+
           val request =
             FakeRequest(POST, itemShortageOrExcessRoute)
               .withFormUrlEncodedBody(
@@ -214,28 +184,20 @@ class ItemShortageOrExcessControllerSpec extends SpecBase with MockUserAnswersSe
         }
       }
 
-      "when Partially refused - with a RefusedAmountPage value" in {
-
-        MockUserAnswersService.set().returns(Future.successful(defaultUserAnswers))
-
-        MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
-          (item1, CnCodeInformation("", "", `1`))
-        )))
-
-        val application =
-          applicationBuilder(userAnswers = Some(defaultUserAnswers
-            .set(RefusingAnyAmountOfItemPage(1), true)
-            .set(AcceptMovementPage, PartiallyRefused)
-            .set(RefusedAmountPage(1), BigDecimal(1))
-          ))
-            .overrides(
-              bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-              bind[UserAnswersService].toInstance(mockUserAnswersService),
-              bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService)
-            )
-            .build()
+      "when Partially refused - with a RefusedAmountPage value" in new Fixture(Some(
+        defaultUserAnswers
+          .set(RefusingAnyAmountOfItemPage(1), true)
+          .set(AcceptMovementPage, PartiallyRefused)
+          .set(RefusedAmountPage(1), BigDecimal(1))
+      )) {
 
         running(application) {
+
+          MockUserAnswersService.set().returns(Future.successful(defaultUserAnswers))
+          MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
+            (item1, cnCodeInfo)
+          )))
+
           val request =
             FakeRequest(POST, itemShortageOrExcessRoute)
               .withFormUrlEncodedBody(
@@ -252,17 +214,13 @@ class ItemShortageOrExcessControllerSpec extends SpecBase with MockUserAnswersSe
       }
     }
 
-    "must return a Bad Request and errors when valid data is submitted but shortage amount exceeds the quantity" in {
-
-      MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
-        (item1, CnCodeInformation("", "", `1`))
-      )))
-
-      val application = applicationBuilder(userAnswers = Some(defaultUserAnswers))
-        .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService))
-        .build()
-
+    "must return a Bad Request and errors when valid data is submitted but shortage amount exceeds the quantity" in new Fixture() {
       running(application) {
+
+        MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
+          (item1, cnCodeInfo)
+        )))
+
         val request =
           FakeRequest(POST, itemShortageOrExcessRoute)
             .withFormUrlEncodedBody(
@@ -278,8 +236,6 @@ class ItemShortageOrExcessControllerSpec extends SpecBase with MockUserAnswersSe
         ))
           .withError(FormError("amount", "itemShortageOrExcess.amount.error.tooLarge", Seq(item1.quantity)))
 
-        val view = application.injector.instanceOf[ItemShortageOrExcessView]
-
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
@@ -291,24 +247,18 @@ class ItemShortageOrExcessControllerSpec extends SpecBase with MockUserAnswersSe
       }
     }
 
-    "must return a Bad Request and errors when valid data is submitted but shortage amount exceeds the quantity minus the amount already refused" in {
-
-      MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
-        (item1, CnCodeInformation("", "", `1`))
-      )))
-
-      val refusedAmount: BigDecimal = 10.125
-
-      val userAnswers = defaultUserAnswers
+    "must return a Bad Request and errors when valid data is submitted but shortage amount exceeds the quantity minus the amount already refused" in new Fixture(Some(
+      defaultUserAnswers
         .set(AcceptMovementPage, PartiallyRefused)
         .set(RefusingAnyAmountOfItemPage(1), true)
         .set(RefusedAmountPage(1), refusedAmount)
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers))
-        .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService))
-        .build()
-
+    )) {
       running(application) {
+
+        MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
+          (item1, cnCodeInfo)
+        )))
+
         val request =
           FakeRequest(POST, itemShortageOrExcessRoute)
             .withFormUrlEncodedBody(
@@ -324,8 +274,6 @@ class ItemShortageOrExcessControllerSpec extends SpecBase with MockUserAnswersSe
         ))
           .withError(FormError("amount", "itemShortageOrExcess.amount.error.tooLarge", Seq(item1.quantity - refusedAmount)))
 
-        val view = application.injector.instanceOf[ItemShortageOrExcessView]
-
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
@@ -337,25 +285,18 @@ class ItemShortageOrExcessControllerSpec extends SpecBase with MockUserAnswersSe
       }
     }
 
-    "must return a Bad Request and errors when invalid data is submitted" in {
-
-      MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
-        (item1, CnCodeInformation("", "", `1`))
-      )))
-
-      val application = applicationBuilder(userAnswers = Some(defaultUserAnswers))
-        .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService))
-        .build()
-
+    "must return a Bad Request and errors when invalid data is submitted" in new Fixture() {
       running(application) {
+
+        MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1)).returns(Future.successful(Seq(
+          (item1, cnCodeInfo)
+        )))
+
         val request =
           FakeRequest(POST, itemShortageOrExcessRoute)
             .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form.bind(Map("value" -> ""))
-
-        val view = application.injector.instanceOf[ItemShortageOrExcessView]
-
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
@@ -367,15 +308,10 @@ class ItemShortageOrExcessControllerSpec extends SpecBase with MockUserAnswersSe
       }
     }
 
-    "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None)
-        .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService))
-        .build()
-
+    "must redirect to Journey Recovery for a GET if no existing data is found" in new Fixture(None) {
       running(application) {
-        val request = FakeRequest(GET, itemShortageOrExcessRoute)
 
+        val request = FakeRequest(GET, itemShortageOrExcessRoute)
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
@@ -383,13 +319,9 @@ class ItemShortageOrExcessControllerSpec extends SpecBase with MockUserAnswersSe
       }
     }
 
-    "must redirect to Journey Recovery for a POST if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None)
-        .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService))
-        .build()
-
+    "must redirect to Journey Recovery for a POST if no existing data is found" in new Fixture(None) {
       running(application) {
+
         val request =
           FakeRequest(POST, itemShortageOrExcessRoute)
             .withFormUrlEncodedBody(("value", "true"))

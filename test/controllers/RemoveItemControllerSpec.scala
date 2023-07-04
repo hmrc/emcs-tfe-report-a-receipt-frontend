@@ -37,6 +37,23 @@ import scala.concurrent.Future
 
 class RemoveItemControllerSpec extends SpecBase with MockUserAnswersService {
 
+  lazy val baseAnswers: UserAnswers = emptyUserAnswers
+    .set(HowGiveInformationPage, IndividualItem)
+    .set(SelectItemsPage(1), item1.itemUniqueReference)
+    .set(CheckAnswersItemPage(1), true)
+
+  class Fixture(val userAnswers: Option[UserAnswers] = Some(baseAnswers)) {
+    val application =
+      applicationBuilder(userAnswers)
+        .overrides(
+          bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
+
+    lazy val view = application.injector.instanceOf[RemoveItemView]
+  }
+
   private val idx = 1
 
   def onwardRoute = Call("GET", "/foo")
@@ -48,53 +65,35 @@ class RemoveItemControllerSpec extends SpecBase with MockUserAnswersService {
 
   lazy val page: RemoveItemPage = RemoveItemPage(1)
 
-  lazy val baseAnswers: UserAnswers = emptyUserAnswers
-    .set(HowGiveInformationPage, IndividualItem)
-    .set(SelectItemsPage(1), item1.itemUniqueReference)
-    .set(CheckAnswersItemPage(1), true)
-
   s"for the '$page' page" - {
 
     val form = formProvider(page)
 
     "RemoveItem Controller" - {
 
-      "must return OK and the correct view for a GET" in {
-
-        val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
-
+      "must return OK and the correct view for a GET" in new Fixture() {
         running(application) {
+
           val request = FakeRequest(GET, removeItemRoute().url)
-
           val result = route(application, request).value
-
-          val view = application.injector.instanceOf[RemoveItemView]
 
           status(result) mustEqual OK
           contentAsString(result) mustEqual view(form, page, removeItemSubmitAction())(dataRequest(request), messages(application)).toString
         }
       }
 
-      "must redirect to the AddedItemsController when valid data is submitted (true) and remove the item" in {
-
-        object ItemsPage extends QuestionPage[JsObject] {
-          override def path: JsPath = JsPath \ "items"
-        }
-
-        val updatedAnswers = emptyUserAnswers
-          .set(HowGiveInformationPage, IndividualItem)
-          .set(ItemsPage, Json.obj())
-        MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers)).once()
-
-        val application =
-          applicationBuilder(userAnswers = Some(baseAnswers))
-            .overrides(
-              bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-              bind[UserAnswersService].toInstance(mockUserAnswersService)
-            )
-            .build()
-
+      "must redirect to the AddedItemsController when valid data is submitted (true) and remove the item" in new Fixture() {
         running(application) {
+
+          object ItemsPage extends QuestionPage[JsObject] {
+            override def path: JsPath = JsPath \ "items"
+          }
+
+          val updatedAnswers = emptyUserAnswers
+            .set(HowGiveInformationPage, IndividualItem)
+            .set(ItemsPage, Json.obj())
+          MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers)).once()
+
           val request =
             FakeRequest(POST, removeItemSubmitAction().url)
               .withFormUrlEncodedBody(("value", "true"))
@@ -106,17 +105,9 @@ class RemoveItemControllerSpec extends SpecBase with MockUserAnswersService {
         }
       }
 
-      "must redirect to the AddedItems page when valid data is submitted (false) without removing the item (in NormalMode)" in {
-
-        val application =
-          applicationBuilder(userAnswers = Some(baseAnswers))
-            .overrides(
-              bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-              bind[UserAnswersService].toInstance(mockUserAnswersService)
-            )
-            .build()
-
+      "must redirect to the AddedItems page when valid data is submitted (false) without removing the item (in NormalMode)" in new Fixture() {
         running(application) {
+
           val request =
             FakeRequest(POST, removeItemSubmitAction().url)
               .withFormUrlEncodedBody(("value", "false"))
@@ -128,17 +119,9 @@ class RemoveItemControllerSpec extends SpecBase with MockUserAnswersService {
         }
       }
 
-      "must redirect to the CheckAnswers page when valid data is submitted (false) without removing the item (in ReviewMode)" in {
-
-        val application =
-          applicationBuilder(userAnswers = Some(baseAnswers))
-            .overrides(
-              bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-              bind[UserAnswersService].toInstance(mockUserAnswersService)
-            )
-            .build()
-
+      "must redirect to the CheckAnswers page when valid data is submitted (false) without removing the item (in ReviewMode)" in new Fixture() {
         running(application) {
+
           val request =
             FakeRequest(POST, removeItemSubmitAction(ReviewMode).url)
               .withFormUrlEncodedBody(("value", "false"))
@@ -150,19 +133,14 @@ class RemoveItemControllerSpec extends SpecBase with MockUserAnswersService {
         }
       }
 
-      "must return a Bad Request and errors when invalid data is submitted" in {
-
-        val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
-
+      "must return a Bad Request and errors when invalid data is submitted" in new Fixture() {
         running(application) {
+
           val request =
             FakeRequest(POST, removeItemSubmitAction().url)
               .withFormUrlEncodedBody(("value", ""))
 
           val boundForm = form.bind(Map("value" -> ""))
-
-          val view = application.injector.instanceOf[RemoveItemView]
-
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
@@ -170,13 +148,10 @@ class RemoveItemControllerSpec extends SpecBase with MockUserAnswersService {
         }
       }
 
-      "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
-        val application = applicationBuilder(userAnswers = None).build()
-
+      "must redirect to Journey Recovery for a GET if no existing data is found" in new Fixture(None) {
         running(application) {
-          val request = FakeRequest(GET, removeItemRoute().url)
 
+          val request = FakeRequest(GET, removeItemRoute().url)
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
@@ -184,11 +159,9 @@ class RemoveItemControllerSpec extends SpecBase with MockUserAnswersService {
         }
       }
 
-      "must redirect to Journey Recovery for a POST if no existing data is found" in {
-
-        val application = applicationBuilder(userAnswers = None).build()
-
+      "must redirect to Journey Recovery for a POST if no existing data is found" in new Fixture(None) {
         running(application) {
+
           val request =
             FakeRequest(POST, removeItemSubmitAction().url)
               .withFormUrlEncodedBody(("value", "true"))

@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import forms.AddMoreInformationFormProvider
 import mocks.services.MockUserAnswersService
-import models.NormalMode
+import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import pages.unsatisfactory._
 import pages.unsatisfactory.individualItems.{AddItemSealsInformationPage, ItemSealsInformationPage}
@@ -34,6 +34,16 @@ import views.html.AddMoreInformationView
 import scala.concurrent.Future
 
 class AddMoreInformationControllerSpec extends SpecBase with MockUserAnswersService {
+
+  class Fixture(val userAnswers: Option[UserAnswers] = Some(emptyUserAnswers)) {
+    val application = applicationBuilder(userAnswers)
+      .overrides(
+        bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+        bind[UserAnswersService].toInstance(mockUserAnswersService)
+      )
+      .build()
+    lazy val view = application.injector.instanceOf[AddMoreInformationView]
+  }
 
   private val idx = 1
 
@@ -74,33 +84,23 @@ class AddMoreInformationControllerSpec extends SpecBase with MockUserAnswersServ
 
       "AddMoreInformation Controller" - {
 
-        "must return OK and the correct view for a GET" in {
-
-          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
+        "must return OK and the correct view for a GET" in new Fixture() {
           running(application) {
+
             val request = FakeRequest(GET, url)
-
             val result = route(application, request).value
-
-            val view = application.injector.instanceOf[AddMoreInformationView]
 
             status(result) mustEqual OK
             contentAsString(result) mustEqual view(form, yesNoPage, submitAction)(dataRequest(request), messages(application)).toString
           }
         }
 
-        "must populate the view correctly on a GET when the question has previously been answered" in {
-
-          val userAnswers = emptyUserAnswers.set(yesNoPage, true)
-
-          val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
+        "must populate the view correctly on a GET when the question has previously been answered" in new Fixture(Some(
+          emptyUserAnswers.set(yesNoPage, true)
+        )) {
           running(application) {
+
             val request = FakeRequest(GET, url)
-
-            val view = application.injector.instanceOf[AddMoreInformationView]
-
             val result = route(application, request).value
 
             status(result) mustEqual OK
@@ -108,24 +108,13 @@ class AddMoreInformationControllerSpec extends SpecBase with MockUserAnswersServ
           }
         }
 
-        "must redirect to the next page when valid data is submitted (true)" in {
-
-          val updatedAnswers = emptyUserAnswers.set(yesNoPage, true)
-          MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers)).once()
-
-          val application =
-            applicationBuilder(userAnswers = Some(emptyUserAnswers))
-              .overrides(
-                bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-                bind[UserAnswersService].toInstance(mockUserAnswersService)
-              )
-              .build()
-
+        "must redirect to the next page when valid data is submitted (true)" in new Fixture() {
           running(application) {
-            val request =
-              FakeRequest(POST, url)
-                .withFormUrlEncodedBody(("value", "true"))
 
+            val updatedAnswers = emptyUserAnswers.set(yesNoPage, true)
+            MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers)).once()
+
+            val request = FakeRequest(POST, url).withFormUrlEncodedBody(("value", "true"))
             val result = route(application, request).value
 
             status(result) mustEqual SEE_OTHER
@@ -133,27 +122,16 @@ class AddMoreInformationControllerSpec extends SpecBase with MockUserAnswersServ
           }
         }
 
-        "must redirect to the next page when valid data is submitted (false) AND clear answers" in {
-
-          val updatedAnswers = emptyUserAnswers
-            .set(yesNoPage, false)
-            .set(infoPage, None)
-
-          MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers)).once()
-
-          val application =
-            applicationBuilder(userAnswers = Some(emptyUserAnswers))
-              .overrides(
-                bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-                bind[UserAnswersService].toInstance(mockUserAnswersService)
-              )
-              .build()
-
+        "must redirect to the next page when valid data is submitted (false) AND clear answers" in new Fixture() {
           running(application) {
-            val request =
-              FakeRequest(POST, url)
-                .withFormUrlEncodedBody(("value", "false"))
 
+            val updatedAnswers = emptyUserAnswers
+              .set(yesNoPage, false)
+              .set(infoPage, None)
+
+            MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers)).once()
+
+            val request = FakeRequest(POST, url).withFormUrlEncodedBody(("value", "false"))
             val result = route(application, request).value
 
             status(result) mustEqual SEE_OTHER
@@ -161,19 +139,11 @@ class AddMoreInformationControllerSpec extends SpecBase with MockUserAnswersServ
           }
         }
 
-        "must return a Bad Request and errors when invalid data is submitted" in {
-
-          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
+        "must return a Bad Request and errors when invalid data is submitted" in new Fixture() {
           running(application) {
-            val request =
-              FakeRequest(POST, url)
-                .withFormUrlEncodedBody(("value", ""))
 
+            val request = FakeRequest(POST, url).withFormUrlEncodedBody(("value", ""))
             val boundForm = form.bind(Map("value" -> ""))
-
-            val view = application.injector.instanceOf[AddMoreInformationView]
-
             val result = route(application, request).value
 
             status(result) mustEqual BAD_REQUEST
@@ -181,13 +151,10 @@ class AddMoreInformationControllerSpec extends SpecBase with MockUserAnswersServ
           }
         }
 
-        "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
-          val application = applicationBuilder(userAnswers = None).build()
-
+        "must redirect to Journey Recovery for a GET if no existing data is found" in new Fixture(None) {
           running(application) {
-            val request = FakeRequest(GET, url)
 
+            val request = FakeRequest(GET, url)
             val result = route(application, request).value
 
             status(result) mustEqual SEE_OTHER
@@ -195,15 +162,10 @@ class AddMoreInformationControllerSpec extends SpecBase with MockUserAnswersServ
           }
         }
 
-        "must redirect to Journey Recovery for a POST if no existing data is found" in {
-
-          val application = applicationBuilder(userAnswers = None).build()
-
+        "must redirect to Journey Recovery for a POST if no existing data is found" in new Fixture(None) {
           running(application) {
-            val request =
-              FakeRequest(POST, url)
-                .withFormUrlEncodedBody(("value", "true"))
 
+            val request = FakeRequest(POST, url).withFormUrlEncodedBody(("value", "true"))
             val result = route(application, request).value
 
             status(result) mustEqual SEE_OTHER

@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import forms.AcceptMovementFormProvider
 import mocks.services.MockUserAnswersService
-import models.{AcceptMovement, NormalMode}
+import models.{AcceptMovement, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import pages.AcceptMovementPage
 import play.api.inject.bind
@@ -33,6 +33,16 @@ import scala.concurrent.Future
 
 class AcceptMovementControllerSpec extends SpecBase with MockUserAnswersService {
 
+  class Fixture(val userAnswers: Option[UserAnswers] = Some(emptyUserAnswers)) {
+    val application = applicationBuilder(userAnswers)
+      .overrides(
+        bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+        bind[UserAnswersService].toInstance(mockUserAnswersService)
+      )
+      .build()
+    lazy val view = application.injector.instanceOf[AcceptMovementView]
+  }
+
   def onwardRoute = Call("GET", "/foo")
 
   lazy val acceptMovementRoute = routes.AcceptMovementController.onPageLoad(testErn, testArc, NormalMode).url
@@ -42,33 +52,21 @@ class AcceptMovementControllerSpec extends SpecBase with MockUserAnswersService 
 
   "AcceptMovement Controller" - {
 
-    "must return OK and the correct view for a GET" in {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
+    "must return OK and the correct view for a GET" in new Fixture() {
       running(application) {
         val request = FakeRequest(GET, acceptMovementRoute)
-
         val result = route(application, request).value
-
-        val view = application.injector.instanceOf[AcceptMovementView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(dataRequest(request), messages(application)).toString
       }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = emptyUserAnswers.set(AcceptMovementPage, AcceptMovement.values.head)
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
+    "must populate the view correctly on a GET when the question has previously been answered" in new Fixture(Some(
+      emptyUserAnswers.set(AcceptMovementPage, AcceptMovement.values.head)
+    )) {
       running(application) {
         val request = FakeRequest(GET, acceptMovementRoute)
-
-        val view = application.injector.instanceOf[AcceptMovementView]
-
         val result = route(application, request).value
 
         status(result) mustEqual OK
@@ -78,20 +76,14 @@ class AcceptMovementControllerSpec extends SpecBase with MockUserAnswersService 
 
     "must redirect to the next page when valid data is submitted" - {
 
-      "and delete the rest of the answers when the input answer isn't the same as the current answer" in {
-        val updatedAnswers = emptyUserAnswers.set(AcceptMovementPage, AcceptMovement.values.head)
-
-        MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
-
-        val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers.set(AcceptMovementPage, AcceptMovement.values.last)))
-            .overrides(
-              bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-              bind[UserAnswersService].toInstance(mockUserAnswersService)
-            )
-            .build()
-
+      "and delete the rest of the answers when the input answer isn't the same as the current answer" in new Fixture(Some(
+        emptyUserAnswers.set(AcceptMovementPage, AcceptMovement.values.last
+      ))) {
         running(application) {
+
+          val updatedAnswers = emptyUserAnswers.set(AcceptMovementPage, AcceptMovement.values.head)
+          MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
+
           val request =
             FakeRequest(POST, acceptMovementRoute)
               .withFormUrlEncodedBody(("value", AcceptMovement.values.head.toString))
@@ -103,18 +95,13 @@ class AcceptMovementControllerSpec extends SpecBase with MockUserAnswersService 
         }
       }
 
-      "and not delete the rest of the answers when the input answer is the same as the current answer" in {
-        MockUserAnswersService.set().never()
-
-        val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers.set(AcceptMovementPage, AcceptMovement.values.head)))
-            .overrides(
-              bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-              bind[UserAnswersService].toInstance(mockUserAnswersService)
-            )
-            .build()
-
+      "and not delete the rest of the answers when the input answer is the same as the current answer" in new Fixture(Some(
+        emptyUserAnswers.set(AcceptMovementPage, AcceptMovement.values.head)
+      )) {
         running(application) {
+
+          MockUserAnswersService.set().never()
+
           val request =
             FakeRequest(POST, acceptMovementRoute)
               .withFormUrlEncodedBody(("value", AcceptMovement.values.head.toString))
@@ -127,19 +114,13 @@ class AcceptMovementControllerSpec extends SpecBase with MockUserAnswersService 
       }
     }
 
-    "must return a Bad Request and errors when invalid data is submitted" in {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
+    "must return a Bad Request and errors when invalid data is submitted" in new Fixture() {
       running(application) {
         val request =
           FakeRequest(POST, acceptMovementRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
-
-        val view = application.injector.instanceOf[AcceptMovementView]
-
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
@@ -147,13 +128,9 @@ class AcceptMovementControllerSpec extends SpecBase with MockUserAnswersService 
       }
     }
 
-    "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
+    "must redirect to Journey Recovery for a GET if no existing data is found" in new Fixture(None) {
       running(application) {
         val request = FakeRequest(GET, acceptMovementRoute)
-
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
@@ -161,10 +138,7 @@ class AcceptMovementControllerSpec extends SpecBase with MockUserAnswersService 
       }
     }
 
-    "redirect to Journey Recovery for a POST if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
+    "redirect to Journey Recovery for a POST if no existing data is found" in new Fixture(None) {
       running(application) {
         val request =
           FakeRequest(POST, acceptMovementRoute)
@@ -173,7 +147,6 @@ class AcceptMovementControllerSpec extends SpecBase with MockUserAnswersService 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-
         redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad(testErn, testArc).url
       }
     }

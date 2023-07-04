@@ -19,12 +19,11 @@ package controllers
 import base.SpecBase
 import mocks.services.{MockGetCnCodeInformationService, MockUserAnswersService}
 import mocks.viewmodels.MockCheckAnswersItemHelper
-import models.WrongWithMovement
 import models.WrongWithMovement.Damaged
+import models.{UserAnswers, WrongWithMovement}
 import navigation.{FakeNavigator, Navigator}
 import pages.unsatisfactory.individualItems.{AddItemDamageInformationPage, CheckAnswersItemPage, SelectItemsPage, WrongWithItemPage}
 import play.api.inject
-import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{GetCnCodeInformationService, UserAnswersService}
@@ -38,34 +37,33 @@ class CheckYourAnswersItemControllerSpec extends SpecBase
   with MockUserAnswersService
   with MockGetCnCodeInformationService {
 
-  private lazy val userAnswers = emptyUserAnswers
-    .set(SelectItemsPage(1), 1)
-    .set(WrongWithItemPage(1), Set[WrongWithMovement](Damaged))
-    .set(AddItemDamageInformationPage(1), false)
+  class Fixture(val userAnswers: Option[UserAnswers] = Some(emptyUserAnswers)) {
+    val application =
+      applicationBuilder(userAnswers)
+        .overrides(
+          inject.bind[Navigator].toInstance(new FakeNavigator(testOnwardRoute)),
+          inject.bind[UserAnswersService].toInstance(mockUserAnswersService),
+          inject.bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService)
+        )
+        .build()
+  }
 
   "Check Your Answers Controller" - {
 
     ".onPageLoad" - {
 
-      "must redirect to the onward route" in {
-
-        val updatedAnswers = userAnswers.set(CheckAnswersItemPage(1), true)
-
-        MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
-
-        val application =
-          applicationBuilder(userAnswers = Some(userAnswers))
-            .overrides(
-              inject.bind[Navigator].toInstance(new FakeNavigator(testOnwardRoute)),
-              inject.bind[UserAnswersService].toInstance(mockUserAnswersService),
-              inject.bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService)
-            )
-            .build()
-
+      "must redirect to the onward route" in new Fixture(Some(
+        emptyUserAnswers
+          .set(SelectItemsPage(1), 1)
+          .set(WrongWithItemPage(1), Set[WrongWithMovement](Damaged))
+          .set(AddItemDamageInformationPage(1), false)
+      )) {
         running(application) {
 
-          val request = FakeRequest(GET, routes.CheckYourAnswersItemController.onPageLoad(testErn, testArc, 1).url)
+          val updatedAnswers = userAnswers.get.set(CheckAnswersItemPage(1), true)
+          MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
 
+          val request = FakeRequest(GET, routes.CheckYourAnswersItemController.onPageLoad(testErn, testArc, 1).url)
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
@@ -73,15 +71,10 @@ class CheckYourAnswersItemControllerSpec extends SpecBase
         }
       }
 
-      "must redirect to Journey Recovery for a POST if no existing data is found" in {
-
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService))
-          .build()
-
+      "must redirect to SelectItemsController for a GET if no items are added" in new Fixture() {
         running(application) {
-          val request = FakeRequest(GET, routes.CheckYourAnswersItemController.onPageLoad(testErn, testArc, 1).url)
 
+          val request = FakeRequest(GET, routes.CheckYourAnswersItemController.onPageLoad(testErn, testArc, 1).url)
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER

@@ -25,8 +25,8 @@ import pages.QuestionPage
 import pages.unsatisfactory.individualItems.{AddItemDamageInformationPage, ItemDamageInformationPage}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
-import services.{GetCnCodeInformationService, GetPackagingTypesService, UserAnswersService}
+import play.api.mvc._
+import services.{ReferenceDataService, UserAnswersService}
 import utils.JsonOptionFormatter
 import views.html.ItemMoreInformationView
 
@@ -34,20 +34,19 @@ import javax.inject.Inject
 import scala.concurrent.Future
 
 class ItemMoreInformationController @Inject()(
-                                           override val messagesApi: MessagesApi,
-                                           override val userAnswersService: UserAnswersService,
-                                           override val navigator: Navigator,
-                                           override val auth: AuthAction,
-                                           override val userAllowList: UserAllowListAction,
-                                           override val withMovement: MovementAction,
-                                           override val getData: DataRetrievalAction,
-                                           override val requireData: DataRequiredAction,
-                                           formProvider: MoreInformationFormProvider,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           view: ItemMoreInformationView,
-                                           getCnCodeInformationService: GetCnCodeInformationService,
-                                           getPackagingTypesService: GetPackagingTypesService
-                                     ) extends BaseNavigationController with AuthActionHelper with JsonOptionFormatter {
+                                               override val messagesApi: MessagesApi,
+                                               override val userAnswersService: UserAnswersService,
+                                               override val navigator: Navigator,
+                                               override val auth: AuthAction,
+                                               override val userAllowList: UserAllowListAction,
+                                               override val withMovement: MovementAction,
+                                               override val getData: DataRetrievalAction,
+                                               override val requireData: DataRequiredAction,
+                                               formProvider: MoreInformationFormProvider,
+                                               val controllerComponents: MessagesControllerComponents,
+                                               view: ItemMoreInformationView,
+                                               referenceDataService: ReferenceDataService
+                                             ) extends BaseNavigationController with AuthActionHelper with JsonOptionFormatter {
 
   def loadItemDamageInformation(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
     onPageLoad(ern, arc, ItemDamageInformationPage(idx), idx, routes.ItemMoreInformationController.submitItemDamageInformation(ern, arc, idx, mode))
@@ -83,18 +82,11 @@ class ItemMoreInformationController @Inject()(
                                         form: Form[_],
                                         page: QuestionPage[Option[String]],
                                         submitAction: Call,
-                                        itemReference: Int)(implicit request: DataRequest[_]): Future[Result] =
-    request.movementDetails.item(itemReference) match {
-      case Some(item) =>
-        getPackagingTypesService.getPackagingTypes(Seq(item)).flatMap {
-          getCnCodeInformationService.getCnCodeInformationWithMovementItems(_).map {
-            case (item, cnCodeInformation) :: Nil =>
-              status(view(form, page, submitAction, item, cnCodeInformation))
-            case _ =>
-              Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url)
-          }
-        }
-      case _ =>
-        Future.successful(Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url))
+                                        itemReference: Int)(implicit request: DataRequest[_]): Future[Result] = {
+    withAddedItemAsync(itemReference) {
+      referenceDataService.itemWithReferenceData(_) { (item, cnCodeInformation) =>
+        Future.successful(status(view(form, page, submitAction, item, cnCodeInformation)))
+      }
     }
+  }
 }

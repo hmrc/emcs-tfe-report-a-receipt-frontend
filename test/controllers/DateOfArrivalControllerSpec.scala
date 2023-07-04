@@ -36,6 +36,17 @@ import scala.concurrent.Future
 
 class DateOfArrivalControllerSpec extends SpecBase with MockUserAnswersService {
 
+  class Fixture(userAnswers: Option[UserAnswers] = Some(emptyUserAnswers)) {
+    val application = applicationBuilder(userAnswers)
+      .overrides(
+        bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+        bind[UserAnswersService].toInstance(mockUserAnswersService)
+      )
+      .build()
+    lazy val view = application.injector.instanceOf[DateOfArrivalView]
+    implicit lazy val msgs = messages(application)
+  }
+
   val fixedNow = LocalDateTime.now()
   val dateOfDispatch = fixedNow.minusDays(3)
 
@@ -65,29 +76,21 @@ class DateOfArrivalControllerSpec extends SpecBase with MockUserAnswersService {
 
   "DateOfArrival Controller" - {
 
-    "must return OK and the correct view for a GET" in {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
+    "must return OK and the correct view for a GET" in new Fixture() {
       running(application) {
-        implicit val msgs = messages(application)
+
         val result = route(application, getRequest()).value
-        val view = application.injector.instanceOf[DateOfArrivalView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(dataRequest(getRequest()), msgs).toString
       }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = UserAnswers(testInternalId, testErn, testCredId).set(DateOfArrivalPage, validAnswer)
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
+    "must populate the view correctly on a GET when the question has previously been answered" in new Fixture(Some(
+      emptyUserAnswers.set(DateOfArrivalPage, validAnswer)
+    )) {
       running(application) {
-        implicit val msgs = messages(application)
-        val view = application.injector.instanceOf[DateOfArrivalView]
+
         val result = route(application, getRequest()).value
 
         status(result) mustEqual OK
@@ -95,21 +98,12 @@ class DateOfArrivalControllerSpec extends SpecBase with MockUserAnswersService {
       }
     }
 
-    "must redirect to the next page when valid data is submitted" in {
-
-      val updatedAnswers = emptyUserAnswers.set(DateOfArrivalPage, validAnswer)
-
-      MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
-
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[UserAnswersService].toInstance(mockUserAnswersService)
-          )
-          .build()
-
+    "must redirect to the next page when valid data is submitted" in new Fixture() {
       running(application) {
+
+        val updatedAnswers = emptyUserAnswers.set(DateOfArrivalPage, validAnswer)
+        MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
+
         val result = route(application, postRequest()).value
 
         status(result) mustEqual SEE_OTHER
@@ -117,18 +111,11 @@ class DateOfArrivalControllerSpec extends SpecBase with MockUserAnswersService {
       }
     }
 
-    "must return a Bad Request and errors when invalid data is submitted" in {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
-      val request =
-        FakeRequest(POST, dateOfArrivalRoute)
-          .withFormUrlEncodedBody(("value", "invalid value"))
-
+    "must return a Bad Request and errors when invalid data is submitted" in new Fixture() {
       running(application) {
-        implicit val msgs = messages(application)
+
+        val request = FakeRequest(POST, dateOfArrivalRoute).withFormUrlEncodedBody(("value", "invalid value"))
         val boundForm = form.bind(Map("value" -> "invalid value"))
-        val view = application.injector.instanceOf[DateOfArrivalView]
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
@@ -136,11 +123,9 @@ class DateOfArrivalControllerSpec extends SpecBase with MockUserAnswersService {
       }
     }
 
-    "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
+    "must redirect to Journey Recovery for a GET if no existing data is found" in new Fixture(None) {
       running(application) {
+
         val result = route(application, getRequest()).value
 
         status(result) mustEqual SEE_OTHER
@@ -148,11 +133,9 @@ class DateOfArrivalControllerSpec extends SpecBase with MockUserAnswersService {
       }
     }
 
-    "must redirect to Journey Recovery for a POST if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
+    "must redirect to Journey Recovery for a POST if no existing data is found" in new Fixture(None) {
       running(application) {
+
         val result = route(application, postRequest()).value
 
         status(result) mustEqual SEE_OTHER

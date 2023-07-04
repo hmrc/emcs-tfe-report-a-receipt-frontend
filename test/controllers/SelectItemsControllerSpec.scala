@@ -17,17 +17,14 @@
 package controllers
 
 import base.SpecBase
-import mocks.services.{MockGetCnCodeInformationService, MockGetPackagingTypesService, MockUserAnswersService}
-import models.ReferenceDataUnitOfMeasure.`1`
-import models.WrongWithMovement
+import mocks.services.{MockReferenceDataService, MockUserAnswersService}
 import models.WrongWithMovement.Damaged
-import models.response.emcsTfe.Packaging
-import models.response.referenceData.CnCodeInformation
+import models.{UserAnswers, WrongWithMovement}
 import pages.unsatisfactory.individualItems.{AddItemDamageInformationPage, CheckAnswersItemPage, SelectItemsPage, WrongWithItemPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.{GetCnCodeInformationService, GetPackagingTypesService}
+import services.ReferenceDataService
 import utils.JsonOptionFormatter
 import views.html.SelectItemsView
 
@@ -36,66 +33,57 @@ import scala.concurrent.Future
 class SelectItemsControllerSpec extends SpecBase
   with JsonOptionFormatter
   with MockUserAnswersService
-  with MockGetCnCodeInformationService
-  with MockGetPackagingTypesService {
+  with MockReferenceDataService {
 
   lazy val loadListUrl: String = routes.SelectItemsController.onPageLoad(testErn, testArc).url
+
+  class Fixture(val userAnswers: Option[UserAnswers] = Some(emptyUserAnswers)) {
+    val application = applicationBuilder(userAnswers)
+      .overrides(
+        bind[ReferenceDataService].toInstance(mockReferenceDataService)
+      )
+      .build()
+
+    lazy val view = application.injector.instanceOf[SelectItemsView]
+  }
 
   "SelectItems Controller" - {
 
     "when calling .onPageLoad()" - {
 
-      "must return OK and the correct view for a GET" in {
-
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService),
-            bind[GetPackagingTypesService].toInstance(mockGetPackagingTypesService)
-          )
-          .build()
-
-        val updatedBoxPackage: Packaging = boxPackage.copy(typeOfPackage = "Box")
-
-        val updatedCratePackage: Packaging = cratePackage.copy(typeOfPackage = "Crate")
-
-        MockGetCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item1, item2)).returns(Future.successful(Seq(
-          (item1, CnCodeInformation("", "", `1`)),
-          (item2, CnCodeInformation("", "", `1`))
-        )))
-
-        MockGetPackagingTypesService.getPackagingTypes(Seq(item1, item2)).returns(Future.successful(Seq(
-          item1.copy(packaging = Seq(updatedBoxPackage)),
-          item2.copy(packaging = Seq(updatedBoxPackage, updatedCratePackage))
-        )))
-
+      "must return OK and the correct view for a GET" in new Fixture() {
         running(application) {
-          val request = FakeRequest(GET, loadListUrl)
 
+          MockReferenceDataService.getCnCodeInformationWithMovementItems(Seq(item1, item2)).returns(
+            Future.successful(Seq(
+              item1WithReferenceData -> cnCodeInfo,
+              item2WithReferenceData -> cnCodeInfo
+            ))
+          )
+
+          val request = FakeRequest(GET, loadListUrl)
           val result = route(application, request).value
 
-          val view = application.injector.instanceOf[SelectItemsView]
-
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(Seq(item1, item2).map(l => (l, CnCodeInformation("", "", `1`))))(dataRequest(request), messages(application)).toString
+          contentAsString(result) mustEqual view(Seq(
+            item1WithReferenceData -> cnCodeInfo,
+            item2WithReferenceData -> cnCodeInfo
+          ))(dataRequest(request), messages(application)).toString
         }
       }
 
       "must redirect to /add-to-list if filteredItems is empty" - {
 
-        "when userAnswers only contains CheckAnswersItemPage = true" in {
-          val application = applicationBuilder(userAnswers = Some(
-            emptyUserAnswers
-              .set(SelectItemsPage(1), 1)
-              .set(CheckAnswersItemPage(1), true)
-              .set(SelectItemsPage(2), 2)
-              .set(CheckAnswersItemPage(2), true)
-          ))
-            .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService))
-            .build()
-
+        "when userAnswers only contains CheckAnswersItemPage = true" in new Fixture(Some(
+          emptyUserAnswers
+            .set(SelectItemsPage(1), 1)
+            .set(CheckAnswersItemPage(1), true)
+            .set(SelectItemsPage(2), 2)
+            .set(CheckAnswersItemPage(2), true)
+        )) {
           running(application) {
-            val request = FakeRequest(GET, loadListUrl)
 
+            val request = FakeRequest(GET, loadListUrl)
             val result = route(application, request).value
 
             status(result) mustEqual SEE_OTHER
@@ -104,15 +92,10 @@ class SelectItemsControllerSpec extends SpecBase
         }
       }
 
-      "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
-        val application = applicationBuilder(userAnswers = None)
-          .overrides(bind[GetCnCodeInformationService].toInstance(mockGetCnCodeInformationService))
-          .build()
-
+      "must redirect to Journey Recovery for a GET if no existing data is found" in new Fixture(None) {
         running(application) {
-          val request = FakeRequest(GET, loadListUrl)
 
+          val request = FakeRequest(GET, loadListUrl)
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
@@ -132,12 +115,12 @@ class SelectItemsControllerSpec extends SpecBase
             .set(SelectItemsPage(2), 2)
             .set(WrongWithItemPage(2), Set[WrongWithMovement](Damaged))
             .set(AddItemDamageInformationPage(2), false)
-          controller.getFilteredItems(dataRequest(FakeRequest(), userAnswers)) mustBe Seq(item1, item2)
+          controller.incompleteItems()(dataRequest(FakeRequest(), userAnswers)) mustBe Seq(item1, item2)
         }
 
         "when nothing has been selected yet" in {
           val userAnswers = emptyUserAnswers
-          controller.getFilteredItems(dataRequest(FakeRequest(), userAnswers)) mustBe Seq(item1, item2)
+          controller.incompleteItems()(dataRequest(FakeRequest(), userAnswers)) mustBe Seq(item1, item2)
         }
       }
 
@@ -151,7 +134,7 @@ class SelectItemsControllerSpec extends SpecBase
             .set(SelectItemsPage(2), 2)
             .set(WrongWithItemPage(2), Set[WrongWithMovement](Damaged))
             .set(AddItemDamageInformationPage(2), false)
-          controller.getFilteredItems(dataRequest(FakeRequest(), userAnswers)) mustBe Seq(item2)
+          controller.incompleteItems()(dataRequest(FakeRequest(), userAnswers)) mustBe Seq(item2)
         }
 
         "when the second item has checkAnswersItem = true" in {
@@ -163,7 +146,7 @@ class SelectItemsControllerSpec extends SpecBase
             .set(WrongWithItemPage(2), Set[WrongWithMovement](Damaged))
             .set(AddItemDamageInformationPage(2), false)
             .set(CheckAnswersItemPage(2), true)
-          controller.getFilteredItems(dataRequest(FakeRequest(), userAnswers)) mustBe Seq(item1)
+          controller.incompleteItems()(dataRequest(FakeRequest(), userAnswers)) mustBe Seq(item1)
         }
 
         "when both items have checkAnswersItem = true" in {
@@ -176,7 +159,7 @@ class SelectItemsControllerSpec extends SpecBase
             .set(WrongWithItemPage(2), Set[WrongWithMovement](Damaged))
             .set(AddItemDamageInformationPage(2), false)
             .set(CheckAnswersItemPage(2), true)
-          controller.getFilteredItems(dataRequest(FakeRequest(), userAnswers)) mustBe Seq()
+          controller.incompleteItems()(dataRequest(FakeRequest(), userAnswers)) mustBe Seq()
         }
       }
     }

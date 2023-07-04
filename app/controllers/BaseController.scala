@@ -36,17 +36,17 @@ trait BaseController extends FrontendBaseController with I18nSupport with Enumer
                  (implicit request: DataRequest[_], format: Format[A]): Form[A] =
     request.userAnswers.get(page).fold(form)(form.fill)
 
-  def withItem(idx: Int)(f: MovementItem => Result)(implicit request: DataRequest[_]): Result =
-    request.getItemDetails(idx) match {
-      case Some(item) => f(item)
-      case None => Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url)
-    }
-
   def withAllCompletedItemsAsync()(f: Seq[MovementItem] => Future[Result])(implicit request: DataRequest[_]): Future[Result] =
     f(request.getAllCompletedItemDetails)
 
-  def withItemAsync(idx: Int)(f: MovementItem => Future[Result])(implicit request: DataRequest[_]): Future[Result] =
+  def withAddedItemAsync(idx: Int)(f: MovementItem => Future[Result])(implicit request: DataRequest[_]): Future[Result] =
     request.getItemDetails(idx) match {
+      case Some(item) => f(item)
+      case None => Future.successful(Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url))
+    }
+
+  def withMovementItemAsync(idx: Int)(f: MovementItem => Future[Result])(implicit request: DataRequest[_]): Future[Result] =
+    request.movementDetails.item(idx) match {
       case Some(item) => f(item)
       case None => Future.successful(Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url))
     }

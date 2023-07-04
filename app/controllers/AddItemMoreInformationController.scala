@@ -26,7 +26,7 @@ import pages.unsatisfactory.individualItems.{AddItemDamageInformationPage, ItemD
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc._
-import services.{GetCnCodeInformationService, GetPackagingTypesService, UserAnswersService}
+import services.{UserAnswersService, ReferenceDataService}
 import utils.JsonOptionFormatter
 import views.html.AddItemMoreInformationView
 
@@ -44,8 +44,7 @@ class AddItemMoreInformationController @Inject()(override val messagesApi: Messa
                                                  formProvider: AddMoreInformationFormProvider,
                                                  val controllerComponents: MessagesControllerComponents,
                                                  view: AddItemMoreInformationView,
-                                                 getCnCodeInformationService: GetCnCodeInformationService,
-                                                 getPackagingTypesService: GetPackagingTypesService
+                                                 referenceDataService: ReferenceDataService
                                                 ) extends BaseNavigationController with AuthActionHelper with JsonOptionFormatter {
 
   def loadItemDamageInformation(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
@@ -73,8 +72,7 @@ class AddItemMoreInformationController @Inject()(override val messagesApi: Messa
                        mode: Mode): Action[AnyContent] =
     authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
       formProvider(yesNoPage).bindFromRequest().fold(
-        formWithErrors =>
-          renderViewWithItemDetails(BadRequest, formWithErrors, yesNoPage, submitAction, itemReference),
+        renderViewWithItemDetails(BadRequest, _, yesNoPage, submitAction, itemReference),
         {
           case true =>
             saveAndRedirect(yesNoPage, true, mode)
@@ -89,17 +87,9 @@ class AddItemMoreInformationController @Inject()(override val messagesApi: Messa
                                         yesNoPage: QuestionPage[Boolean],
                                         submitAction: Call,
                                         itemReference: Int)(implicit request: DataRequest[_]): Future[Result] =
-    request.movementDetails.item(itemReference) match {
-      case Some(item) =>
-        getPackagingTypesService.getPackagingTypes(Seq(item)).flatMap {
-          getCnCodeInformationService.getCnCodeInformationWithMovementItems(_).map {
-            case (item, cnCodeInformation) :: Nil =>
-              status(view(form, yesNoPage, submitAction, item, cnCodeInformation))
-            case _ =>
-              Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url)
-          }
-        }
-      case _ =>
-        Future.successful(Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url))
+    withMovementItemAsync(itemReference) {
+      referenceDataService.itemWithReferenceData(_) { (item, cnCodeInformation) =>
+        Future.successful(status(view(form, yesNoPage, submitAction, item, cnCodeInformation)))
+      }
     }
 }

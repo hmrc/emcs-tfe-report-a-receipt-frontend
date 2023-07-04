@@ -22,10 +22,11 @@ import models.NormalMode
 import models.requests.DataRequest
 import navigation.Navigator
 import pages.unsatisfactory.individualItems.SelectItemsPage
+import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.libs.json.Format.GenericFormat
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.{GetCnCodeInformationService, GetPackagingTypesService, UserAnswersService}
+import services.{ReferenceDataService, UserAnswersService}
 import views.html.DetailsSelectItemView
 
 import javax.inject.Inject
@@ -42,58 +43,32 @@ class DetailsSelectItemController @Inject()(
                                              override val userAllowList: UserAllowListAction,
                                              formProvider: DetailsSelectItemFormProvider,
                                              val controllerComponents: MessagesControllerComponents,
-                                             getCnCodeInformationService: GetCnCodeInformationService,
-                                             getPackagingTypesService: GetPackagingTypesService,
+                                             referenceDataService: ReferenceDataService,
                                              view: DetailsSelectItemView
                                            ) extends BaseNavigationController with AuthActionHelper {
 
-  def onPageLoad(ern: String, arc: String, idx: Int): Action[AnyContent] = {
+  def onPageLoad(ern: String, arc: String, idx: Int): Action[AnyContent] =
     authorisedDataRequestWithUpToDateMovementAsync(ern, arc) { implicit request =>
-      request.movementDetails.item(idx) match {
-        case Some(item) =>
-          getPackagingTypesService.getPackagingTypes(Seq(item)).flatMap {
-            getCnCodeInformationService.getCnCodeInformationWithMovementItems(_).flatMap {
-              case (item, cnCodeInformation) :: Nil =>
-                Future.successful(Ok(view(formProvider(), item, cnCodeInformation)))
-              case _ =>
-                redirectToSelectItems(Some(s"[onPageLoad] Problem retrieving reference data for item idx: $idx against ERN: $ern and ARC: $arc"))
-            }
-          }
-        case None =>
-          redirectToSelectItems(None)
-      }
-
+      renderView(Ok, formProvider(), idx)
     }
-  }
-
 
   def onSubmit(ern: String, arc: String, idx: Int): Action[AnyContent] =
     authorisedDataRequestWithUpToDateMovementAsync(ern, arc) { implicit request =>
-      request.movementDetails.item(idx) match {
-        case Some(item) =>
-          getPackagingTypesService.getPackagingTypes(Seq(item)).flatMap {
-            getCnCodeInformationService.getCnCodeInformationWithMovementItems(_).flatMap {
-              case (item, cnCodeInformation) :: Nil => formProvider().bindFromRequest().fold(
-                formWithErrors => {
-                  Future.successful(BadRequest(view(formWithErrors, item, cnCodeInformation)))
-                },
-                {
-                  case true => addItemToListAndRedirect(idx)
-                  case false => redirectToSelectItems(None)
-                }
-              )
-              case _ =>
-                redirectToSelectItems(Some(s"[onSubmit] Problem retrieving reference data for item idx: $idx against ERN: $ern and ARC: $arc"))
-            }
-          }
-        case None => redirectToSelectItems(None)
-      }
+      formProvider().bindFromRequest().fold(
+        renderView(BadRequest, _, idx),
+        {
+          case true => addItemToListAndRedirect(idx)
+          case false => Future.successful(Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url))
+        }
+      )
     }
 
-  private def redirectToSelectItems(warningMsg: Option[String])(implicit request: DataRequest[_]): Future[Result] = {
-    warningMsg.foreach(logger.warn(_))
-    Future.successful(Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url))
-  }
+  private def renderView(status: Status, form: Form[_], idx: Int)(implicit request: DataRequest[_]): Future[Result] =
+    withMovementItemAsync(idx) {
+      referenceDataService.itemWithReferenceData(_) { (item, cnCodeInformation) =>
+        Future.successful(status(view(form, item, cnCodeInformation)))
+      }
+    }
 
   private def addItemToListAndRedirect(idx: Int)(implicit request: DataRequest[_]): Future[Result] = {
     // remove any previously entered data before adding an item to the list

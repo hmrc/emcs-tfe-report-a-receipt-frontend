@@ -21,7 +21,7 @@ import forms.MoreInformationFormProvider
 import mocks.services.{MockReferenceDataService, MockUserAnswersService}
 import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import pages.unsatisfactory.individualItems.{AddItemDamageInformationPage, ItemDamageInformationPage, SelectItemsPage}
+import pages.unsatisfactory.individualItems._
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -53,10 +53,14 @@ class ItemMoreInformationControllerSpec extends SpecBase
   private lazy val itemDamageInformationRoute = routes.ItemMoreInformationController.loadItemDamageInformation(testErn, testArc, 1, NormalMode).url
   private lazy val itemDamageInformationSubmitAction = routes.ItemMoreInformationController.submitItemDamageInformation(testErn, testArc, 1, NormalMode)
 
+  private lazy val sealsItemInformationRoute = routes.ItemMoreInformationController.loadItemSealsInformation(testErn, testArc, 1, NormalMode).url
+  private lazy val sealsItemInformationSubmitAction = routes.ItemMoreInformationController.submitItemSealsInformation(testErn, testArc, 1, NormalMode)
+
   "MoreInformation Controller" - {
 
     Seq(
-      (AddItemDamageInformationPage(1), ItemDamageInformationPage(1), itemDamageInformationRoute, itemDamageInformationSubmitAction)
+      (AddItemDamageInformationPage(1), ItemDamageInformationPage(1), itemDamageInformationRoute, itemDamageInformationSubmitAction),
+      (AddItemSealsInformationPage(1), ItemSealsInformationPage(1), sealsItemInformationRoute, sealsItemInformationSubmitAction)
     ) foreach { case (yesNoPage, page, url, submitAction) =>
 
       s"for the '$page' page" - {

@@ -133,7 +133,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
             key = s"${ItemSealsInformationPage(1)}.checkYourAnswers.label",
             value = ValueViewModel(Text("value")),
             actions = Some(Actions(items = Seq(ActionItem(
-              href = routes.MoreInformationController.loadItemSealsInformation(testErn, testArc, 1, CheckMode).url,
+              href = routes.ItemMoreInformationController.loadItemSealsInformation(testErn, testArc, 1, CheckMode).url,
               content = msgs("site.change"),
               visuallyHiddenText = Some(msgs(s"${ItemSealsInformationPage(1)}.checkYourAnswers.change.hidden")),
               attributes = Map("id" -> s"${ItemSealsInformationPage(1)}")
@@ -181,7 +181,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
           key = s"${ItemSealsInformationPage(1)}.checkYourAnswers.label",
           value = ValueViewModel(Text("value")),
           actions = Some(Actions(items = Seq(ActionItem(
-            href = routes.MoreInformationController.loadItemSealsInformation(testErn, testArc, 1, ReviewMode).url,
+            href = routes.ItemMoreInformationController.loadItemSealsInformation(testErn, testArc, 1, ReviewMode).url,
             content = msgs("site.change"),
             visuallyHiddenText = Some(msgs(s"${ItemSealsInformationPage(1)}.checkYourAnswers.change.hidden")),
             attributes = Map("id" -> s"${ItemSealsInformationPage(1)}-item-1")
@@ -270,7 +270,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
           lazy val brokenSealsInformationRow = SummaryListRow(
             key = s"${ItemSealsInformationPage(1)}.checkYourAnswers.label",
             value = ValueViewModel(HtmlContent(link(
-              link = routes.MoreInformationController.loadItemSealsInformation(testErn, testArc, 1, CheckMode).url,
+              link = routes.ItemMoreInformationController.loadItemSealsInformation(testErn, testArc, 1, CheckMode).url,
               messageKey = s"${ItemSealsInformationPage(1)}.checkYourAnswers.addMoreInformation"
             )))
           )
@@ -321,7 +321,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
           lazy val brokenSealsInformationRow = SummaryListRow(
             key = s"${ItemSealsInformationPage(1)}.checkYourAnswers.label",
             value = ValueViewModel(HtmlContent(link(
-              link = routes.MoreInformationController.loadItemSealsInformation(testErn, testArc, 1, ReviewMode).url,
+              link = routes.ItemMoreInformationController.loadItemSealsInformation(testErn, testArc, 1, ReviewMode).url,
               messageKey = s"${ItemSealsInformationPage(1)}.checkYourAnswers.addMoreInformation"
             )))
           )
@@ -392,7 +392,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
           lazy val brokenSealsInformationRow = SummaryListRow(
             key = s"${ItemSealsInformationPage(1)}.checkYourAnswers.label",
             value = ValueViewModel(HtmlContent(link(
-              link = routes.MoreInformationController.loadItemSealsInformation(testErn, testArc, 1, CheckMode).url,
+              link = routes.ItemMoreInformationController.loadItemSealsInformation(testErn, testArc, 1, CheckMode).url,
               messageKey = s"${ItemSealsInformationPage(1)}.checkYourAnswers.addMoreInformation"
             )))
           )

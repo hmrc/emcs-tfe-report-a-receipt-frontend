@@ -17,6 +17,7 @@
 package viewmodels
 
 import base.SpecBase
+import config.AppConfig
 import controllers.routes
 import fixtures.messages.UnitOfMeasureMessages.English.kilogramsLong
 import mocks.viewmodels._
@@ -43,6 +44,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
   private lazy val link: link = app.injector.instanceOf[link]
   private lazy val list: list = app.injector.instanceOf[list]
 
+  implicit lazy val config: AppConfig = app.injector.instanceOf[AppConfig]
   implicit lazy val msgs: Messages = messages(app)
 
   trait Test {

@@ -21,7 +21,7 @@ import featureswitch.core.config.{FeatureSwitching, ReturnToLegacy}
 
 class AppConfigSpec extends SpecBase with FeatureSwitching {
 
-  override lazy val config = applicationBuilder().build().injector.instanceOf[AppConfig]
+  implicit lazy val config = applicationBuilder().build().injector.instanceOf[AppConfig]
 
   "AppConfig" - {
 

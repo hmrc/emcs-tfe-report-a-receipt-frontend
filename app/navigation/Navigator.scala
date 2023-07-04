@@ -202,8 +202,8 @@ class Navigator @Inject()() extends BaseNavigator {
                                                               lastOptionAnswered: Option[WrongWithMovement] = None)(implicit userAnswers: UserAnswers): Call =
     userAnswers.get(page) match {
       case Some(selectedOptions) =>
-        nextWrongWithMovementOptionToAnswer(selectedOptions, lastOptionAnswered, WrongWithMovement.individualItemValues) match {
-          case Some(ShortageOrExcess) =>
+        nextWrongWithMovementOptionToAnswer(selectedOptions, lastOptionAnswered) match {
+          case Some(ShortageOrExcess) | Some(Shortage) | Some(Excess) =>
             routes.ItemShortageOrExcessController.onPageLoad(userAnswers.ern, userAnswers.arc, page.idx, NormalMode)
           case Some(Damaged) =>
             routes.AddItemMoreInformationController.loadItemDamageInformation(userAnswers.ern, userAnswers.arc, page.idx, NormalMode)
@@ -219,9 +219,8 @@ class Navigator @Inject()() extends BaseNavigator {
     }
 
   private[navigation] def nextWrongWithMovementOptionToAnswer(selectedOptions: Set[WrongWithMovement],
-                                                              lastOption: Option[WrongWithMovement] = None,
-                                                              checkboxOptions: Seq[WrongWithMovement] = WrongWithMovement.values): Option[WrongWithMovement] = {
-    val orderedSetOfOptions = checkboxOptions.filter(selectedOptions.contains)
+                                                              lastOption: Option[WrongWithMovement] = None): Option[WrongWithMovement] = {
+    val orderedSetOfOptions = WrongWithMovement.allValues.filter(selectedOptions.contains)
     lastOption match {
       case Some(value) if orderedSetOfOptions.lastOption.contains(value) =>
         None

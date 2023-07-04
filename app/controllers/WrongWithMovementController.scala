@@ -19,13 +19,13 @@ package controllers
 import config.AppConfig
 import controllers.actions._
 import forms.WrongWithMovementFormProvider
+import models.requests.DataRequest
 import models.{Mode, UserAnswers, WrongWithMovement}
 import navigation.Navigator
-import pages._
 import pages.unsatisfactory._
-import pages.unsatisfactory.individualItems._
+import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.UserAnswersService
 import views.html.WrongWithMovementView
 
@@ -47,61 +47,55 @@ class WrongWithMovementController @Inject()(
                                            )(implicit config: AppConfig) extends BaseNavigationController with AuthActionHelper {
 
   def loadWrongWithMovement(ern: String, arc: String, mode: Mode): Action[AnyContent] =
-    onPageLoad(WrongWithMovementPage, ern, arc, routes.WrongWithMovementController.submitWrongWithMovement(ern, arc, mode))
+    authorisedDataRequestWithCachedMovement(ern, arc) { implicit request =>
+      renderView(Ok, fillForm(WrongWithMovementPage, formProvider()), mode)
+    }
 
   def submitWrongWithMovement(ern: String, arc: String, mode: Mode): Action[AnyContent] = {
     authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
-      formProvider(WrongWithMovementPage).bindFromRequest().fold(
+      formProvider().bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(
-            WrongWithMovementPage,
-            formWithErrors,
-            routes.WrongWithMovementController.submitWrongWithMovement(ern, arc, mode)
-          ))),
-        (values: Set[WrongWithMovement]) => {
-
-          val newUserAnswers: UserAnswers = cleanseUserAnswersIfValueHasChanged(
-            page = WrongWithMovementPage,
-            newAnswer = values,
-            cleansingFunction = {
-              val allOptionsNotChecked: Seq[WrongWithMovement] = WrongWithMovement.values.filterNot(values.contains)
-
-              allOptionsNotChecked.foldLeft(request.userAnswers) {
-                case (answers, WrongWithMovement.Shortage) =>
-                  answers
-                    .remove(AddShortageInformationPage)
-                    .remove(ShortageInformationPage)
-                case (answers, WrongWithMovement.Excess) =>
-                  answers
-                    .remove(AddExcessInformationPage)
-                    .remove(ExcessInformationPage)
-                case (answers, WrongWithMovement.Damaged) =>
-                  answers
-                    .remove(AddDamageInformationPage)
-                    .remove(DamageInformationPage)
-                case (answers, WrongWithMovement.BrokenSeals) =>
-                  answers
-                    .remove(AddSealsInformationPage)
-                    .remove(SealsInformationPage)
-                case (answers, WrongWithMovement.Other) =>
-                  answers
-                    .remove(OtherInformationPage)
-                case (answers, _) => answers
-              }
-            }
-          )
-
-          saveAndRedirect(WrongWithMovementPage, values, newUserAnswers, mode)
-        }
+          Future.successful(renderView(BadRequest, formWithErrors, mode)),
+        (values: Set[WrongWithMovement]) =>
+          saveAndRedirect(WrongWithMovementPage, values, cleanseAnswers(values), mode)
       )
     }
   }
 
-  private def onPageLoad(page: QuestionPage[Set[WrongWithMovement]],
-                         ern: String,
-                         arc: String,
-                         action: Call): Action[AnyContent] =
-    authorisedDataRequestWithCachedMovement(ern, arc) { implicit request =>
-      Ok(view(page, fillForm(page, formProvider(page)), action))
-    }
+  private def renderView(status: Status, form: Form[_], mode: Mode)(implicit request: DataRequest[_]): Result =
+    status(view(
+      WrongWithMovementPage, form, routes.WrongWithMovementController.submitWrongWithMovement(request.ern, request.arc, mode)
+    ))
+
+  private def cleanseAnswers(values: Set[WrongWithMovement])(implicit request: DataRequest[_]): UserAnswers =
+    cleanseUserAnswersIfValueHasChanged(
+      page = WrongWithMovementPage,
+      newAnswer = values,
+      cleansingFunction = {
+        val allOptionsNotChecked: Seq[WrongWithMovement] = WrongWithMovement.values.filterNot(values.contains)
+
+        allOptionsNotChecked.foldLeft(request.userAnswers) {
+          case (answers, WrongWithMovement.Shortage) =>
+            answers
+              .remove(AddShortageInformationPage)
+              .remove(ShortageInformationPage)
+          case (answers, WrongWithMovement.Excess) =>
+            answers
+              .remove(AddExcessInformationPage)
+              .remove(ExcessInformationPage)
+          case (answers, WrongWithMovement.Damaged) =>
+            answers
+              .remove(AddDamageInformationPage)
+              .remove(DamageInformationPage)
+          case (answers, WrongWithMovement.BrokenSeals) =>
+            answers
+              .remove(AddSealsInformationPage)
+              .remove(SealsInformationPage)
+          case (answers, WrongWithMovement.Other) =>
+            answers
+              .remove(OtherInformationPage)
+          case (answers, _) => answers
+        }
+      }
+    )
 }

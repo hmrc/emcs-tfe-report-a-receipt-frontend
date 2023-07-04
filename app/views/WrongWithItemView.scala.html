@@ -52,7 +52,7 @@
             CheckboxesViewModel(
                 form   = form,
                 name   = "value",
-                legend = LegendViewModel(HtmlContent(heading)).withCssClass("govuk-fieldset__legend govuk-fieldset__legend--l"),
+                legend = LegendViewModel(HtmlContent(heading)),
                 items  = WrongWithMovement.checkboxItems(page)
             ).withHint(HintViewModel(HtmlContent(hint)))
         )
@@ -62,7 +62,7 @@
 }
 
 @heading = {
-    @h1(messages(s"$page.heading", item.itemUniqueReference), Some(messages("arc.subHeading", request.arc)), "govuk-fieldset__heading")
+    @h1(messages(s"$page.heading", item.itemUniqueReference), Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
 }
 
 @hint = {

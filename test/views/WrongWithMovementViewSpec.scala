@@ -17,11 +17,11 @@
 package views
 
 import base.ViewSpecBase
-import fixtures.messages.{WrongWithItemMessages, WrongWithMovementMessages}
+import config.AppConfig
+import fixtures.messages.WrongWithMovementMessages
 import forms.WrongWithMovementFormProvider
 import org.jsoup.Jsoup
 import pages.unsatisfactory.WrongWithMovementPage
-import pages.unsatisfactory.individualItems.WrongWithItemPage
 import play.api.test.FakeRequest
 import views.html.WrongWithMovementView
 
@@ -38,8 +38,9 @@ class WrongWithMovementViewSpec extends ViewSpecBase with ViewBehaviours {
 
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
 
+        implicit val config = app.injector.instanceOf[AppConfig]
         implicit val msgs = messages(app, messagesForLanguage.lang)
-        lazy val form = app.injector.instanceOf[WrongWithMovementFormProvider].apply(WrongWithMovementPage)
+        lazy val form = app.injector.instanceOf[WrongWithMovementFormProvider].apply()
         implicit val doc = Jsoup.parse(view(WrongWithMovementPage, form, testOnwardRoute).toString())
 
         behave like pageWithExpectedElementsAndMessages(Seq(
@@ -52,32 +53,6 @@ class WrongWithMovementViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.checkboxItem(3) -> messagesForLanguage.damaged,
           Selectors.checkboxItem(4) -> messagesForLanguage.brokenSeals,
           Selectors.checkboxItem(5) -> messagesForLanguage.other,
-          Selectors.button -> messagesForLanguage.saveAndContinue,
-          Selectors.id("save-and-exit") -> messagesForLanguage.savePreviousAnswersAndExit
-        ))
-      }
-    }
-  }
-
-  "WrongWithMovement view for an Individual Item" - {
-
-    Seq(WrongWithItemMessages.English, WrongWithItemMessages.Welsh).foreach { messagesForLanguage =>
-
-      s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
-
-        implicit val msgs = messages(app, messagesForLanguage.lang)
-        lazy val form = app.injector.instanceOf[WrongWithMovementFormProvider].apply(WrongWithItemPage(1))
-        implicit val doc = Jsoup.parse(view(WrongWithItemPage(1), form, testOnwardRoute).toString())
-
-        behave like pageWithExpectedElementsAndMessages(Seq(
-          Selectors.title -> messagesForLanguage.title,
-          Selectors.h2(1) -> messagesForLanguage.arcSubheading(testArc),
-          Selectors.h1 -> messagesForLanguage.heading,
-          Selectors.hint -> messagesForLanguage.hint,
-          Selectors.checkboxItem(1) -> messagesForLanguage.moreOrLessThanExpected,
-          Selectors.checkboxItem(2) -> messagesForLanguage.damaged,
-          Selectors.checkboxItem(3) -> messagesForLanguage.brokenSeals,
-          Selectors.checkboxItem(4) -> messagesForLanguage.other,
           Selectors.button -> messagesForLanguage.saveAndContinue,
           Selectors.id("save-and-exit") -> messagesForLanguage.savePreviousAnswersAndExit
         ))

@@ -19,7 +19,6 @@ package forms
 import forms.mappings.Mappings
 import models.WrongWithMovement
 import models.WrongWithMovement.{Excess, Shortage}
-import pages.QuestionPage
 import play.api.data.Form
 import play.api.data.Forms.set
 import play.api.data.validation.{Constraint, Invalid, Valid}

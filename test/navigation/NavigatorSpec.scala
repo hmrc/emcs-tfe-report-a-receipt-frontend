@@ -267,6 +267,28 @@ class NavigatorSpec extends SpecBase {
           }
         }
 
+        "when the next page is Shortage" - {
+
+          //TODO: Update as part of future story, for now routes to combined page
+          "must go to ItemShortagePage" in {
+            val selectedOptions: Set[WrongWithMovement] = Set(Shortage, Damaged, BrokenSeals, Other)
+            val userAnswers = emptyUserAnswers.set(WrongWithItemPage(1), selectedOptions)
+            navigator.nextPage(WrongWithItemPage(1), NormalMode, userAnswers) mustBe
+              routes.ItemShortageOrExcessController.onPageLoad(testErn, testArc, 1, NormalMode)
+          }
+        }
+
+        "when the next page is Excess" - {
+
+          //TODO: Update as part of future story, for now routes to combined page
+          "must go to ItemExcessPage" in {
+            val selectedOptions: Set[WrongWithMovement] = Set(Excess, Damaged, BrokenSeals, Other)
+            val userAnswers = emptyUserAnswers.set(WrongWithItemPage(1), selectedOptions)
+            navigator.nextPage(WrongWithItemPage(1), NormalMode, userAnswers) mustBe
+              routes.ItemShortageOrExcessController.onPageLoad(testErn, testArc, 1, NormalMode)
+          }
+        }
+
         "when the next page is Damaged" - {
 
           "must go to ItemDamagedInformation add more info Yes/No page" in {

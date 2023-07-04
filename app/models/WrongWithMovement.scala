@@ -20,7 +20,6 @@ import config.AppConfig
 import featureswitch.core.config.{FeatureSwitching, NewShortageExcessFlow}
 import pages.QuestionPage
 import pages.unsatisfactory.WrongWithMovementPage
-import pages.unsatisfactory.individualItems.WrongWithItemPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.checkboxes.CheckboxItem
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
@@ -46,18 +45,22 @@ object WrongWithMovement extends Enumerable.Implicits with FeatureSwitching {
     Other
   )
 
-  val individualItemValues: Seq[WrongWithMovement] = Seq(
-    ShortageOrExcess,
-    Damaged,
-    BrokenSeals,
-    Other
-  )
+  val allValues = ShortageOrExcess +: values
+
+  def individualItemValues()(implicit config: AppConfig): Seq[WrongWithMovement] =
+    if (isEnabled(NewShortageExcessFlow)) values else {
+      Seq(
+        ShortageOrExcess,
+        Damaged,
+        BrokenSeals,
+        Other
+      )
+    }
 
   def checkboxItems(page: QuestionPage[Set[WrongWithMovement]])(implicit messages: Messages, config: AppConfig): Seq[CheckboxItem] = {
     val checkboxes = page match {
       case WrongWithMovementPage => values
-      case _: WrongWithItemPage if isEnabled(NewShortageExcessFlow) => values
-      case _ => individualItemValues
+      case _ => individualItemValues()
     }
 
     checkboxes.zipWithIndex.map {
@@ -86,5 +89,5 @@ object WrongWithMovement extends Enumerable.Implicits with FeatureSwitching {
     )
 
   implicit val enumerable: Enumerable[WrongWithMovement] =
-    Enumerable((values ++ individualItemValues).distinct.map(v => v.toString -> v): _*)
+    Enumerable(allValues.distinct.map(v => v.toString -> v): _*)
 }

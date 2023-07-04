@@ -18,69 +18,80 @@ package controllers
 
 import base.SpecBase
 import config.AppConfig
-import forms.WrongWithMovementFormProvider
-import mocks.services.MockUserAnswersService
+import forms.WrongWithItemFormProvider
+import mocks.services.{MockReferenceDataService, MockUserAnswersService}
 import models.{NormalMode, UserAnswers, WrongWithMovement}
 import navigation.{FakeNavigator, Navigator}
-import pages.unsatisfactory.WrongWithMovementPage
+import pages.unsatisfactory.individualItems.{SelectItemsPage, WrongWithItemPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.UserAnswersService
-import views.html.WrongWithMovementView
+import services.{ReferenceDataService, UserAnswersService}
+import views.html.WrongWithItemView
 
 import scala.concurrent.Future
 
-class WrongWithMovementControllerSpec extends SpecBase with MockUserAnswersService {
+class WrongWithItemControllerSpec extends SpecBase
+  with MockUserAnswersService
+  with MockReferenceDataService {
 
   class Fixture(val userAnswers: Option[UserAnswers] = Some(emptyUserAnswers)) {
     val application =
       applicationBuilder(userAnswers)
         .overrides(
           bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+          bind[ReferenceDataService].toInstance(mockReferenceDataService),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()
 
     implicit lazy val config = application.injector.instanceOf[AppConfig]
-
-    lazy val view = application.injector.instanceOf[WrongWithMovementView]
+    lazy val view = application.injector.instanceOf[WrongWithItemView]
   }
 
   def onwardRoute: Call = Call("GET", "/foo")
 
-  val formProvider = new WrongWithMovementFormProvider()
+  val formProvider = new WrongWithItemFormProvider()
 
-  lazy val wrongWithMovementRoute: String = routes.WrongWithMovementController.loadWrongWithMovement(testErn, testArc, NormalMode).url
-  lazy val wrongWithMovementSubmitAction: Call = routes.WrongWithMovementController.submitWrongWithMovement(testErn, testArc, NormalMode)
+  lazy val page = WrongWithItemPage(1)
+  lazy val url: String = routes.WrongWithItemController.loadWrongWithItem(testErn, testArc, 1, NormalMode).url
+  lazy val submitAction: Call = routes.WrongWithItemController.submitWrongWithItem(testErn, testArc, 1, NormalMode)
 
-  "WrongWithMovement Controller" - {
+  "WrongWithItemController" - {
 
     val form = formProvider()
 
     "must return OK and the correct view for a GET" in new Fixture() {
       running(application) {
 
-        val request = FakeRequest(GET, wrongWithMovementRoute)
+        MockReferenceDataService.itemWithReferenceData(item1).onCall {
+          MockReferenceDataService.itemWithReferenceDataSuccessHandler(item1WithReferenceData, cnCodeInfo)
+        }
+
+        val request = FakeRequest(GET, url)
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(WrongWithMovementPage, form, wrongWithMovementSubmitAction)(dataRequest(request), messages(application), config).toString
+        contentAsString(result) mustEqual view(page, form, submitAction, item1WithReferenceData, cnCodeInfo)(dataRequest(request), messages(application), config).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in new Fixture(Some(
-      emptyUserAnswers.set(WrongWithMovementPage, WrongWithMovement.values.toSet)
+      emptyUserAnswers.set(page, WrongWithMovement.values.toSet)
     )) {
       running(application) {
 
-        val request = FakeRequest(GET, wrongWithMovementRoute)
+        MockReferenceDataService.itemWithReferenceData(item1).onCall {
+          MockReferenceDataService.itemWithReferenceDataSuccessHandler(item1WithReferenceData, cnCodeInfo)
+        }
+
+        val request = FakeRequest(GET, url)
         val result = route(application, request).value
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual
-          view(WrongWithMovementPage, form.fill(WrongWithMovement.values.toSet), wrongWithMovementSubmitAction)(dataRequest(request), messages(application), config).toString
+          view(page, form.fill(WrongWithMovement.values.toSet), submitAction, item1WithReferenceData, cnCodeInfo)(dataRequest(request), messages(application), config).toString
       }
     }
 
@@ -88,8 +99,7 @@ class WrongWithMovementControllerSpec extends SpecBase with MockUserAnswersServi
 
       val options: Set[WrongWithMovement] =
         Set(
-          WrongWithMovement.Shortage,
-          WrongWithMovement.Excess,
+          WrongWithMovement.ShortageOrExcess,
           WrongWithMovement.Damaged,
           WrongWithMovement.BrokenSeals,
           WrongWithMovement.Other,
@@ -98,17 +108,21 @@ class WrongWithMovementControllerSpec extends SpecBase with MockUserAnswersServi
       options.foreach {
         option =>
           s"and only keep option $option when $option is selected" in new Fixture(
-            Some(emptyUserAnswers.set(WrongWithMovementPage, options))
+            Some(emptyUserAnswers
+              .set(page, options)
+              .set(SelectItemsPage(1), 1))
           ) {
 
             val updatedAnswers: UserAnswers =
-              emptyUserAnswers.set(WrongWithMovementPage, Set(option))
+              emptyUserAnswers
+                .set(page, Set(option))
+                .set(SelectItemsPage(1), 1)
 
             MockUserAnswersService.set(updatedAnswers).returns(Future.successful(updatedAnswers))
 
             running(application) {
               val request =
-                FakeRequest(POST, wrongWithMovementRoute)
+                FakeRequest(POST, url)
                   .withFormUrlEncodedBody(("value[0]", option.toString))
 
               val result = route(application, request).value
@@ -123,22 +137,26 @@ class WrongWithMovementControllerSpec extends SpecBase with MockUserAnswersServi
     "must return a Bad Request and errors when invalid data is submitted" in new Fixture() {
       running(application) {
 
+        MockReferenceDataService.itemWithReferenceData(item1).onCall {
+          MockReferenceDataService.itemWithReferenceDataSuccessHandler(item1WithReferenceData, cnCodeInfo)
+        }
+
         val request =
-          FakeRequest(POST, wrongWithMovementRoute)
+          FakeRequest(POST, url)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(WrongWithMovementPage, boundForm, wrongWithMovementSubmitAction)(dataRequest(request), messages(application), config).toString
+        contentAsString(result) mustEqual view(page, boundForm, submitAction, item1WithReferenceData, cnCodeInfo)(dataRequest(request), messages(application), config).toString
       }
     }
 
     "must redirect to Journey Recovery for a GET if no existing data is found" in new Fixture(None) {
       running(application) {
 
-        val request = FakeRequest(GET, wrongWithMovementRoute)
+        val request = FakeRequest(GET, url)
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
@@ -150,7 +168,7 @@ class WrongWithMovementControllerSpec extends SpecBase with MockUserAnswersServi
       running(application) {
 
         val request =
-          FakeRequest(POST, wrongWithMovementRoute)
+          FakeRequest(POST, url)
             .withFormUrlEncodedBody(("value[0]", WrongWithMovement.values.head.toString))
 
         val result = route(application, request).value

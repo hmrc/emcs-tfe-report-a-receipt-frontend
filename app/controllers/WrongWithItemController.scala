@@ -18,18 +18,16 @@ package controllers
 
 import config.AppConfig
 import controllers.actions._
-import forms.{WrongWithItemFormProvider, WrongWithMovementFormProvider}
+import forms.WrongWithItemFormProvider
 import models.requests.DataRequest
 import models.{Mode, UserAnswers, WrongWithMovement}
 import navigation.Navigator
-import pages._
-import pages.unsatisfactory._
 import pages.unsatisfactory.individualItems._
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
-import services.{GetCnCodeInformationService, GetPackagingTypesService, UserAnswersService}
-import views.html.{WrongWithItemView, WrongWithMovementView}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.{ReferenceDataService, UserAnswersService}
+import views.html.WrongWithItemView
 
 import javax.inject.Inject
 import scala.concurrent.Future
@@ -46,8 +44,7 @@ class WrongWithItemController @Inject()(
                                          formProvider: WrongWithItemFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
                                          view: WrongWithItemView,
-                                         getCnCodeInformationService: GetCnCodeInformationService,
-                                         getPackagingTypesService: GetPackagingTypesService
+                                         referenceDataService: ReferenceDataService
                                        )(implicit config: AppConfig) extends BaseNavigationController with AuthActionHelper {
 
   def loadWrongWithItem(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
@@ -71,10 +68,11 @@ class WrongWithItemController @Inject()(
       page = WrongWithItemPage(idx),
       newAnswer = values,
       cleansingFunction = {
-        val allOptionsNotChecked: Seq[WrongWithMovement] = WrongWithMovement.individualItemValues.filterNot(values.contains)
+        val allOptionsNotChecked: Seq[WrongWithMovement] = WrongWithMovement.individualItemValues().filterNot(values.contains)
 
         allOptionsNotChecked.foldLeft(request.userAnswers) {
           case (answers, WrongWithMovement.ShortageOrExcess) =>
+            //TODO: Future stories will need to tidy down the ItemShortagePage and ItemExcessPage when they are built
             answers
               .remove(ItemShortageOrExcessPage(idx))
           case (answers, WrongWithMovement.Damaged) =>
@@ -95,24 +93,17 @@ class WrongWithItemController @Inject()(
     newUserAnswers
   }
 
-  private def renderView(status: Status, idx:Int, form: Form[_], mode: Mode)(implicit request: DataRequest[_]) =
-    request.movementDetails.item(idx) match {
-      case Some(item) =>
-        getPackagingTypesService.getPackagingTypes(Seq(item)).flatMap {
-          getCnCodeInformationService.getCnCodeInformationWithMovementItems(_).map {
-            case (item, cnCodeInformation) :: Nil =>
-              status(view(
-                page = WrongWithItemPage(idx),
-                form = form,
-                action = routes.WrongWithItemController.submitWrongWithItem(request.ern, request.arc, idx, mode),
-                item = item,
-                cnCodeInfo = cnCodeInformation
-              ))
-            case _ =>
-              Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url)
-          }
-        }
-      case _ =>
-        Future.successful(Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc).url))
+  private def renderView(status: Status, idx:Int, form: Form[_], mode: Mode)(implicit request: DataRequest[_]) = {
+    withMovementItemAsync(idx) {
+      referenceDataService.itemWithReferenceData(_) { (item, cnCodeInfo) =>
+        Future.successful(status(view(
+          page = WrongWithItemPage(idx),
+          form = form,
+          action = routes.WrongWithItemController.submitWrongWithItem(request.ern, request.arc, idx, mode),
+          item = item,
+          cnCodeInfo = cnCodeInfo
+        )))
+      }
     }
+  }
 }

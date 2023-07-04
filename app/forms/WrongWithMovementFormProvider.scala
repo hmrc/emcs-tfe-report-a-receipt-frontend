@@ -25,8 +25,8 @@ import pages.QuestionPage
 
 class WrongWithMovementFormProvider @Inject() extends Mappings {
 
-  def apply(page: QuestionPage[Set[WrongWithMovement]]): Form[Set[WrongWithMovement]] =
+  def apply(): Form[Set[WrongWithMovement]] =
     Form(
-      "value" -> set(enumerable[WrongWithMovement](s"$page.error.required")).verifying(nonEmptySet(s"$page.error.required"))
+      "value" -> set(enumerable[WrongWithMovement](s"wrongWithMovement.error.required")).verifying(nonEmptySet(s"wrongWithMovement.error.required"))
     )
 }

@@ -234,7 +234,7 @@ class ItemShortageOrExcessControllerSpec extends SpecBase
           ("amount", (item1.quantity + 0.001).toString()),
           ("additionalInformation", "info")
         ))
-          .withError(FormError("amount", "itemShortageOrExcess.amount.error.tooLarge", Seq(item1.quantity)))
+          .withError(FormError("amount", "itemShortageOrExcess.amount.error.shortageExceedsTotal", Seq(item1.quantity, Kilograms)))
 
         val result = route(application, request).value
 
@@ -267,12 +267,14 @@ class ItemShortageOrExcessControllerSpec extends SpecBase
               ("additionalInformation", "info")
             )
 
+        val testAmount = (item1.quantity - refusedAmount) + 0.001
+
         val boundForm = form.bind(Map(
           ("shortageOrExcess", Shortage.toString),
-          ("amount", ((item1.quantity - refusedAmount) + 0.001).toString()),
+          ("amount", testAmount.toString()),
           ("additionalInformation", "info")
         ))
-          .withError(FormError("amount", "itemShortageOrExcess.amount.error.tooLarge", Seq(item1.quantity - refusedAmount)))
+          .withError(FormError("amount", "itemShortageOrExcess.amount.error.shortageExceedsRemainder", Seq(refusedAmount, Kilograms, item1.quantity - refusedAmount)))
 
         val result = route(application, request).value
 

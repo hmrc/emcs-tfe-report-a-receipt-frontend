@@ -18,16 +18,17 @@ package controllers
 
 import base.SpecBase
 import forms.RefusedAmountFormProvider
-import mocks.services.{MockGetCnCodeInformationService, MockReferenceDataService, MockUserAnswersService}
+import mocks.services.{MockReferenceDataService, MockUserAnswersService}
 import models.UnitOfMeasure.Kilograms
-import models.{NormalMode, UserAnswers}
+import models.WrongWithMovement.Shortage
+import models.{ItemShortageOrExcessModel, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import pages.unsatisfactory.individualItems.{RefusedAmountPage, SelectItemsPage}
+import pages.unsatisfactory.individualItems.{ItemShortageOrExcessPage, RefusedAmountPage, SelectItemsPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.{GetCnCodeInformationService, ReferenceDataService, UserAnswersService}
+import services.{ReferenceDataService, UserAnswersService}
 import views.html.RefusedAmountView
 
 import scala.concurrent.Future
@@ -94,7 +95,11 @@ class RefusedAmountControllerSpec extends SpecBase with MockUserAnswersService w
       }
     }
 
-    "must redirect to the next page when valid data is submitted" in new Fixture(Some(emptyUserAnswers.set(SelectItemsPage(1), 1))) {
+    "must redirect to the next page when valid data is submitted" in new Fixture(Some(
+      emptyUserAnswers
+        .set(SelectItemsPage(1), 1)
+        .set(ItemShortageOrExcessPage(1), ItemShortageOrExcessModel(Shortage, 5, None))
+    )) {
       running(application) {
 
         MockUserAnswersService.set().returns(Future.successful(userAnswers.get))

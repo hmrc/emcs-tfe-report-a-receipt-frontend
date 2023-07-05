@@ -284,7 +284,7 @@ class NavigatorSpec extends SpecBase {
             val userAnswers = emptyUserAnswers.set(WrongWithItemPage(1), selectedOptions)
 
             navigator.nextPage(ItemDamageInformationPage(1), NormalMode, userAnswers) mustBe
-              routes.AddMoreInformationController.loadItemSealsInformation(testErn, testArc, 1, NormalMode)
+              routes.AddItemMoreInformationController.loadItemSealsInformation(testErn, testArc, 1, NormalMode)
           }
         }
 
@@ -294,7 +294,7 @@ class NavigatorSpec extends SpecBase {
             val selectedOptions: Set[WrongWithMovement] = Set(BrokenSeals, Other)
             val userAnswers = emptyUserAnswers.set(WrongWithItemPage(1), selectedOptions)
             navigator.nextPage(WrongWithItemPage(1), NormalMode, userAnswers) mustBe
-              routes.AddMoreInformationController.loadItemSealsInformation(userAnswers.ern, userAnswers.arc, 1, NormalMode)
+              routes.AddItemMoreInformationController.loadItemSealsInformation(userAnswers.ern, userAnswers.arc, 1, NormalMode)
           }
         }
 
@@ -468,7 +468,7 @@ class NavigatorSpec extends SpecBase {
               .set(AddItemDamageInformationPage(1), false)
 
             navigator.nextPage(AddItemDamageInformationPage(1), NormalMode, userAnswers) mustBe
-              routes.AddMoreInformationController.loadItemSealsInformation(testErn, testArc, 1, NormalMode)
+              routes.AddItemMoreInformationController.loadItemSealsInformation(testErn, testArc, 1, NormalMode)
           }
         }
 
@@ -557,7 +557,7 @@ class NavigatorSpec extends SpecBase {
 
           "must go back to itself" in {
             navigator.nextPage(AddItemSealsInformationPage(1), NormalMode, emptyUserAnswers) mustBe
-              routes.AddMoreInformationController.loadItemSealsInformation(testErn, testArc, 1, NormalMode)
+              routes.AddItemMoreInformationController.loadItemSealsInformation(testErn, testArc, 1, NormalMode)
           }
         }
       }

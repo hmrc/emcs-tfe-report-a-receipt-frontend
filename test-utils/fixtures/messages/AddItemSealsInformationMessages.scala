@@ -16,16 +16,16 @@
 
 package fixtures.messages
 
-object AddItemDamageInformationMessages {
+object AddItemSealsInformationMessages {
 
   object English extends AddItemInformationMessagesBase with BaseEnglish {
-    override val heading = (i: Int) => s"Do you want to give information about item $i being damaged?"
+    override val heading = (i: Int) => s"Do you want to give information about item $i having broken seal(s)?"
     override val title = (i: Int) => title(heading(i))
     override val itemDetails = (i: Int) => s"View item $i details"
   }
 
   object Welsh extends AddItemInformationMessagesBase with BaseWelsh {
-    override val heading = (i: Int) => s"Do you want to give information about item $i being damaged?"
+    override val heading = (i: Int) => s"Do you want to give information about item $i having broken seal(s)?"
     override val title = (i: Int) => title(heading(i))
     override val itemDetails = (i: Int) => s"View item $i details"
   }

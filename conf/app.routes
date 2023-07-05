@@ -120,12 +120,12 @@ POST        /:ern/:arc/item/:idx/about-shortage-excess/change                   
 GET         /:ern/:arc/item/:idx/about-shortage-excess/review                    controllers.ItemShortageOrExcessController.onPageLoad(ern: String, arc: String, idx: Int, mode: Mode = ReviewMode)
 POST        /:ern/:arc/item/:idx/about-shortage-excess/review                    controllers.ItemShortageOrExcessController.onSubmit(ern: String, arc: String, idx: Int, mode: Mode = ReviewMode)
 
-GET         /:ern/:arc/item/:idx/select-seals-information-item                   controllers.AddMoreInformationController.loadItemSealsInformation(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
-POST        /:ern/:arc/item/:idx/select-seals-information-item                   controllers.AddMoreInformationController.submitItemSealsInformation(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
-GET         /:ern/:arc/item/:idx/select-seals-information-item/change            controllers.AddMoreInformationController.loadItemSealsInformation(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)
-POST        /:ern/:arc/item/:idx/select-seals-information-item/change            controllers.AddMoreInformationController.submitItemSealsInformation(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)
-GET         /:ern/:arc/item/:idx/select-seals-information-item/review            controllers.AddMoreInformationController.loadItemSealsInformation(ern: String, arc: String, idx: Int, mode: Mode = ReviewMode)
-POST        /:ern/:arc/item/:idx/select-seals-information-item/review            controllers.AddMoreInformationController.submitItemSealsInformation(ern: String, arc: String, idx: Int, mode: Mode = ReviewMode)
+GET         /:ern/:arc/item/:idx/select-seals-information-item                   controllers.AddItemMoreInformationController.loadItemSealsInformation(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
+POST        /:ern/:arc/item/:idx/select-seals-information-item                   controllers.AddItemMoreInformationController.submitItemSealsInformation(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
+GET         /:ern/:arc/item/:idx/select-seals-information-item/change            controllers.AddItemMoreInformationController.loadItemSealsInformation(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)
+POST        /:ern/:arc/item/:idx/select-seals-information-item/change            controllers.AddItemMoreInformationController.submitItemSealsInformation(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)
+GET         /:ern/:arc/item/:idx/select-seals-information-item/review            controllers.AddItemMoreInformationController.loadItemSealsInformation(ern: String, arc: String, idx: Int, mode: Mode = ReviewMode)
+POST        /:ern/:arc/item/:idx/select-seals-information-item/review            controllers.AddItemMoreInformationController.submitItemSealsInformation(ern: String, arc: String, idx: Int, mode: Mode = ReviewMode)
 
 GET         /:ern/:arc/item/:idx/seals-information-item                          controllers.ItemMoreInformationController.loadItemSealsInformation(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
 POST        /:ern/:arc/item/:idx/seals-information-item                          controllers.ItemMoreInformationController.submitItemSealsInformation(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)

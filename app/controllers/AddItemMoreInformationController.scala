@@ -22,11 +22,11 @@ import models.Mode
 import models.requests.DataRequest
 import navigation.Navigator
 import pages.QuestionPage
-import pages.unsatisfactory.individualItems.{AddItemDamageInformationPage, ItemDamageInformationPage}
+import pages.unsatisfactory.individualItems.{AddItemDamageInformationPage, AddItemSealsInformationPage, ItemDamageInformationPage, ItemSealsInformationPage}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc._
-import services.{UserAnswersService, ReferenceDataService}
+import services.{ReferenceDataService, UserAnswersService}
 import utils.JsonOptionFormatter
 import views.html.AddItemMoreInformationView
 
@@ -46,6 +46,12 @@ class AddItemMoreInformationController @Inject()(override val messagesApi: Messa
                                                  view: AddItemMoreInformationView,
                                                  referenceDataService: ReferenceDataService
                                                 ) extends BaseNavigationController with AuthActionHelper with JsonOptionFormatter {
+
+  def loadItemSealsInformation(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
+    onPageLoad(ern, arc, AddItemSealsInformationPage(idx), routes.AddItemMoreInformationController.submitItemSealsInformation(ern, arc, idx, mode), idx)
+
+  def submitItemSealsInformation(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
+    onSubmit(ern, arc, AddItemSealsInformationPage(idx), ItemSealsInformationPage(idx), routes.AddItemMoreInformationController.submitItemSealsInformation(ern, arc, idx, mode),idx , mode)
 
   def loadItemDamageInformation(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
     onPageLoad(ern, arc, AddItemDamageInformationPage(idx), routes.AddItemMoreInformationController.submitItemDamageInformation(ern, arc, idx, mode), idx)

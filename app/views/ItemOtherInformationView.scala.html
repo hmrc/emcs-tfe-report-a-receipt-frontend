@@ -25,7 +25,7 @@
         layout: templates.Layout,
         formHelper: FormWithCSRF,
         govukErrorSummary: GovukErrorSummary,
-        govukCharacterCount : GovukCharacterCount,
+        govukCharacterCount: GovukCharacterCount,
         govukButton: GovukButton,
         h1: components.h1,
         h2: components.h2,
@@ -35,8 +35,8 @@
 )
 
 @(
+        page: QuestionPage[String],
         form: Form[_],
-        page: QuestionPage[Option[String]],
         action: Call,
         item: MovementItem,
         cnCodeInformation: CnCodeInformation
@@ -52,23 +52,26 @@
 
         @h2(messages("arc.subHeading", request.arc), "govuk-caption-l")
 
-        @govukCharacterCount(CharacterCount(
-            id = "more-information",
-            name = "more-information",
-            maxLength = Some(350),
-            label = largeHeadingWithMarginBottom(messages(s"$page.heading", item.itemUniqueReference)),
-            hint = Some(HintViewModel(HtmlContent(hint))),
-            value = form("more-information").value,
-            errorMessage = form.errors("more-information") match {
-                case Nil => None
-                case errors => Some(ErrorMessage(content = HtmlContent(errors.map(err => messages(err.message)).mkString("<br>"))))
-            }
-        ))
+        @{
+            govukCharacterCount(CharacterCount(
+                id = "more-information",
+                name = "more-information",
+                maxLength = Some(350),
+                label = largeHeadingWithMarginBottom(messages(s"$page.heading", item.itemUniqueReference)),
+                hint = Some(HintViewModel(HtmlContent(hint))),
+                value = form("more-information").value,
+                errorMessage = form.errors("more-information") match {
+                    case Nil => None
+                    case errors => Some(ErrorMessage(content = HtmlContent(errors.map(err => messages(err.message)).mkString("<br>"))))
+                }
+            ))
+        }
 
         @continueOrExit()
 
     }
 }
+
 
 @hint = {
     @itemDetails(s"$page.itemDetails", item, cnCodeInformation)

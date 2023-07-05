@@ -19,8 +19,9 @@ package fixtures.messages
 object ItemOtherInformationMessages {
 
   sealed trait ViewMessages { _: i18n =>
-    val title: String
-    val heading: String
+    val title: Int => String
+    val heading: Int => String
+    val itemDetails: Int => String
     val hint: String
     val validationErrorInvalidChars: String
     val validationError: String
@@ -29,8 +30,9 @@ object ItemOtherInformationMessages {
   }
 
   object English extends ViewMessages with BaseEnglish {
-    override val heading = "Give more information about other reason(s) you are unsatisfied with this item"
-    override val title: String = title(heading)
+    override val heading: Int => String = i => s"Give information about other reason(s) you are unsatisfied with item $i"
+    override val title: Int => String = i => title(heading(i))
+    override val itemDetails: Int => String = i => s"View item $i details"
     override val hint = "Give more information"
     override val validationErrorInvalidChars = "Information must not include < and > and : and ;"
     override val validationError = "Information must contain letters or numbers"
@@ -39,8 +41,9 @@ object ItemOtherInformationMessages {
   }
 
   object Welsh extends ViewMessages with BaseWelsh {
-    override val heading = "Give more information about other reason(s) you are unsatisfied with this item"
-    override val title: String = title(heading)
+    override val heading: Int => String = i => s"Give information about other reason(s) you are unsatisfied with item $i"
+    override val title: Int => String = i => title(heading(i))
+    override val itemDetails: Int => String = i => s"View item $i details"
     override val hint = "Give more information"
     override val validationErrorInvalidChars = "Information must not include < and > and : and ;"
     override val validationError = "Information must contain letters or numbers"

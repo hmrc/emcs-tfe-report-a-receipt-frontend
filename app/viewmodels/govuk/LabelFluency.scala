@@ -16,7 +16,7 @@
 
 package viewmodels.govuk
 
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{Content, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.label.Label
 import viewmodels.LabelSize
 
@@ -29,6 +29,9 @@ trait LabelFluency {
     def apply(content: Content): Label =
       Label(content = content)
   }
+
+  def largeHeadingWithMarginBottom(content: String): Label =
+    LabelViewModel(Text(content)).asPageHeading(LabelSize.Large).withCssClass("govuk-!-margin-bottom-5")
 
   implicit class FluentLabel(label: Label) {
 

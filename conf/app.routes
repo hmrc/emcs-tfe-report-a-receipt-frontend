@@ -79,10 +79,10 @@ POST        /:ern/:arc/seals-information-movement                               
 GET         /:ern/:arc/seals-information-movement/change                         controllers.MoreInformationController.loadSealsInformation(ern: String, arc: String, mode: Mode = CheckMode)
 POST        /:ern/:arc/seals-information-movement/change                         controllers.MoreInformationController.submitSealsInformation(ern: String, arc: String, mode: Mode = CheckMode)
 
-GET         /:ern/:arc/other-information-movement                                controllers.OtherInformationController.loadOtherInformation(ern: String, arc: String, mode: Mode = NormalMode)
-POST        /:ern/:arc/other-information-movement                                controllers.OtherInformationController.submitOtherInformation(ern: String, arc: String, mode: Mode = NormalMode)
-GET         /:ern/:arc/other-information-movement/change                         controllers.OtherInformationController.loadOtherInformation(ern: String, arc: String, mode: Mode = CheckMode)
-POST        /:ern/:arc/other-information-movement/change                         controllers.OtherInformationController.submitOtherInformation(ern: String, arc: String, mode: Mode = CheckMode)
+GET         /:ern/:arc/other-information-movement                                controllers.OtherInformationController.onPageLoad(ern: String, arc: String, mode: Mode = NormalMode)
+POST        /:ern/:arc/other-information-movement                                controllers.OtherInformationController.onSubmit(ern: String, arc: String, mode: Mode = NormalMode)
+GET         /:ern/:arc/other-information-movement/change                         controllers.OtherInformationController.onPageLoad(ern: String, arc: String, mode: Mode = CheckMode)
+POST        /:ern/:arc/other-information-movement/change                         controllers.OtherInformationController.onSubmit(ern: String, arc: String, mode: Mode = CheckMode)
 
 GET         /:ern/:arc/check-answers                                             controllers.CheckYourAnswersController.onPageLoad(ern: String, arc: String)
 POST        /:ern/:arc/check-answers                                             controllers.CheckYourAnswersController.onSubmit(ern: String, arc: String)
@@ -148,12 +148,12 @@ POST        /:ern/:arc/item/:idx/damage-information-item/change                 
 GET         /:ern/:arc/item/:idx/damage-information-item/review                  controllers.ItemMoreInformationController.loadItemDamageInformation(ern: String, arc: String, idx: Int, mode: Mode = ReviewMode)
 POST        /:ern/:arc/item/:idx/damage-information-item/review                  controllers.ItemMoreInformationController.submitItemDamageInformation(ern: String, arc: String, idx: Int, mode: Mode = ReviewMode)
 
-GET         /:ern/:arc/item/:idx/other-information-item                          controllers.OtherInformationController.loadItemOtherInformation(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
-POST        /:ern/:arc/item/:idx/other-information-item                          controllers.OtherInformationController.submitItemOtherInformation(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
-GET         /:ern/:arc/item/:idx/other-information-item/change                   controllers.OtherInformationController.loadItemOtherInformation(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)
-POST        /:ern/:arc/item/:idx/other-information-item/change                   controllers.OtherInformationController.submitItemOtherInformation(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)
-GET         /:ern/:arc/item/:idx/other-information-item/review                   controllers.OtherInformationController.loadItemOtherInformation(ern: String, arc: String, idx: Int, mode: Mode = ReviewMode)
-POST        /:ern/:arc/item/:idx/other-information-item/review                   controllers.OtherInformationController.submitItemOtherInformation(ern: String, arc: String, idx: Int, mode: Mode = ReviewMode)
+GET         /:ern/:arc/item/:idx/other-information-item                          controllers.ItemOtherInformationController.onPageLoad(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
+POST        /:ern/:arc/item/:idx/other-information-item                          controllers.ItemOtherInformationController.onSubmit(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
+GET         /:ern/:arc/item/:idx/other-information-item/change                   controllers.ItemOtherInformationController.onPageLoad(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)
+POST        /:ern/:arc/item/:idx/other-information-item/change                   controllers.ItemOtherInformationController.onSubmit(ern: String, arc: String, idx: Int, mode: Mode = CheckMode)
+GET         /:ern/:arc/item/:idx/other-information-item/review                   controllers.ItemOtherInformationController.onPageLoad(ern: String, arc: String, idx: Int, mode: Mode = ReviewMode)
+POST        /:ern/:arc/item/:idx/other-information-item/review                   controllers.ItemOtherInformationController.onSubmit(ern: String, arc: String, idx: Int, mode: Mode = ReviewMode)
 
 GET         /:ern/:arc/item/:idx/select-refuse-item                              controllers.RefusingAnyAmountOfItemController.onPageLoad(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)
 POST        /:ern/:arc/item/:idx/select-refuse-item                              controllers.RefusingAnyAmountOfItemController.onSubmit(ern: String, arc: String, idx: Int, mode: Mode = NormalMode)

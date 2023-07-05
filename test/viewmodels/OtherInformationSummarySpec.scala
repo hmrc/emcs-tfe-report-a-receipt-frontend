@@ -53,7 +53,7 @@ class OtherInformationSummarySpec extends SpecBase {
               val answers = emptyUserAnswers.set(OtherInformationPage, "Info")
               implicit val request = dataRequest(FakeRequest(), answers)
               lazy val changeRoute =
-                routes.OtherInformationController.loadOtherInformation(request.userAnswers.ern, request.userAnswers.arc, CheckMode)
+                routes.OtherInformationController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, CheckMode)
 
               otherInformationSummary.row() mustBe
                 SummaryListRowViewModel(
@@ -77,7 +77,7 @@ class OtherInformationSummarySpec extends SpecBase {
               val answers = emptyUserAnswers.set(OtherInformationPage, "Info").set(AcceptMovementPage, Refused)
               implicit val request = dataRequest(FakeRequest(), answers)
               lazy val changeRoute =
-                routes.OtherInformationController.loadOtherInformation(request.userAnswers.ern, request.userAnswers.arc, CheckMode)
+                routes.OtherInformationController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, CheckMode)
 
               otherInformationSummary.row() mustBe
                 SummaryListRowViewModel(
@@ -100,7 +100,7 @@ class OtherInformationSummarySpec extends SpecBase {
 
               implicit val request = dataRequest(FakeRequest(), emptyUserAnswers)
               lazy val changeRoute =
-                routes.OtherInformationController.loadOtherInformation(request.userAnswers.ern, request.userAnswers.arc, CheckMode)
+                routes.OtherInformationController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, CheckMode)
 
               otherInformationSummary.row() mustBe
                 SummaryListRowViewModel(
@@ -118,7 +118,7 @@ class OtherInformationSummarySpec extends SpecBase {
 
               implicit val request = dataRequest(FakeRequest(), emptyUserAnswers.set(AcceptMovementPage, Refused))
               lazy val changeRoute =
-                routes.OtherInformationController.loadOtherInformation(request.userAnswers.ern, request.userAnswers.arc, CheckMode)
+                routes.OtherInformationController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, CheckMode)
 
               otherInformationSummary.row() mustBe
                 SummaryListRowViewModel(

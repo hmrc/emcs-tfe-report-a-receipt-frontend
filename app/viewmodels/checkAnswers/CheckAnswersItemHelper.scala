@@ -188,7 +188,7 @@ class CheckAnswersItemHelper @Inject()(
             actions = Seq(
               ActionItemViewModel(
                 "site.change",
-                routes.OtherInformationController.loadItemOtherInformation(request.userAnswers.ern, request.userAnswers.arc, idx, mode).url,
+                routes.ItemOtherInformationController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, idx, mode).url,
                 id = ItemOtherInformationPage(idx) + additionalLinkIdSignifier
               ).withVisuallyHiddenText(messages(s"${ItemOtherInformationPage(idx)}.checkYourAnswers.change.hidden"))
             )

@@ -144,7 +144,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
             key = s"${ItemOtherInformationPage(1)}.checkYourAnswers.label",
             value = ValueViewModel(Text("value")),
             actions = Some(Actions(items = Seq(ActionItem(
-              href = routes.OtherInformationController.loadItemOtherInformation(testErn, testArc, 1, CheckMode).url,
+              href = routes.ItemOtherInformationController.onPageLoad(testErn, testArc, 1, CheckMode).url,
               content = msgs("site.change"),
               visuallyHiddenText = Some(msgs(s"${ItemOtherInformationPage(1)}.checkYourAnswers.change.hidden")),
               attributes = Map("id" -> s"${ItemOtherInformationPage(1)}")
@@ -192,7 +192,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
           key = s"${ItemOtherInformationPage(1)}.checkYourAnswers.label",
           value = ValueViewModel(Text("value")),
           actions = Some(Actions(items = Seq(ActionItem(
-            href = routes.OtherInformationController.loadItemOtherInformation(testErn, testArc, 1, ReviewMode).url,
+            href = routes.ItemOtherInformationController.onPageLoad(testErn, testArc, 1, ReviewMode).url,
             content = msgs("site.change"),
             visuallyHiddenText = Some(msgs(s"${ItemOtherInformationPage(1)}.checkYourAnswers.change.hidden")),
             attributes = Map("id" -> s"${ItemOtherInformationPage(1)}-item-1")

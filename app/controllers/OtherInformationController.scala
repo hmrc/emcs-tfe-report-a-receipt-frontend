@@ -21,9 +21,7 @@ import forms.OtherInformationFormProvider
 import models.Mode
 import models.requests.DataRequest
 import navigation.Navigator
-import pages.QuestionPage
 import pages.unsatisfactory._
-import pages.unsatisfactory.individualItems.ItemOtherInformationPage
 import play.api.i18n.MessagesApi
 import play.api.mvc._
 import services.UserAnswersService
@@ -47,30 +45,25 @@ class OtherInformationController @Inject()(
                                             view: OtherInformationView
                                           ) extends BaseNavigationController with AuthActionHelper with Logging {
 
-
-  def loadOtherInformation(ern: String, arc: String, mode: Mode): Action[AnyContent] =
-    onPageLoad(OtherInformationPage, ern, arc, routes.OtherInformationController.submitOtherInformation(ern, arc, mode))
-
-  def submitOtherInformation(ern: String, arc: String, mode: Mode): Action[AnyContent] =
-    onSubmit(OtherInformationPage, ern, arc, routes.OtherInformationController.submitOtherInformation(ern, arc, mode), mode)
-
-  def loadItemOtherInformation(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
-    onPageLoad(ItemOtherInformationPage(idx), ern, arc, routes.OtherInformationController.submitItemOtherInformation(ern, arc, idx, mode))
-
-  def submitItemOtherInformation(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
-    onSubmit(ItemOtherInformationPage(idx), ern, arc, routes.OtherInformationController.submitItemOtherInformation(ern, arc, idx, mode), mode)
-
-  private def onPageLoad(page: QuestionPage[String], ern: String, arc: String, action: Call): Action[AnyContent] =
+  def onPageLoad(ern: String, arc: String, mode: Mode): Action[AnyContent] =
     authorisedDataRequestWithCachedMovement(ern, arc) { implicit request =>
-      Ok(view(page, fillForm(page, formProvider(Some(page))), action))
+      Ok(view(
+        OtherInformationPage,
+        fillForm(OtherInformationPage, formProvider(Some(OtherInformationPage))),
+        routes.OtherInformationController.onSubmit(ern, arc, mode)
+      ))
     }
 
-  private def onSubmit(page: QuestionPage[String], ern: String, arc: String, action: Call, mode: Mode): Action[AnyContent] =
+  def onSubmit(ern: String, arc: String, mode: Mode): Action[AnyContent] =
     authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request: DataRequest[_] =>
-      submitAndTrimWhitespaceFromTextarea[String](Some(page), formProvider)(
-        formWithErrors => Future.successful(BadRequest(view(page, formWithErrors, action)))
+      submitAndTrimWhitespaceFromTextarea[String](Some(OtherInformationPage), formProvider)(
+        formWithErrors => Future.successful(BadRequest(view(
+          OtherInformationPage,
+          formWithErrors,
+          routes.OtherInformationController.onSubmit(ern, arc, mode)
+        )))
       )(
-        value => saveAndRedirect(page, value, mode)
+        value => saveAndRedirect(OtherInformationPage, value, mode)
       )
     }
 }

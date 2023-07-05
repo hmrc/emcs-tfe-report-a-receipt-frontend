@@ -242,7 +242,7 @@ class NavigatorSpec extends SpecBase {
             val selectedOptions: Set[WrongWithMovement] = Set(Other)
             val userAnswers = emptyUserAnswers.set(WrongWithMovementPage, selectedOptions)
             navigator.nextPage(WrongWithMovementPage, NormalMode, userAnswers) mustBe
-              routes.OtherInformationController.loadOtherInformation(testErn, testArc, NormalMode)
+              routes.OtherInformationController.onPageLoad(testErn, testArc, NormalMode)
           }
         }
       }
@@ -304,7 +304,7 @@ class NavigatorSpec extends SpecBase {
             val selectedOptions: Set[WrongWithMovement] = Set(Other)
             val userAnswers = emptyUserAnswers.set(WrongWithItemPage(1), selectedOptions)
             navigator.nextPage(WrongWithItemPage(1), NormalMode, userAnswers) mustBe
-              routes.OtherInformationController.loadItemOtherInformation(testErn, testArc, idx = 1, mode = NormalMode)
+              routes.ItemOtherInformationController.onPageLoad(testErn, testArc, idx = 1, mode = NormalMode)
           }
         }
       }
@@ -580,7 +580,7 @@ class NavigatorSpec extends SpecBase {
           val userAnswers = emptyUserAnswers.set(WrongWithItemPage(1), Set[WrongWithMovement](BrokenSeals, Other))
 
           navigator.nextPage(ItemSealsInformationPage(1), NormalMode, userAnswers) mustBe
-            routes.OtherInformationController.loadItemOtherInformation(testErn, testArc, 1, NormalMode)
+            routes.ItemOtherInformationController.onPageLoad(testErn, testArc, 1, NormalMode)
         }
       }
 

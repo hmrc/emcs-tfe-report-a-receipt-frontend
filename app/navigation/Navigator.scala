@@ -190,7 +190,7 @@ class Navigator @Inject()() extends BaseNavigator {
           case Some(BrokenSeals) =>
             routes.AddMoreInformationController.loadSealsInformation(userAnswers.ern, userAnswers.arc, NormalMode)
           case Some(Other) =>
-            routes.OtherInformationController.loadOtherInformation(userAnswers.ern, userAnswers.arc, NormalMode)
+            routes.OtherInformationController.onPageLoad(userAnswers.ern, userAnswers.arc, NormalMode)
           case _ =>
             routes.AddMoreInformationController.loadMoreInformation(userAnswers.ern, userAnswers.arc, NormalMode)
         }
@@ -210,7 +210,7 @@ class Navigator @Inject()() extends BaseNavigator {
           case Some(BrokenSeals) =>
             routes.AddItemMoreInformationController.loadItemSealsInformation(userAnswers.ern, userAnswers.arc, page.idx, NormalMode)
           case Some(Other) =>
-            routes.OtherInformationController.loadItemOtherInformation(userAnswers.ern, userAnswers.arc, page.idx, NormalMode)
+            routes.ItemOtherInformationController.onPageLoad(userAnswers.ern, userAnswers.arc, page.idx, NormalMode)
           case _ =>
             routes.CheckYourAnswersItemController.onPageLoad(userAnswers.ern, userAnswers.arc, page.idx)
         }

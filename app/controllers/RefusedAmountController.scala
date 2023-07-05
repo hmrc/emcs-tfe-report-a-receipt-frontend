@@ -19,14 +19,18 @@ package controllers
 import controllers.actions._
 import forms.RefusedAmountFormProvider
 import models.Mode
+import models.requests.DataRequest
+import models.response.emcsTfe.MovementItem
 import navigation.Navigator
 import pages.unsatisfactory.individualItems.{ItemShortageOrExcessPage, RefusedAmountPage}
+import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{GetCnCodeInformationService, UserAnswersService}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import services.{ReferenceDataService, UserAnswersService}
 import views.html.RefusedAmountView
 
 import javax.inject.Inject
+import scala.concurrent.Future
 
 class RefusedAmountController @Inject()(
                                          override val messagesApi: MessagesApi,
@@ -39,52 +43,42 @@ class RefusedAmountController @Inject()(
                                          override val requireData: DataRequiredAction,
                                          formProvider: RefusedAmountFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
-                                         getCnCodeInformationService: GetCnCodeInformationService,
+                                         referenceDataService: ReferenceDataService,
                                          view: RefusedAmountView
                                        ) extends BaseNavigationController with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
     authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
       withAddedItemAsync(idx) { item =>
-        getCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item)).map {
-          serviceResult =>
-            val (item, cnCodeInformation) = serviceResult.head
-            val shortageAmount = request.userAnswers.get(ItemShortageOrExcessPage(item.itemUniqueReference)).flatMap(_.shortageAmount)
-            Ok(view(
-              fillForm(RefusedAmountPage(idx), formProvider(item.quantity, shortageAmount)),
-              routes.RefusedAmountController.onSubmit(ern, arc, idx, mode),
-              cnCodeInformation.unitOfMeasureCode.toUnitOfMeasure,
-              item,
-              cnCodeInformation,
-              idx
-            ))
-        }
+        renderView(Ok, fillForm(RefusedAmountPage(idx), form(item)), item, mode)
       }
     }
 
   def onSubmit(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
     authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
       withAddedItemAsync(idx) { item =>
-        val shortageAmount = request.userAnswers.get(ItemShortageOrExcessPage(item.itemUniqueReference)).flatMap(_.shortageAmount)
-        formProvider(item.quantity, shortageAmount).bindFromRequest().fold(
-          formWithErrors => {
-            getCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item)).map {
-              serviceResult =>
-                val (_, cnCodeInformation) = serviceResult.head
-                BadRequest(view(
-                  formWithErrors,
-                  routes.RefusedAmountController.onSubmit(ern, arc, idx, mode),
-                  cnCodeInformation.unitOfMeasureCode.toUnitOfMeasure,
-                  item,
-                  cnCodeInformation,
-                  idx
-                ))
-            }
-          },
+        form(item).bindFromRequest().fold(
+          renderView(BadRequest, _, item, mode),
           value =>
             saveAndRedirect(RefusedAmountPage(idx), value, mode)
         )
       }
     }
-}
 
+  private def form(item: MovementItem)(implicit request: DataRequest[_]): Form[BigDecimal] = {
+    val shortageAmount = request.userAnswers.get(ItemShortageOrExcessPage(item.itemUniqueReference)).flatMap(_.shortageAmount)
+    formProvider(item.quantity, shortageAmount)
+  }
+
+  private def renderView(status: Status, form: Form[_], item: MovementItem, mode: Mode)(implicit request: DataRequest[_]): Future[Result] =
+    referenceDataService.itemWithReferenceData(item) { (item, cnCodeInformation) =>
+      Future.successful(status(view(
+        form = form,
+        action = routes.RefusedAmountController.onSubmit(request.ern, request.arc, item.itemUniqueReference, mode),
+        unitOfMeasure = cnCodeInformation.unitOfMeasureCode.toUnitOfMeasure,
+        item = item,
+        cnCodeInfo = cnCodeInformation,
+        idx = item.itemUniqueReference
+      )))
+    }
+}

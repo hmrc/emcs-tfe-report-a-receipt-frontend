@@ -17,6 +17,7 @@
 package views
 
 import base.ViewSpecBase
+import config.AppConfig
 import controllers.routes
 import fixtures.messages.CheckYourAnswersMessages
 import models.UnitOfMeasure.Kilograms
@@ -55,6 +56,7 @@ class CheckYourAnswersViewSpec extends ViewSpecBase with ViewBehaviours {
           .set[Set[WrongWithMovement]](WrongWithItemPage(item1.itemUniqueReference), Set(ShortageOrExcess))
           .set(ItemShortageOrExcessPage(item1.itemUniqueReference), ItemShortageOrExcessModel(Shortage, 10, None))
 
+        implicit val config: AppConfig = app.injector.instanceOf[AppConfig]
         implicit val msgs: Messages = messages(app, messagesForLanguage.lang)
         implicit val request: DataRequest[AnyContentAsEmpty.type] = dataRequest(FakeRequest(), userAnswers)
 

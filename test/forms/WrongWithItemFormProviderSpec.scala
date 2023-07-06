@@ -16,22 +16,24 @@
 
 package forms
 
-import fixtures.messages.WrongWithMovementMessages
+import fixtures.messages.WrongWithItemMessages
 import forms.behaviours.CheckboxFieldBehaviours
 import models.WrongWithMovement
+import models.WrongWithMovement.{Excess, Shortage}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import pages.unsatisfactory.WrongWithMovementPage
+import pages.unsatisfactory.individualItems.WrongWithItemPage
 import play.api.data.FormError
 import play.api.i18n.{Messages, MessagesApi}
 
-class WrongWithMovementFormProviderSpec extends CheckboxFieldBehaviours with GuiceOneAppPerSuite {
+class WrongWithItemFormProviderSpec extends CheckboxFieldBehaviours with GuiceOneAppPerSuite {
 
-  val form = new WrongWithMovementFormProvider()()
+  val form = new WrongWithItemFormProvider()()
 
-  ".value" - {
+  val fieldName = "value"
+  val requiredKey = s"${WrongWithItemPage(1)}.error.required"
+  val shortageOrExcessOnly = s"${WrongWithItemPage(1)}.error.shortageOrExcessOnly"
 
-    val fieldName = "value"
-    val requiredKey = s"$WrongWithMovementPage.error.required"
+  s".$fieldName" - {
 
     behave like checkboxField[WrongWithMovement](
       form,
@@ -45,18 +47,29 @@ class WrongWithMovementFormProviderSpec extends CheckboxFieldBehaviours with Gui
       fieldName,
       requiredKey
     )
+
+    "error if both Shortage and Excess are picked" in {
+      form.bind(Map(
+        s"$fieldName[0]" -> Shortage.toString,
+        s"$fieldName[1]" -> Excess.toString
+      )).errors must contain(FormError(s"$fieldName", shortageOrExcessOnly))
+    }
   }
 
   "Error Messages" - {
 
-    Seq(WrongWithMovementMessages.English, WrongWithMovementMessages.Welsh) foreach { messagesForLanguage =>
+    Seq(WrongWithItemMessages.English, WrongWithItemMessages.Welsh) foreach { messagesForLanguage =>
 
       implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(messagesForLanguage.lang))
 
       s"when output for language code '${messagesForLanguage.lang.code}'" - {
 
         "have the correct error message when no option is selected" in {
-          messages(s"$WrongWithMovementPage.error.required") mustBe messagesForLanguage.requiredError
+          messages(requiredKey) mustBe messagesForLanguage.requiredError
+        }
+
+        "have the correct error message when both Shortage and Excess are selected" in {
+          messages(shortageOrExcessOnly) mustBe messagesForLanguage.shortageOrExcessOnlyError
         }
       }
     }

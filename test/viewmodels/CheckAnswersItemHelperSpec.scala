@@ -17,6 +17,7 @@
 package viewmodels
 
 import base.SpecBase
+import config.AppConfig
 import controllers.routes
 import fixtures.messages.UnitOfMeasureMessages.English.kilogramsLong
 import mocks.viewmodels._
@@ -43,6 +44,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
   private lazy val link: link = app.injector.instanceOf[link]
   private lazy val list: list = app.injector.instanceOf[list]
 
+  implicit lazy val config: AppConfig = app.injector.instanceOf[AppConfig]
   implicit lazy val msgs: Messages = messages(app)
 
   trait Test {
@@ -88,7 +90,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
         ))
       ),
       actions = Some(Actions(items = Seq(ActionItem(
-        href = routes.WrongWithMovementController.loadWrongWithItem(testErn, testArc, 1, NormalMode).url,
+        href = routes.WrongWithItemController.loadWrongWithItem(testErn, testArc, 1, NormalMode).url,
         content = msgs("site.change"),
         visuallyHiddenText = Some(msgs(s"${WrongWithItemPage(1)}.checkYourAnswers.change.hidden")),
         attributes = Map("id" -> s"${WrongWithItemPage(1)}")
@@ -223,7 +225,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
             ))
           ),
           actions = Some(Actions(items = Seq(ActionItem(
-            href = routes.WrongWithMovementController.loadWrongWithItem(testErn, testArc, 1, NormalMode).url,
+            href = routes.WrongWithItemController.loadWrongWithItem(testErn, testArc, 1, NormalMode).url,
             content = msgs("site.change"),
             visuallyHiddenText = Some(msgs(s"${WrongWithItemPage(1)}.checkYourAnswers.change.hidden")),
             attributes = Map("id" -> s"${WrongWithItemPage(1)}-item-1")
@@ -347,7 +349,7 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
               ))
             ),
             actions = Some(Actions(items = Seq(ActionItem(
-              href = routes.WrongWithMovementController.loadWrongWithItem(testErn, testArc, 1, NormalMode).url,
+              href = routes.WrongWithItemController.loadWrongWithItem(testErn, testArc, 1, NormalMode).url,
               content = msgs("site.change"),
               visuallyHiddenText = Some(msgs(s"${WrongWithItemPage(1)}.checkYourAnswers.change.hidden")),
               attributes = Map("id" -> s"${WrongWithItemPage(1)}-item-1")

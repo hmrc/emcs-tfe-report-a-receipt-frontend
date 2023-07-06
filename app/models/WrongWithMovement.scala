@@ -16,6 +16,8 @@
 
 package models
 
+import config.AppConfig
+import featureswitch.core.config.{FeatureSwitching, NewShortageExcessFlow}
 import pages.QuestionPage
 import pages.unsatisfactory.WrongWithMovementPage
 import play.api.i18n.Messages
@@ -26,7 +28,7 @@ import viewmodels.govuk.checkbox._
 
 sealed trait WrongWithMovement
 
-object WrongWithMovement extends Enumerable.Implicits {
+object WrongWithMovement extends Enumerable.Implicits with FeatureSwitching {
 
   case object Shortage extends WithName("shortage") with WrongWithMovement
   case object Excess extends WithName("excess") with WrongWithMovement
@@ -34,7 +36,6 @@ object WrongWithMovement extends Enumerable.Implicits {
   case object Damaged extends WithName("damaged") with WrongWithMovement
   case object BrokenSeals extends WithName("brokenSeals") with WrongWithMovement
   case object Other extends WithName("other") with WrongWithMovement
-  case object AmountRefused extends WithName("amountRefused") with WrongWithMovement
 
   val values: Seq[WrongWithMovement] = Seq(
     Shortage,
@@ -44,17 +45,22 @@ object WrongWithMovement extends Enumerable.Implicits {
     Other
   )
 
-  val individualItemValues: Seq[WrongWithMovement] = Seq(
-    ShortageOrExcess,
-    Damaged,
-    BrokenSeals,
-    Other
-  )
+  val allValues = ShortageOrExcess +: values
 
-  def checkboxItems(page: QuestionPage[Set[WrongWithMovement]])(implicit messages: Messages): Seq[CheckboxItem] = {
+  def individualItemValues()(implicit config: AppConfig): Seq[WrongWithMovement] =
+    if (isEnabled(NewShortageExcessFlow)) values else {
+      Seq(
+        ShortageOrExcess,
+        Damaged,
+        BrokenSeals,
+        Other
+      )
+    }
+
+  def checkboxItems(page: QuestionPage[Set[WrongWithMovement]])(implicit messages: Messages, config: AppConfig): Seq[CheckboxItem] = {
     val checkboxes = page match {
       case WrongWithMovementPage => values
-      case _ => individualItemValues
+      case _ => individualItemValues()
     }
 
     checkboxes.zipWithIndex.map {
@@ -68,7 +74,7 @@ object WrongWithMovement extends Enumerable.Implicits {
     }
   }
 
-  def itemShortageOrExcessOptions(implicit messages: Messages) = {
+  def itemShortageOrExcessOptions(implicit messages: Messages): Seq[RadioItem] =
     Seq(
       RadioItem(
         content = Text(messages(s"itemShortageOrExcess.shortageOrExcess.$Shortage")),
@@ -81,8 +87,7 @@ object WrongWithMovement extends Enumerable.Implicits {
         id = Some(Excess.toString)
       )
     )
-  }
 
   implicit val enumerable: Enumerable[WrongWithMovement] =
-    Enumerable((values ++ individualItemValues).distinct.map(v => v.toString -> v): _*)
+    Enumerable(allValues.distinct.map(v => v.toString -> v): _*)
 }

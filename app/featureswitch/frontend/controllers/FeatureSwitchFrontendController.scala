@@ -31,8 +31,7 @@ import scala.concurrent.ExecutionContext
 class FeatureSwitchFrontendController @Inject()(featureSwitchService: FeatureSwitchRetrievalService,
                                                 featureSwitchView: feature_switch,
                                                 mcc: MessagesControllerComponents
-                                               )(implicit ec: ExecutionContext,
-                                                 override val config: AppConfig) extends FrontendController(mcc) with FeatureSwitching with I18nSupport {
+                                               )(implicit ec: ExecutionContext, val config: AppConfig) extends FrontendController(mcc) with FeatureSwitching with I18nSupport {
 
 
   def show(): Action[AnyContent] = Action.async {

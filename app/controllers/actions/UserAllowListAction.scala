@@ -31,9 +31,8 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class UserAllowListActionImpl @Inject()(userAllowListConnector: UserAllowListConnector,
-                                        errorHandler: ErrorHandler,
-                                        override val config: AppConfig)
-                                      (implicit val executionContext: ExecutionContext) extends UserAllowListAction with FeatureSwitching {
+                                        errorHandler: ErrorHandler)
+                                      (implicit val executionContext: ExecutionContext, val config: AppConfig) extends UserAllowListAction with FeatureSwitching {
 
   override protected def refine[A](request: UserRequest[A]): Future[Either[Result, UserRequest[A]]] = {
 

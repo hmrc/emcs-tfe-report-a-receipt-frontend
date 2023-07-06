@@ -16,6 +16,7 @@
 
 package controllers
 
+import config.AppConfig
 import controllers.actions._
 import handlers.ErrorHandler
 import models.AcceptMovement.{Refused, Satisfactory}
@@ -55,7 +56,7 @@ class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi
                                            submitReportOfReceiptService: SubmitReportOfReceiptService,
                                            getCnCodeInformationService: GetCnCodeInformationService,
                                            errorHandler: ErrorHandler
-                                          ) extends BaseNavigationController with AuthActionHelper {
+                                          )(implicit config: AppConfig) extends BaseNavigationController with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String): Action[AnyContent] =
     authorisedDataRequestWithUpToDateMovementAsync(ern, arc) { implicit request =>

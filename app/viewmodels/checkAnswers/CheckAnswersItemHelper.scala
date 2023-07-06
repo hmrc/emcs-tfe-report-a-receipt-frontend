@@ -16,6 +16,7 @@
 
 package viewmodels.checkAnswers
 
+import config.AppConfig
 import controllers.routes
 import models.UnitOfMeasure.reads
 import models.WrongWithMovement.{BrokenSeals, Damaged, Other}
@@ -41,7 +42,7 @@ class CheckAnswersItemHelper @Inject()(
                                       ) extends JsonOptionFormatter {
 
   def summaryList(idx: Int, unitOfMeasure: UnitOfMeasure, onFinalCheckAnswers: Boolean = false)
-                 (implicit request: DataRequest[_], messages: Messages): SummaryList = {
+                 (implicit request: DataRequest[_], messages: Messages, config: AppConfig): SummaryList = {
     val additionalLinkIdSignifier = if (onFinalCheckAnswers) s"-item-$idx" else ""
 
     val rows: Seq[SummaryListRow] =
@@ -61,18 +62,18 @@ class CheckAnswersItemHelper @Inject()(
   }
 
   private def whatWasWrongRow(answers: Set[WrongWithMovement], idx: Int, additionalLinkIdSignifier: String)
-                             (implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] =
+                             (implicit request: DataRequest[_], messages: Messages, config: AppConfig): Option[SummaryListRow] =
     Some(SummaryListRowViewModel(
       key = s"${WrongWithItemPage(idx)}.checkYourAnswers.label",
       value = ValueViewModel(HtmlContent(
-        list(WrongWithMovement.individualItemValues.filter(answers.contains).map { answer =>
+        list(WrongWithMovement.individualItemValues().filter(answers.contains).map { answer =>
           Html(messages(s"${WrongWithItemPage(idx)}.checkYourAnswers.$answer"))
         })
       )),
       actions = Seq(
         ActionItemViewModel(
           "site.change",
-          routes.WrongWithMovementController.loadWrongWithItem(request.userAnswers.ern, request.userAnswers.arc, idx, NormalMode).url,
+          routes.WrongWithItemController.loadWrongWithItem(request.userAnswers.ern, request.userAnswers.arc, idx, NormalMode).url,
           id = WrongWithItemPage(idx) + additionalLinkIdSignifier
         ).withVisuallyHiddenText(messages(s"${WrongWithItemPage(idx)}.checkYourAnswers.change.hidden"))
       )

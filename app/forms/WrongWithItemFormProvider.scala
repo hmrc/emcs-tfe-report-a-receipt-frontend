@@ -16,17 +16,29 @@
 
 package forms
 
-import javax.inject.Inject
 import forms.mappings.Mappings
+import models.WrongWithMovement
+import models.WrongWithMovement.{Excess, Shortage}
 import play.api.data.Form
 import play.api.data.Forms.set
-import models.WrongWithMovement
-import pages.QuestionPage
+import play.api.data.validation.{Constraint, Invalid, Valid}
 
-class WrongWithMovementFormProvider @Inject() extends Mappings {
+import javax.inject.Inject
+
+class WrongWithItemFormProvider @Inject() extends Mappings {
 
   def apply(): Form[Set[WrongWithMovement]] =
     Form(
-      "value" -> set(enumerable[WrongWithMovement](s"wrongWithMovement.error.required")).verifying(nonEmptySet(s"wrongWithMovement.error.required"))
+      "value" -> set(enumerable[WrongWithMovement](s"wrongWithItem.error.required"))
+        .verifying(nonEmptySet(s"wrongWithItem.error.required"))
+        .verifying(onlyShortageOrExcess())
     )
+
+  private def onlyShortageOrExcess(): Constraint[Set[WrongWithMovement]] =
+    Constraint {
+      case set if set.contains(Shortage) && set.contains(Excess) =>
+        Invalid("wrongWithItem.error.shortageOrExcessOnly")
+      case _ =>
+        Valid
+    }
 }

@@ -19,14 +19,17 @@ package fixtures.messages
 object WrongWithItemMessages {
 
   sealed trait ViewMessages { _: i18n =>
-    val title: String
-    val heading: String
+    val title: Int => String
+    val heading: Int => String
     val hint: String
     val moreOrLessThanExpected: String
+    val shortage: String
+    val excess: String
     val damaged: String
     val brokenSeals: String
     val other: String
     val requiredError: String
+    val shortageOrExcessOnlyError: String
     val checkYourAnswersLabel: String
     val checkYourAnswersMoreOrLess: String
     val checkYourAnswersDamaged: String
@@ -35,14 +38,17 @@ object WrongWithItemMessages {
     val hiddenChangeLinkText: String
   }
   object English extends ViewMessages with BaseEnglish {
-    override val heading = "What’s wrong with this item?"
-    override val title = title(heading)
+    override val heading: Int => String = i => s"What’s wrong with item $i?"
+    override val title: Int => String = i => title(heading(i))
     override val hint = "Select all that apply."
     override val moreOrLessThanExpected: String = "I received a shortage or excess"
-    override val damaged: String = "Items were damaged"
+    override val shortage: String = "Shortage"
+    override val excess: String = "Excess"
+    override val damaged: String = "Damaged goods"
     override val brokenSeals: String = "Broken seal(s)"
     override val other: String = "Other"
     override val requiredError: String = "Select what’s wrong with this item"
+    override val shortageOrExcessOnlyError: String = "Select either a shortage or an excess"
     override val checkYourAnswersLabel: String = "What was wrong"
     override val checkYourAnswersMoreOrLess: String = "Shortage"
     override val checkYourAnswersDamaged: String = "Damaged goods"
@@ -52,14 +58,17 @@ object WrongWithItemMessages {
   }
 
   object Welsh extends ViewMessages with BaseWelsh {
-    override val heading = "What’s wrong with this item?"
-    override val title = title(heading)
+    override val heading: Int => String = i => s"What’s wrong with item $i?"
+    override val title: Int => String = i => title(heading(i))
     override val hint = "Select all that apply."
     override val moreOrLessThanExpected: String = "I received a shortage or excess"
-    override val damaged: String = "Items were damaged"
+    override val shortage: String = "Shortage"
+    override val excess: String = "Excess"
+    override val damaged: String = "Damaged goods"
     override val brokenSeals: String = "Broken seal(s)"
     override val other: String = "Other"
     override val requiredError: String = "Select what’s wrong with this item"
+    override val shortageOrExcessOnlyError: String = "Select either a shortage or an excess"
     override val checkYourAnswersLabel: String = "What was wrong"
     override val checkYourAnswersMoreOrLess: String = "Shortage"
     override val checkYourAnswersDamaged: String = "Damaged goods"

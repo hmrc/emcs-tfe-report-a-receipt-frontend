@@ -40,12 +40,11 @@ class UserAllowListActionSpec extends SpecBase with MockFactory with MockUserAll
   implicit lazy val request = UserRequest(FakeRequest(), testErn, testInternalId, testCredId)
 
   lazy val errorHandler = app.injector.instanceOf[ErrorHandler]
-  override lazy val config = mock[AppConfig]
+  implicit lazy val config = mock[AppConfig]
 
   lazy val userAllowListAction = new UserAllowListActionImpl(
     userAllowListConnector = mockUserAllowListConnector,
-    errorHandler = errorHandler,
-    config = config
+    errorHandler = errorHandler
   )
 
   class Harness(enabled: Boolean, connectorResponse: Either[ErrorResponse, Boolean]) {

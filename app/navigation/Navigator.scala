@@ -53,7 +53,7 @@ class Navigator @Inject()() extends BaseNavigator {
       (userAnswers: UserAnswers) =>
         userAnswers.get(AcceptMovementPage) match {
           case Some(PartiallyRefused) => routes.RefusingAnyAmountOfItemController.onPageLoad(userAnswers.ern, userAnswers.arc, idx, NormalMode)
-          case _ => routes.WrongWithMovementController.loadWrongWithItem(userAnswers.ern, userAnswers.arc, idx, NormalMode)
+          case _ => routes.WrongWithItemController.loadWrongWithItem(userAnswers.ern, userAnswers.arc, idx, NormalMode)
         }
     case RefusingAnyAmountOfItemPage(idx) =>
       (userAnswers: UserAnswers) =>
@@ -61,10 +61,10 @@ class Navigator @Inject()() extends BaseNavigator {
           case Some(true) =>
             routes.RefusedAmountController.onPageLoad(userAnswers.ern, userAnswers.arc, idx, NormalMode)
           case _ =>
-            routes.WrongWithMovementController.loadWrongWithItem(userAnswers.ern, userAnswers.arc, idx, NormalMode)
+            routes.WrongWithItemController.loadWrongWithItem(userAnswers.ern, userAnswers.arc, idx, NormalMode)
         }
     case RefusedAmountPage(idx) =>
-      (userAnswers: UserAnswers) => routes.WrongWithMovementController.loadWrongWithItem(userAnswers.ern, userAnswers.arc, idx, NormalMode)
+      (userAnswers: UserAnswers) => routes.WrongWithItemController.loadWrongWithItem(userAnswers.ern, userAnswers.arc, idx, NormalMode)
     case WrongWithMovementPage =>
       (userAnswers: UserAnswers) => redirectToNextWrongMovementPage()(userAnswers)
     case wrongWithItemPage: WrongWithItemPage =>
@@ -202,8 +202,8 @@ class Navigator @Inject()() extends BaseNavigator {
                                                               lastOptionAnswered: Option[WrongWithMovement] = None)(implicit userAnswers: UserAnswers): Call =
     userAnswers.get(page) match {
       case Some(selectedOptions) =>
-        nextWrongWithMovementOptionToAnswer(selectedOptions, lastOptionAnswered, WrongWithMovement.individualItemValues) match {
-          case Some(ShortageOrExcess) =>
+        nextWrongWithMovementOptionToAnswer(selectedOptions, lastOptionAnswered) match {
+          case Some(ShortageOrExcess) | Some(Shortage) | Some(Excess) =>
             routes.ItemShortageOrExcessController.onPageLoad(userAnswers.ern, userAnswers.arc, page.idx, NormalMode)
           case Some(Damaged) =>
             routes.AddItemMoreInformationController.loadItemDamageInformation(userAnswers.ern, userAnswers.arc, page.idx, NormalMode)
@@ -215,13 +215,12 @@ class Navigator @Inject()() extends BaseNavigator {
             routes.CheckYourAnswersItemController.onPageLoad(userAnswers.ern, userAnswers.arc, page.idx)
         }
       case _ =>
-        routes.WrongWithMovementController.loadWrongWithItem(userAnswers.ern, userAnswers.arc, page.idx, NormalMode)
+        routes.WrongWithItemController.loadWrongWithItem(userAnswers.ern, userAnswers.arc, page.idx, NormalMode)
     }
 
   private[navigation] def nextWrongWithMovementOptionToAnswer(selectedOptions: Set[WrongWithMovement],
-                                                              lastOption: Option[WrongWithMovement] = None,
-                                                              checkboxOptions: Seq[WrongWithMovement] = WrongWithMovement.values): Option[WrongWithMovement] = {
-    val orderedSetOfOptions = checkboxOptions.filter(selectedOptions.contains)
+                                                              lastOption: Option[WrongWithMovement] = None): Option[WrongWithMovement] = {
+    val orderedSetOfOptions = WrongWithMovement.allValues.filter(selectedOptions.contains)
     lastOption match {
       case Some(value) if orderedSetOfOptions.lastOption.contains(value) =>
         None

@@ -66,6 +66,7 @@ class ItemShortageOrExcessControllerSpec extends SpecBase
   )
 
   lazy val itemShortageOrExcessRoute = routes.ItemShortageOrExcessController.onPageLoad(testErn, testArc, idx = 1, NormalMode).url
+  lazy val itemShortageOrExcessSubmitRoute = routes.ItemShortageOrExcessController.onSubmit(testErn, testArc, idx = 1, NormalMode).url
 
   "ItemShortageOrExcess Controller" - {
 
@@ -119,7 +120,7 @@ class ItemShortageOrExcessControllerSpec extends SpecBase
         )))
 
         val request =
-          FakeRequest(POST, itemShortageOrExcessRoute)
+          FakeRequest(POST, itemShortageOrExcessSubmitRoute)
             .withFormUrlEncodedBody(
               ("shortageOrExcess", Shortage.toString),
               ("amount", item1.quantity.toString()),
@@ -143,7 +144,7 @@ class ItemShortageOrExcessControllerSpec extends SpecBase
           )))
 
           val request =
-            FakeRequest(POST, itemShortageOrExcessRoute)
+            FakeRequest(POST, itemShortageOrExcessSubmitRoute)
               .withFormUrlEncodedBody(
                 ("shortageOrExcess", Shortage.toString),
                 ("amount", (item1.quantity - 0.001).toString()),
@@ -170,7 +171,7 @@ class ItemShortageOrExcessControllerSpec extends SpecBase
           )))
 
           val request =
-            FakeRequest(POST, itemShortageOrExcessRoute)
+            FakeRequest(POST, itemShortageOrExcessSubmitRoute)
               .withFormUrlEncodedBody(
                 ("shortageOrExcess", Shortage.toString),
                 ("amount", (item1.quantity - 0.001).toString()),
@@ -199,7 +200,7 @@ class ItemShortageOrExcessControllerSpec extends SpecBase
           )))
 
           val request =
-            FakeRequest(POST, itemShortageOrExcessRoute)
+            FakeRequest(POST, itemShortageOrExcessSubmitRoute)
               .withFormUrlEncodedBody(
                 ("shortageOrExcess", Shortage.toString),
                 ("amount", (item1.quantity - 1.001).toString()),
@@ -222,7 +223,7 @@ class ItemShortageOrExcessControllerSpec extends SpecBase
         )))
 
         val request =
-          FakeRequest(POST, itemShortageOrExcessRoute)
+          FakeRequest(POST, itemShortageOrExcessSubmitRoute)
             .withFormUrlEncodedBody(
               ("shortageOrExcess", Shortage.toString),
               ("amount", (item1.quantity + 0.001).toString()),
@@ -260,7 +261,7 @@ class ItemShortageOrExcessControllerSpec extends SpecBase
         )))
 
         val request =
-          FakeRequest(POST, itemShortageOrExcessRoute)
+          FakeRequest(POST, itemShortageOrExcessSubmitRoute)
             .withFormUrlEncodedBody(
               ("shortageOrExcess", Shortage.toString),
               ("amount", ((item1.quantity - refusedAmount) + 0.001).toString()),
@@ -295,7 +296,7 @@ class ItemShortageOrExcessControllerSpec extends SpecBase
         )))
 
         val request =
-          FakeRequest(POST, itemShortageOrExcessRoute)
+          FakeRequest(POST, itemShortageOrExcessSubmitRoute)
             .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form.bind(Map("value" -> ""))
@@ -325,7 +326,7 @@ class ItemShortageOrExcessControllerSpec extends SpecBase
       running(application) {
 
         val request =
-          FakeRequest(POST, itemShortageOrExcessRoute)
+          FakeRequest(POST, itemShortageOrExcessSubmitRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value

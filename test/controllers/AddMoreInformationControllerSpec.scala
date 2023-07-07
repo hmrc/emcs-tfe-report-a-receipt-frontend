@@ -22,7 +22,6 @@ import mocks.services.MockUserAnswersService
 import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import pages.unsatisfactory._
-import pages.unsatisfactory.individualItems.{AddItemSealsInformationPage, ItemSealsInformationPage}
 import pages.{AddMoreInformationPage, MoreInformationPage}
 import play.api.inject.bind
 import play.api.mvc.Call
@@ -44,8 +43,6 @@ class AddMoreInformationControllerSpec extends SpecBase with MockUserAnswersServ
       .build()
     lazy val view = application.injector.instanceOf[AddMoreInformationView]
   }
-
-  private val idx = 1
 
   def onwardRoute = Call("GET", "/foo")
 

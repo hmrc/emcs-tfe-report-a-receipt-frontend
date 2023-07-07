@@ -44,9 +44,10 @@ class ConfirmationController @Inject()(
     authorisedDataRequestWithCachedMovement(ern, arc) { implicit request =>
       request.userAnswers.get(ConfirmationPage) match {
         case Some(confirmationDetails: ConfirmationDetails) =>
+          logger.info(s"[onPageLoad] Successful Report Receipt flow completed with AcceptMovement status: [${confirmationDetails.receiptStatus}]")
           Ok(view(confirmationDetails))
         case None =>
-          logger.warn("[onPageLoad] Could not retrieve submission receipt reference from Users session")
+          logger.warn("[onPageLoad] Could not retrieve submission receipt reference from User session")
           BadRequest(errorHandler.badRequestTemplate)
       }
     }

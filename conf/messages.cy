@@ -55,7 +55,6 @@ timeout.timedOut.title = For your security we signed you out
 timeout.timedOut.heading = For your security we signed you out
 timeout.timedOut.p1 = We have saved your answers.
 
-
 error.browser.title.prefix = Error:
 error.boolean = Please give an answer
 error.invalid_date = Give a correct date
@@ -88,6 +87,9 @@ journeyRecovery.p3.signOutLink = sign out
 signedOut.title = For your security, we signed you out
 signedOut.heading = For your security, we signed you out
 signedOut.guidance = We did not save your answers.
+
+unauthorised.title = You can’t access this service with this account
+unauthorised.heading = You can’t access this service with this account
 
 arc.subHeading = Report of receipt for {0}
 
@@ -369,12 +371,15 @@ itemShortageOrExcess.heading = Tell us about the shortage or excess
 itemShortageOrExcess.shortageOrExcess.label = Shortage or excess
 itemShortageOrExcess.shortageOrExcess.excess = Excess
 itemShortageOrExcess.shortageOrExcess.shortage = Shortage
-itemShortageOrExcess.shortageOrExcess.error.required = Select if you want to tell us about a shortage or an excess
+itemShortageOrExcess.shortageOrExcess.error.required = Select if there is a shortage or excess
 itemShortageOrExcess.amount.label = Amount of shortage or excess, in {0}
-itemShortageOrExcess.amount.error.required = Enter the amount
-itemShortageOrExcess.amount.error.maxLength = The amount must be 15 numbers or less
-itemShortageOrExcess.amount.error.regex = The amount must be a number, like 150 or 12.694
-itemShortageOrExcess.amount.error.tooLarge = The amount must be {0} or fewer
+itemShortageOrExcess.amount.error.required = Enter the amount of shortage or excess
+itemShortageOrExcess.amount.error.maxLength = The amount of shortage or excess must be 15 numbers or less
+itemShortageOrExcess.amount.error.isNotNumeric = The amount of shortage or excess must be a number, like 150 or 12.694
+itemShortageOrExcess.amount.error.notGreaterThanZero = The amount of shortage or excess must be more than 0
+itemShortageOrExcess.amount.error.threeDecimalPlaces = The amount of shortage or excess must have 3 decimals or less
+itemShortageOrExcess.amount.error.shortageExceedsTotal = The amount of shortage must be {0}{1} or less
+itemShortageOrExcess.amount.error.shortageExceedsRemainder = You have refused {0}{1} of this item. The amount of shortage cannot be more than {2}{1}
 itemShortageOrExcess.additionalInfo.label = Give more information about the shortage or excess (optional)
 itemShortageOrExcess.additionalInfo.error.invalidCharacter = Information must not include < and > and : and ;
 itemShortageOrExcess.additionalInfo.error.character = Information must contain letters or numbers
@@ -457,6 +462,7 @@ addedItems.heading.singular = You have given information for 1 item
 addedItems.heading.plural = You have given information for {0} items
 addedItems.addAnother = Do you want to add another item?
 addedItems.error.required = Select yes if you want to give information about another item
+addedItems.error.atLeastOneItem = You must refuse an amount of at least one item before you can continue
 
 refusingAnyAmountOfItem.title = Are you refusing any amount of item {0}?
 refusingAnyAmountOfItem.heading = Are you refusing any amount of item {0}?
@@ -470,10 +476,12 @@ removeItem.error.required = Select yes if you want to remove this item
 refusedAmount.title = How many {0} of item {1} are you refusing?
 refusedAmount.heading = How many {0} of item {1} are you refusing?
 refusedAmount.hint = For example, 150 or 12.694.
-refusedAmount.error.nonNumeric = The amount you are refusing must be a number, like 150 or 12.694
 refusedAmount.error.required = Enter the amount you are refusing
-refusedAmount.error.tooLarge = The amount you are refusing must be {0} or fewer
 refusedAmount.error.maxLength = The amount you are refusing must be {0} characters or less
+refusedAmount.error.isNotNumeric = The amount you are refusing must be a number, like 150 or 12.694
+refusedAmount.error.notGreaterThanZero = The amount you are refusing must be more than 0
+refusedAmount.error.valueTooLarge = The amount you are refusing must be {0} or less
+refusedAmount.error.threeDecimalPlaces = The amount you are refusing must have 3 decimals or less
 
 continueDraft.title = Do you want to continue with this draft report of receipt?
 continueDraft.heading = Do you want to continue with this draft report of receipt?

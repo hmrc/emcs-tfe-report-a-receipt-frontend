@@ -142,7 +142,7 @@ class ItemShortageOrExcessFormProviderSpec extends BooleanFieldBehaviours {
         val result = form.bind(data)
 
         result.errors mustBe Seq(
-          FormError("amount", "itemShortageOrExcess.amount.error.regex", Seq(NUMERIC_15_3DP_REGEX))
+          FormError("amount", "itemShortageOrExcess.amount.error.threeDecimalPlaces", Seq(NUMERIC_15_3DP_REGEX))
         )
       }
 
@@ -172,7 +172,22 @@ class ItemShortageOrExcessFormProviderSpec extends BooleanFieldBehaviours {
         val result = form.bind(data)
 
         result.errors mustBe Seq(
-          FormError("amount", "itemShortageOrExcess.amount.error.regex", Seq(NUMERIC_15_3DP_REGEX))
+          FormError("amount", "itemShortageOrExcess.amount.error.isNotNumeric", Seq(NUMERIC_REGEX))
+        )
+      }
+
+      "when amount is zero" in {
+
+        val data = Map(
+          s"shortageOrExcess" -> Shortage.toString,
+          s"amount" -> "0",
+          s"additionalInfo" -> "info"
+        )
+
+        val result = form.bind(data)
+
+        result.errors mustBe Seq(
+          FormError("amount", "itemShortageOrExcess.amount.error.notGreaterThanZero", Seq(MIN_VALUE_0.toString))
         )
       }
     }

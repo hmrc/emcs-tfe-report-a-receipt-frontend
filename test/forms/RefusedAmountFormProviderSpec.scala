@@ -45,7 +45,7 @@ class RefusedAmountFormProviderSpec extends IntFieldBehaviours with GuiceOneAppP
       val boundForm = form.bind(Map(fieldName -> (itemQuantity + 0.001).toString))
 
       boundForm.errors mustBe Seq(
-        FormError(fieldName, "refusedAmount.error.tooLarge", Seq(itemQuantity))
+        FormError(fieldName, "refusedAmount.error.valueTooLarge", Seq(itemQuantity))
       )
     }
 
@@ -57,7 +57,7 @@ class RefusedAmountFormProviderSpec extends IntFieldBehaviours with GuiceOneAppP
       val boundForm = form.bind(Map(fieldName -> itemQuantity.toString))
 
       boundForm.errors mustBe Seq(
-        FormError(fieldName, "refusedAmount.error.tooLarge", Seq(itemQuantity - shortageAmount))
+        FormError(fieldName, "refusedAmount.error.valueTooLarge", Seq(itemQuantity - shortageAmount))
       )
     }
 
@@ -75,7 +75,25 @@ class RefusedAmountFormProviderSpec extends IntFieldBehaviours with GuiceOneAppP
       val boundForm = form.bind(Map(fieldName -> "a"))
 
       boundForm.errors mustBe Seq(
-        FormError(fieldName, "refusedAmount.error.nonNumeric", Seq(NUMERIC_15_3DP_REGEX))
+        FormError(fieldName, "refusedAmount.error.isNotNumeric", Seq(NUMERIC_REGEX))
+      )
+    }
+
+    "must return three decimal places error when the amount has more than three decimal places" in {
+
+      val boundForm = form.bind(Map(fieldName -> "123456789.1234"))
+
+      boundForm.errors mustBe Seq(
+        FormError(fieldName, "refusedAmount.error.threeDecimalPlaces", Seq(NUMERIC_15_3DP_REGEX))
+      )
+    }
+
+    "must return non zero value error when the amount is zero" in {
+
+      val boundForm = form.bind(Map(fieldName -> "0"))
+
+      boundForm.errors mustBe Seq(
+        FormError(fieldName, "refusedAmount.error.notGreaterThanZero", Seq(MIN_VALUE_0.toString))
       )
     }
 
@@ -145,11 +163,19 @@ class RefusedAmountFormProviderSpec extends IntFieldBehaviours with GuiceOneAppP
         }
 
         "have the correct error message when value exceeds quantity" in {
-          messages(s"refusedAmount.error.tooLarge", 123.123) mustBe messagesForLanguage.tooLarge(123.123)
+          messages(s"refusedAmount.error.valueTooLarge", 123.123) mustBe messagesForLanguage.tooLarge(123.123)
         }
 
         "have the correct error message when value is not a numeric" in {
-          messages(s"refusedAmount.error.nonNumeric") mustBe messagesForLanguage.nonNumeric
+          messages(s"refusedAmount.error.isNotNumeric") mustBe messagesForLanguage.nonNumeric
+        }
+
+        "have the correct error message when value is zero" in {
+          messages(s"refusedAmount.error.notGreaterThanZero", 0) mustBe messagesForLanguage.notGreaterThanZero
+        }
+
+        "have the correct error message when value has more than three decimal places" in {
+          messages(s"refusedAmount.error.threeDecimalPlaces") mustBe messagesForLanguage.threeDecimalPlaces
         }
 
         "have the correct error message when value exceeds the max length" in {

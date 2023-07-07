@@ -44,6 +44,19 @@ trait Constraints {
         }
     }
 
+  protected def greaterThanValue[A](value: A, errorKey: String)(implicit ev: Ordering[A]): Constraint[A] =
+    Constraint {
+      input =>
+
+        import ev._
+
+        if (input > value) {
+          Valid
+        } else {
+          Invalid(errorKey, value)
+        }
+    }
+
   protected def maximumValue[A](maximum: A, errorKey: String)(implicit ev: Ordering[A]): Constraint[A] =
     Constraint {
       input =>

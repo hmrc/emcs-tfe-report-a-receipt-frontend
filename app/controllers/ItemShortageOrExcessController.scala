@@ -36,19 +36,18 @@ import views.html.ItemShortageOrExcessView
 import javax.inject.Inject
 import scala.concurrent.Future
 
-class ItemShortageOrExcessController @Inject()(
-                                                override val messagesApi: MessagesApi,
-                                                override val userAnswersService: UserAnswersService,
-                                                override val navigator: Navigator,
-                                                override val auth: AuthAction,
-                                                override val userAllowList: UserAllowListAction,
-                                                override val withMovement: MovementAction,
-                                                override val getData: DataRetrievalAction,
-                                                override val requireData: DataRequiredAction,
-                                                formProvider: ItemShortageOrExcessFormProvider,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                view: ItemShortageOrExcessView,
-                                                getCnCodeInformationService: GetCnCodeInformationService
+class ItemShortageOrExcessController @Inject()(override val messagesApi: MessagesApi,
+                                               override val userAnswersService: UserAnswersService,
+                                               override val navigator: Navigator,
+                                               override val auth: AuthAction,
+                                               override val userAllowList: UserAllowListAction,
+                                               override val withMovement: MovementAction,
+                                               override val getData: DataRetrievalAction,
+                                               override val requireData: DataRequiredAction,
+                                               formProvider: ItemShortageOrExcessFormProvider,
+                                               val controllerComponents: MessagesControllerComponents,
+                                               view: ItemShortageOrExcessView,
+                                               getCnCodeInformationService: GetCnCodeInformationService
                                               ) extends BaseNavigationController with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
@@ -68,16 +67,41 @@ class ItemShortageOrExcessController @Inject()(
         getCnCodeInformationService.getCnCodeInformationWithMovementItems(Seq(item)).flatMap {
           serviceResult =>
             val unitOfMeasure = serviceResult.head._2.unitOfMeasureCode.toUnitOfMeasure
+            val isPartiallyRefusingAnAmountOfItem = request.userAnswers.get(RefusingAnyAmountOfItemPage(idx)).contains(true) &&
+              request.userAnswers.get(AcceptMovementPage).contains(PartiallyRefused)
+            val refusalAmount = request.userAnswers.get(RefusedAmountPage(idx)).getOrElse(BigDecimal(0))
+
             submitAndTrimWhitespaceFromTextarea(Some(ItemShortageOrExcessPage(idx)), formProvider)(
               formWithErrors =>
                 Future.successful(BadRequest(renderView(formWithErrors, ern, arc, idx, mode, unitOfMeasure)))
             ) {
-              case value if (value.wrongWithItem == Shortage) && (value.amount > maxAmount(idx, item)) =>
-                val formWithError =
-                  formProvider()
+              case value if (value.wrongWithItem == Shortage) && (value.amount > maxAmount(idx, item, isPartiallyRefusingAnAmountOfItem)) =>
+                if (isPartiallyRefusingAnAmountOfItem) {
+                  val formWithError = formProvider()
                     .fill(value)
-                    .withError(FormError("amount", "itemShortageOrExcess.amount.error.tooLarge", Seq(maxAmount(idx, item))))
-                Future.successful(BadRequest(renderView(formWithError, ern, arc, idx, mode, unitOfMeasure)))
+                    .withError(FormError(
+                      key = "amount",
+                      message = "itemShortageOrExcess.amount.error.shortageExceedsRemainder",
+                      args = Seq(
+                        refusalAmount,
+                        request2Messages.messages(s"unitOfMeasure.$unitOfMeasure.short"),
+                        maxAmount(idx, item, isPartiallyRefusingAnAmountOfItem)
+                      )
+                    ))
+                  Future.successful(BadRequest(renderView(formWithError, ern, arc, idx, mode, unitOfMeasure)))
+                } else {
+                  val formWithError = formProvider()
+                    .fill(value)
+                    .withError(FormError(
+                      key = "amount",
+                      message = "itemShortageOrExcess.amount.error.shortageExceedsTotal",
+                      args = Seq(
+                        maxAmount(idx, item, isPartiallyRefusingAnAmountOfItem),
+                        request2Messages.messages(s"unitOfMeasure.$unitOfMeasure.short"),
+                      )
+                    ))
+                  Future.successful(BadRequest(renderView(formWithError, ern, arc, idx, mode, unitOfMeasure)))
+                }
               case value =>
                 saveAndRedirect(ItemShortageOrExcessPage(idx), value, mode)
             }
@@ -85,17 +109,12 @@ class ItemShortageOrExcessController @Inject()(
       }
     }
 
-  private def maxAmount(idx: Int, item: MovementItem)(implicit request: DataRequest[_]) = {
-
-    val isPartiallyRefusingAnAmountOfItem =
-      request.userAnswers.get(RefusingAnyAmountOfItemPage(idx)).contains(true) && request.userAnswers.get(AcceptMovementPage).contains(PartiallyRefused)
-
+  private def maxAmount(idx: Int, item: MovementItem, isPartiallyRefusingAnAmountOfItem: Boolean)(implicit request: DataRequest[_]): BigDecimal =
     if (isPartiallyRefusingAnAmountOfItem) {
-      item.quantity - request.userAnswers.get(RefusedAmountPage(idx)).getOrElse[BigDecimal](0)
+      item.quantity - request.userAnswers.get(RefusedAmountPage(idx)).getOrElse(BigDecimal(0))
     } else {
       item.quantity
     }
-  }
 
   private def renderView(form: Form[ItemShortageOrExcessModel], ern: String, arc: String, idx: Int, mode: Mode, unitOfMeasure: UnitOfMeasure)
                         (implicit request: DataRequest[_]): HtmlFormat.Appendable =

@@ -28,11 +28,15 @@ class RefusedAmountFormProvider @Inject() extends Mappings {
         text("refusedAmount.error.required")
           .verifying(
             firstError(
+              regexp(NUMERIC_REGEX, "refusedAmount.error.isNotNumeric"),
+              greaterThanValue(MIN_VALUE_0.toString, "refusedAmount.error.notGreaterThanZero"),
               decimalMaxLength(MAX_LENGTH_15, "refusedAmount.error.maxLength"),
-              regexp(NUMERIC_15_3DP_REGEX, "refusedAmount.error.nonNumeric")
+              regexp(NUMERIC_15_3DP_REGEX, "refusedAmount.error.threeDecimalPlaces")
             )
           )
           .transform[BigDecimal](BigDecimal(_), _.toString())
-          .verifying(decimalMaxAmount(itemQuantity - shortageAmount.getOrElse(0), "refusedAmount.error.tooLarge"))
+          .verifying(
+            decimalMaxAmount(itemQuantity - shortageAmount.getOrElse(0), "refusedAmount.error.valueTooLarge")
+          )
     )
 }

@@ -38,8 +38,10 @@ class ItemShortageOrExcessFormProvider @Inject() extends BaseFormProvider[ItemSh
         text("itemShortageOrExcess.amount.error.required")
           .verifying(
             firstError(
+              regexp(NUMERIC_REGEX, "itemShortageOrExcess.amount.error.isNotNumeric"),
+              greaterThanValue(MIN_VALUE_0.toString, "itemShortageOrExcess.amount.error.notGreaterThanZero"),
               decimalMaxLength(MAX_LENGTH_15, "itemShortageOrExcess.amount.error.maxLength"),
-              regexp(NUMERIC_15_3DP_REGEX, "itemShortageOrExcess.amount.error.regex")
+              regexp(NUMERIC_15_3DP_REGEX, "itemShortageOrExcess.amount.error.threeDecimalPlaces")
             )
           ).transform[BigDecimal](BigDecimal(_), _.toString()),
       "additionalInfo" ->

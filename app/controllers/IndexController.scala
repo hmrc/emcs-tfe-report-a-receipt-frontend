@@ -38,6 +38,11 @@ class IndexController @Inject()(override val messagesApi: MessagesApi,
                                 formProvider: ContinueDraftFormProvider,
                                 view: ContinueDraftView) extends BaseController {
 
+  def onPageLoadLegacy(ern: String, arc: String): Action[AnyContent] =
+    Action {
+      Redirect(routes.IndexController.onPageLoad(ern, arc))
+    }
+
   def onPageLoad(ern: String, arc: String): Action[AnyContent] =
     (authAction(ern, arc) andThen withMovement.fromCache(arc) andThen getData).async { implicit request =>
       request.userAnswers match {

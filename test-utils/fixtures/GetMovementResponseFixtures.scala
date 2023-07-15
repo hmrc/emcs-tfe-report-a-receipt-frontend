@@ -107,7 +107,6 @@ trait GetMovementResponseFixtures { _: BaseFixtures =>
     deliveryPlaceTrader = None,
     localReferenceNumber = "MyLrn",
     eadStatus = "MyEadStatus",
-    consignorName = "MyConsignor",
     dateOfDispatch = LocalDate.parse("2010-03-04"),
     journeyTime = "MyJourneyTime",
     items = Seq(item1, item2),

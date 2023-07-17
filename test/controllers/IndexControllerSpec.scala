@@ -135,5 +135,17 @@ class IndexControllerSpec extends SpecBase with MockUserAnswersService {
         }
       }
     }
+
+    ".onPageLoadLegacy()" - {
+      "must redirect to .onPageLoad()" in new Fixture() {
+        running(application) {
+          val request = FakeRequest(GET, routes.IndexController.onPageLoadLegacy(testErn, testArc).url)
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result) mustBe Some(routes.IndexController.onPageLoad(testErn, testArc).url)
+        }
+      }
+    }
   }
 }

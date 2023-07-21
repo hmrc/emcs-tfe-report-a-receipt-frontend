@@ -17,39 +17,36 @@
 package services
 
 import base.SpecBase
-import config.AppConfig
-import org.mockito.Mockito.mock
+import models.audit.AuditModel
+import org.mockito.ArgumentMatchers.{any, eq => eqm}
+import org.mockito.Mockito.{mock, verify}
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import models.audit.AuditModel
 
 import scala.concurrent.ExecutionContext
 
-class AuditServiceSpec extends SpecBase  {
+class AuditServiceSpec extends SpecBase {
 
   implicit val hc = HeaderCarrier()
   implicit val ec: ExecutionContext = ExecutionContext.global
 
+  val auditConnector: AuditConnector = mock(classOf[AuditConnector])
+  val auditingService = new AuditingService(auditConnector)
+
   "The AuditService should" - {
 
-    val appConfig: AppConfig  = mock(classOf[AppConfig])
-    val auditConnector: AuditConnector = mock(classOf[AuditConnector])
+    "audit an explicit event" in {
 
-    val obj = new AuditingService(appConfig, auditConnector)
-    val auditModel = new AuditModel {
-      override val transactionName: String = "transactionName"
-      override val detail: JsValue = Json.obj("detail" -> "detail")
-      override val auditType: String = "auditType"
+      val auditModel = new AuditModel {
+        override val auditType: String = "submitSomething"
+        override val detail: JsValue = Json.obj("detail" -> "some details")
+      }
+
+      auditingService.audit(auditModel)
+
+      verify(auditConnector).sendExplicitAudit(eqm(auditModel.auditType), eqm(auditModel.detail))(any(), any(), any())
     }
-
-    s"return ExtendedDataEvent" in {
-      val result = obj.toExtendedDataEvent("appName", auditModel)
-
-      result.auditSource mustBe "appName"
-      result.auditType mustBe "auditType"
-    }
-
   }
 
 }

@@ -16,36 +16,18 @@
 
 package services
 
-import config.AppConfig
 import models.audit.AuditModel
-import play.api.libs.json.{JsObject, JsValue, Json}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.audit.AuditExtensions
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class AuditingService @Inject()(config: AppConfig, auditConnector: AuditConnector)(implicit ec: ExecutionContext) {
+class AuditingService @Inject()(auditConnector: AuditConnector)(implicit ec: ExecutionContext) {
 
   def audit(auditModel: AuditModel)(implicit hc: HeaderCarrier): Unit = {
-    val dataEvent = toExtendedDataEvent(config.appName, auditModel)
-    auditConnector.sendExtendedEvent(dataEvent)
-  }
-
-  def toExtendedDataEvent(appName: String, auditModel: AuditModel)(implicit hc: HeaderCarrier): ExtendedDataEvent = {
-
-    val details: JsValue =
-      Json.toJson(AuditExtensions.auditHeaderCarrier(hc).toAuditDetails()).as[JsObject].deepMerge(auditModel.detail.as[JsObject])
-
-    ExtendedDataEvent(
-      auditSource = appName,
-      auditType = auditModel.auditType,
-      tags = AuditExtensions.auditHeaderCarrier(hc).toAuditTags(auditModel.transactionName),
-      detail = details
-    )
+    auditConnector.sendExplicitAudit(auditModel.auditType, auditModel.detail)
   }
 
 }

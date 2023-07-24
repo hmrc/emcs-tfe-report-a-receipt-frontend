@@ -26,8 +26,6 @@ case class SubmitReportOfReceiptAuditModel(credentialId: String,
                                            submission: SubmitReportOfReceiptModel,
                                            ern: String) extends AuditModel {
 
-  override val transactionName: String = "submit-report-of-receipt"
-
   val movement = if(submission.acceptMovement.toString == "satisfactory") "accepted" else submission.acceptMovement.toString
 
   val individualItemsJsonBlock =

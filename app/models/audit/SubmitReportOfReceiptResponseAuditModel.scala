@@ -25,8 +25,6 @@ case class SubmitReportOfReceiptResponseAuditModel(credentialId: String,
                                                    traderId: String,
                                                    receipt: String) extends AuditModel {
 
-  override val transactionName: String = "report-of-receipt-response"
-
   override val auditType: String = "ReportOfReceiptResponse"
 
   override val detail: JsValue = Json.obj(

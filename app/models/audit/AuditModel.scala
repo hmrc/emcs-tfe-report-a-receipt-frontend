@@ -19,7 +19,6 @@ package models.audit
 import play.api.libs.json.JsValue
 
 trait AuditModel {
-  val transactionName: String
   val detail: JsValue
   val auditType: String
 }

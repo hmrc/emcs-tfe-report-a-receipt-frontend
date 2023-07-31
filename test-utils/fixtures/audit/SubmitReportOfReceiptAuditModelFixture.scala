@@ -39,13 +39,13 @@ object SubmitReportOfReceiptAuditModelFixture {
         sequenceNumber = 1,
         destinationType = DirectDelivery,
         consigneeTrader = Some(TraderModel(
-          traderId = Some("id"),
+          traderExciseNumber = Some("id"),
           traderName = Some("name"),
           address = Some(AddressModel(Some("number"), Some("street"), Some("postcode"),Some("city"))),
           eoriNumber = Some("eori")
         )),
         deliveryPlaceTrader = Some(TraderModel(
-          traderId = Some("id"),
+          traderExciseNumber = Some("id"),
           traderName = Some("name"),
           address = Some(AddressModel(Some("number"), Some("street"), Some("postcode"),Some("city"))),
           eoriNumber = None
@@ -69,13 +69,13 @@ object SubmitReportOfReceiptAuditModelFixture {
         sequenceNumber = 1,
         destinationType = DirectDelivery,
         consigneeTrader = Some(TraderModel(
-          traderId = Some("id"),
+          traderExciseNumber = Some("id"),
           traderName = Some("name"),
           address = Some(AddressModel(Some("number"), Some("street"), Some("postcode"),Some("city"))),
           eoriNumber = Some("eori")
         )),
         deliveryPlaceTrader = Some(TraderModel(
-          traderId = Some("id"),
+          traderExciseNumber = Some("id"),
           traderName = Some("name"),
           address = Some(AddressModel(Some("number"), Some("street"), Some("postcode"),Some("city"))),
           eoriNumber = None
@@ -129,13 +129,13 @@ object SubmitReportOfReceiptAuditModelFixture {
       sequenceNumber = 1,
         destinationType = DirectDelivery,
       consigneeTrader = Some(TraderModel(
-        traderId = Some("id"),
+        traderExciseNumber = Some("id"),
         traderName = Some("name"),
         address = Some(AddressModel(Some("number"), Some("street"), Some("postcode"),Some("city"))),
         eoriNumber = Some("eori")
       )),
       deliveryPlaceTrader = Some(TraderModel(
-        traderId = Some("id"),
+        traderExciseNumber = Some("id"),
         traderName = Some("name"),
         address = Some(AddressModel(Some("number"), Some("street"), Some("postcode"),Some("city"))),
         eoriNumber = None
@@ -189,13 +189,13 @@ object SubmitReportOfReceiptAuditModelFixture {
         sequenceNumber = 1,
         destinationType = DirectDelivery,
         consigneeTrader = Some(TraderModel(
-          traderId = Some("id"),
+          traderExciseNumber = Some("id"),
           traderName = Some("name"),
           address = Some(AddressModel(Some("number"), Some("street"), Some("postcode"),Some("city"))),
           eoriNumber = Some("eori")
         )),
         deliveryPlaceTrader = Some(TraderModel(
-          traderId = Some("id"),
+          traderExciseNumber = Some("id"),
           traderName = Some("name"),
           address = Some(AddressModel(Some("number"), Some("street"), Some("postcode"),Some("city"))),
           eoriNumber = None

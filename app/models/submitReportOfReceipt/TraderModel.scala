@@ -16,13 +16,23 @@
 
 package models.submitReportOfReceipt
 
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.Json.JsValueWrapper
+import play.api.libs.json.{Format, Json, Writes}
 
-case class TraderModel(traderId: Option[String],
+case class TraderModel(traderExciseNumber: Option[String],
                        traderName: Option[String],
                        address: Option[AddressModel],
                        eoriNumber: Option[String])
 
 object TraderModel {
   implicit val fmt: Format[TraderModel] = Json.format
+
+  val auditWrites = Writes[TraderModel] { model =>
+    Json.obj(Seq[Option[(String, JsValueWrapper)]](
+      model.traderExciseNumber.map("traderId" -> _),
+      model.traderName.map("traderName" -> _),
+      model.address.map("address" -> _),
+      model.eoriNumber.map("eoriNumber" -> _)
+    ).flatten:_*)
+  }
 }

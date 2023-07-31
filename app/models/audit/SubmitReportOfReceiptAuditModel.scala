@@ -16,7 +16,7 @@
 
 package models.audit
 
-import models.submitReportOfReceipt.SubmitReportOfReceiptModel
+import models.submitReportOfReceipt.{SubmitReportOfReceiptModel, TraderModel}
 import play.api.libs.json.{JsValue, Json}
 
 
@@ -39,8 +39,10 @@ case class SubmitReportOfReceiptAuditModel(credentialId: String,
       "ern" -> ern,
       "arc" -> submission.arc,
       "sequenceNumber" -> submission.sequenceNumber,
-    ) ++ submission.consigneeTrader.fold(Json.obj())(traderDetail => Json.obj("consigneeTrader"  -> traderDetail)) ++
-      submission.deliveryPlaceTrader.fold(Json.obj())(traderDetail => Json.obj("deliveryPlaceTrader"  -> traderDetail)) ++
+    ) ++ submission.consigneeTrader.fold(Json.obj())(traderDetail =>
+      Json.obj("consigneeTrader"  -> Json.toJson(traderDetail)(TraderModel.auditWrites))) ++
+      submission.deliveryPlaceTrader.fold(Json.obj())(traderDetail =>
+        Json.obj("deliveryPlaceTrader"  -> Json.toJson(traderDetail)(TraderModel.auditWrites))) ++
       Json.obj(
         "destinationOffice" -> submission.destinationOffice,
         "dateOfArrival" -> submission.dateOfArrival.toString,

@@ -64,7 +64,7 @@ class ItemDetailsCardHelperSpec extends SpecBase {
               )),
               Seq(summaryListRowBuilder(
                 Text(langMessages.descriptionKey),
-                Text(cnCodeInformation.exciseProductCodeDescription)
+                HtmlContent(cnCodeInformation.exciseProductCodeDescription)
               )),
               Seq(summaryListRowBuilder(
                 Text(langMessages.quantityKey),

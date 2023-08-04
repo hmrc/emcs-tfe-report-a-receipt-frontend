@@ -242,7 +242,7 @@ class ItemDetailsCardHelper @Inject()(link: link, list: list, appConfig: AppConf
   private def descriptionRow()(implicit cnCodeInformation: CnCodeInformation, messages: Messages) =
     Some(summaryListRowBuilder(
       Text(messages("itemDetails.key.description")),
-      Text(cnCodeInformation.exciseProductCodeDescription)
+      HtmlContent(cnCodeInformation.exciseProductCodeDescription)
     ))
 
   private def commodityCodeRow()(implicit item: MovementItem, messages: Messages) =

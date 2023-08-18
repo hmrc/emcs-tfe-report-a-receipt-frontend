@@ -129,7 +129,7 @@ class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi
                                                 response: SubmitReportOfReceiptResponse)
                                                (implicit hc: HeaderCarrier, request: DataRequest[_]): Future[UserAnswers] = {
     userAnswersService.set(
-      UserAnswers(internalId,
+      UserAnswers(
         ern,
         arc,
         data = Json.obj(ConfirmationPage.toString ->

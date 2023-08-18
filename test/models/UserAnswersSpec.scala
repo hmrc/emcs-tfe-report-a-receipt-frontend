@@ -531,7 +531,7 @@ class UserAnswersSpec extends SpecBase {
     }
 
     "when calling .filterForPages" - {
-      val baseUserAnswers = UserAnswers(internalId = "my id", ern = "my ern", arc = "my arc")
+      val baseUserAnswers = UserAnswers(ern = "my ern", arc = "my arc")
       "must only return pages in the supplied Seq" in {
         val existingUserAnswers = baseUserAnswers
           .set(DateOfArrivalPage, LocalDate.MIN)

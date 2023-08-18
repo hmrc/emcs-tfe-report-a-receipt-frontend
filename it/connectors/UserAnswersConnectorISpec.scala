@@ -36,7 +36,6 @@ class UserAnswersConnectorISpec  extends AnyFreeSpec
   val testArc: String = "arc"
 
   val emptyUserAnswers: UserAnswers = UserAnswers(
-    internalId = "internalId",
     ern = testErn,
     arc = testArc,
     lastUpdated = Instant.now().truncatedTo(ChronoUnit.MILLIS)

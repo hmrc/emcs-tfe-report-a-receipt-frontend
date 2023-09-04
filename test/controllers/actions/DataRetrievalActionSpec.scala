@@ -19,13 +19,12 @@ package controllers.actions
 import base.SpecBase
 import mocks.services.MockUserAnswersService
 import models.requests.{MovementRequest, OptionalDataRequest, UserRequest}
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DataRetrievalActionSpec extends SpecBase with MockitoSugar with MockUserAnswersService {
+class DataRetrievalActionSpec extends SpecBase with MockUserAnswersService {
 
   lazy val dataRetrievalAction = new DataRetrievalActionImpl(mockUserAnswersService) {
     def callTransform[A](request: MovementRequest[A]): Future[OptionalDataRequest[A]] = transform(request)

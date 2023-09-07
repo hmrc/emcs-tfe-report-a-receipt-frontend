@@ -22,7 +22,6 @@ import mocks.connectors.MockGetMovementConnector
 import models.requests.{MovementRequest, UserRequest}
 import models.response.emcsTfe.GetMovementResponse
 import models.response.{ErrorResponse, JsonValidationError}
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.Results.Ok
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -31,7 +30,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class MovementActionSpec extends SpecBase with MockitoSugar with MockGetMovementConnector {
+class MovementActionSpec extends SpecBase with MockGetMovementConnector {
 
   lazy val app = applicationBuilder(userAnswers = None).build()
   implicit val hc = HeaderCarrier()

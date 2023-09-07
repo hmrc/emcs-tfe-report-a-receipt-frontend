@@ -10,7 +10,6 @@ import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{EitherValues, OptionValues}
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, NOT_FOUND, OK}
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -27,7 +26,6 @@ class GetMovementConnectorISpec  extends AnyFreeSpec
   with IntegrationPatience
   with EitherValues
   with OptionValues
-  with MockitoSugar
   with ModelGenerators
   with BaseFixtures
   with GetMovementResponseFixtures {

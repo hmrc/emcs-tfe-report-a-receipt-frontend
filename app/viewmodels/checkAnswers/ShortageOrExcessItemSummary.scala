@@ -17,9 +17,9 @@
 package viewmodels.checkAnswers
 
 import controllers.routes
-import models.WrongWithMovement.ShortageOrExcess
+import models.WrongWithMovement.{Excess, Shortage, ShortageOrExcess}
 import models.requests.DataRequest
-import models.{CheckMode, ReviewMode, UnitOfMeasure}
+import models.{CheckMode, ReviewMode, UnitOfMeasure, WrongWithMovement}
 import pages.unsatisfactory.individualItems.{ItemShortageOrExcessPage, WrongWithItemPage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
@@ -87,7 +87,7 @@ class ShortageOrExcessItemSummary @Inject()(link: link) {
   private def shortageOrExcessInformationRow(idx: Int, additionalLinkIdSignifier: String)
                                             (implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] = {
     if (isShortageOrExcess(idx)) {
-      val mode = if(additionalLinkIdSignifier != "") ReviewMode else CheckMode
+      val mode = if (additionalLinkIdSignifier != "") ReviewMode else CheckMode
       request.userAnswers.get(ItemShortageOrExcessPage(idx)).map(
         shortageOrExcess =>
           shortageOrExcess.additionalInfo match {
@@ -112,8 +112,9 @@ class ShortageOrExcessItemSummary @Inject()(link: link) {
     }
   }
 
-  private def isShortageOrExcess(idx: Int)(implicit request: DataRequest[_]): Boolean =
-    request.userAnswers.get(WrongWithItemPage(idx)).exists(_.contains(ShortageOrExcess))
+  private def isShortageOrExcess(idx: Int)(implicit request: DataRequest[_]): Boolean = {
+    request.userAnswers.get(WrongWithItemPage(idx)).map(_.intersect(Set(ShortageOrExcess, Shortage, Excess))).isDefined
+}
 
   private def shortageOrExcessChangeAction(idx: Int, changeLabelPage: String, additionalLinkIdSignifier: String)(implicit request: DataRequest[_], messages: Messages): ActionItem = {
     val mode = if(additionalLinkIdSignifier != "") ReviewMode else CheckMode

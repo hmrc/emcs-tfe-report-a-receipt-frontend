@@ -16,7 +16,9 @@
 
 package navigation
 
+import config.AppConfig
 import controllers.routes
+import featureswitch.core.config.NewShortageExcessFlow
 import models.AcceptMovement.{PartiallyRefused, Satisfactory, Unsatisfactory}
 import models.HowGiveInformation.TheWholeMovement
 import models.WrongWithMovement.{BrokenSeals, Damaged, Excess, Other, Shortage, ShortageOrExcess}
@@ -29,7 +31,7 @@ import play.api.mvc.Call
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class Navigator @Inject()() extends BaseNavigator {
+class Navigator @Inject()(implicit appConfig: AppConfig) extends BaseNavigator {
 
   private val normalRoutes: Page => UserAnswers => Call = {
     case DateOfArrivalPage =>
@@ -88,7 +90,17 @@ class Navigator @Inject()() extends BaseNavigator {
     case ExcessInformationPage =>
       (userAnswers: UserAnswers) => redirectToNextWrongMovementPage(Some(Excess))(userAnswers)
     case ItemShortageOrExcessPage(idx) =>
-      (userAnswers: UserAnswers) => redirectToNextItemWrongMovementPage(WrongWithItemPage(idx), Some(ShortageOrExcess))(userAnswers)
+      (userAnswers: UserAnswers) => {
+
+        val lastOptionAnswered = if (appConfig.isEnabled(NewShortageExcessFlow)) {
+          userAnswers.get(ItemShortageOrExcessPage(idx)).map(_.wrongWithItem)
+        } else {
+          Some(ShortageOrExcess)
+        }
+
+        redirectToNextItemWrongMovementPage(WrongWithItemPage(idx), lastOptionAnswered)(userAnswers)
+      }
+
     case AddDamageInformationPage =>
       (userAnswers: UserAnswers) =>
         userAnswers.get(AddDamageInformationPage) match {

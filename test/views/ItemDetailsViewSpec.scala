@@ -43,7 +43,7 @@ class ItemDetailsViewSpec extends ViewSpecBase with ViewBehaviours {
 
         val view = app.injector.instanceOf[ItemDetailsView]
 
-        implicit val doc: Document = Jsoup.parse(view(item2, CnCodeInformation("testdata", "product code desc", `1`)).toString)
+        implicit val doc: Document = Jsoup.parse(view(item2, CnCodeInformation("testdata", "product code desc", `1`), testOnwardRoute.url).toString)
 
         behave like pageWithExpectedElementsAndMessages(Seq(
           Selectors.title -> messagesForLanguage.title(item2.itemUniqueReference),
@@ -52,7 +52,8 @@ class ItemDetailsViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.id("commodity-code") -> (item2.cnCode + " " + msgs("site.opensInNewTab")),
           Selectors.cardHeader(1) -> messagesForLanguage.itemDetailsCardHeading,
           Selectors.cardHeader(2) -> messagesForLanguage.packagingCardHeading(1),
-          Selectors.cardHeader(3) -> messagesForLanguage.packagingCardHeading(2)
+          Selectors.cardHeader(3) -> messagesForLanguage.packagingCardHeading(2),
+          Selectors.button -> messagesForLanguage.continue
         ))
       }
     }

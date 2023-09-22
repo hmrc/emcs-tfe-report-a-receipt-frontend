@@ -22,6 +22,7 @@
 
 @this(
         layout: templates.Layout,
+        formHelper: FormWithCSRF,
         govukButton: GovukButton,
         h1: h1,
         table: table,
@@ -29,23 +30,27 @@
         summaryCard: summaryCard
 )
 
-@(item: MovementItem, cnCodeInformation: CnCodeInformation)(implicit request: DataRequest[_], messages: Messages)
+@(item: MovementItem, cnCodeInformation: CnCodeInformation, previousPage: String)(implicit request: DataRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("itemDetails.title", item.itemUniqueReference))) {
 
-    @h1(messages("itemDetails.heading", item.itemUniqueReference), Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
+        @h1(messages("itemDetails.heading", item.itemUniqueReference), Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
 
-    @summaryCard(
-        Card(Some(CardTitle(Text(messages("itemDetails.itemDetailsCardTitle"))))),
-        helper.constructItemDetailsCard(item, cnCodeInformation)
-    )
-
-    @item.packaging.zipWithIndex.map { case (packaging, i) =>
         @summaryCard(
-            Card(Some(CardTitle(Text(messages("itemDetails.packagingTypeCardTitle", i + 1))))),
-            helper.constructPackagingTypeCard(packaging)
+            Card(Some(CardTitle(Text(messages("itemDetails.itemDetailsCardTitle"))))),
+            helper.constructItemDetailsCard(item, cnCodeInformation)
         )
-    }
+
+        @item.packaging.zipWithIndex.map { case (packaging, i) =>
+            @summaryCard(
+                Card(Some(CardTitle(Text(messages("itemDetails.packagingTypeCardTitle", i + 1))))),
+                helper.constructPackagingTypeCard(packaging)
+            )
+        }
+
+        @govukButton(
+            ButtonViewModel(messages("site.continue")).asLink(previousPage)
+        )
 }
 
 @{

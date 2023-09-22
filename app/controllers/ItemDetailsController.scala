@@ -44,7 +44,7 @@ class ItemDetailsController @Inject()(
     authorisedDataRequestWithUpToDateMovementAsync(ern, arc) { implicit request =>
       withMovementItemAsync(idx) {
         referenceDataService.itemWithReferenceData(_) { (item, cnCodeInformation) =>
-          Future.successful(Ok(view(item, cnCodeInformation)))
+          Future.successful(Ok(view(item, cnCodeInformation, routes.DetailsSelectItemController.onPageLoad(ern, arc, idx))))
         }
       }
     }

@@ -61,7 +61,12 @@ class ItemDetailsControllerSpec extends SpecBase
           val result = route(application, request).value
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(item1WithReferenceData, cnCodeInfo)(dataRequest(request), messages(application)).toString
+          contentAsString(result) mustEqual
+            view(
+              item1WithReferenceData,
+              cnCodeInfo,
+              routes.DetailsSelectItemController.onPageLoad(testErn, testArc, 1)
+            )(dataRequest(request), messages(application)).toString
         }
       }
 

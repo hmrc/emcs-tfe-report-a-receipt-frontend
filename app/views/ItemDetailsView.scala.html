@@ -30,11 +30,9 @@
         summaryCard: summaryCard
 )
 
-@(item: MovementItem, cnCodeInformation: CnCodeInformation, postAction: Call)(implicit request: DataRequest[_], messages: Messages)
+@(item: MovementItem, cnCodeInformation: CnCodeInformation, previousPage: String)(implicit request: DataRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("itemDetails.title", item.itemUniqueReference))) {
-
-    @formHelper(postAction, 'autoComplete -> "off") {
 
         @h1(messages("itemDetails.heading", item.itemUniqueReference), Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
 
@@ -51,9 +49,8 @@
         }
 
         @govukButton(
-            ButtonViewModel(messages("site.continue"))
+            ButtonViewModel(messages("site.continue")).asLink(previousPage)
         )
-    }
 }
 
 @{

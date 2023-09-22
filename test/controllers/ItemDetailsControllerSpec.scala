@@ -57,7 +57,7 @@ class ItemDetailsControllerSpec extends SpecBase
             MockReferenceDataService.itemWithReferenceDataSuccessHandler(item1WithReferenceData, cnCodeInfo)
           )
 
-          val request = FakeRequest(GET, onPageLoadUrl(idx = 1))
+          val request = FakeRequest(GET, onPageLoadUrl(idx = 1)).withHeaders("Referer" -> testOnwardRoute.url)
           val result = route(application, request).value
 
           status(result) mustEqual OK
@@ -65,7 +65,7 @@ class ItemDetailsControllerSpec extends SpecBase
             view(
               item1WithReferenceData,
               cnCodeInfo,
-              routes.DetailsSelectItemController.onPageLoad(testErn, testArc, 1)
+              testOnwardRoute.url
             )(dataRequest(request), messages(application)).toString
         }
       }

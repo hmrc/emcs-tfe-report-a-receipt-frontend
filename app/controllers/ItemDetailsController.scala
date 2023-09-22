@@ -44,7 +44,10 @@ class ItemDetailsController @Inject()(
     authorisedDataRequestWithUpToDateMovementAsync(ern, arc) { implicit request =>
       withMovementItemAsync(idx) {
         referenceDataService.itemWithReferenceData(_) { (item, cnCodeInformation) =>
-          Future.successful(Ok(view(item, cnCodeInformation, routes.DetailsSelectItemController.onPageLoad(ern, arc, idx))))
+
+          val refererUrl = request.headers.get("Referer").getOrElse(controllers.routes.IndexController.onPageLoad(ern, arc).url)
+
+          Future.successful(Ok(view(item, cnCodeInformation, refererUrl)))
         }
       }
     }

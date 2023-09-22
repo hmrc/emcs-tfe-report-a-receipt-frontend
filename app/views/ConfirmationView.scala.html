@@ -20,17 +20,18 @@
 @import views.html.components.table
 
 @this(
-        layout: templates.Layout,
-        confirmationPanel: components.confirmationPanel,
-        govukTable: GovukTable,
-        govukButton: GovukButton,
-        h2: components.h2,
-        p: components.p,
-        strong: components.strong,
-        link: components.link,
-        appConfig: AppConfig,
-        confirmationContentHelper: ConfirmationContentHelper,
-        whatHappensNext: partials.confirmation.WhatHappensNextContent
+layout: templates.Layout,
+confirmationPanel: components.confirmationPanel,
+govukSummaryList: GovukSummaryList,
+govukButton: GovukButton,
+h2: components.h2,
+p: components.p,
+strong: components.strong,
+wordBreak: components.wordBreak,
+link: components.link,
+appConfig: AppConfig,
+confirmationContentHelper: ConfirmationContentHelper,
+whatHappensNext: partials.confirmation.WhatHappensNextContent
 )
 
 
@@ -38,70 +39,71 @@
 
 @layout(pageTitle = titleNoForm(messages("confirmation.title")), showBackLink = false) {
 
-    @confirmationPanel("confirmation.heading")
+@confirmationPanel("confirmation.heading")
 
-    @govukTable(Table(
-        rows = Seq(
-            Seq(
-                TableRow(content = Text(messages("confirmation.movementInformation.arc.label"))),
-                TableRow(content = Text(request.arc))
-            ),
-            Seq(
-                TableRow(content = Text(messages("confirmation.movementInformation.receiptStatus.label"))),
-                TableRow(content = Text(messages(s"confirmation.acceptMovement.${receiptDetails.receiptStatus}")))
-            ),
-            Seq(
-                TableRow(content = Text(messages("confirmation.movementInformation.receiptDate.label"))),
-                TableRow(content = Text(receiptDetails.formatReciptDateForUIOutput))
-            )
-        ),
-        caption = Some("Movement information"),
-        captionClasses = "govuk-table__caption--m",
-        firstCellIsHeader = true
-    ))
+@govukSummaryList(SummaryList(
+rows = Seq(
+SummaryListRow(
+key = Key(content = Text(messages("confirmation.movementInformation.arc.label"))
+),
+value = Value(content = Text(request.arc))
+),
+SummaryListRow(
+key = Key(content = Text(messages("confirmation.movementInformation.receiptStatus.label"))
+),
+value = Value(content = Text(messages(s"confirmation.acceptMovement.${receiptDetails.receiptStatus}")))
+),
 
-    @p() {
-        @messages("confirmation.reference")
-        @strong {
-            @{receiptDetails.receipt}
-        }
-    }
+SummaryListRow(key = Key(content = Text(messages("confirmation.movementInformation.receiptDate.label"))),
+value = Value(content = Text(receiptDetails.formatReciptDateForUIOutput)))
+)
+))
 
-    @whatHappensNext()
+@p(classes = "govuk-body") {
+@messages("confirmation.reference")
+@strong {
+@wordBreak{
+@{receiptDetails.receipt}
+}
+}
+}
 
-    @confirmationContentHelper.renderRefusedContent(receiptDetails)
 
-    @confirmationContentHelper.renderShortageContent(receiptDetails)
+@whatHappensNext()
 
-    @confirmationContentHelper.renderExcessContent(receiptDetails)
+@confirmationContentHelper.renderRefusedContent(receiptDetails)
 
-    @p(classes = "govuk-body no-print") {
-        @link(
-            appConfig.contactHmrcUrl,
-            "confirmation.contactHmrc.link",
-            opensInNewTab = true,
-            id = Some("contactHmrc")
-        )
-        @messages("confirmation.contactHmrc.afterLink")
-    }
+@confirmationContentHelper.renderShortageContent(receiptDetails)
 
-    @govukButton(
-        ButtonViewModel(messages("confirmation.button"))
-                .withCssClass("govuk-!-margin-top-4 no-print")
-                .asLink(appConfig.emcsTfeHomeUrl(Some(request.ern)))
-    )
+@confirmationContentHelper.renderExcessContent(receiptDetails)
 
-    @p(classes = "govuk-body no-print") {
-        @link(
-            appConfig.feedbackFrontendSurveyUrl,
-            "confirmation.feedback.link",
-            opensInNewTab = true,
-            id = Some("feedbackSurvey")
-        )
-        @messages("confirmation.feedback.time")
-    }
+@p(classes = "govuk-body no-print") {
+@link(
+appConfig.contactHmrcUrl,
+"confirmation.contactHmrc.link",
+opensInNewTab = true,
+id = Some("contactHmrc")
+)
+@messages("confirmation.contactHmrc.afterLink")
+}
+
+@govukButton(
+ButtonViewModel(messages("confirmation.button"))
+.withCssClass("govuk-!-margin-top-4 no-print")
+.asLink(appConfig.emcsTfeHomeUrl(Some(request.ern)))
+)
+
+@p(classes = "govuk-body no-print") {
+@link(
+appConfig.feedbackFrontendSurveyUrl,
+"confirmation.feedback.link",
+opensInNewTab = true,
+id = Some("feedbackSurvey")
+)
+@messages("confirmation.feedback.time")
+}
 }
 
 @{
-    //$COVERAGE-OFF$
+//$COVERAGE-OFF$
 }

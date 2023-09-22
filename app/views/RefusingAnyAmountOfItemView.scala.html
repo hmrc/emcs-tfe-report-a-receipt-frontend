@@ -26,7 +26,6 @@
     govukRadios: GovukRadios,
     continueOrExit: components.continueOrExit,
     h1: components.h1,
-    h2: components.h2,
     itemDetailSection: itemDetailSection
 )
 
@@ -34,31 +33,25 @@
 
 @layout(pageTitle = title(form, messages("refusingAnyAmountOfItem.title", item.itemUniqueReference))) {
 
-
-
-
-
     @formHelper(action, 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-@h2((messages("arc.subHeading", request.arc)),"govuk-caption-l")
+        @h1(messages("refusingAnyAmountOfItem.heading", item.itemUniqueReference), Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
+
+        @itemDetailSection("refusingAnyAmountOfItem.item", item, cnCodeInfo)
 
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(HtmlContent(heading)).withCssClass("govuk-!-margin-bottom-0")
-            ).withHint(HintViewModel(HtmlContent(itemDetailSection("refusingAnyAmountOfItem.item", item, cnCodeInfo))))
+                legend = LegendViewModel(Text(messages("refusingAnyAmountOfItem.heading", item.itemUniqueReference))).hidden
+            )
         )
 
         @continueOrExit()
     }
-}
-
-@heading = {
-    @h1(messages("refusingAnyAmountOfItem.heading", item.itemUniqueReference), None, "govuk-heading-l")
 }
 
 @{

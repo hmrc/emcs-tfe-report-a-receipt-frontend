@@ -28,7 +28,6 @@
         govukRadios: GovukRadios,
         govukButton: GovukButton,
         h1: components.h1,
-        h2: components.h2,
         continueOrExit: components.continueOrExit,
         itemDetails: components.itemDetailSection
 )
@@ -49,21 +48,19 @@
                 @govukErrorSummary(ErrorSummaryViewModel(form))
             }
 
-@h2((messages("arc.subHeading", request.arc)),"govuk-caption-l")
+            @h1(messages(AddMoreInformationHelper.headingKey(page), item.itemUniqueReference), Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
+
+            @itemDetails(AddMoreInformationHelper.itemDetailsKey(page), item, cnCodeInformation)
 
             @govukRadios(
                 RadiosViewModel.yesNo(
                     field = form("value"),
-                    legend = LegendViewModel(HtmlContent(heading)).withCssClass("govuk-!-margin-bottom-0")
-                ).withHint(HintViewModel(HtmlContent(itemDetails(AddMoreInformationHelper.itemDetailsKey(page), item, cnCodeInformation))))
+                    legend = LegendViewModel(Text(AddMoreInformationHelper.headingKey(page))).hidden
+                )
             )
 
             @continueOrExit()
         }
-    }
-
-    @heading = {
-        @h1(messages(AddMoreInformationHelper.headingKey(page), item.itemUniqueReference), None, "govuk-heading-l")
     }
 
 @{

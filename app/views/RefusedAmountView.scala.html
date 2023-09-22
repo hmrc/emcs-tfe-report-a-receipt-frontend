@@ -44,6 +44,8 @@
 
         @h1(messages("refusedAmount.heading", messages(s"unitOfMeasure.$unitOfMeasure.long"), idx), Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
 
+        @itemDetailSection("refusingAnyAmountOfItem.item", item, cnCodeInfo)
+
         @govukInput(
             InputViewModel(
                 field = form("value"),
@@ -53,17 +55,10 @@
             .withSuffix(PrefixOrSuffix(
                 content = Text(messages(s"unitOfMeasure.$unitOfMeasure.short"))
             ))
-            .withHint(HintViewModel(HtmlContent(hint)))
+            .withHint(HintViewModel(Text(messages("refusedAmount.hint"))))
         )
 
         @continueOrExit()
-    }
-}
-
-@hint = {
-    @itemDetailSection("refusingAnyAmountOfItem.item", item, cnCodeInfo)
-    @p(classes = "govuk-hint") {
-        @messages("refusedAmount.hint")
     }
 }
 

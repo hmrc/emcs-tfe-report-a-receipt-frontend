@@ -27,7 +27,6 @@
         govukCheckboxes: GovukCheckboxes,
         govukButton: GovukButton,
         h1: components.h1,
-        h2: components.h2,
         p: components.p,
         continueOrExit: components.continueOrExit,
         itemDetailSection: components.itemDetailSection
@@ -49,29 +48,20 @@
             @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> WrongWithMovement.checkboxItems(page).head.value)))
         }
 
-@h2((messages("arc.subHeading", request.arc)),"govuk-caption-l")
+        @h1(messages(s"$page.heading", item.itemUniqueReference), Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
+
+        @itemDetailSection(s"$page.item", item, cnCodeInfo)
 
         @govukCheckboxes(
             CheckboxesViewModel(
                 form   = form,
                 name   = "value",
-                legend = LegendViewModel(HtmlContent(heading)),
+                legend = LegendViewModel(Text(messages(s"$page.heading", item.itemUniqueReference))).hidden,
                 items  = WrongWithMovement.checkboxItems(page)
-            ).withHint(HintViewModel(HtmlContent(hint)))
+            ).withHint(HintViewModel(Text(messages(s"$page.hint"))))
         )
 
         @continueOrExit()
-    }
-}
-
-@heading = {
-    @h1(messages(s"$page.heading", item.itemUniqueReference), None, "govuk-heading-l")
-}
-
-@hint = {
-    @itemDetailSection(s"$page.item", item, cnCodeInfo)
-    @p(classes = "govuk-hint") {
-        @messages(s"$page.hint")
     }
 }
 

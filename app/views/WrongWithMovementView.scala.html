@@ -25,6 +25,7 @@
         govukCheckboxes: GovukCheckboxes,
         govukButton: GovukButton,
         h1: components.h1,
+        h2: components.h2,
         continueOrExit: components.continueOrExit
 )
 
@@ -37,6 +38,8 @@
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> WrongWithMovement.checkboxItems(page).head.value)))
         }
+
+@h2((messages("arc.subHeading", request.arc)),"govuk-caption-l")
 
         @govukCheckboxes(
             CheckboxesViewModel(
@@ -52,7 +55,7 @@
 }
 
 @heading = {
-    @h1(s"$page.heading", Some(messages("arc.subHeading", request.arc)), "govuk-fieldset__heading")
+    @h1(s"$page.heading", None, "govuk-fieldset__heading")
 }
 
 @{

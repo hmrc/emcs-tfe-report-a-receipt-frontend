@@ -22,6 +22,7 @@
         govukErrorSummary: GovukErrorSummary,
         govukDateInput: GovukDateInput,
         h1: components.h1,
+        h2: components.h2,
         continue: components.continue
 )
 
@@ -36,6 +37,8 @@
             @if(form.errors.nonEmpty) {
                 @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> s"value.${erroredFields.headOption.getOrElse("day")}")))
             }
+
+@h2((messages("arc.subHeading", request.arc)),"govuk-caption-l")
 
             @govukDateInput(
                 DateViewModel(
@@ -52,7 +55,7 @@
 }
 
 @heading = {
-    @h1("dateOfArrival.heading", Some(messages("arc.subHeading", request.arc)), "govuk-fieldset__heading")
+    @h1("dateOfArrival.heading", None, "govuk-fieldset__heading")
 }
 
 @{

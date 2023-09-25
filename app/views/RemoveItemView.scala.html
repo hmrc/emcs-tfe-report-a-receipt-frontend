@@ -25,6 +25,7 @@
         govukRadios: GovukRadios,
         govukButton: GovukButton,
         h1: components.h1,
+        h2: components.h2,
         continueOrExit: components.continueOrExit
 )
 
@@ -39,6 +40,8 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
+@h2((messages("arc.subHeading", request.arc)),"govuk-caption-l")
+
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
@@ -52,7 +55,7 @@
 
 @heading = {
     @h1(messages(AddMoreInformationHelper.headingKey(page), page.idx),
-        Some(messages("arc.subHeading", request.arc)),
+        None,
         "govuk-fieldset__heading")
 }
 

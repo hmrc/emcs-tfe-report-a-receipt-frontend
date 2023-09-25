@@ -17,16 +17,16 @@
 @import models.requests.DataRequest
 @import config.AppConfig
 @import viewmodels.ConfirmationContentHelper
-@import views.html.components.table
 
 @this(
         layout: templates.Layout,
         confirmationPanel: components.confirmationPanel,
-        govukTable: GovukTable,
+        govukSummaryList: GovukSummaryList,
         govukButton: GovukButton,
         h2: components.h2,
         p: components.p,
         strong: components.strong,
+        wordBreak: components.wordBreak,
         link: components.link,
         appConfig: AppConfig,
         confirmationContentHelper: ConfirmationContentHelper,
@@ -40,30 +40,27 @@
 
     @confirmationPanel("confirmation.heading")
 
-    @govukTable(Table(
+    @govukSummaryList(SummaryList(
         rows = Seq(
-            Seq(
-                TableRow(content = Text(messages("confirmation.movementInformation.arc.label"))),
-                TableRow(content = Text(request.arc))
+            SummaryListRow(
+                key = Key(content = Text(messages("confirmation.movementInformation.arc.label"))),
+                value = Value(content = Text(request.arc))
             ),
-            Seq(
-                TableRow(content = Text(messages("confirmation.movementInformation.receiptStatus.label"))),
-                TableRow(content = Text(messages(s"confirmation.acceptMovement.${receiptDetails.receiptStatus}")))
+            SummaryListRow(
+                key = Key(content = Text(messages("confirmation.movementInformation.receiptStatus.label"))),
+                value = Value(content = Text(messages(s"confirmation.acceptMovement.${receiptDetails.receiptStatus}")))
             ),
-            Seq(
-                TableRow(content = Text(messages("confirmation.movementInformation.receiptDate.label"))),
-                TableRow(content = Text(receiptDetails.formatReciptDateForUIOutput))
-            )
-        ),
-        caption = Some("Movement information"),
-        captionClasses = "govuk-table__caption--m",
-        firstCellIsHeader = true
+            SummaryListRow(key = Key(content = Text(messages("confirmation.movementInformation.receiptDate.label"))),
+                value = Value(content = Text(receiptDetails.formatReciptDateForUIOutput)))
+        )
     ))
 
-    @p() {
+    @p(classes = "govuk-body") {
         @messages("confirmation.reference")
         @strong {
-            @{receiptDetails.receipt}
+            @wordBreak {
+                @{receiptDetails.receipt}
+            }
         }
     }
 

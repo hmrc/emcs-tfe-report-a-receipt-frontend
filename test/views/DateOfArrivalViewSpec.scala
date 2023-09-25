@@ -21,6 +21,7 @@ import fixtures.messages.DateOfArrivalMessages
 import forms.DateOfArrivalFormProvider
 import models.NormalMode
 import org.jsoup.Jsoup
+import play.api.i18n.Lang
 import play.api.test.FakeRequest
 import views.html.DateOfArrivalView
 
@@ -30,19 +31,22 @@ class DateOfArrivalViewSpec extends ViewSpecBase with ViewBehaviours {
 
   object Selectors extends BaseSelectors
 
+  class Fixture(language: Lang) {
+
+    val dateOfDispatch = LocalDate.now()
+
+    implicit val msgs = messages(app, language)
+    implicit val request = dataRequest(FakeRequest(), emptyUserAnswers)
+
+    val form = app.injector.instanceOf[DateOfArrivalFormProvider].apply(dateOfDispatch)
+    val view = app.injector.instanceOf[DateOfArrivalView]
+  }
+
   "DateOfArrival view" - {
 
     Seq(DateOfArrivalMessages.English, DateOfArrivalMessages.Welsh).foreach { messagesForLanguage =>
 
-      s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
-
-        val dateOfDispatch = LocalDate.now()
-
-        implicit val msgs = messages(app, messagesForLanguage.lang)
-        implicit val request = dataRequest(FakeRequest(), emptyUserAnswers)
-
-        val form = app.injector.instanceOf[DateOfArrivalFormProvider].apply(dateOfDispatch)
-        val view = app.injector.instanceOf[DateOfArrivalView]
+      s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - new Fixture(messagesForLanguage.lang) {
 
         implicit val doc = Jsoup.parse(view(form, NormalMode).toString())
 
@@ -56,20 +60,78 @@ class DateOfArrivalViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.button -> messagesForLanguage.saveAndContinue
         ))
       }
-    }
 
-    "must not render a secondary link" in {
-      val dateOfDispatch = LocalDate.now()
+      s"must not render a secondary link in lang code of '${messagesForLanguage.lang.code}'" in new Fixture(messagesForLanguage.lang) {
 
-      implicit val msgs = messages(app, DateOfArrivalMessages.English.lang)
-      implicit val request = dataRequest(FakeRequest(), emptyUserAnswers)
+        val doc = Jsoup.parse(view(form, NormalMode).toString())
 
-      val form = app.injector.instanceOf[DateOfArrivalFormProvider].apply(dateOfDispatch)
-      val view = app.injector.instanceOf[DateOfArrivalView]
+        doc.select(Selectors.id("save-and-exit")).size() mustBe 0
+      }
 
-      implicit val doc = Jsoup.parse(view(form, NormalMode).toString())
+      s"when rendered with an error, must highlight only error fields and link to correct one with lang code of '${messagesForLanguage.lang.code}'" - {
 
-      doc.select(Selectors.id("save-and-exit")).size() mustBe 0
+        "when day and year are missing, highlight both and link error message to day" in new Fixture(messagesForLanguage.lang) {
+
+          val formWithErrors = form.bind(Map(
+            "value.month" -> "1"
+          ))
+
+          val doc = Jsoup.parse(view(formWithErrors, NormalMode).toString())
+
+          doc.select("#value\\.day").hasClass("govuk-input--error") mustBe true
+          doc.select("#value\\.month").hasClass("govuk-input--error") mustBe false
+          doc.select("#value\\.year").hasClass("govuk-input--error") mustBe true
+
+          doc.select(".govuk-error-summary__list a").attr("href") mustBe "#value.day"
+        }
+
+        "when month and year are missing, highlight both and link error message to month" in new Fixture(messagesForLanguage.lang) {
+
+          val formWithErrors = form.bind(Map(
+            "value.day" -> "1"
+          ))
+
+          val doc = Jsoup.parse(view(formWithErrors, NormalMode).toString())
+
+          doc.select("#value\\.day").hasClass("govuk-input--error") mustBe false
+          doc.select("#value\\.month").hasClass("govuk-input--error") mustBe true
+          doc.select("#value\\.year").hasClass("govuk-input--error") mustBe true
+
+          doc.select(".govuk-error-summary__list a").attr("href") mustBe "#value.month"
+        }
+
+        "when day and month are missing, highlight both and link error message to day" in new Fixture(messagesForLanguage.lang) {
+
+          val formWithErrors = form.bind(Map(
+            "value.year" -> "2023"
+          ))
+
+          val doc = Jsoup.parse(view(formWithErrors, NormalMode).toString())
+
+          doc.select("#value\\.day").hasClass("govuk-input--error") mustBe true
+          doc.select("#value\\.month").hasClass("govuk-input--error") mustBe true
+          doc.select("#value\\.year").hasClass("govuk-input--error") mustBe false
+
+          doc.select(".govuk-error-summary__list a").attr("href") mustBe "#value.day"
+        }
+
+        "when whole date is wrong, highlight all fields and link error message to day" in new Fixture(messagesForLanguage.lang) {
+
+          val formWithErrors = form.bind(Map(
+            "value.day" -> "30",
+            "value.month" -> "2",
+            "value.year" -> "2023"
+          ))
+
+          val doc = Jsoup.parse(view(formWithErrors, NormalMode).toString())
+
+          doc.select("#value\\.day").hasClass("govuk-input--error") mustBe true
+          doc.select("#value\\.month").hasClass("govuk-input--error") mustBe true
+          doc.select("#value\\.year").hasClass("govuk-input--error") mustBe true
+
+          doc.select(".govuk-error-summary__list a").attr("href") mustBe "#value.day"
+        }
+      }
     }
   }
 }

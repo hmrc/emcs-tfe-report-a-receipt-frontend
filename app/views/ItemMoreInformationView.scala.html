@@ -50,14 +50,16 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        @h2(messages("arc.subHeading", request.arc), "govuk-caption-l")
+        @h1(messages(s"$page.heading", item.itemUniqueReference), Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
+
+        @itemDetails(s"$page.itemDetails", item, cnCodeInformation)
 
         @govukCharacterCount(CharacterCount(
             id = "more-information",
             name = "more-information",
             maxLength = Some(350),
-            label = largeHeadingWithMarginBottom(messages(s"$page.heading", item.itemUniqueReference)),
-            hint = Some(HintViewModel(HtmlContent(hint))),
+            label = LabelViewModel(messages(s"$page.heading", item.itemUniqueReference)).hidden,
+            hint = Some(HintViewModel(Text(messages(s"$page.hint")))),
             value = form("more-information").value,
             errorMessage = form.errors("more-information") match {
                 case Nil => None
@@ -67,13 +69,6 @@
 
         @continueOrExit()
 
-    }
-}
-
-@hint = {
-    @itemDetails(s"$page.itemDetails", item, cnCodeInformation)
-    @p(classes = "govuk-hint") {
-        @messages(s"$page.hint")
     }
 }
 

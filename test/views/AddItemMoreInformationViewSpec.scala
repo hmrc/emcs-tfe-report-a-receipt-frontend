@@ -30,7 +30,9 @@ class AddItemMoreInformationViewSpec extends ViewSpecBase with ViewBehaviours {
 
   lazy val view = app.injector.instanceOf[AddItemMoreInformationView]
 
-  object Selectors extends BaseSelectors
+  object Selectors extends BaseSelectors {
+    val hiddenLegend = ".govuk-fieldset__legend.govuk-visually-hidden"
+  }
 
   lazy val form = app.injector.instanceOf[AddMoreInformationFormProvider].apply(RemoveItemPage(1))
 
@@ -56,6 +58,7 @@ class AddItemMoreInformationViewSpec extends ViewSpecBase with ViewBehaviours {
             Selectors.detailsSummary(1) -> messagesForLanguage.itemDetails(1),
             Selectors.radioButton(1) -> messagesForLanguage.yes,
             Selectors.radioButton(2) -> messagesForLanguage.no,
+            Selectors.hiddenLegend -> messagesForLanguage.hiddenLegendText(1),
             Selectors.button -> messagesForLanguage.saveAndContinue,
             Selectors.id("save-and-exit") -> messagesForLanguage.savePreviousAnswersAndExit
           ))

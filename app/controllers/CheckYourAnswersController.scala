@@ -92,7 +92,7 @@ class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi
                 routes.SelectItemsController.onPageLoad(ern, arc).url,
                 checkAnswersHelper.summaryList(),
                 formattedAnswers,
-                moreItemsToAdd,
+                moreItemsToAdd
               ))
           }
         }

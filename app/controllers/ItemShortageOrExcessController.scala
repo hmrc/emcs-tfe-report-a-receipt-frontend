@@ -97,7 +97,7 @@ class ItemShortageOrExcessController @Inject()(override val messagesApi: Message
                       message = "itemShortageOrExcess.amount.error.shortageExceedsTotal",
                       args = Seq(
                         maxAmount(idx, item, isPartiallyRefusingAnAmountOfItem),
-                        request2Messages.messages(s"unitOfMeasure.$unitOfMeasure.short"),
+                        request2Messages.messages(s"unitOfMeasure.$unitOfMeasure.short")
                       )
                     ))
                   Future.successful(BadRequest(renderView(formWithError, ern, arc, idx, mode, unitOfMeasure)))

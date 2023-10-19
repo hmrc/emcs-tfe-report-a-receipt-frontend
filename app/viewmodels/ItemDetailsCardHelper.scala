@@ -300,7 +300,7 @@ class ItemDetailsCardHelper @Inject()(link: link, list: list, appConfig: AppConf
       quantityRow,
       identityOfCommercialSealRow,
       sealInformationRow,
-      shippingMarksRow,
+      shippingMarksRow
     ).flatten
   }
 }

@@ -55,7 +55,7 @@
             @govukRadios(
                 RadiosViewModel.yesNo(
                     field = form("value"),
-                    legend = LegendViewModel(Text(AddMoreInformationHelper.headingKey(page))).hidden
+                    legend = LegendViewModel(Text(messages(AddMoreInformationHelper.headingKey(page), item.itemUniqueReference))).hidden
                 )
             )
 

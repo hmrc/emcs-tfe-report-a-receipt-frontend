@@ -32,6 +32,7 @@ import viewmodels.implicits._
 class CheckAnswersHelperSpec extends SpecBase
   with MockDateOfArrivalSummary
   with MockAcceptMovementSummary
+  with MockDestinationOfficeSummary
   with MockHowGiveInformationSummary
   with MockMoreInformationSummary
   with MockOtherInformationSummary
@@ -39,6 +40,7 @@ class CheckAnswersHelperSpec extends SpecBase
 
   lazy val checkAnswersHelper = new CheckAnswersHelper(
     mockAcceptMovementSummary,
+    mockDestinationOfficeSummary,
     mockDateOfArrivalSummary,
     mockHowGiveInformationSummary,
     mockMoreInformationSummary,
@@ -65,6 +67,10 @@ class CheckAnswersHelperSpec extends SpecBase
           "AcceptMovement",
           ValueViewModel("Yes")
         )
+        val destinationOfficeAnswer = SummaryListRow(
+          "DestinationOffice",
+          ValueViewModel("Great Britain")
+        )
         val moreInformationAnswer = SummaryListRow(
           "MoreInfo",
           ValueViewModel("Info")
@@ -72,6 +78,7 @@ class CheckAnswersHelperSpec extends SpecBase
 
         MockDateOfArrivalSummary.row().returns(Some(dateOfArrivalAnswer))
         MockAcceptMovementSummary.row().returns(Some(acceptMovementAnswer))
+        MockDestinationOfficeSummary.row().returns(Some(destinationOfficeAnswer))
         MockMoreInformationSummary.row(
           MoreInformationPage,
           controllers.routes.MoreInformationController.loadMoreInformation(testErn, testArc, CheckMode)
@@ -79,6 +86,7 @@ class CheckAnswersHelperSpec extends SpecBase
 
         checkAnswersHelper.summaryList() mustBe SummaryList(Seq(
           dateOfArrivalAnswer,
+          destinationOfficeAnswer,
           acceptMovementAnswer,
           moreInformationAnswer
         ))
@@ -103,6 +111,7 @@ class CheckAnswersHelperSpec extends SpecBase
 
               val dateOfArrivalAnswer = SummaryListRow("DateOfArrival", ValueViewModel("today"))
               val acceptMovementAnswer = SummaryListRow("AcceptMovement", ValueViewModel("Yes"))
+              val destinationOfficeAnswer = SummaryListRow("DestinationOffice", ValueViewModel("Great Britain"))
               val howGiveInformationAnswer = SummaryListRow("howGiveInformation", ValueViewModel("Whole Movement"))
               val wrongWithMovementAnswer = SummaryListRow("WrongWithMovement", ValueViewModel("shortage"))
               val shortageInformationAnswer = SummaryListRow("ShortageInfo", ValueViewModel("Info"))
@@ -114,6 +123,7 @@ class CheckAnswersHelperSpec extends SpecBase
 
               MockDateOfArrivalSummary.row().returns(Some(dateOfArrivalAnswer))
               MockAcceptMovementSummary.row().returns(Some(acceptMovementAnswer))
+              MockDestinationOfficeSummary.row().returns(Some(destinationOfficeAnswer))
               MockHowGiveInformationSummary.row().returns(Some(howGiveInformationAnswer))
               MockWrongWithMovementSummary.row().returns(Some(wrongWithMovementAnswer))
               MockMoreInformationSummary.row(
@@ -140,6 +150,7 @@ class CheckAnswersHelperSpec extends SpecBase
 
               checkAnswersHelper.summaryList() mustBe SummaryList(Seq(
                 dateOfArrivalAnswer,
+                destinationOfficeAnswer,
                 acceptMovementAnswer,
                 howGiveInformationAnswer,
                 wrongWithMovementAnswer,
@@ -164,6 +175,7 @@ class CheckAnswersHelperSpec extends SpecBase
             "must return only the mandatory rows" - {
               "when the WrongWithMovementPage contains no WrongWithMovement values" in {
                 val dateOfArrivalAnswer = SummaryListRow("DateOfArrival", ValueViewModel("today"))
+                val destinationOfficeAnswer = SummaryListRow("DestinationOffice", ValueViewModel("Great Britain"))
                 val acceptMovementAnswer = SummaryListRow("AcceptMovement", ValueViewModel("Yes"))
                 val howGiveInformationAnswer = SummaryListRow("HowGiveInformation", ValueViewModel("Whole Movement"))
                 val wrongWithMovementAnswer = SummaryListRow("WrongWithMovement", ValueViewModel("shortage"))
@@ -171,6 +183,7 @@ class CheckAnswersHelperSpec extends SpecBase
 
                 MockDateOfArrivalSummary.row().returns(Some(dateOfArrivalAnswer))
                 MockAcceptMovementSummary.row().returns(Some(acceptMovementAnswer))
+                MockDestinationOfficeSummary.row().returns(Some(destinationOfficeAnswer))
                 MockHowGiveInformationSummary.row().returns(Some(howGiveInformationAnswer))
                 MockWrongWithMovementSummary.row().returns(Some(wrongWithMovementAnswer))
                 MockMoreInformationSummary.row(
@@ -180,6 +193,7 @@ class CheckAnswersHelperSpec extends SpecBase
 
                 checkAnswersHelper.summaryList() mustBe SummaryList(Seq(
                   dateOfArrivalAnswer,
+                  destinationOfficeAnswer,
                   acceptMovementAnswer,
                   howGiveInformationAnswer,
                   wrongWithMovementAnswer,

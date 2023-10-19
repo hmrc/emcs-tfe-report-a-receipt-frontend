@@ -311,6 +311,19 @@ class UserAnswersSpec extends SpecBase {
       }
     }
 
+    "when calling .isNorthernIrelandTrader" - {
+      "when the user's ERN starts with XI" - {
+        "must return true" in {
+          emptyUserAnswers.copy(ern = "XI123").isNorthernIrelandTrader mustBe true
+        }
+      }
+      "when the user's ERN doesn't start with XI" - {
+        "must return false" in {
+          emptyUserAnswers.copy(ern = "GB123").isNorthernIrelandTrader mustBe false
+        }
+      }
+    }
+
     "when calling .handleResult" - {
 
       "when failed to update the UserAnswers" - {

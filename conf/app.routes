@@ -29,6 +29,11 @@ POST        /trader/:ern/movement/:arc/select-accept-movement                   
 GET         /trader/:ern/movement/:arc/select-accept-movement/change                          controllers.AcceptMovementController.onPageLoad(ern: String, arc: String, mode: Mode = CheckMode)
 POST        /trader/:ern/movement/:arc/select-accept-movement/change                          controllers.AcceptMovementController.onSubmit(ern: String, arc: String, mode: Mode = CheckMode)
 
+GET         /trader/:ern/movement/:arc/delivery-location                                      controllers.DestinationOfficeController.onPageLoad(ern: String, arc: String, mode: Mode = NormalMode)
+POST        /trader/:ern/movement/:arc/delivery-location                                      controllers.DestinationOfficeController.onSubmit(ern: String, arc: String, mode: Mode = NormalMode)
+GET         /trader/:ern/movement/:arc/delivery-location/change                               controllers.DestinationOfficeController.onPageLoad(ern: String, arc: String, mode: Mode = CheckMode)
+POST        /trader/:ern/movement/:arc/delivery-location/change                               controllers.DestinationOfficeController.onSubmit(ern: String, arc: String, mode: Mode = CheckMode)
+
 GET         /trader/:ern/movement/:arc/select-more-information                                controllers.AddMoreInformationController.loadMoreInformation(ern: String, arc: String, mode: Mode = NormalMode)
 POST        /trader/:ern/movement/:arc/select-more-information                                controllers.AddMoreInformationController.submitMoreInformation(ern: String, arc: String, mode: Mode = NormalMode)
 GET         /trader/:ern/movement/:arc/select-more-information/change                         controllers.AddMoreInformationController.loadMoreInformation(ern: String, arc: String, mode: Mode = CheckMode)

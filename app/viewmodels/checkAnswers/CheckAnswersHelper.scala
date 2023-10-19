@@ -29,6 +29,7 @@ import viewmodels.govuk.summarylist._
 import javax.inject.Inject
 
 class CheckAnswersHelper @Inject()(acceptMovementSummary: AcceptMovementSummary,
+                                   destinationOfficeSummary: DestinationOfficeSummary,
                                    dateOfArrivalSummary: DateOfArrivalSummary,
                                    howGiveInformationSummary: HowGiveInformationSummary,
                                    moreInformationSummary: MoreInformationSummary,
@@ -39,6 +40,7 @@ class CheckAnswersHelper @Inject()(acceptMovementSummary: AcceptMovementSummary,
 
     val commonRows = Seq(
       dateOfArrivalSummary.row(),
+      destinationOfficeSummary.row(),
       acceptMovementSummary.row()
     ).flatten
 

@@ -23,13 +23,13 @@ import mocks.services.{MockGetCnCodeInformationService, MockSubmitReportOfReceip
 import mocks.viewmodels.MockCheckAnswersHelper
 import models.AcceptMovement.{Refused, Satisfactory, Unsatisfactory}
 import models.HowGiveInformation.{IndividualItem, TheWholeMovement}
-import models.{ConfirmationDetails, UserAnswers}
+import models.{CheckMode, ConfirmationDetails, DestinationOffice, UserAnswers}
 import models.WrongWithMovement.BrokenSeals
 import models.response.{MissingMandatoryPage, SubmitReportOfReceiptException}
 import navigation.{FakeNavigator, Navigator}
 import pages.unsatisfactory.HowGiveInformationPage
 import pages.unsatisfactory.individualItems.{CheckAnswersItemPage, SelectItemsPage, WrongWithItemPage}
-import pages.{AcceptMovementPage, ConfirmationPage, DateOfArrivalPage}
+import pages.{AcceptMovementPage, ConfirmationPage, DateOfArrivalPage, DestinationOfficePage}
 import play.api.inject
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -65,6 +65,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency wi
     ".onPageLoad" - {
 
       def request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad(testErn, testArc).url)
+
       def selectItemsRoute = routes.SelectItemsController.onPageLoad(testErn, testArc).url
 
       "must return OK and the correct view for a GET (when satisfactory)" in new Fixture(Some(
@@ -193,6 +194,41 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency wi
           redirectLocation(result).value mustBe routes.JourneyRecoveryController.onPageLoad(testErn, testArc).url
         }
       }
+
+      "when the trader is a Northern Ireland trader" - {
+        "must return a 200 if the user has answered all questions" in new Fixture(Some(
+          emptyUserAnswers.copy(ern = "XI123")
+            .set(AcceptMovementPage, Satisfactory)
+            .set(DestinationOfficePage, DestinationOffice.GreatBritain)
+        )) {
+          running(application) {
+
+            val list = SummaryListViewModel(Seq.empty)
+
+            MockCheckAnswersHelper.summaryList().returns(list)
+
+            def request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad("XI123", testArc).url)
+
+            val result = route(application, request).value
+
+            status(result) mustBe OK
+          }
+        }
+        "must return a 303 if the user has not answered the DestinationOfficePage question" in new Fixture(Some(
+          emptyUserAnswers.copy(ern = "XI123")
+            .set(AcceptMovementPage, Satisfactory)
+        )) {
+          running(application) {
+
+            def request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad("XI123", testArc).url)
+
+            val result = route(application, request).value
+
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(routes.DestinationOfficeController.onPageLoad("XI123", testArc, CheckMode).url)
+          }
+        }
+      }
     }
 
     ".onSubmit" - {
@@ -223,7 +259,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency wi
                         successResponse.receipt,
                         successResponse.receiptDate,
                         Satisfactory.toString,
-                        hasMovementShortage =  false,
+                        hasMovementShortage = false,
                         hasItemShortage = false,
                         hasMovementExcess = false,
                         hasItemExcess = false

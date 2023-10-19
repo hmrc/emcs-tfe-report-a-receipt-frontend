@@ -25,10 +25,10 @@ import models.WrongWithMovement.{Excess, Shortage}
 import models.requests.DataRequest
 import models.response.MissingMandatoryPage
 import models.response.emcsTfe.{MovementItem, SubmitReportOfReceiptResponse}
-import models.{ConfirmationDetails, NormalMode, UserAnswers}
+import models.{CheckMode, ConfirmationDetails, NormalMode, UserAnswers}
 import navigation.Navigator
 import pages.unsatisfactory.{HowGiveInformationPage, WrongWithMovementPage}
-import pages.{AcceptMovementPage, CheckAnswersPage, ConfirmationPage}
+import pages.{AcceptMovementPage, CheckAnswersPage, ConfirmationPage, DestinationOfficePage}
 import play.api.i18n.MessagesApi
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -99,12 +99,23 @@ class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi
       }
     }
 
-  private[controllers] def guardPageAccess(items: Seq[MovementItem])(block: => Future[Result])(implicit request: DataRequest[_]): Future[Result] =
-    (request.userAnswers.get(AcceptMovementPage), request.userAnswers.get(HowGiveInformationPage)) match {
-      case (Some(Satisfactory), _) | (Some(Refused), Some(TheWholeMovement)) => block
-      case _ if items.nonEmpty => block
-      case _ => Future.successful(Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc)))
+  private[controllers] def guardPageAccess(items: Seq[MovementItem])(block: => Future[Result])(implicit request: DataRequest[_]): Future[Result] = {
+    lazy val guardAfterNorthernIrelandCheck: Future[Result] =
+      (request.userAnswers.get(AcceptMovementPage), request.userAnswers.get(HowGiveInformationPage)) match {
+        case (Some(Satisfactory), _) | (Some(Refused), Some(TheWholeMovement)) => block
+        case _ if items.nonEmpty => block
+        case _ => Future.successful(Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc)))
+      }
+
+    if(request.userAnswers.isNorthernIrelandTrader) {
+      request.userAnswers.get(DestinationOfficePage) match {
+        case Some(_) => guardAfterNorthernIrelandCheck
+        case None => Future.successful(Redirect(routes.DestinationOfficeController.onPageLoad(request.ern, request.arc, CheckMode)))
+      }
+    } else {
+      guardAfterNorthernIrelandCheck
     }
+  }
 
   def onSubmit(ern: String, arc: String): Action[AnyContent] =
     authorisedDataRequestWithUpToDateMovementAsync(ern, arc) { implicit request =>

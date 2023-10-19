@@ -43,7 +43,7 @@
         @h2(messages("checkYourAnswers.items.h2"))
     }
 
-    @checkAnswersItems(itemList, ReviewMode)
+    @checkAnswersItems(itemList, ReviewMode, cardTitleHeadingLevel = Some(3))
 
     @if(itemsToAdd) {
         <p class="govuk-body">

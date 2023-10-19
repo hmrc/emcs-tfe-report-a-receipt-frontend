@@ -39,6 +39,7 @@ class CheckYourAnswersViewSpec extends ViewSpecBase with ViewBehaviours {
   object Selectors extends BaseSelectors {
     val addAnotherItemButton = secondaryButton
     val submitButton = button + s":not($addAnotherItemButton)"
+    val itemCardTitle = (item: Int) => s".govuk-summary-card__title-wrapper:nth-of-type($item) h3"
     val itemDetailsLink = (item: Int) => s".govuk-summary-card__title-wrapper:nth-of-type($item) li:nth-of-type(1) a"
     val itemRemoveLink = (item: Int) => s".govuk-summary-card__title-wrapper:nth-of-type($item) li:nth-of-type(2) a"
   }
@@ -79,6 +80,7 @@ class CheckYourAnswersViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.h1 -> messagesForLanguage.heading,
           Selectors.h2(2) -> messagesForLanguage.movementDetailsH2,
           Selectors.h2(3) -> messagesForLanguage.itemsH2,
+          Selectors.itemCardTitle(1) -> messagesForLanguage.item(item1.itemUniqueReference),
           Selectors.itemDetailsLink(1) -> messagesForLanguage.itemDetails(item1.itemUniqueReference),
           Selectors.itemRemoveLink(1) -> messagesForLanguage.itemRemove(item1.itemUniqueReference),
           Selectors.addAnotherItemButton -> messagesForLanguage.addAnotherItem,

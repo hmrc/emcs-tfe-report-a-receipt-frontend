@@ -21,12 +21,12 @@
         summaryCard: components.summaryCard
 )
 
-@(itemList: Seq[(Int, SummaryList)], removeMode: Mode)(implicit messages: Messages, request: DataRequest[_])
+@(itemList: Seq[(Int, SummaryList)], removeMode: Mode, cardTitleHeadingLevel: Option[Int] = None)(implicit messages: Messages, request: DataRequest[_])
 
 @itemList.map { case (itemReference, item) =>
     @summaryCard(
         card = Card(
-            Some(CardTitle(Text(messages("checkYourAnswers.item.cardTitle", itemReference)))),
+            Some(CardTitle(Text(messages("checkYourAnswers.item.cardTitle", itemReference)), headingLevel = cardTitleHeadingLevel)),
             actions = Some(Actions(
                 items = Seq(
                     ActionItem(

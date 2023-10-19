@@ -19,8 +19,8 @@ package models.submitReportOfReceipt
 import config.AppConfig
 import models.WrongWithMovement._
 import models.response.emcsTfe.GetMovementResponse
-import models.{AcceptMovement, DestinationType, UserAnswers}
-import pages.{AcceptMovementPage, DateOfArrivalPage, MoreInformationPage}
+import models.{AcceptMovement, DestinationOffice, DestinationType, UserAnswers}
+import pages.{AcceptMovementPage, DateOfArrivalPage, DestinationOfficePage, MoreInformationPage}
 import play.api.libs.json.{Format, Json}
 import utils.{JsonOptionFormatter, ModelConstructorHelpers}
 
@@ -45,9 +45,10 @@ object SubmitReportOfReceiptModel extends JsonOptionFormatter with ModelConstruc
   private[models] val DESTINATION_OFFICE_PREFIX_XI = "XI"
 
   private[models] def destinationOfficePrefix(implicit userAnswers: UserAnswers): String = {
-    userAnswers.ern match {
-      case id if id.startsWith(DESTINATION_OFFICE_PREFIX_XI) => DESTINATION_OFFICE_PREFIX_XI
-      case _ => DESTINATION_OFFICE_PREFIX_GB
+    if(userAnswers.isNorthernIrelandTrader) {
+      mandatoryPage(DestinationOfficePage).toString
+    } else {
+      DestinationOffice.GreatBritain.toString
     }
   }
 

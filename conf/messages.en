@@ -105,6 +105,16 @@ dateOfArrival.error.notInFuture = The date you received the movement must be tod
 dateOfArrival.checkYourAnswers.label = Date of arrival
 dateOfArrival.checkYourAnswers.change.hidden = the date of arrival
 
+destinationOffice.title = Were the goods received in Great Britain or Northern Ireland?
+destinationOffice.heading = Were the goods received in Great Britain or Northern Ireland?
+destinationOffice.GB = Great Britain
+destinationOffice.XI = Northern Ireland
+destinationOffice.error.required = Select if the goods were received in Great Britain or Northern Ireland
+destinationOffice.checkYourAnswers.label = Delivery location
+destinationOffice.checkYourAnswers.GB = Great Britain
+destinationOffice.checkYourAnswers.XI = Northern Ireland
+destinationOffice.checkYourAnswers.change.hidden = the delivery location
+
 acceptMovement.title = Do you want to accept this movement?
 acceptMovement.heading = Do you want to accept this movement?
 acceptMovement.hintText = You’ll be able to give information about this movement later, even if it's satisfactory.

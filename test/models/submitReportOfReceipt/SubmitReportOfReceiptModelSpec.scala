@@ -24,11 +24,11 @@ import models.HowGiveInformation.{IndividualItem, TheWholeMovement}
 import models.WrongWithMovement.{BrokenSeals, Damaged, Excess, Other, Shortage, ShortageOrExcess}
 import models.response.MissingMandatoryPage
 import models.submitReportOfReceipt.SubmitReportOfReceiptModel.{DESTINATION_OFFICE_PREFIX_GB, DESTINATION_OFFICE_PREFIX_XI}
-import models.{ItemShortageOrExcessModel, WrongWithMovement}
+import models.{DestinationOffice, ItemShortageOrExcessModel, WrongWithMovement}
 import org.scalamock.scalatest.MockFactory
 import pages.unsatisfactory.individualItems._
 import pages.unsatisfactory._
-import pages.{AcceptMovementPage, AddMoreInformationPage, DateOfArrivalPage, MoreInformationPage}
+import pages.{AcceptMovementPage, AddMoreInformationPage, DateOfArrivalPage, DestinationOfficePage, MoreInformationPage}
 import play.api.libs.json.Json
 import utils.ModelConstructorHelpers
 
@@ -269,14 +269,18 @@ class SubmitReportOfReceiptModelSpec extends SpecBase
           val userAnswers = emptyUserAnswers.copy(ern = GB_ID)
           SubmitReportOfReceiptModel.destinationOfficePrefix(userAnswers) mustBe DESTINATION_OFFICE_PREFIX_GB
         }
+        s"when logged in user ERN starts with $DESTINATION_OFFICE_PREFIX_XI and they select DestinationOfficePage to ${DestinationOffice.GreatBritain}" in {
+          val userAnswers = emptyUserAnswers.copy(ern = XI_ID).set(DestinationOfficePage, DestinationOffice.GreatBritain)
+          SubmitReportOfReceiptModel.destinationOfficePrefix(userAnswers) mustBe DESTINATION_OFFICE_PREFIX_GB
+        }
         s"when logged in user ERN doesn't start with $DESTINATION_OFFICE_PREFIX_GB or $DESTINATION_OFFICE_PREFIX_XI (default case)" in {
           val userAnswers = emptyUserAnswers.copy(ern = testErn)
           SubmitReportOfReceiptModel.destinationOfficePrefix(userAnswers) mustBe DESTINATION_OFFICE_PREFIX_GB
         }
       }
       s"must return $DESTINATION_OFFICE_PREFIX_XI" - {
-        s"when logged in user ERN starts with $DESTINATION_OFFICE_PREFIX_XI" in {
-          val userAnswers = emptyUserAnswers.copy(ern = XI_ID)
+        s"when logged in user ERN starts with $DESTINATION_OFFICE_PREFIX_XI and they select DestinationOfficePage to ${DestinationOffice.NorthernIreland}" in {
+          val userAnswers = emptyUserAnswers.copy(ern = XI_ID).set(DestinationOfficePage, DestinationOffice.NorthernIreland)
           SubmitReportOfReceiptModel.destinationOfficePrefix(userAnswers) mustBe DESTINATION_OFFICE_PREFIX_XI
         }
       }

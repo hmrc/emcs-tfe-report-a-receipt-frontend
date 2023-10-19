@@ -120,6 +120,16 @@ acceptMovement.checkYourAnswers.refused = Refused
 acceptMovement.checkYourAnswers.partiallyRefused = Partially refused
 acceptMovement.checkYourAnswers.change.hidden = the receipt status
 
+destinationOffice.title = Were the goods received in Great Britain or Northern Ireland?
+destinationOffice.heading = Were the goods received in Great Britain or Northern Ireland?
+destinationOffice.GB = Great Britain
+destinationOffice.XI = Northern Ireland
+destinationOffice.error.required = Select if the goods were received in Great Britain or Northern Ireland
+destinationOffice.checkYourAnswers.label = Delivery location
+destinationOffice.checkYourAnswers.GB = Great Britain
+destinationOffice.checkYourAnswers.XI = Northern Ireland
+destinationOffice.checkYourAnswers.change.hidden = the delivery location
+
 addMoreInformation.title = Do you want to give any more information about this movement?
 addMoreInformation.heading = Do you want to give any more information about this movement?
 addMoreInformation.satisfactory.title = Do you want to give any information about this movement?

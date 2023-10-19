@@ -30,6 +30,8 @@ final case class UserAnswers(ern: String,
                              data: JsObject = Json.obj(),
                              lastUpdated: Instant = Instant.now) {
 
+  def isNorthernIrelandTrader: Boolean = ern.startsWith("XI")
+
   /**
    * @return all item unique references which have answers against them
    */

@@ -49,7 +49,7 @@ class AddedItemsController @Inject()(
                                       getCnCodeInformationService: GetCnCodeInformationService,
                                       checkAnswersItemHelper: CheckAnswersItemHelper,
                                       override val userAnswersService: UserAnswersService,
-                                      override val navigator: Navigator,
+                                      override val navigator: Navigator
                                     )(implicit config: AppConfig) extends BaseNavigationController with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String): Action[AnyContent] =

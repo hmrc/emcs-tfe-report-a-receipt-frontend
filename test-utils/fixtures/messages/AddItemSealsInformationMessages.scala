@@ -22,11 +22,13 @@ object AddItemSealsInformationMessages {
     override val heading = (i: Int) => s"Do you want to give information about item $i having broken seal(s)?"
     override val title = (i: Int) => title(heading(i))
     override val itemDetails = (i: Int) => s"View item $i details"
+    val hiddenLegendText = (i: Int) => s"Do you want to give information about item $i having broken seal(s)"
   }
 
   object Welsh extends AddItemInformationMessagesBase with BaseWelsh {
     override val heading = (i: Int) => s"Do you want to give information about item $i having broken seal(s)?"
     override val title = (i: Int) => title(heading(i))
     override val itemDetails = (i: Int) => s"View item $i details"
+    val hiddenLegendText = (i: Int) => s"Do you want to give information about item $i having broken seal(s)"
   }
 }

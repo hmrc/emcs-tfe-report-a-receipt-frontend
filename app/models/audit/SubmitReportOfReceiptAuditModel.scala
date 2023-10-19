@@ -38,7 +38,7 @@ case class SubmitReportOfReceiptAuditModel(credentialId: String,
       "correlationId" -> correlationId,
       "ern" -> ern,
       "arc" -> submission.arc,
-      "sequenceNumber" -> submission.sequenceNumber,
+      "sequenceNumber" -> submission.sequenceNumber
     ) ++ submission.consigneeTrader.fold(Json.obj())(traderDetail =>
       Json.obj("consigneeTrader"  -> Json.toJson(traderDetail)(TraderModel.auditWrites))) ++
       submission.deliveryPlaceTrader.fold(Json.obj())(traderDetail =>
@@ -46,7 +46,7 @@ case class SubmitReportOfReceiptAuditModel(credentialId: String,
       Json.obj(
         "destinationOffice" -> submission.destinationOffice,
         "dateOfArrival" -> submission.dateOfArrival.toString,
-        "acceptMovement" ->  movement
+        "acceptMovement" -> movement
       ) ++
       individualItemsJsonBlock ++
       Json.obj("otherInformation" -> submission.otherInformation)

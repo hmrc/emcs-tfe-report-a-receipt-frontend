@@ -21,4 +21,5 @@ trait AddItemInformationMessagesBase {
     val title: Int => String
     val heading: Int => String
     val itemDetails: Int => String
+    val hiddenLegendText: Int => String
 }

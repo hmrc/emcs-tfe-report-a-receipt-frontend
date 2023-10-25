@@ -5,7 +5,7 @@ import com.github.tomakehurst.wiremock.http.Fault
 import connectors.referenceData.GetCnCodeInformationConnector
 import generators.ModelGenerators
 import models.ReferenceDataUnitOfMeasure
-import models.requests.CnCodeInformationRequest
+import models.requests.{CnCodeInformationItem, CnCodeInformationRequest}
 import models.response.referenceData.{CnCodeInformation, CnCodeInformationResponse}
 import models.response.{JsonValidationError, UnexpectedDownstreamResponseError}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -44,10 +44,9 @@ class GetCnCodeInformationConnectorISpec
   ".check" - {
 
     val url = "/emcs-tfe-reference-data/oracle/cn-code-information"
-    val request = CnCodeInformationRequest(productCodeList = Seq("T400"), cnCodeList = Seq("24029000"))
+    val request = CnCodeInformationRequest(items = Seq(CnCodeInformationItem(productCode = "T400", cnCode = "24029000")))
     val requestJson = Json.obj(
-      "productCodeList" -> Json.arr("T400"),
-      "cnCodeList" -> Json.arr("24029000")
+      "items" -> Json.arr(Json.obj("productCode" -> "T400", "cnCode" -> "24029000"))
     )
 
     "must return a response model when the server responds OK" in {

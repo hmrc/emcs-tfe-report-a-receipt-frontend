@@ -17,7 +17,7 @@
 package services
 
 import connectors.referenceData.GetCnCodeInformationConnector
-import models.requests.CnCodeInformationRequest
+import models.requests.{CnCodeInformationItem, CnCodeInformationRequest}
 import models.response.ReferenceDataException
 import models.response.emcsTfe.MovementItem
 import models.response.referenceData.{CnCodeInformation, CnCodeInformationResponse}
@@ -44,9 +44,10 @@ class GetCnCodeInformationService @Inject()(connector: GetCnCodeInformationConne
   }
 
   private def generateRequestModelFromMovementItem(items: Seq[MovementItem]): CnCodeInformationRequest = {
-    val productCodes = items.map(_.productCode)
-    val cnCodes = items.map(_.cnCode)
-    CnCodeInformationRequest(productCodeList = productCodes, cnCodeList = cnCodes)
+    CnCodeInformationRequest(items.map {
+      item =>
+        CnCodeInformationItem(productCode = item.productCode, cnCode = item.cnCode)
+    })
   }
 
   private def matchMovementItemsWithReferenceDataValues(

@@ -92,7 +92,7 @@ class ItemDetailsHelperSpec extends SpecBase {
                 None
               },
 
-              createSummaryListRow(langMessages.tablePackaging, s"${item.packaging.head.quantity.get} ${item.packaging.head.typeOfPackage}")
+              createSummaryListRow(langMessages.tablePackaging, item.packaging.map(pckg => s"${pckg.quantity.get} ${pckg.typeOfPackage}").mkString("</br>"))
             ).flatten.flatten
           }
 
@@ -135,6 +135,12 @@ class ItemDetailsHelperSpec extends SpecBase {
             val testItem = item1.copy(density = None)
             helper.constructItemSummaryRows(testItem, cnCodeInformation)(messages) mustBe expectedSummaryTable(testItem, includeDensity = false)
           }
+
+          "when more than one package type" in {
+            val testItem = item1.copy(packaging = Seq(boxPackage, cratePackage))
+            helper.constructItemSummaryRows(testItem, cnCodeInformation)(messages) mustBe expectedSummaryTable(testItem)
+          }
+
         }
 
       }

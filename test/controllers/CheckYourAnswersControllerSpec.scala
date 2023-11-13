@@ -257,6 +257,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency wi
                       ConfirmationPage,
                       ConfirmationDetails(
                         Satisfactory.toString,
+                        testReceiptDate,
                         hasMovementShortage = false,
                         hasItemShortage = false,
                         hasMovementExcess = false,

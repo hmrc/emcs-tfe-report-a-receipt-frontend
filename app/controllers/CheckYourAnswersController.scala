@@ -38,6 +38,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import viewmodels.checkAnswers.{CheckAnswersHelper, CheckAnswersItemHelper}
 import views.html.CheckYourAnswersView
 
+import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.Future
 
@@ -146,6 +147,7 @@ class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi
         data = Json.obj(ConfirmationPage.toString ->
           ConfirmationDetails(
             receiptStatus = request.userAnswers.get(AcceptMovementPage).getOrElse().toString,
+            receiptDate = LocalDate.now().toString,
             hasMovementShortage = request.userAnswers.get(WrongWithMovementPage).exists(_.contains(Shortage)),
             hasItemShortage = request.userAnswers.completedItems.exists(_.itemShortageOrExcess.exists(_.wrongWithItem == Shortage)),
             hasMovementExcess = request.userAnswers.get(WrongWithMovementPage).exists(_.contains(Excess)),

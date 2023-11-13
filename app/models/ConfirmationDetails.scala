@@ -20,18 +20,19 @@ import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import utils.DateUtils
 
-import java.time.LocalDate
+import java.time.LocalDateTime
 
 case class ConfirmationDetails(
                                 receiptStatus: String,
+                                receiptDate: String,
                                 hasMovementShortage: Boolean = false,
                                 hasItemShortage: Boolean = false,
                                 hasMovementExcess: Boolean = false,
                                 hasItemExcess: Boolean = false
                               ) extends DateUtils {
 
-  def formatReciptDateForUIOutput()(implicit messages: Messages): String = {
-    LocalDateExtensions(LocalDate.now()).formatDateForUIOutput()
+  def formatReceiptDateForUIOutput()(implicit messages: Messages): String = {
+    LocalDateExtensions(LocalDateTime.parse(receiptDate).toLocalDate).formatDateForUIOutput()
   }
 
 }

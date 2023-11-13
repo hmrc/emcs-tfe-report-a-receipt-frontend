@@ -49,6 +49,7 @@ class ConfirmationContentHelperSpec extends SpecBase with SubmitReportOfReceiptF
 
     lazy val testConfirmationDetails = ConfirmationDetails(
       userAnswers.get(AcceptMovementPage).getOrElse(Satisfactory).toString,
+      testReceiptDate,
       hasMovementShortage,
       hasItemShortage,
       hasMovementExcess,

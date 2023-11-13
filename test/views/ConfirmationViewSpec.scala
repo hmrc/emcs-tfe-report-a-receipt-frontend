@@ -51,7 +51,7 @@ class ConfirmationViewSpec extends ViewSpecBase with ViewBehaviours {
 
           val view = app.injector.instanceOf[ConfirmationView]
 
-          val testConfirmationDetails = ConfirmationDetails(Satisfactory.toString)
+          val testConfirmationDetails = ConfirmationDetails(Satisfactory.toString, testReceiptDate)
 
           implicit val doc: Document = Jsoup.parse(view(testConfirmationDetails).toString())
 
@@ -78,7 +78,7 @@ class ConfirmationViewSpec extends ViewSpecBase with ViewBehaviours {
 
           val view = app.injector.instanceOf[ConfirmationView]
 
-          val testConfirmationDetails = ConfirmationDetails(Unsatisfactory.toString, hasMovementShortage = true, hasMovementExcess = true)
+          val testConfirmationDetails = ConfirmationDetails(Unsatisfactory.toString, testReceiptDate, hasMovementShortage = true, hasMovementExcess = true)
 
           implicit val doc: Document = Jsoup.parse(view(testConfirmationDetails).toString())
 
@@ -117,7 +117,7 @@ class ConfirmationViewSpec extends ViewSpecBase with ViewBehaviours {
 
           val view = app.injector.instanceOf[ConfirmationView]
 
-          val testConfirmationDetails = ConfirmationDetails(Refused.toString, hasItemExcess = true, hasItemShortage = true)
+          val testConfirmationDetails = ConfirmationDetails(Refused.toString, testReceiptDate, hasItemExcess = true, hasItemShortage = true)
 
           implicit val doc: Document = Jsoup.parse(view(testConfirmationDetails).toString())
 

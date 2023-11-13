@@ -23,16 +23,15 @@ import utils.DateUtils
 import java.time.LocalDateTime
 
 case class ConfirmationDetails(
-                                receipt: String,
-                                receiptDate: String,
                                 receiptStatus: String,
+                                receiptDate: String,
                                 hasMovementShortage: Boolean = false,
                                 hasItemShortage: Boolean = false,
                                 hasMovementExcess: Boolean = false,
                                 hasItemExcess: Boolean = false
                               ) extends DateUtils {
 
-  def formatReciptDateForUIOutput()(implicit messages: Messages): String = {
+  def formatReceiptDateForUIOutput()(implicit messages: Messages): String = {
     LocalDateExtensions(LocalDateTime.parse(receiptDate).toLocalDate).formatDateForUIOutput()
   }
 

@@ -39,9 +39,8 @@ class ConfirmationControllerSpec extends SpecBase {
     "when the confirmation receipt reference is held in session" - {
 
       val testConfirmationDetails = ConfirmationDetails(
-        testConfirmationReference,
-        testReceiptDate,
-        Satisfactory.toString
+        Satisfactory.toString,
+        testReceiptDate
       )
 
       "must return OK and the correct view for a GET" in new Fixture(Some(emptyUserAnswers.set(ConfirmationPage, testConfirmationDetails))) {

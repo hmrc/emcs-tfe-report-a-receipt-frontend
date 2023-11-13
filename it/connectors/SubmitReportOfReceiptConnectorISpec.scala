@@ -43,7 +43,7 @@ class SubmitReportOfReceiptConnectorISpec extends AnyFreeSpec
   ".submit" - {
 
     val url = s"/emcs-tfe/report-of-receipt/ern/arc"
-    val body = Json.toJson(successResponseJson)
+    val body = Json.toJson(successResponseChRISJson)
 
     "must return true when the server responds OK" in {
 
@@ -53,7 +53,7 @@ class SubmitReportOfReceiptConnectorISpec extends AnyFreeSpec
           .willReturn(aResponse().withStatus(OK).withBody(Json.stringify(body)))
       )
 
-      connector.submit("ern", maxSubmitReportOfReceiptModel).futureValue mustBe Right(successResponse)
+      connector.submit("ern", maxSubmitReportOfReceiptModel).futureValue mustBe Right(successResponseChRIS)
     }
 
     "must return false when the server responds NOT_FOUND" in {

@@ -48,9 +48,8 @@ class ConfirmationContentHelperSpec extends SpecBase with SubmitReportOfReceiptF
     lazy val excessContent = app.injector.instanceOf[ExcessContent]
 
     lazy val testConfirmationDetails = ConfirmationDetails(
-      testConfirmationReference,
-      testReceiptDate,
       userAnswers.get(AcceptMovementPage).getOrElse(Satisfactory).toString,
+      testReceiptDate,
       hasMovementShortage,
       hasItemShortage,
       hasMovementExcess,

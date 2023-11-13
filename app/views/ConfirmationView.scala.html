@@ -51,18 +51,9 @@
                 value = Value(content = Text(messages(s"confirmation.acceptMovement.${receiptDetails.receiptStatus}")))
             ),
             SummaryListRow(key = Key(content = Text(messages("confirmation.movementInformation.receiptDate.label"))),
-                value = Value(content = Text(receiptDetails.formatReciptDateForUIOutput)))
+                value = Value(content = Text(receiptDetails.formatReceiptDateForUIOutput)))
         )
     ))
-
-    @p(classes = "govuk-body") {
-        @messages("confirmation.reference")
-        @strong {
-            @wordBreak {
-                @{receiptDetails.receipt}
-            }
-        }
-    }
 
     @whatHappensNext()
 

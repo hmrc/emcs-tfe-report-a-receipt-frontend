@@ -55,15 +55,6 @@
         )
     ))
 
-    @p(classes = "govuk-body") {
-        @messages("confirmation.reference")
-        @strong {
-            @wordBreak {
-                @{receiptDetails.receipt}
-            }
-        }
-    }
-
     @whatHappensNext()
 
     @confirmationContentHelper.renderRefusedContent(receiptDetails)

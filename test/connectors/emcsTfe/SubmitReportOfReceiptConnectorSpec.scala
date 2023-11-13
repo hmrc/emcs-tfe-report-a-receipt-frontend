@@ -46,9 +46,9 @@ class SubmitReportOfReceiptConnectorSpec extends SpecBase
         MockHttpClient.post(
           url = s"${appConfig.emcsTfeBaseUrl}/report-of-receipt/ern/arc",
           body = maxSubmitReportOfReceiptModel
-        ).returns(Future.successful(Right(successResponse)))
+        ).returns(Future.successful(Right(successResponseChRIS)))
 
-        connector.submit(exciseRegistrationNumber = "ern", maxSubmitReportOfReceiptModel).futureValue mustBe Right(successResponse)
+        connector.submit(exciseRegistrationNumber = "ern", maxSubmitReportOfReceiptModel).futureValue mustBe Right(successResponseChRIS)
       }
     }
 

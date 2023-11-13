@@ -24,7 +24,7 @@ import models.HowGiveInformation.TheWholeMovement
 import models.WrongWithMovement.{Excess, Shortage}
 import models.requests.DataRequest
 import models.response.MissingMandatoryPage
-import models.response.emcsTfe.{MovementItem, SubmitReportOfReceiptResponse}
+import models.response.emcsTfe.MovementItem
 import models.{CheckMode, ConfirmationDetails, NormalMode, UserAnswers}
 import navigation.Navigator
 import pages.unsatisfactory.{HowGiveInformationPage, WrongWithMovementPage}
@@ -107,7 +107,7 @@ class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi
         case _ => Future.successful(Redirect(routes.SelectItemsController.onPageLoad(request.ern, request.arc)))
       }
 
-    if(request.userAnswers.isNorthernIrelandTrader) {
+    if (request.userAnswers.isNorthernIrelandTrader) {
       request.userAnswers.get(DestinationOfficePage) match {
         case Some(_) => guardAfterNorthernIrelandCheck
         case None => Future.successful(Redirect(routes.DestinationOfficeController.onPageLoad(request.ern, request.arc, CheckMode)))
@@ -121,7 +121,9 @@ class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi
     authorisedDataRequestWithUpToDateMovementAsync(ern, arc) { implicit request =>
       submitReportOfReceiptService.submit(ern, arc).flatMap { response =>
 
-        deleteDraftAndSetConfirmationFlow(request.internalId, request.ern, request.arc, response).map { _ =>
+        logger.debug(s"[onSubmit] response received from downstream service ${response.downstreamService}: ${response.receipt}")
+
+        deleteDraftAndSetConfirmationFlow(request.ern, request.arc).map { _ =>
           Redirect(navigator.nextPage(CheckAnswersPage, NormalMode, request.userAnswers))
         }
 
@@ -134,10 +136,8 @@ class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi
     }
 
 
-  private def deleteDraftAndSetConfirmationFlow(internalId: String,
-                                                ern: String,
-                                                arc: String,
-                                                response: SubmitReportOfReceiptResponse)
+  private def deleteDraftAndSetConfirmationFlow(ern: String,
+                                                arc: String)
                                                (implicit hc: HeaderCarrier, request: DataRequest[_]): Future[UserAnswers] = {
     userAnswersService.set(
       UserAnswers(
@@ -145,8 +145,6 @@ class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi
         arc,
         data = Json.obj(ConfirmationPage.toString ->
           ConfirmationDetails(
-            receipt = response.receipt,
-            receiptDate = response.receiptDate,
             receiptStatus = request.userAnswers.get(AcceptMovementPage).getOrElse().toString,
             hasMovementShortage = request.userAnswers.get(WrongWithMovementPage).exists(_.contains(Shortage)),
             hasItemShortage = request.userAnswers.completedItems.exists(_.itemShortageOrExcess.exists(_.wrongWithItem == Shortage)),

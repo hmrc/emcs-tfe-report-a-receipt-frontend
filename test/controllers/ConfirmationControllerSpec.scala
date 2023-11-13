@@ -39,8 +39,6 @@ class ConfirmationControllerSpec extends SpecBase {
     "when the confirmation receipt reference is held in session" - {
 
       val testConfirmationDetails = ConfirmationDetails(
-        testConfirmationReference,
-        testReceiptDate,
         Satisfactory.toString
       )
 

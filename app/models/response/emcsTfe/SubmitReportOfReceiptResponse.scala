@@ -16,9 +16,16 @@
 
 package models.response.emcsTfe
 
-import play.api.libs.json.{Format, Json}
+import play.api.libs.functional.syntax._
+import play.api.libs.json._
 
-case class SubmitReportOfReceiptResponse(receipt: String, receiptDate: String)
+case class SubmitReportOfReceiptResponse(receipt: String, downstreamService: String)
+
 object SubmitReportOfReceiptResponse {
-  implicit val format: Format[SubmitReportOfReceiptResponse] = Json.format
+  implicit val reads: Reads[SubmitReportOfReceiptResponse] =
+    (__ \ "message").read[String].map(SubmitReportOfReceiptResponse(_, "EIS")) or
+      (__ \ "receipt").read[String].map(SubmitReportOfReceiptResponse(_, "ChRIS"))
+
+  implicit val writes: OWrites[SubmitReportOfReceiptResponse] =
+    (o: SubmitReportOfReceiptResponse) => Json.obj("receipt" -> o.receipt)
 }

@@ -23,17 +23,23 @@ package models.response.emcsTfe
 
 import base.SpecBase
 import fixtures.SubmitReportOfReceiptFixtures
-import play.api.libs.json.{JsSuccess, Json}
+import play.api.libs.json.{JsPath, JsSuccess, Json}
 
 
 class SubmitReportOfReceiptResponseSpec extends SpecBase with SubmitReportOfReceiptFixtures {
 
   "SubmitReportOfReceiptResponse" - {
-    "should read from json" in {
-      Json.fromJson[SubmitReportOfReceiptResponse](successResponseJson) mustBe JsSuccess(successResponse)
+    "should read from json - ChRIS" in {
+      Json.fromJson[SubmitReportOfReceiptResponse](successResponseChRISJson) mustBe JsSuccess(successResponseChRIS, JsPath \ "receipt")
     }
-    "should write to json" in {
-      Json.toJson(successResponse) mustBe successResponseJson
+    "should read from json - EIS" in {
+      Json.fromJson[SubmitReportOfReceiptResponse](successResponseEISJson) mustBe JsSuccess(successResponseEIS, JsPath \ "message")
+    }
+    "should write to json - ChRIS" in {
+      Json.toJson(successResponseChRIS) mustBe successResponseJson
+    }
+    "should write to json - EIS" in {
+      Json.toJson(successResponseEIS) mustBe successResponseJson
     }
   }
 }

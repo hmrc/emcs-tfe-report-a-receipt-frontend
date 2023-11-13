@@ -59,12 +59,12 @@ class SubmitReportOfReceiptServiceSpec extends SpecBase with MockSubmitReportOfR
         MockAuditingService.verifyAudit(SubmitReportOfReceiptAuditModel("credId", "internalId", "correlationId", submission, "ern")).noMoreThanOnce()
 
         MockAuditingService.verifyAudit(
-          SubmitReportOfReceiptResponseAuditModel("credId", "internalId", "correlationId", "arc", "ern", successResponse.receipt)
+          SubmitReportOfReceiptResponseAuditModel("credId", "internalId", "correlationId", "arc", "ern", successResponseChRIS.receipt)
         ).noMoreThanOnce()
 
-        MockSubmitReportOfReceiptConnector.submit(testErn, submission).returns(Future.successful(Right(successResponse)))
+        MockSubmitReportOfReceiptConnector.submit(testErn, submission).returns(Future.successful(Right(successResponseChRIS)))
 
-        testService.submit(testErn, testArc)(hc, request).futureValue mustBe successResponse
+        testService.submit(testErn, testArc)(hc, request).futureValue mustBe successResponseChRIS
       }
     }
 

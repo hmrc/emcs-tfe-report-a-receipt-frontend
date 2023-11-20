@@ -17,6 +17,7 @@
 package models.submitReportOfReceipt
 
 import config.AppConfig
+import models.DestinationType.TemporaryRegisteredConsignee
 import models.WrongWithMovement._
 import models.response.emcsTfe.GetMovementResponse
 import models.{AcceptMovement, DestinationOffice, DestinationType, UserAnswers}
@@ -52,13 +53,22 @@ object SubmitReportOfReceiptModel extends JsonOptionFormatter with ModelConstruc
     }
   }
 
+  private[models] def consigneeTraderDetails(movementDetails: GetMovementResponse)(implicit userAnswers: UserAnswers): Option[TraderModel] = {
+    (movementDetails.destinationType, movementDetails.consigneeTrader) match {
+      case (TemporaryRegisteredConsignee, Some(consignee: TraderModel)) =>
+        Some(consignee.copy(traderExciseNumber = Some(userAnswers.ern)))
+      case (_, consignee) =>
+        consignee
+    }
+  }
+
   def apply(movementDetails: GetMovementResponse)(implicit userAnswers: UserAnswers, appConfig: AppConfig): SubmitReportOfReceiptModel = {
 
     SubmitReportOfReceiptModel(
       arc = movementDetails.arc,
       sequenceNumber = movementDetails.sequenceNumber,
       destinationType = movementDetails.destinationType,
-      consigneeTrader = movementDetails.consigneeTrader,
+      consigneeTrader = consigneeTraderDetails(movementDetails),
       deliveryPlaceTrader = movementDetails.deliveryPlaceTrader,
       destinationOffice = destinationOfficePrefix + appConfig.destinationOfficeSuffix,
       dateOfArrival = mandatoryPage(DateOfArrivalPage),

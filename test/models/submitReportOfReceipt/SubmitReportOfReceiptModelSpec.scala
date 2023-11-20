@@ -20,15 +20,17 @@ import base.SpecBase
 import config.AppConfig
 import fixtures.{GetMovementResponseFixtures, SubmitReportOfReceiptFixtures, TraderModelFixtures}
 import models.AcceptMovement.{PartiallyRefused, Refused, Satisfactory, Unsatisfactory}
+import models.DestinationType.TemporaryRegisteredConsignee
 import models.HowGiveInformation.{IndividualItem, TheWholeMovement}
 import models.WrongWithMovement.{BrokenSeals, Damaged, Excess, Other, Shortage, ShortageOrExcess}
 import models.response.MissingMandatoryPage
+import models.response.emcsTfe.GetMovementResponse
 import models.submitReportOfReceipt.SubmitReportOfReceiptModel.{DESTINATION_OFFICE_PREFIX_GB, DESTINATION_OFFICE_PREFIX_XI}
-import models.{DestinationOffice, ItemShortageOrExcessModel, WrongWithMovement}
+import models.{DestinationOffice, DestinationType, ItemShortageOrExcessModel, WrongWithMovement}
 import org.scalamock.scalatest.MockFactory
-import pages.unsatisfactory.individualItems._
+import pages._
 import pages.unsatisfactory._
-import pages.{AcceptMovementPage, AddMoreInformationPage, DateOfArrivalPage, DestinationOfficePage, MoreInformationPage}
+import pages.unsatisfactory.individualItems._
 import play.api.libs.json.Json
 import utils.ModelConstructorHelpers
 
@@ -285,5 +287,52 @@ class SubmitReportOfReceiptModelSpec extends SpecBase
         }
       }
     }
-  }
+
+    "calling .consigneeTraderDetails(_: GetMovementResponse)" - {
+      implicit val userAnswers = emptyUserAnswers
+
+      "when the destination type = TemporaryRegisteredConsignee" - {
+        "must replace the consignee's ERN of the movement with the logged in consignee's ERN" in {
+          val aMovement: GetMovementResponse = getMovementResponseModel.copy(
+            destinationType = TemporaryRegisteredConsignee,
+            consigneeTrader = Some(
+              TraderModel(
+                traderExciseNumber = Some("TCA1234567890"),
+                traderName = None,
+                address = None,
+                eoriNumber = None
+              )
+            )
+          )
+
+          SubmitReportOfReceiptModel.consigneeTraderDetails(aMovement) mustBe Some(TraderModel(Some(testErn), None, None, None))
+        }
+      }
+
+      DestinationType.values.filterNot(_ == TemporaryRegisteredConsignee).foreach { destinationType =>
+        s"when the destinationType = ${destinationType.getClass.getSimpleName.stripSuffix("$")}" - {
+
+          "must NOT replace the consignee's ERN of the movement with the logged in consignee's ERN" in {
+
+            val aMovement: GetMovementResponse = getMovementResponseModel.copy(
+              destinationType = destinationType,
+              consigneeTrader = Some(
+                TraderModel(
+                  traderExciseNumber = Some("GB1234567890"),
+                  traderName = None,
+                  address = None,
+                  eoriNumber = None
+                )
+              )
+            )
+
+            SubmitReportOfReceiptModel.consigneeTraderDetails(aMovement) mustBe aMovement.consigneeTrader
+          }
+        }
+
+      }
+    }
+
+    }
+
 }

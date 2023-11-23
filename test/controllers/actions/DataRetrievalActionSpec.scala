@@ -17,16 +17,17 @@
 package controllers.actions
 
 import base.SpecBase
-import mocks.services.MockUserAnswersService
+import controllers.actions.DataRetrievalActionImpl
+import mocks.services.{MockGetTraderKnownFactsService, MockUserAnswersService}
 import models.requests.{MovementRequest, OptionalDataRequest, UserRequest}
 import play.api.test.FakeRequest
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DataRetrievalActionSpec extends SpecBase with MockUserAnswersService {
+class DataRetrievalActionSpec extends SpecBase with MockUserAnswersService with MockGetTraderKnownFactsService {
 
-  lazy val dataRetrievalAction = new DataRetrievalActionImpl(mockUserAnswersService) {
+  lazy val dataRetrievalAction = new DataRetrievalActionImpl(mockUserAnswersService, mockGetTraderKnownFactsService) {
     def callTransform[A](request: MovementRequest[A]): Future[OptionalDataRequest[A]] = transform(request)
   }
 
@@ -37,9 +38,10 @@ class DataRetrievalActionSpec extends SpecBase with MockUserAnswersService {
       "must set userAnswers to 'None' in the request" in {
 
         MockUserAnswersService.get(testErn, testArc).returns(Future.successful(None))
+        MockGetTraderKnownFactsService.getTraderKnownFacts(testErn).returns(Future.successful(Some(testMinTraderKnownFacts)))
 
         val result = dataRetrievalAction.callTransform(
-          MovementRequest(UserRequest(FakeRequest(), testErn, testInternalId, testCredId), testArc, getMovementResponseModel)
+          MovementRequest(UserRequest(FakeRequest(), testErn, testInternalId, testCredId, false), testArc, getMovementResponseModel)
         ).futureValue
 
         result.userAnswers must not be defined
@@ -51,9 +53,10 @@ class DataRetrievalActionSpec extends SpecBase with MockUserAnswersService {
       "must build a userAnswers object and add it to the request" in {
 
         MockUserAnswersService.get(testErn, testArc).returns(Future(Some(emptyUserAnswers)))
+        MockGetTraderKnownFactsService.getTraderKnownFacts(testErn).returns(Future.successful(Some(testMinTraderKnownFacts)))
 
         val result = dataRetrievalAction.callTransform(
-          MovementRequest(UserRequest(FakeRequest(), testErn, testInternalId, testCredId), testArc, getMovementResponseModel)
+          MovementRequest(UserRequest(FakeRequest(), testErn, testInternalId, testCredId, false), testArc, getMovementResponseModel)
         ).futureValue
 
         result.userAnswers mustBe defined

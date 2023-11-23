@@ -18,7 +18,7 @@ package base
 
 import controllers.actions._
 import fixtures.{BaseFixtures, GetMovementResponseFixtures}
-import models.UserAnswers
+import models.{TraderKnownFacts, UserAnswers}
 import models.requests.{DataRequest, MovementRequest, OptionalDataRequest, UserRequest}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
@@ -46,18 +46,24 @@ trait SpecBase
   def messages(app: Application, lang: Lang): Messages = messagesApi(app).preferred(Seq(lang))
 
   def userRequest[A](request: Request[A], ern: String = testErn): UserRequest[A] =
-    UserRequest(request, ern, testInternalId, testCredId)
+    UserRequest(request, ern, testInternalId, testCredId, false)
 
   def movementRequest[A](request: Request[A], ern: String = testErn): MovementRequest[A] =
     MovementRequest(userRequest(request, ern), testArc, getMovementResponseModel)
 
-  def optionalDataRequest[A](request: Request[A], answers: Option[UserAnswers] = None): OptionalDataRequest[A] =
-    OptionalDataRequest(movementRequest(request), answers)
+  def optionalDataRequest[A](request: Request[A],
+                             userAnswers: Option[UserAnswers] = None,
+                             traderKnownFacts: Option[TraderKnownFacts] = None): OptionalDataRequest[A] =
+    OptionalDataRequest(movementRequest(request), userAnswers, traderKnownFacts)
 
-  def dataRequest[A](request: Request[A], answers: UserAnswers = emptyUserAnswers, ern: String = testErn): DataRequest[A] =
-    DataRequest(movementRequest(request, ern), answers)
+  def dataRequest[A](request: Request[A],
+                     userAnswers: UserAnswers = emptyUserAnswers,
+                     ern: String = testErn,
+                     traderKnownFacts: TraderKnownFacts = testMinTraderKnownFacts): DataRequest[A] =
+    DataRequest(movementRequest(request, ern), userAnswers, traderKnownFacts)
 
-  protected def applicationBuilder(userAnswers: Option[UserAnswers] = None): GuiceApplicationBuilder =
+  protected def applicationBuilder(userAnswers: Option[UserAnswers] = None,
+                                   traderKnownFacts: Option[TraderKnownFacts] = Some(testMinTraderKnownFacts)): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .configure(
         "play.filters.csp.nonce.enabled" -> false
@@ -65,7 +71,7 @@ trait SpecBase
       .overrides(
         bind[AuthAction].to[FakeAuthAction],
         bind[UserAllowListAction].to[FakeUserAllowListAction],
-        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers)),
+        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers, traderKnownFacts)),
         bind[MovementAction].toInstance(new FakeMovementAction(getMovementResponseModel))
       )
 }

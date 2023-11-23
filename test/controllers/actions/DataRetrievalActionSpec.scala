@@ -17,7 +17,6 @@
 package controllers.actions
 
 import base.SpecBase
-import controllers.actions.DataRetrievalActionImpl
 import mocks.services.{MockGetTraderKnownFactsService, MockUserAnswersService}
 import models.requests.{MovementRequest, OptionalDataRequest, UserRequest}
 import play.api.test.FakeRequest

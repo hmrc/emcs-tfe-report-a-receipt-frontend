@@ -17,7 +17,7 @@
 package views
 
 import base.ViewSpecBase
-import models.requests.{DataRequest, MovementRequest, UserRequest}
+import models.requests.{DataRequest, MovementRequest, OptionalDataRequest, UserRequest}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.Messages
@@ -36,6 +36,9 @@ class ViewUtilsSpec extends ViewSpecBase with ViewBehaviours {
 
   def createDataRequest(hasMultipleErns: Boolean): DataRequest[_] =
     DataRequest(createMovementRequest(hasMultipleErns), emptyUserAnswers, testMinTraderKnownFacts)
+
+  def createOptionalDataRequest(hasMultipleErns: Boolean): OptionalDataRequest[_] =
+    OptionalDataRequest(createMovementRequest(hasMultipleErns), None, Some(testMinTraderKnownFacts))
 
   ".title" in {
     case class UserData(name: String, age: Int)
@@ -60,11 +63,19 @@ class ViewUtilsSpec extends ViewSpecBase with ViewBehaviours {
 
   ".maybeShowActiveTrader" - {
 
-    "given a data request, where the user has multiple ERNs" in {
+    "given an optional data request, when the user has multiple ERNs" in {
+      ViewUtils.maybeShowActiveTrader(createOptionalDataRequest(true)) mustBe Some(TraderInfo("testTraderName", "ern"))
+    }
+
+    "given an optional data request, when the user has a single ERN" in {
+      ViewUtils.maybeShowActiveTrader(createOptionalDataRequest(false)) mustBe None
+    }
+
+    "given a data request, when the user has multiple ERNs" in {
       ViewUtils.maybeShowActiveTrader(createDataRequest(true)) mustBe Some(TraderInfo("testTraderName", "ern"))
     }
 
-    "given a data request, where the user has a single ERN" in {
+    "given a data request, when the user has a single ERN" in {
       ViewUtils.maybeShowActiveTrader(createDataRequest(false)) mustBe None
     }
   }

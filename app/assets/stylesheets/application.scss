@@ -1,4 +1,10 @@
+$govuk-assets-path: "/emcs/report-receipt/assets/lib/govuk-frontend/govuk/assets/";
+$hmrc-assets-path: "/emcs/report-receipt/assets/lib/hmrc-frontend/hmrc/assets/";
+
 @import "patterns/table";
+
+@import "lib/govuk-frontend/govuk/all";
+@import "lib/hmrc-frontend/hmrc/all";
 
 .js-visible {
   display: none !important;
@@ -19,3 +25,6 @@
     display: none !important;
   }
 }
+
+@import "active-trader-info";
+

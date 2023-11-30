@@ -16,7 +16,7 @@
 
 package config
 
-import featureswitch.core.config.{FeatureSwitching, ReturnToLegacy, WelshLanguage}
+import featureswitch.core.config.{FeatureSwitching, ReturnToLegacy, StubGetTraderKnownFacts, WelshLanguage}
 
 import javax.inject.{Inject, Singleton}
 import play.api.Configuration
@@ -88,7 +88,7 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig, configuration: Configu
 
   private def emcsTfeService: String = servicesConfig.baseUrl("emcs-tfe")
   private def userAllowListService: String = servicesConfig.baseUrl("user-allow-list")
-  private def referenceDataService: String = servicesConfig.baseUrl("reference-data")
+  private def referenceDataService: String = servicesConfig.baseUrl("emcs-tfe-reference-data")
   def emcsTfeBaseUrl: String = s"$emcsTfeService/emcs-tfe"
   def userAllowListBaseUrl: String = s"$userAllowListService/user-allow-list"
   def referenceDataBaseUrl: String = s"$referenceDataService/emcs-tfe-reference-data"
@@ -102,4 +102,14 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig, configuration: Configu
   lazy val selfUrl: String = servicesConfig.baseUrl("emcs-tfe-report-a-receipt-frontend")
 
   lazy val emcsGeneralEnquiriesUrl: String = configuration.get[String]("urls.emcsGeneralEnquiries")
+
+  private def traderKnownFactsReferenceDataService: String =
+    if (isEnabled(StubGetTraderKnownFacts)) {
+      servicesConfig.baseUrl("emcs-tfe-reference-data-stub")
+    } else {
+      servicesConfig.baseUrl("emcs-tfe-reference-data")
+    }
+
+  def traderKnownFactsReferenceDataBaseUrl: String = s"$traderKnownFactsReferenceDataService/emcs-tfe-reference-data"
+
 }

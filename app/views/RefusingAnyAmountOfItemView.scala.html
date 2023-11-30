@@ -31,7 +31,7 @@
 
 @(form: Form[_], action: Call, item: MovementItem, cnCodeInfo: CnCodeInformation)(implicit request: DataRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("refusingAnyAmountOfItem.title", item.itemUniqueReference))) {
+@layout(pageTitle = title(form, messages("refusingAnyAmountOfItem.title", item.itemUniqueReference)), maybeShowActiveTrader = maybeShowActiveTrader(request)) {
 
     @formHelper(action, 'autoComplete -> "off") {
 

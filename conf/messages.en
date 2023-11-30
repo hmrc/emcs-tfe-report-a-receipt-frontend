@@ -556,3 +556,5 @@ notOnPrivateBeta.notSignedUp.p1.preLink = You can choose to
 notOnPrivateBeta.notSignedUp.p1.link = take part in the EMCS private beta research
 notOnPrivateBeta.notSignedUp.p1.afterLink = if you are not already involved.
 notOnPrivateBeta.notSignedUp.p2 = To take part you must currently submit EMCS receipts using the HMRC platform.
+
+activeTrader.link = Change trader type

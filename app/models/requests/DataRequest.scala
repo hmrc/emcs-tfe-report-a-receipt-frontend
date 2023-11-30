@@ -16,13 +16,14 @@
 
 package models.requests
 
-import models.UserAnswers
+import models.{UserAnswers, TraderKnownFacts}
 import models.response.emcsTfe.{GetMovementResponse, MovementItem}
 import pages.unsatisfactory.individualItems.SelectItemsPage
 import play.api.mvc.WrappedRequest
 
 case class DataRequest[A](request: MovementRequest[A],
-                          userAnswers: UserAnswers) extends WrappedRequest[A](request) {
+                          userAnswers: UserAnswers,
+                          traderKnownFacts: TraderKnownFacts) extends WrappedRequest[A](request) {
 
   val internalId: String = request.internalId
   val ern: String = request.ern

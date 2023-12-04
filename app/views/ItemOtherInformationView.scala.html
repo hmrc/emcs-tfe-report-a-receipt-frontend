@@ -42,7 +42,7 @@
         cnCodeInformation: CnCodeInformation
 )(implicit request: DataRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"$page.title", item.itemUniqueReference))) {
+@layout(pageTitle = title(form, messages(s"$page.title", item.itemUniqueReference)), maybeShowActiveTrader = maybeShowActiveTrader(request)) {
 
     @formHelper(action) {
 

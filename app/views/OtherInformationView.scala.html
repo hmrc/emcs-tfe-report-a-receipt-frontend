@@ -33,7 +33,7 @@
 
 @(page: QuestionPage[String], form: Form[_], action: Call)(implicit request: DataRequest[_], messages: Messages)
 
-    @layout(pageTitle = title(form, conditionalTitle(page))) {
+    @layout(pageTitle = title(form, conditionalTitle(page)), maybeShowActiveTrader = maybeShowActiveTrader(request)) {
 
     @formHelper(action) {
 

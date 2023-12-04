@@ -28,7 +28,7 @@
 
 @(form: Form[_], mode: Mode)(implicit request: DataRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("dateOfArrival.title"))) {
+@layout(pageTitle = title(form, messages("dateOfArrival.title")), maybeShowActiveTrader = maybeShowActiveTrader(request)) {
 
     @formHelper(action = routes.DateOfArrivalController.onSubmit(request.ern, request.arc, mode), 'autoComplete -> "off") {
 

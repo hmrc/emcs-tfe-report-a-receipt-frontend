@@ -31,7 +31,7 @@
 
 @(form: Form[_], page: QuestionPage[Boolean], action: Call)(implicit request: DataRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(AddMoreInformationHelper.titleKey(page)))) {
+@layout(pageTitle = title(form, messages(AddMoreInformationHelper.titleKey(page))), maybeShowActiveTrader = maybeShowActiveTrader(request)) {
 
     @formHelper(action, 'autoComplete -> "off") {
 

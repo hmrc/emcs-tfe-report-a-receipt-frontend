@@ -17,7 +17,7 @@
 package config
 
 import base.SpecBase
-import featureswitch.core.config.{FeatureSwitching, ReturnToLegacy}
+import featureswitch.core.config.{FeatureSwitching, ReturnToLegacy, StubGetTraderKnownFacts}
 
 class AppConfigSpec extends SpecBase with FeatureSwitching {
 
@@ -100,5 +100,25 @@ class AppConfigSpec extends SpecBase with FeatureSwitching {
         }
       }
     }
+
+    ".traderKnownFactsReferenceDataBaseUrl" - {
+
+      "when StubGetTraderKnownFacts is enabled" - {
+
+        "must return the stub URL" in {
+          enable(StubGetTraderKnownFacts)
+          config.traderKnownFactsReferenceDataBaseUrl mustBe "http://localhost:8309/emcs-tfe-reference-data"
+        }
+      }
+
+      "when StubGetTraderKnownFacts is disabled" - {
+
+        "must return the real URL" in {
+          disable(StubGetTraderKnownFacts)
+          config.traderKnownFactsReferenceDataBaseUrl mustBe "http://localhost:8312/emcs-tfe-reference-data"
+        }
+      }
+    }
+
   }
 }

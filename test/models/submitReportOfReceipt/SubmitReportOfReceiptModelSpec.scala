@@ -330,7 +330,7 @@ class SubmitReportOfReceiptModelSpec extends SpecBase
           )
         }
 
-        "have the correct deliveryplace and destingation office for XI trader with no delivery place" in {
+        "have the correct deliveryplace and destination office for XI trader with no delivery place" in {
 
           (() => mockAppConfig.destinationOfficeSuffix).expects().returns("004098").anyNumberOfTimes()
 

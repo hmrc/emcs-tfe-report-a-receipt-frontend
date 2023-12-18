@@ -34,3 +34,8 @@ bin
 /.classpath
 *.iws
 .bsp
+/.metals
+/.vscode
+/.bloop/
+/project/.bloop/
+/project/metals.sbt

@@ -232,6 +232,153 @@ class SubmitReportOfReceiptModelSpec extends SpecBase
             otherInformation = None
           )
         }
+
+        "have the correct deliveryplace and destination office for XI trader with GB delivery place" in {
+
+          (() => mockAppConfig.destinationOfficeSuffix).expects().returns("004098").anyNumberOfTimes()
+
+          val userAnswers =
+            emptyUserAnswers.copy(ern = "XIWK000000206")
+              .set(DateOfArrivalPage, testDateOfArrival)
+              .set(AcceptMovementPage, PartiallyRefused)
+              //-----------------
+              //Item 1 Starts ==>
+              .set(SelectItemsPage(item1.itemUniqueReference), item1.itemUniqueReference)
+              .set(RefusingAnyAmountOfItemPage(item1.itemUniqueReference), true)
+              .set(RefusedAmountPage(item1.itemUniqueReference), BigDecimal(10.99))
+              .set(WrongWithItemPage(item1.itemUniqueReference), Set[WrongWithMovement](
+                ShortageOrExcess,
+                Damaged
+              ))
+              .set(ItemShortageOrExcessPage(item1.itemUniqueReference), ItemShortageOrExcessModel(
+                wrongWithItem = Shortage,
+                amount = 12.45,
+                additionalInfo = Some("Shortage")
+              ))
+              .set(ItemDamageInformationPage(item1.itemUniqueReference), Some("Damage"))
+              // <== Item 1 Ends
+              // -----------------
+              // Item 2 Starts ==>
+              .set(SelectItemsPage(item2.itemUniqueReference), item2.itemUniqueReference)
+              .set(WrongWithItemPage(item2.itemUniqueReference), Set[WrongWithMovement](BrokenSeals))
+              .set(ItemSealsInformationPage(item2.itemUniqueReference), Some("BrokenSeals"))
+
+
+          val newGetMovementModel = getMovementResponseModel.copy(deliveryPlaceTrader = Some(TraderModel(traderExciseNumber = Some("GB00000000206"), None, None, None)))
+          val submission = SubmitReportOfReceiptModel(newGetMovementModel)(userAnswers, mockAppConfig)
+
+          submission mustBe SubmitReportOfReceiptModel(
+            arc = newGetMovementModel.arc,
+            sequenceNumber = newGetMovementModel.sequenceNumber,
+            destinationType = newGetMovementModel.destinationType,
+            consigneeTrader = newGetMovementModel.consigneeTrader,
+            deliveryPlaceTrader = newGetMovementModel.deliveryPlaceTrader,
+            destinationOffice = "GB004098",
+            dateOfArrival = testDateOfArrival,
+            acceptMovement = PartiallyRefused,
+            individualItems = ReceiptedItemsModel(newGetMovementModel)(userAnswers),
+            otherInformation = None
+          )
+        }
+
+        "have the correct deliveryplace and destination office for XI trader with XI delivery place" in {
+
+          (() => mockAppConfig.destinationOfficeSuffix).expects().returns("004098").anyNumberOfTimes()
+
+          val userAnswers =
+            emptyUserAnswers.copy(ern = "XIWK000000206")
+              .set(DateOfArrivalPage, testDateOfArrival)
+              .set(AcceptMovementPage, PartiallyRefused)
+              .set(DestinationOfficePage, DestinationOffice.GreatBritain)
+              //-----------------
+              //Item 1 Starts ==>
+              .set(SelectItemsPage(item1.itemUniqueReference), item1.itemUniqueReference)
+              .set(RefusingAnyAmountOfItemPage(item1.itemUniqueReference), true)
+              .set(RefusedAmountPage(item1.itemUniqueReference), BigDecimal(10.99))
+              .set(WrongWithItemPage(item1.itemUniqueReference), Set[WrongWithMovement](
+                ShortageOrExcess,
+                Damaged
+              ))
+              .set(ItemShortageOrExcessPage(item1.itemUniqueReference), ItemShortageOrExcessModel(
+                wrongWithItem = Shortage,
+                amount = 12.45,
+                additionalInfo = Some("Shortage")
+              ))
+              .set(ItemDamageInformationPage(item1.itemUniqueReference), Some("Damage"))
+              // <== Item 1 Ends
+              // -----------------
+              // Item 2 Starts ==>
+              .set(SelectItemsPage(item2.itemUniqueReference), item2.itemUniqueReference)
+              .set(WrongWithItemPage(item2.itemUniqueReference), Set[WrongWithMovement](BrokenSeals))
+              .set(ItemSealsInformationPage(item2.itemUniqueReference), Some("BrokenSeals"))
+
+
+          val newGetMovementModel = getMovementResponseModel.copy(deliveryPlaceTrader = Some(TraderModel(traderExciseNumber = Some("XI00000000206"), None, None, None)))
+          val submission = SubmitReportOfReceiptModel(newGetMovementModel)(userAnswers, mockAppConfig)
+
+          submission mustBe SubmitReportOfReceiptModel(
+            arc = newGetMovementModel.arc,
+            sequenceNumber = newGetMovementModel.sequenceNumber,
+            destinationType = newGetMovementModel.destinationType,
+            consigneeTrader = newGetMovementModel.consigneeTrader,
+            deliveryPlaceTrader = newGetMovementModel.deliveryPlaceTrader,
+            destinationOffice = "XI004098",
+            dateOfArrival = testDateOfArrival,
+            acceptMovement = PartiallyRefused,
+            individualItems = ReceiptedItemsModel(newGetMovementModel)(userAnswers),
+            otherInformation = None
+          )
+        }
+
+        "have the correct deliveryplace and destination office for XI trader with no delivery place" in {
+
+          (() => mockAppConfig.destinationOfficeSuffix).expects().returns("004098").anyNumberOfTimes()
+
+          val userAnswers =
+            emptyUserAnswers.copy(ern = "XIWK000000206")
+              .set(DateOfArrivalPage, testDateOfArrival)
+              .set(AcceptMovementPage, PartiallyRefused)
+              //-----------------
+              //Item 1 Starts ==>
+              .set(SelectItemsPage(item1.itemUniqueReference), item1.itemUniqueReference)
+              .set(RefusingAnyAmountOfItemPage(item1.itemUniqueReference), true)
+              .set(RefusedAmountPage(item1.itemUniqueReference), BigDecimal(10.99))
+              .set(WrongWithItemPage(item1.itemUniqueReference), Set[WrongWithMovement](
+                ShortageOrExcess,
+                Damaged
+              ))
+              .set(DestinationOfficePage, DestinationOffice.GreatBritain)
+              .set(ItemShortageOrExcessPage(item1.itemUniqueReference), ItemShortageOrExcessModel(
+                wrongWithItem = Shortage,
+                amount = 12.45,
+                additionalInfo = Some("Shortage")
+              ))
+              .set(ItemDamageInformationPage(item1.itemUniqueReference), Some("Damage"))
+              // <== Item 1 Ends
+              // -----------------
+              // Item 2 Starts ==>
+              .set(SelectItemsPage(item2.itemUniqueReference), item2.itemUniqueReference)
+              .set(WrongWithItemPage(item2.itemUniqueReference), Set[WrongWithMovement](BrokenSeals))
+              .set(ItemSealsInformationPage(item2.itemUniqueReference), Some("BrokenSeals"))
+
+
+          val submission = SubmitReportOfReceiptModel(getMovementResponseModel)(userAnswers, mockAppConfig)
+
+          submission mustBe SubmitReportOfReceiptModel(
+            arc = getMovementResponseModel.arc,
+            sequenceNumber = getMovementResponseModel.sequenceNumber,
+            destinationType = getMovementResponseModel.destinationType,
+            consigneeTrader = getMovementResponseModel.consigneeTrader,
+            deliveryPlaceTrader = getMovementResponseModel.deliveryPlaceTrader,
+            destinationOffice = "XI004098",
+            dateOfArrival = testDateOfArrival,
+            acceptMovement = PartiallyRefused,
+            individualItems = ReceiptedItemsModel(getMovementResponseModel)(userAnswers),
+            otherInformation = None
+          )
+        }
+
+
       }
 
       "must throw an exception when the DateOfArrival is missing" in {
@@ -269,22 +416,27 @@ class SubmitReportOfReceiptModelSpec extends SpecBase
       s"must return $DESTINATION_OFFICE_PREFIX_GB" - {
         s"when logged in user ERN starts with $DESTINATION_OFFICE_PREFIX_GB" in {
           val userAnswers = emptyUserAnswers.copy(ern = GB_ID)
-          SubmitReportOfReceiptModel.destinationOfficePrefix(userAnswers) mustBe DESTINATION_OFFICE_PREFIX_GB
+          SubmitReportOfReceiptModel.destinationOfficePrefix(None)(userAnswers) mustBe DESTINATION_OFFICE_PREFIX_GB
         }
-        s"when logged in user ERN starts with $DESTINATION_OFFICE_PREFIX_XI and they select DestinationOfficePage to ${DestinationOffice.GreatBritain}" in {
-          val userAnswers = emptyUserAnswers.copy(ern = XI_ID).set(DestinationOfficePage, DestinationOffice.GreatBritain)
-          SubmitReportOfReceiptModel.destinationOfficePrefix(userAnswers) mustBe DESTINATION_OFFICE_PREFIX_GB
+        s"when logged in user ERN starts with $DESTINATION_OFFICE_PREFIX_XI and deliveryPlaceTraders ERN starts with $DESTINATION_OFFICE_PREFIX_GB" in {
+          val userAnswers = emptyUserAnswers.copy(ern = XI_ID)
+          SubmitReportOfReceiptModel.destinationOfficePrefix(Some(TraderModel(traderExciseNumber = Some("GB00000000206"), None, None, None)))(userAnswers) mustBe DESTINATION_OFFICE_PREFIX_GB
         }
         s"when logged in user ERN doesn't start with $DESTINATION_OFFICE_PREFIX_GB or $DESTINATION_OFFICE_PREFIX_XI (default case)" in {
           val userAnswers = emptyUserAnswers.copy(ern = testErn)
-          SubmitReportOfReceiptModel.destinationOfficePrefix(userAnswers) mustBe DESTINATION_OFFICE_PREFIX_GB
+          SubmitReportOfReceiptModel.destinationOfficePrefix(Some(TraderModel(traderExciseNumber = Some("TR00000000206"), None, None, None)))(userAnswers) mustBe DESTINATION_OFFICE_PREFIX_GB
         }
       }
       s"must return $DESTINATION_OFFICE_PREFIX_XI" - {
-        s"when logged in user ERN starts with $DESTINATION_OFFICE_PREFIX_XI and they select DestinationOfficePage to ${DestinationOffice.NorthernIreland}" in {
-          val userAnswers = emptyUserAnswers.copy(ern = XI_ID).set(DestinationOfficePage, DestinationOffice.NorthernIreland)
-          SubmitReportOfReceiptModel.destinationOfficePrefix(userAnswers) mustBe DESTINATION_OFFICE_PREFIX_XI
+        s"when logged in user ERN starts with $DESTINATION_OFFICE_PREFIX_XI and deliveryPlaceTrader ERN starts with $DESTINATION_OFFICE_PREFIX_XI" in {
+          val userAnswers = emptyUserAnswers.copy(ern = XI_ID)
+          SubmitReportOfReceiptModel.destinationOfficePrefix(Some(TraderModel(traderExciseNumber = Some("XI00000000206"), None, None, None)))(userAnswers) mustBe DESTINATION_OFFICE_PREFIX_XI
         }
+        s"when logged in user ERN starts with $DESTINATION_OFFICE_PREFIX_XI and no deliveryPlaceTrader is provided" in {
+          val userAnswers = emptyUserAnswers.copy(ern = XI_ID)
+          SubmitReportOfReceiptModel.destinationOfficePrefix(None)(userAnswers) mustBe DESTINATION_OFFICE_PREFIX_XI
+        }
+
       }
     }
 

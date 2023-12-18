@@ -17,13 +17,17 @@
 package models.submitReportOfReceipt
 
 import config.AppConfig
+import models.AcceptMovement
+import models.DestinationType
 import models.DestinationType.TemporaryRegisteredConsignee
+import models.UserAnswers
 import models.WrongWithMovement._
 import models.response.emcsTfe.GetMovementResponse
-import models.{AcceptMovement, DestinationOffice, DestinationType, UserAnswers}
-import pages.{AcceptMovementPage, DateOfArrivalPage, DestinationOfficePage, MoreInformationPage}
-import play.api.libs.json.{Format, Json}
-import utils.{JsonOptionFormatter, ModelConstructorHelpers}
+import pages.{AcceptMovementPage, DateOfArrivalPage, MoreInformationPage}
+import play.api.libs.json.Format
+import play.api.libs.json.Json
+import utils.JsonOptionFormatter
+import utils.ModelConstructorHelpers
 
 import java.time.LocalDate
 
@@ -45,11 +49,11 @@ object SubmitReportOfReceiptModel extends JsonOptionFormatter with ModelConstruc
   private[models] val DESTINATION_OFFICE_PREFIX_GB = "GB"
   private[models] val DESTINATION_OFFICE_PREFIX_XI = "XI"
 
-  private[models] def destinationOfficePrefix(implicit userAnswers: UserAnswers): String = {
+  private[models] def destinationOfficePrefix(deliveryPlaceTrader: Option[TraderModel])(implicit userAnswers: UserAnswers): String = {
     if(userAnswers.isNorthernIrelandTrader) {
-      mandatoryPage(DestinationOfficePage).toString
+      deliveryPlaceTrader.flatMap(_.traderExciseNumber).map(_.take(2)).getOrElse(DESTINATION_OFFICE_PREFIX_XI)
     } else {
-      DestinationOffice.GreatBritain.toString
+      DESTINATION_OFFICE_PREFIX_GB
     }
   }
 
@@ -70,7 +74,7 @@ object SubmitReportOfReceiptModel extends JsonOptionFormatter with ModelConstruc
       destinationType = movementDetails.destinationType,
       consigneeTrader = consigneeTraderDetails(movementDetails),
       deliveryPlaceTrader = movementDetails.deliveryPlaceTrader,
-      destinationOffice = destinationOfficePrefix + appConfig.destinationOfficeSuffix,
+      destinationOffice = destinationOfficePrefix(movementDetails.deliveryPlaceTrader) + appConfig.destinationOfficeSuffix,
       dateOfArrival = mandatoryPage(DateOfArrivalPage),
       acceptMovement = mandatoryPage(AcceptMovementPage),
       individualItems = ReceiptedItemsModel(movementDetails),

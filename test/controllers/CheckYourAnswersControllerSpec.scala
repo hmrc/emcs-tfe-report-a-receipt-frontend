@@ -25,11 +25,11 @@ import models.AcceptMovement.{Refused, Satisfactory, Unsatisfactory}
 import models.HowGiveInformation.{IndividualItem, TheWholeMovement}
 import models.WrongWithMovement.BrokenSeals
 import models.response.{MissingMandatoryPage, SubmitReportOfReceiptException}
-import models.{CheckMode, ConfirmationDetails, DestinationOffice, UserAnswers}
+import models.{CheckMode, ConfirmationDetails, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import pages.unsatisfactory.HowGiveInformationPage
 import pages.unsatisfactory.individualItems.{CheckAnswersItemPage, SelectItemsPage, WrongWithItemPage}
-import pages.{AcceptMovementPage, ConfirmationPage, DateOfArrivalPage, DestinationOfficePage}
+import pages.{AcceptMovementPage, ConfirmationPage, DateOfArrivalPage}
 import play.api.inject
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -199,7 +199,6 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency wi
         "must return a 200 if the user has answered all questions" in new Fixture(Some(
           emptyUserAnswers.copy(ern = "XI123")
             .set(AcceptMovementPage, Satisfactory)
-            .set(DestinationOfficePage, DestinationOffice.GreatBritain)
         )) {
           running(application) {
 
@@ -212,20 +211,6 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency wi
             val result = route(application, request).value
 
             status(result) mustBe OK
-          }
-        }
-        "must return a 303 if the user has not answered the DestinationOfficePage question" in new Fixture(Some(
-          emptyUserAnswers.copy(ern = "XI123")
-            .set(AcceptMovementPage, Satisfactory)
-        )) {
-          running(application) {
-
-            def request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad("XI123", testArc).url)
-
-            val result = route(application, request).value
-
-            status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(routes.DestinationOfficeController.onPageLoad("XI123", testArc, CheckMode).url)
           }
         }
       }

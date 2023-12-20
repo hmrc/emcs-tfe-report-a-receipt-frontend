@@ -42,20 +42,10 @@ class NavigatorSpec extends SpecBase {
       }
 
       "for the DateOfArrival page" - {
-
-        "when trader is XI" - {
-          "must go to AcceptMovement page" in {
-            navigator.nextPage(DateOfArrivalPage, NormalMode, emptyUserAnswers.copy(ern = "XI123")) mustBe
-              routes.AcceptMovementController.onPageLoad("XI123", testArc, NormalMode)
-          }
-        }
-
-        "when trader is GB" - {
           "must go to AcceptMovement page" in {
             navigator.nextPage(DateOfArrivalPage, NormalMode, emptyUserAnswers) mustBe
               routes.AcceptMovementController.onPageLoad(testErn, testArc, NormalMode)
           }
-        }
       }
 
       "for the AcceptMovementPage page" - {

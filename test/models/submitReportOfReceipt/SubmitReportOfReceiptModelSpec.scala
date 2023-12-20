@@ -26,7 +26,7 @@ import models.WrongWithMovement.{BrokenSeals, Damaged, Excess, Other, Shortage, 
 import models.response.MissingMandatoryPage
 import models.response.emcsTfe.GetMovementResponse
 import models.submitReportOfReceipt.SubmitReportOfReceiptModel.{DESTINATION_OFFICE_PREFIX_GB, DESTINATION_OFFICE_PREFIX_XI}
-import models.{DestinationOffice, DestinationType, ItemShortageOrExcessModel, WrongWithMovement}
+import models.{DestinationType, ItemShortageOrExcessModel, WrongWithMovement}
 import org.scalamock.scalatest.MockFactory
 import pages._
 import pages.unsatisfactory._
@@ -289,7 +289,6 @@ class SubmitReportOfReceiptModelSpec extends SpecBase
             emptyUserAnswers.copy(ern = "XIWK000000206")
               .set(DateOfArrivalPage, testDateOfArrival)
               .set(AcceptMovementPage, PartiallyRefused)
-              .set(DestinationOfficePage, DestinationOffice.GreatBritain)
               //-----------------
               //Item 1 Starts ==>
               .set(SelectItemsPage(item1.itemUniqueReference), item1.itemUniqueReference)
@@ -347,7 +346,6 @@ class SubmitReportOfReceiptModelSpec extends SpecBase
                 ShortageOrExcess,
                 Damaged
               ))
-              .set(DestinationOfficePage, DestinationOffice.GreatBritain)
               .set(ItemShortageOrExcessPage(item1.itemUniqueReference), ItemShortageOrExcessModel(
                 wrongWithItem = Shortage,
                 amount = 12.45,

@@ -97,10 +97,11 @@ class ShortageOrExcessItemSummarySpec extends SpecBase {
                 Litres20,
                 Thousands,
       ).foreach {
-        unitOfMeasure =>
-          s"when the unit of measure is $unitOfMeasure" - {
+        uom =>
+          s"when the unit of measure is $uom" - {
             "returns a Seq containing the additionalInfo value" - {
               "when additionalInfo is filled out" in new Test {
+                override def unitOfMeasure: UnitOfMeasure = uom
                 val shortageOrExcessInformationRow = SummaryListRow(
                   key = msgs(s"${ItemShortageOrExcessPage(1)}.checkYourAnswers.additionalInfo.label"),
                   value = ValueViewModel(Text("value")),

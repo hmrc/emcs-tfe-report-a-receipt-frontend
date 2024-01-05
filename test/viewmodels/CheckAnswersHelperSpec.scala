@@ -23,6 +23,7 @@ import models.WrongWithMovement.{BrokenSeals, Damaged, Excess, Other, Shortage}
 import models.{CheckMode, WrongWithMovement}
 import pages.unsatisfactory._
 import pages.{AcceptMovementPage, MoreInformationPage}
+import play.api.i18n.Messages
 import play.api.test.FakeRequest
 import uk.gov.hmrc.govukfrontend.views.Aliases.{SummaryList, SummaryListRow}
 import viewmodels.checkAnswers.CheckAnswersHelper
@@ -47,7 +48,7 @@ class CheckAnswersHelperSpec extends SpecBase
   )
 
   lazy val app = applicationBuilder().build()
-  implicit lazy val msgs = messages(app)
+  implicit lazy val msgs: Messages = messages(app)
 
   "CheckAnswersHelper" - {
 

@@ -20,6 +20,7 @@ import base.SpecBase
 import controllers.routes
 import models.UnitOfMeasure._
 import models.WrongWithMovement.{Shortage, ShortageOrExcess}
+import models.requests.DataRequest
 import models.{CheckMode, ItemShortageOrExcessModel, UnitOfMeasure, UserAnswers, WrongWithMovement}
 import pages.unsatisfactory.individualItems.{ItemShortageOrExcessPage, WrongWithItemPage}
 import play.api.Application
@@ -50,7 +51,7 @@ class ShortageOrExcessItemSummarySpec extends SpecBase {
       .set(WrongWithItemPage(1), wrongWithItemPageValue)
       .set(ItemShortageOrExcessPage(1), ItemShortageOrExcessModel(Shortage, 1, additionalInfo))
 
-    implicit val request = dataRequest(FakeRequest(), answers)
+    implicit val request: DataRequest[_] = dataRequest(FakeRequest(), answers)
 
     def unitOfMeasure: UnitOfMeasure = Kilograms
 

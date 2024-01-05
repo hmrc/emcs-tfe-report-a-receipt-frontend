@@ -33,8 +33,8 @@ import scala.concurrent.Future
 class MovementActionSpec extends SpecBase with MockGetMovementConnector {
 
   lazy val app = applicationBuilder(userAnswers = None).build()
-  implicit val hc = HeaderCarrier()
-  implicit lazy val request = UserRequest(FakeRequest(), testErn, testInternalId, testCredId, false)
+  implicit val hc: HeaderCarrier = HeaderCarrier()
+  implicit lazy val request: UserRequest[_] = UserRequest(FakeRequest(), testErn, testInternalId, testCredId, false)
 
   lazy val errorHandler = app.injector.instanceOf[ErrorHandler]
 

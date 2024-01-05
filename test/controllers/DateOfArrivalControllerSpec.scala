@@ -44,7 +44,7 @@ class DateOfArrivalControllerSpec extends SpecBase with MockUserAnswersService {
       )
       .build()
     lazy val view = application.injector.instanceOf[DateOfArrivalView]
-    implicit lazy val msgs = messages(application)
+    implicit lazy val msgs: Messages = messages(application)
   }
 
   val fixedNow = LocalDateTime.now()

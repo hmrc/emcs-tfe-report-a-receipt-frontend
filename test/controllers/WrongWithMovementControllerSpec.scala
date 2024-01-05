@@ -43,7 +43,7 @@ class WrongWithMovementControllerSpec extends SpecBase with MockUserAnswersServi
         )
         .build()
 
-    implicit lazy val config = application.injector.instanceOf[AppConfig]
+    implicit lazy val config: AppConfig = application.injector.instanceOf[AppConfig]
 
     lazy val view = application.injector.instanceOf[WrongWithMovementView]
   }

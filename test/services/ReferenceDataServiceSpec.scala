@@ -18,6 +18,7 @@ package services
 
 import base.SpecBase
 import mocks.services.{MockGetCnCodeInformationService, MockGetPackagingTypesService, MockGetWineOperationsService}
+import models.requests.DataRequest
 import models.response.emcsTfe.MovementItem
 import models.response.referenceData.CnCodeInformation
 import models.response.{PackagingTypesException, ReferenceDataException, WineOperationsException}
@@ -28,16 +29,16 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout, redirectLocation, status}
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class ReferenceDataServiceSpec extends SpecBase
   with MockGetCnCodeInformationService
   with MockGetWineOperationsService
   with MockGetPackagingTypesService {
 
-  implicit val hc = HeaderCarrier()
-  implicit val ec = ExecutionContext.global
-  implicit val request = dataRequest(FakeRequest(), emptyUserAnswers)
+  implicit val hc: HeaderCarrier = HeaderCarrier()
+  implicit val request: DataRequest[play.api.mvc.AnyContentAsEmpty.type] = dataRequest(FakeRequest(), emptyUserAnswers)
 
   lazy val testService = new ReferenceDataService(mockGetPackagingTypesService, mockGetWineOperationsService, mockGetCnCodeInformationService)
 

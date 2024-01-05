@@ -46,7 +46,7 @@ class WrongWithItemControllerSpec extends SpecBase
         )
         .build()
 
-    implicit lazy val config = application.injector.instanceOf[AppConfig]
+    implicit lazy val config: AppConfig = application.injector.instanceOf[AppConfig]
     lazy val view = application.injector.instanceOf[WrongWithItemView]
   }
 

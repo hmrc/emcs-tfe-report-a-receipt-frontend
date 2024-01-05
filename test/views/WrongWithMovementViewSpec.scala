@@ -28,7 +28,7 @@ import views.html.WrongWithMovementView
 class WrongWithMovementViewSpec extends ViewSpecBase with ViewBehaviours {
 
   lazy val view = app.injector.instanceOf[WrongWithMovementView]
-  implicit val request = dataRequest(FakeRequest(), emptyUserAnswers)
+  implicit val request: models.requests.DataRequest[_] = dataRequest(FakeRequest(), emptyUserAnswers)
 
   object Selectors extends BaseSelectors
 

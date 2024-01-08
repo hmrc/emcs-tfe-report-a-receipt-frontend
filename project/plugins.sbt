@@ -13,8 +13,6 @@ addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "1.0.0" exclude("org.
 
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "2.0.9")
 
-addSbtPlugin("org.foundweekends.giter8" % "sbt-giter8-scaffold" % "0.16.2")
-
 addSbtPlugin("io.github.irundaia" % "sbt-sassify" % "1.5.2")
 
 addSbtPlugin("net.ground5hark.sbt" % "sbt-concat" % "0.2.0")

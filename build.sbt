@@ -4,6 +4,7 @@ import scoverage.ScoverageKeys
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 
 lazy val appName: String = "emcs-tfe-report-a-receipt-frontend"
+ThisBuild / scalaVersion := "2.13.12"
 
 lazy val root = (project in file("."))
   .enablePlugins(PlayScala, SbtAutoBuildPlugin, SbtDistributablesPlugin)
@@ -13,9 +14,6 @@ lazy val root = (project in file("."))
   .settings(inConfig(IntegrationTest)(itSettings): _*)
   .settings(majorVersion := 0)
   .settings(ThisBuild / useSuperShell := false)
-  .settings(
-    ThisBuild / scalaVersion := "2.13.12",
-  )
   .settings(
     name := appName,
     RoutesKeys.routesImport ++= Seq(

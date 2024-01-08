@@ -30,14 +30,14 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class SubmitReportOfReceiptServiceSpec extends SpecBase with MockSubmitReportOfReceiptConnector with SubmitReportOfReceiptFixtures with MockAuditingService {
 
   lazy val mockAppConfig = mock[AppConfig]
 
-  implicit val hc = HeaderCarrier()
-  implicit val ec = ExecutionContext.global
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   lazy val testService = new SubmitReportOfReceiptService(mockSubmitReportOfReceiptConnector, mockAuditingService, mockAppConfig)
 

@@ -36,11 +36,11 @@ import scala.concurrent.Future
 class UserAllowListActionSpec extends SpecBase with MockFactory with MockUserAllowListConnector with FeatureSwitching {
 
   lazy val app = applicationBuilder(userAnswers = None).build()
-  implicit val hc = HeaderCarrier()
-  implicit lazy val request = UserRequest(FakeRequest(), testErn, testInternalId, testCredId, false)
+  implicit val hc: HeaderCarrier = HeaderCarrier()
+  implicit lazy val request: UserRequest[_] = UserRequest(FakeRequest(), testErn, testInternalId, testCredId, false)
 
   lazy val errorHandler = app.injector.instanceOf[ErrorHandler]
-  implicit lazy val config = mock[AppConfig]
+  implicit lazy val config: AppConfig = mock[AppConfig]
 
   lazy val userAllowListAction = new UserAllowListActionImpl(
     userAllowListConnector = mockUserAllowListConnector,

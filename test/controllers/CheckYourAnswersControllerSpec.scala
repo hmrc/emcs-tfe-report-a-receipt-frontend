@@ -25,7 +25,7 @@ import models.AcceptMovement.{Refused, Satisfactory, Unsatisfactory}
 import models.HowGiveInformation.{IndividualItem, TheWholeMovement}
 import models.WrongWithMovement.BrokenSeals
 import models.response.{MissingMandatoryPage, SubmitReportOfReceiptException}
-import models.{CheckMode, ConfirmationDetails, UserAnswers}
+import models.{ConfirmationDetails, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import pages.unsatisfactory.HowGiveInformationPage
 import pages.unsatisfactory.individualItems.{CheckAnswersItemPage, SelectItemsPage, WrongWithItemPage}

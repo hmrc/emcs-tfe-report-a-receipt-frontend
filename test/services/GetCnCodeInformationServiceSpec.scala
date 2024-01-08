@@ -26,12 +26,12 @@ import models.response.{ReferenceDataException, UnexpectedDownstreamResponseErro
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class GetCnCodeInformationServiceSpec extends SpecBase with MockGetCnCodeInformationConnector {
 
-  implicit val hc = HeaderCarrier()
-  implicit val ec = ExecutionContext.global
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   lazy val testService = new GetCnCodeInformationService(mockGetCnCodeInformationConnector)
 

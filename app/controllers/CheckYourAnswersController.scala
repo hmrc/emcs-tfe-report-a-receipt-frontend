@@ -136,7 +136,7 @@ class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi
         arc,
         data = Json.obj(ConfirmationPage.toString ->
           ConfirmationDetails(
-            receiptStatus = request.userAnswers.get(AcceptMovementPage).getOrElse().toString,
+            receiptStatus = request.userAnswers.get(AcceptMovementPage).map(_.toString).getOrElse(""),
             receiptDate = LocalDateTime.now().toString,
             hasMovementShortage = request.userAnswers.get(WrongWithMovementPage).exists(_.contains(Shortage)),
             hasItemShortage = request.userAnswers.completedItems.exists(_.itemShortageOrExcess.exists(_.wrongWithItem == Shortage)),

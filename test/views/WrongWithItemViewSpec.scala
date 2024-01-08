@@ -21,6 +21,7 @@ import config.AppConfig
 import featureswitch.core.config.{FeatureSwitching, NewShortageExcessFlow}
 import fixtures.messages.WrongWithItemMessages
 import forms.WrongWithItemFormProvider
+import models.requests.DataRequest
 import org.jsoup.Jsoup
 import pages.unsatisfactory.individualItems.WrongWithItemPage
 import play.api.test.FakeRequest
@@ -29,7 +30,7 @@ import views.html.WrongWithItemView
 class WrongWithItemViewSpec extends ViewSpecBase with ViewBehaviours with FeatureSwitching {
 
   lazy val view = app.injector.instanceOf[WrongWithItemView]
-  implicit val request = dataRequest(FakeRequest(), emptyUserAnswers)
+  implicit val request: DataRequest[_] = dataRequest(FakeRequest(), emptyUserAnswers)
 
   object Selectors extends BaseSelectors
 

@@ -20,11 +20,13 @@ import base.SpecBase
 import fixtures.SubmitReportOfReceiptFixtures
 import models.AcceptMovement.{PartiallyRefused, Refused, Satisfactory}
 import models.WrongWithMovement.{Excess, Shortage}
+import models.requests.DataRequest
 import models.{ConfirmationDetails, ItemShortageOrExcessModel, UserAnswers, WrongWithMovement}
 import pages.AcceptMovementPage
 import pages.unsatisfactory.WrongWithMovementPage
 import pages.unsatisfactory.individualItems.{ItemShortageOrExcessPage, SelectItemsPage}
-import play.api.i18n.MessagesApi
+import play.api.Application
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.test.FakeRequest
 import views.html.partials.confirmation.{ExcessContent, RefusedContent, ShortageContent}
 
@@ -38,10 +40,10 @@ class ConfirmationContentHelperSpec extends SpecBase with SubmitReportOfReceiptF
                  hasItemExcess: Boolean = false
                ) {
 
-    implicit lazy val app = applicationBuilder(Some(userAnswers)).build()
-    implicit lazy val request = dataRequest(FakeRequest(), userAnswers)
+    implicit lazy val app: Application = applicationBuilder(Some(userAnswers)).build()
+    implicit lazy val request: DataRequest[_] = dataRequest(FakeRequest(), userAnswers)
 
-    implicit lazy val msgs = app.injector.instanceOf[MessagesApi].preferred(request)
+    implicit lazy val msgs: Messages = app.injector.instanceOf[MessagesApi].preferred(request)
     lazy val confirmationHelper = app.injector.instanceOf[ConfirmationContentHelper]
     lazy val refusedContent = app.injector.instanceOf[RefusedContent]
     lazy val shortageContent = app.injector.instanceOf[ShortageContent]

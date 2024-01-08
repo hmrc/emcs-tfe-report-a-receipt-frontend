@@ -34,12 +34,12 @@ import scala.concurrent.Future
 
 class BaseNavigationControllerSpec extends SpecBase with GuiceOneAppPerSuite with MockUserAnswersService {
   trait Test {
-    implicit val hc = HeaderCarrier()
+    implicit val hc: HeaderCarrier = HeaderCarrier()
 
     val page: QuestionPage[Set[WrongWithMovement]] = WrongWithMovementPage
     val value: Set[WrongWithMovement] = Set(WrongWithMovement.values.head)
 
-    def onwardRoute = Call("GET", "/foo")
+    def onwardRoute: Call = Call("GET", "/foo")
 
     val testNavigator = new FakeNavigator(onwardRoute)
 

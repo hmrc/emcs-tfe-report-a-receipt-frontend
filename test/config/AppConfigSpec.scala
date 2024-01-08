@@ -21,7 +21,7 @@ import featureswitch.core.config.{FeatureSwitching, ReturnToLegacy, StubGetTrade
 
 class AppConfigSpec extends SpecBase with FeatureSwitching {
 
-  implicit lazy val config = applicationBuilder().build().injector.instanceOf[AppConfig]
+  implicit lazy val config: AppConfig = applicationBuilder().build().injector.instanceOf[AppConfig]
 
   "AppConfig" - {
 

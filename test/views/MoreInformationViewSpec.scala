@@ -35,7 +35,7 @@ class MoreInformationViewSpec extends ViewSpecBase with ViewBehaviours {
 
   "MoreInformation variant of view" - {
 
-    Seq(MoreInformationMessages.English, MoreInformationMessages.Welsh).foreach { messagesForLanguage =>
+    Seq(MoreInformationMessages.English).foreach { messagesForLanguage =>
 
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
 
@@ -61,7 +61,7 @@ class MoreInformationViewSpec extends ViewSpecBase with ViewBehaviours {
 
   "ShortageInformation variant of view" - {
 
-    Seq(ShortageInformationMessages.English, ShortageInformationMessages.Welsh).foreach { messagesForLanguage =>
+    Seq(ShortageInformationMessages.English).foreach { messagesForLanguage =>
 
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
 
@@ -87,7 +87,7 @@ class MoreInformationViewSpec extends ViewSpecBase with ViewBehaviours {
 
   "ExcessInformation variant of view" - {
 
-    Seq(ExcessInformationMessages.English, ExcessInformationMessages.Welsh).foreach { messagesForLanguage =>
+    Seq(ExcessInformationMessages.English).foreach { messagesForLanguage =>
 
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
 
@@ -113,7 +113,7 @@ class MoreInformationViewSpec extends ViewSpecBase with ViewBehaviours {
 
   "SealsInformation variant of view" - {
 
-    Seq(SealsInformationMessages.English, SealsInformationMessages.Welsh).foreach { messagesForLanguage =>
+    Seq(SealsInformationMessages.English).foreach { messagesForLanguage =>
 
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
 

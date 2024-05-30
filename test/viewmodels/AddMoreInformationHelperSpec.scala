@@ -26,7 +26,7 @@ class AddMoreInformationHelperSpec extends SpecBase {
 
   "AddMoreInformationHelper" - {
 
-    Seq(AddMoreInformationMessages.English, AddMoreInformationMessages.Welsh).foreach { langMessages =>
+    Seq(AddMoreInformationMessages.English).foreach { langMessages =>
 
       s"when rendered for language code '${langMessages.lang.code}'" - {
 

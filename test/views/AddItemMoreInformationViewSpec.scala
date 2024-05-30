@@ -37,8 +37,8 @@ class AddItemMoreInformationViewSpec extends ViewSpecBase with ViewBehaviours {
   lazy val form = app.injector.instanceOf[AddMoreInformationFormProvider].apply(RemoveItemPage(1))
 
   Seq(
-    AddItemDamageInformationPage(1) -> Seq(AddItemDamageInformationMessages.English, AddItemDamageInformationMessages.Welsh),
-    AddItemSealsInformationPage(1) -> Seq(AddItemSealsInformationMessages.English, AddItemSealsInformationMessages.Welsh)
+    AddItemDamageInformationPage(1) -> Seq(AddItemDamageInformationMessages.English),
+    AddItemSealsInformationPage(1) -> Seq(AddItemSealsInformationMessages.English)
   ) foreach {
 
     case (page, langs) => langs foreach { messagesForLanguage =>

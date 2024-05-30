@@ -33,7 +33,7 @@ class AcceptMovementViewSpec extends ViewSpecBase with ViewBehaviours {
 
   "AcceptMovement view" - {
 
-    Seq(AcceptMovementMessages.English, AcceptMovementMessages.Welsh).foreach { messagesForLanguage =>
+    Seq(AcceptMovementMessages.English).foreach { messagesForLanguage =>
 
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
 

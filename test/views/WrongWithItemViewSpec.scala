@@ -36,7 +36,7 @@ class WrongWithItemViewSpec extends ViewSpecBase with ViewBehaviours with Featur
 
   "WrongWithItem view for an Individual Item" - {
 
-    Seq(WrongWithItemMessages.English, WrongWithItemMessages.Welsh).foreach { messagesForLanguage =>
+    Seq(WrongWithItemMessages.English).foreach { messagesForLanguage =>
 
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
 

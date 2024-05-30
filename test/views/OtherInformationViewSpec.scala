@@ -36,7 +36,7 @@ class OtherInformationViewSpec extends ViewSpecBase with ViewBehaviours {
 
   "Rendering for the OtherInformationPage" - {
 
-    Seq(OtherInformationMessages.English, OtherInformationMessages.Welsh).foreach { messagesForLanguage =>
+    Seq(OtherInformationMessages.English).foreach { messagesForLanguage =>
 
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
 
@@ -62,7 +62,7 @@ class OtherInformationViewSpec extends ViewSpecBase with ViewBehaviours {
 
   "Rendering for the OtherInformationPage - refused movement" - {
 
-    Seq(OtherInformationMessages.English, OtherInformationMessages.Welsh).foreach { messagesForLanguage =>
+    Seq(OtherInformationMessages.English).foreach { messagesForLanguage =>
 
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
 

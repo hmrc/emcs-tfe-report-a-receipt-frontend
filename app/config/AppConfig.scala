@@ -16,14 +16,13 @@
 
 package config
 
-import featureswitch.core.config.{FeatureSwitching, ReturnToLegacy, StubGetTraderKnownFacts, WelshLanguage}
-
-import javax.inject.{Inject, Singleton}
+import featureswitch.core.config.{FeatureSwitching, ReturnToLegacy, StubGetTraderKnownFacts}
 import play.api.Configuration
-import play.api.i18n.Lang
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class AppConfig @Inject()(servicesConfig: ServicesConfig, configuration: Configuration) extends FeatureSwitching {
@@ -54,8 +53,6 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig, configuration: Configu
   private lazy val feedbackFrontendHost: String = configuration.get[String]("feedback-frontend.host")
   lazy val feedbackFrontendSurveyUrl: String    = s"$feedbackFrontendHost/feedback/$deskproName/beta"
 
-  def languageTranslationEnabled: Boolean = isEnabled(WelshLanguage)
-
   def emcsTfeHomeUrl(ern: Option[String]): String = {
     if(isEnabled(ReturnToLegacy)) {
       configuration.get[String]("urls.legacy.atAGlance") + ern.fold("")(s"/" + _)
@@ -77,11 +74,6 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig, configuration: Configu
     } else {
       configuration.get[String]("urls.emcsTfeMovementsIn") + s"/$ern"
     }
-
-  def languageMap: Map[String, Lang] = Map(
-    "en" -> Lang("en"),
-    "cy" -> Lang("cy")
-  )
 
   lazy val timeout: Int   = configuration.get[Int]("timeout-dialog.timeout")
   lazy val countdown: Int = configuration.get[Int]("timeout-dialog.countdown")

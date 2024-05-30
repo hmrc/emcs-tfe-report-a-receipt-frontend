@@ -55,22 +55,4 @@ object WrongWithMovementMessages {
     override val hiddenChangeLinkText: String = "what was wrong"
   }
 
-  object Welsh extends ViewMessages with BaseWelsh {
-    override val heading = "What’s wrong with the movement?"
-    override val title = title(heading)
-    override val hint = "Select all that apply."
-    override val lessThanExpected: String = "Less goods than expected"
-    override val moreThanExpected: String = "More goods than expected"
-    override val damaged: String = "Damaged goods"
-    override val brokenSeals: String = "Broken seal(s)"
-    override val other: String = "Other"
-    override val requiredError: String = "Select what’s wrong with the movement"
-    override val checkYourAnswersLabel: String = "What was wrong"
-    override val checkYourAnswersLess: String = "Shortage"
-    override val checkYourAnswersMore: String = "Excess"
-    override val checkYourAnswersDamaged: String = "Damaged goods"
-    override val checkYourAnswersBrokenSeals: String = "Broken seal(s)"
-    override val checkYourAnswersOther: String = "Other"
-    override val hiddenChangeLinkText: String = "what was wrong"
-  }
 }

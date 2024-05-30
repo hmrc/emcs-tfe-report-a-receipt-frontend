@@ -49,7 +49,7 @@ class HowGiveInformationFormProviderSpec extends OptionFieldBehaviours with Guic
 
   "Error Messages" - {
 
-    Seq(HowGiveInformationMessages.English, HowGiveInformationMessages.Welsh) foreach { messagesForLanguage =>
+    Seq(HowGiveInformationMessages.English) foreach { messagesForLanguage =>
 
       implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(messagesForLanguage.lang))
 

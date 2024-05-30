@@ -64,7 +64,7 @@ class AddMoreInformationFormProviderSpec extends BooleanFieldBehaviours with Gui
 
     "for the AddMoreInformationPage" - {
 
-      Seq(AddMoreInformationMessages.English, AddMoreInformationMessages.Welsh) foreach { messagesForLanguage =>
+      Seq(AddMoreInformationMessages.English) foreach { messagesForLanguage =>
 
         implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(messagesForLanguage.lang))
 
@@ -79,7 +79,7 @@ class AddMoreInformationFormProviderSpec extends BooleanFieldBehaviours with Gui
 
     "for the AddShortageInformationPage" - {
 
-      Seq(AddShortageInformationMessages.English, AddShortageInformationMessages.Welsh) foreach { messagesForLanguage =>
+      Seq(AddShortageInformationMessages.English) foreach { messagesForLanguage =>
 
         implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(messagesForLanguage.lang))
 
@@ -94,7 +94,7 @@ class AddMoreInformationFormProviderSpec extends BooleanFieldBehaviours with Gui
 
     "for the AddExcessInformationPage" - {
 
-      Seq(AddExcessInformationMessages.English, AddExcessInformationMessages.Welsh) foreach { messagesForLanguage =>
+      Seq(AddExcessInformationMessages.English) foreach { messagesForLanguage =>
 
         implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(messagesForLanguage.lang))
 
@@ -109,7 +109,7 @@ class AddMoreInformationFormProviderSpec extends BooleanFieldBehaviours with Gui
 
     "for the AddDamageInformationPage" - {
 
-      Seq(AddDamageInformationMessages.English, AddDamageInformationMessages.Welsh) foreach { messagesForLanguage =>
+      Seq(AddDamageInformationMessages.English) foreach { messagesForLanguage =>
 
         implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(messagesForLanguage.lang))
 
@@ -124,7 +124,7 @@ class AddMoreInformationFormProviderSpec extends BooleanFieldBehaviours with Gui
 
     "for the AddSealsInformationPage" - {
 
-      Seq(AddSealsInformationMessages.English, AddSealsInformationMessages.Welsh) foreach { messagesForLanguage =>
+      Seq(AddSealsInformationMessages.English) foreach { messagesForLanguage =>
 
         implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(messagesForLanguage.lang))
 
@@ -139,7 +139,7 @@ class AddMoreInformationFormProviderSpec extends BooleanFieldBehaviours with Gui
 
     "for the RemoveItemPage" - {
 
-      Seq(RemoveItemMessages.English, RemoveItemMessages.Welsh) foreach { messagesForLanguage =>
+      Seq(RemoveItemMessages.English) foreach { messagesForLanguage =>
 
         implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(messagesForLanguage.lang))
 

@@ -32,10 +32,4 @@ object ItemDamagedInformationMessages {
     override val hint = "Give more information (optional)"
   }
 
-  object Welsh extends ViewMessages with BaseWelsh {
-    override val heading: Int => String = i => s"Give information about item $i being damaged"
-    override val title: Int => String = i => title(heading(i))
-    override val itemDetails: Int => String = i => s"View item $i details"
-    override val hint = "Give more information (optional)"
-  }
 }

@@ -36,7 +36,7 @@ class MoreInformationSummarySpec extends SpecBase {
 
     "rendered for the MoreInformationPage" - {
 
-      Seq(MoreInformationMessages.English, MoreInformationMessages.Welsh).foreach { langMessages =>
+      Seq(MoreInformationMessages.English).foreach { langMessages =>
 
         s"when rendered for language code '${langMessages.lang.code}'" - {
 
@@ -91,7 +91,7 @@ class MoreInformationSummarySpec extends SpecBase {
 
     "rendered for the ShortageInformationPage" - {
 
-      Seq(ShortageInformationMessages.English, ShortageInformationMessages.Welsh).foreach { langMessages =>
+      Seq(ShortageInformationMessages.English).foreach { langMessages =>
 
         s"when rendered for language code '${langMessages.lang.code}'" - {
 
@@ -146,7 +146,7 @@ class MoreInformationSummarySpec extends SpecBase {
 
     "rendered for the ExcessInformationPage" - {
 
-      Seq(ExcessInformationMessages.English, ExcessInformationMessages.Welsh).foreach { langMessages =>
+      Seq(ExcessInformationMessages.English).foreach { langMessages =>
 
         s"when rendered for language code '${langMessages.lang.code}'" - {
 
@@ -201,7 +201,7 @@ class MoreInformationSummarySpec extends SpecBase {
 
     "rendered for the DamageInformationPage" - {
 
-      Seq(DamageInformationMessages.English, DamageInformationMessages.Welsh).foreach { langMessages =>
+      Seq(DamageInformationMessages.English).foreach { langMessages =>
 
         s"when rendered for language code '${langMessages.lang.code}'" - {
 
@@ -256,7 +256,7 @@ class MoreInformationSummarySpec extends SpecBase {
 
     "rendered for the SealsInformationPage" - {
 
-      Seq(SealsInformationMessages.English, SealsInformationMessages.Welsh).foreach { langMessages =>
+      Seq(SealsInformationMessages.English).foreach { langMessages =>
 
         s"when rendered for language code '${langMessages.lang.code}'" - {
 

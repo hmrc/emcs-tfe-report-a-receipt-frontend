@@ -34,7 +34,7 @@ class ItemOtherInformationViewSpec extends ViewSpecBase with ViewBehaviours {
 
   "Rendering for the ItemOtherInformationPage" - {
 
-    Seq(ItemOtherInformationMessages.English, ItemOtherInformationMessages.Welsh).foreach { messagesForLanguage =>
+    Seq(ItemOtherInformationMessages.English).foreach { messagesForLanguage =>
 
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
 

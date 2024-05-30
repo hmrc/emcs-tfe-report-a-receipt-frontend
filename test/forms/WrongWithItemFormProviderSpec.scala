@@ -58,7 +58,7 @@ class WrongWithItemFormProviderSpec extends CheckboxFieldBehaviours with GuiceOn
 
   "Error Messages" - {
 
-    Seq(WrongWithItemMessages.English, WrongWithItemMessages.Welsh) foreach { messagesForLanguage =>
+    Seq(WrongWithItemMessages.English) foreach { messagesForLanguage =>
 
       implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(messagesForLanguage.lang))
 

@@ -32,7 +32,7 @@ class AcceptMovementSummarySpec extends SpecBase {
 
   "AcceptMovementSummary" - {
 
-    Seq(AcceptMovementMessages.English, AcceptMovementMessages.Welsh).foreach { langMessages =>
+    Seq(AcceptMovementMessages.English).foreach { langMessages =>
 
       s"when rendered for language code '${langMessages.lang.code}'" - {
 

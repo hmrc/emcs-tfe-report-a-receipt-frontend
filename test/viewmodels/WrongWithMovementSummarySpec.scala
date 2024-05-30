@@ -36,7 +36,7 @@ class WrongWithMovementSummarySpec extends SpecBase with DateUtils {
 
   "WrongWithMovementSummary" - {
 
-    Seq(WrongWithMovementMessages.English, WrongWithMovementMessages.Welsh).foreach { langMessages =>
+    Seq(WrongWithMovementMessages.English).foreach { langMessages =>
 
       s"when rendered for language code '${langMessages.lang.code}'" - {
 

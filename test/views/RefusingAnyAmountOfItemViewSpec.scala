@@ -35,7 +35,7 @@ class RefusingAnyAmountOfItemViewSpec extends ViewSpecBase with ViewBehaviours {
 
     lazy val form = app.injector.instanceOf[RefusingAnyAmountOfItemFormProvider].apply()
 
-    Seq(RefusingAnyAmountOfItemMessages.English, RefusingAnyAmountOfItemMessages.Welsh).foreach { messagesForLanguage =>
+    Seq(RefusingAnyAmountOfItemMessages.English).foreach { messagesForLanguage =>
 
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
 

@@ -37,8 +37,7 @@ class RefusedAmountViewSpec extends ViewSpecBase with ViewBehaviours {
   "RefusedAmountView rendered in the Kilograms variant of view" - {
 
     Seq(
-      RefusedAmountMessages.English -> UnitOfMeasureMessages.English,
-      RefusedAmountMessages.Welsh -> UnitOfMeasureMessages.English
+      RefusedAmountMessages.English -> UnitOfMeasureMessages.English
     ).foreach { case (viewMessagesForLanguage, unitOfMeasureMessagesForLanguage) =>
 
       s"when being rendered in lang code of '${viewMessagesForLanguage.lang.code}'" - {
@@ -71,8 +70,7 @@ class RefusedAmountViewSpec extends ViewSpecBase with ViewBehaviours {
   "RefusedAmountView rendered in the Litres at 15 degrees variant of view" - {
 
     Seq(
-      RefusedAmountMessages.English -> UnitOfMeasureMessages.English,
-      RefusedAmountMessages.Welsh -> UnitOfMeasureMessages.English
+      RefusedAmountMessages.English -> UnitOfMeasureMessages.English
     ).foreach { case (viewMessagesForLanguage, unitOfMeasureMessagesForLanguage) =>
 
       s"when being rendered in lang code of '${viewMessagesForLanguage.lang.code}'" - {
@@ -101,8 +99,7 @@ class RefusedAmountViewSpec extends ViewSpecBase with ViewBehaviours {
   "RefusedAmountView rendered in the Litres at 20 degrees variant of view" - {
 
     Seq(
-      RefusedAmountMessages.English -> UnitOfMeasureMessages.English,
-      RefusedAmountMessages.Welsh -> UnitOfMeasureMessages.English
+      RefusedAmountMessages.English -> UnitOfMeasureMessages.English
     ).foreach { case (viewMessagesForLanguage, unitOfMeasureMessagesForLanguage) =>
 
       s"when being rendered in lang code of '${viewMessagesForLanguage.lang.code}'" - {
@@ -131,8 +128,7 @@ class RefusedAmountViewSpec extends ViewSpecBase with ViewBehaviours {
   "RefusedAmountView rendered in the Thousands variant of view" - {
 
     Seq(
-      RefusedAmountMessages.English -> UnitOfMeasureMessages.English,
-      RefusedAmountMessages.Welsh -> UnitOfMeasureMessages.English
+      RefusedAmountMessages.English -> UnitOfMeasureMessages.English
     ).foreach { case (viewMessagesForLanguage, unitOfMeasureMessagesForLanguage) =>
 
       s"when being rendered in lang code of '${viewMessagesForLanguage.lang.code}'" - {

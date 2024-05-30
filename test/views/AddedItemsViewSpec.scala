@@ -44,8 +44,7 @@ class AddedItemsViewSpec extends ViewSpecBase with ViewBehaviours {
   "AddedItemsView" - {
 
     Seq(
-      AddedItemsMessages.English -> CheckYourAnswersMessages.English,
-      AddedItemsMessages.Welsh -> CheckYourAnswersMessages.Welsh
+      AddedItemsMessages.English -> CheckYourAnswersMessages.English
     ).foreach { case (messagesForLanguage, checkAnswersMessages) =>
 
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {

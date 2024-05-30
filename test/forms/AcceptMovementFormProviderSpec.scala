@@ -48,7 +48,7 @@ class AcceptMovementFormProviderSpec extends OptionFieldBehaviours with GuiceOne
 
   "Error Messages" - {
 
-    Seq(AcceptMovementMessages.English, AcceptMovementMessages.Welsh) foreach { messagesForLanguage =>
+    Seq(AcceptMovementMessages.English) foreach { messagesForLanguage =>
 
       implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(messagesForLanguage.lang))
 

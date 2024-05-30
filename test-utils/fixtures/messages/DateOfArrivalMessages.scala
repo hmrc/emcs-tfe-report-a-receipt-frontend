@@ -46,17 +46,4 @@ object DateOfArrivalMessages {
     override val notInFuture = "The date you received the movement must be today or in the past"
   }
 
-  object Welsh extends ViewMessages with BaseWelsh {
-    override val heading = "When did you take delivery of the goods?"
-    override val title = title(heading)
-    override val hint = "For example, 31 8 2022"
-    override val checkYourAnswersLabel = "Date of arrival"
-    override val hiddenChangeLinkText = "the date of arrival"
-    override val requiredError = "Enter the date you received the movement"
-    override def twoRequiredError(field1: String, field2: String) = s"The date you received the movement must include a $field1 and $field2"
-    override def oneRequiredError(field: String): String = s"The date you received the movement must include a $field"
-    override val invalidDate = "The date you received the movement must be a real date"
-    override def notBeforeDateOfDispatch(date: String) = s"The date you received the movement must be the same as or after $date when the movement started"
-    override val notInFuture = "The date you received the movement must be today or in the past"
-  }
 }

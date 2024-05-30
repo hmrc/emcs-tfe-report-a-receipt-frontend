@@ -34,7 +34,7 @@ class WrongWithMovementViewSpec extends ViewSpecBase with ViewBehaviours {
 
   "WrongWithMovement view" - {
 
-    Seq(WrongWithMovementMessages.English, WrongWithMovementMessages.Welsh).foreach { messagesForLanguage =>
+    Seq(WrongWithMovementMessages.English).foreach { messagesForLanguage =>
 
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
 

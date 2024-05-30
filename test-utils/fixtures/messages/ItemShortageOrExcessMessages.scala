@@ -38,13 +38,4 @@ object ItemShortageOrExcessMessages {
     override val additionalInfoLabel = "Give more information about the shortage or excess (optional)"
   }
 
-  object Welsh extends ViewMessages with BaseWelsh {
-    override val heading = "Tell us about the shortage or excess"
-    override val title = title(heading)
-    override val shortageOrExcessLegend = "Shortage or excess"
-    override val shortageLabel = "Shortage"
-    override val excessLabel = "Excess"
-    override val amountLabel = (unitOfMeasureMsg: String) => s"Amount of shortage or excess, in $unitOfMeasureMsg"
-    override val additionalInfoLabel = "Give more information about the shortage or excess (optional)"
-  }
 }

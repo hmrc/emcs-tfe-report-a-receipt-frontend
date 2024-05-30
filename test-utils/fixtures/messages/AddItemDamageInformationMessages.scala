@@ -25,10 +25,4 @@ object AddItemDamageInformationMessages {
     val hiddenLegendText = (i: Int) => s"Do you want to give information about item $i being damaged?"
   }
 
-  object Welsh extends AddItemInformationMessagesBase with BaseWelsh {
-    override val heading = (i: Int) => s"Do you want to give information about item $i being damaged?"
-    override val title = (i: Int) => title(heading(i))
-    override val itemDetails = (i: Int) => s"View item $i details"
-    val hiddenLegendText = (i: Int) => s"Do you want to give information about item $i being damaged?"
-  }
 }

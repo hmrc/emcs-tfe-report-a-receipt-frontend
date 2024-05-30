@@ -35,7 +35,7 @@ class ItemDetailsHelperSpec extends SpecBase {
 
   "ItemDetailsHelper" - {
 
-    Seq(DetailsSelectItemMessages.English, DetailsSelectItemMessages.Welsh).foreach { langMessages =>
+    Seq(DetailsSelectItemMessages.English).foreach { langMessages =>
 
       s"when rendered for language code '${langMessages.lang.code}'" - {
 

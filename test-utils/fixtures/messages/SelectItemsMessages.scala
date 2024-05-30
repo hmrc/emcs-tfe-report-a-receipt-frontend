@@ -46,19 +46,4 @@ object SelectItemsMessages {
     override val tableRowItem: Int => String = "Item " + _
   }
 
-  object Welsh extends ViewMessages with UnitOfMeasureMessages.Welsh {
-    override val heading = "Select an item to give information about"
-    override val title = title(heading)
-    override val givenInformationInfo = {
-      case 0 => ""
-      case n@1 => s"You have given information for $n item."
-      case n => s"You have given information for $n items."
-    }
-    override val viewAlreadyAddedItems: String = "View and manage the items you've already given information about."
-    override val tableHeadItem = "Item"
-    override val tableHeadDescription = "Description"
-    override val tableHeadQuantity = "Quantity"
-    override val tableHeadPackaging = "Packaging"
-    override val tableRowItem: Int => String = "Item " + _
-  }
 }

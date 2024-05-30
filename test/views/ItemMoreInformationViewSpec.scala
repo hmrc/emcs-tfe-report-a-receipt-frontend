@@ -36,7 +36,7 @@ class ItemMoreInformationViewSpec extends ViewSpecBase with ViewBehaviours {
 
   "ItemDamagedInformation variant of view" - {
 
-    Seq(ItemDamagedInformationMessages.English, ItemDamagedInformationMessages.Welsh).foreach { messagesForLanguage =>
+    Seq(ItemDamagedInformationMessages.English).foreach { messagesForLanguage =>
 
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
 
@@ -63,7 +63,7 @@ class ItemMoreInformationViewSpec extends ViewSpecBase with ViewBehaviours {
 
   "ItemSealsInformation variant of view" - {
 
-    Seq(ItemSealsInformationMessages.English, ItemSealsInformationMessages.Welsh).foreach { messagesForLanguage =>
+    Seq(ItemSealsInformationMessages.English).foreach { messagesForLanguage =>
 
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
 

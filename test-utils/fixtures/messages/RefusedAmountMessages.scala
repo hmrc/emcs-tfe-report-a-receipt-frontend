@@ -41,15 +41,4 @@ object RefusedAmountMessages {
     override val threeDecimalPlaces: String = "The amount you are refusing must have 3 decimals or less"
   }
 
-  object Welsh extends ViewMessages with BaseWelsh {
-    override def heading(unitOfMeasureMsg: String) = s"How many $unitOfMeasureMsg of item 1 are you refusing?"
-    override def title(unitOfMeasureMsg: String) = super.title(heading(unitOfMeasureMsg))
-
-    override val requiredError: String = "Enter the amount you are refusing"
-    override val nonNumeric: String = "The amount you are refusing must be a number, like 150 or 12.694"
-    override val tooLarge: BigDecimal => String = (max: BigDecimal) => s"The amount you are refusing must be $max or less"
-    override val maxLength: Int => String = (max: Int) => s"The amount you are refusing must be $max characters or less"
-    override val notGreaterThanZero: String = "The amount you are refusing must be more than 0"
-    override val threeDecimalPlaces: String = "The amount you are refusing must have 3 decimals or less"
-  }
 }

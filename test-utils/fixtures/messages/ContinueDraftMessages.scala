@@ -38,13 +38,4 @@ object ContinueDraftMessages {
     override val startAgainRadio: String = "Start a new report of receipt"
   }
 
-  object Welsh extends ViewMessages with BaseWelsh {
-    override val heading = "Do you want to continue with this draft report of receipt?"
-    override val title = title(heading)
-    override val requiredError: String = "Select if you want to continue with this draft report of receipt"
-    override val p1: String = "A report of receipt is already in progress for this movement. You can continue with this draft, or start a new one."
-    override val inset: String = "If you choose to start a new report of receipt this draft will be deleted."
-    override val continueRadio: String = "Continue with this draft"
-    override val startAgainRadio: String = "Start a new report of receipt"
-  }
 }

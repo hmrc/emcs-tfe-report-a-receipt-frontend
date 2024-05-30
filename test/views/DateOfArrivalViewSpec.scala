@@ -46,7 +46,7 @@ class DateOfArrivalViewSpec extends ViewSpecBase with ViewBehaviours {
 
   "DateOfArrival view" - {
 
-    Seq(DateOfArrivalMessages.English, DateOfArrivalMessages.Welsh).foreach { messagesForLanguage =>
+    Seq(DateOfArrivalMessages.English).foreach { messagesForLanguage =>
 
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - new Fixture(messagesForLanguage.lang) {
 

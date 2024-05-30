@@ -30,9 +30,4 @@ object AddSealsInformationMessages {
     override val requiredError: String = "Select yes if you want to give more information about receiving goods with broken seal(s)"
   }
 
-  object Welsh extends ViewMessages with BaseWelsh {
-    override val heading = "Do you want to give information about receiving goods with broken seal(s)?"
-    override val title = title(heading)
-    override val requiredError: String = "Select yes if you want to give more information about receiving goods with broken seal(s)"
-  }
 }

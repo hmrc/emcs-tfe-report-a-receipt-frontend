@@ -35,7 +35,7 @@ class DateOfArrivalSummarySpec extends SpecBase with DateUtils {
 
   "DateOfArrivalSummary" - {
 
-    Seq(DateOfArrivalMessages.English, DateOfArrivalMessages.Welsh).foreach { langMessages =>
+    Seq(DateOfArrivalMessages.English).foreach { langMessages =>
 
       s"when rendered for language code '${langMessages.lang.code}'" - {
 

@@ -42,15 +42,4 @@ object MoreInformationMessages {
     override val addMoreInformation = "Enter more information about movement (optional)"
   }
 
-  object Welsh extends ViewMessages with BaseWelsh {
-    override val heading = "Give more information about this movement"
-    override val title: String = title(heading)
-    override val hint = "Give more information (optional)"
-    override val checkYourAnswersLabel = "More information about this movement"
-    override val validationErrorInvalidChars = "Information must not include < and > and : and ;"
-    override val validationError = "Information must contain letters or numbers"
-    override val lengthError = "Information must be 350 characters or less"
-    override val hiddenChangeLink = "information about this movement"
-    override val addMoreInformation = "Enter more information about movement (optional)"
-  }
 }

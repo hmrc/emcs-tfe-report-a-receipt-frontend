@@ -32,10 +32,4 @@ object TimeoutMessages {
     override val signBackIn: String = "Sign back in to EMCS"
   }
 
-  object Welsh extends ViewMessages with BaseWelsh {
-    override val title: String = title("For your security we signed you out")
-    override val heading: String = "For your security we signed you out"
-    override val p1: String = "We have saved your answers."
-    override val signBackIn: String = "Sign back in to EMCS"
-  }
 }

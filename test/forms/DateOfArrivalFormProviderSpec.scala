@@ -112,7 +112,7 @@ class DateOfArrivalFormProviderSpec extends DateBehaviours with DateUtils with G
 
   "Error Messages" - {
 
-    Seq(DateOfArrivalMessages.English, DateOfArrivalMessages.Welsh) foreach { messagesForLanguage =>
+    Seq(DateOfArrivalMessages.English) foreach { messagesForLanguage =>
 
       implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(messagesForLanguage.lang))
 

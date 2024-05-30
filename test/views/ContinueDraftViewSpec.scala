@@ -33,7 +33,7 @@ class ContinueDraftViewSpec extends ViewSpecBase with ViewBehaviours {
 
     lazy val form = app.injector.instanceOf[ContinueDraftFormProvider].apply()
 
-    Seq(ContinueDraftMessages.English, ContinueDraftMessages.Welsh).foreach { messagesForLanguage =>
+    Seq(ContinueDraftMessages.English).foreach { messagesForLanguage =>
 
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
 

@@ -46,7 +46,7 @@ class AddAnotherItemFormProviderSpec extends BooleanFieldBehaviours with GuiceOn
 
   "Error Messages" - {
 
-    Seq(AddedItemsMessages.English, AddedItemsMessages.Welsh) foreach { messagesForLanguage =>
+    Seq(AddedItemsMessages.English) foreach { messagesForLanguage =>
 
       implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(messagesForLanguage.lang))
 

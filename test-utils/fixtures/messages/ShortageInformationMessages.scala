@@ -42,15 +42,4 @@ object ShortageInformationMessages {
     override val addMoreInformation = "Enter more information about shortage (optional)"
   }
 
-  object Welsh extends ViewMessages with BaseWelsh {
-    override val heading = "Give information about receiving less goods than expected"
-    override val title: String = title(heading)
-    override val hint = "Give more information (optional)."
-    override val validationErrorInvalidChars = "Information must not include < and > and : and ;"
-    override val validationError = "Information must contain letters or numbers"
-    override val lengthError = "Information must be 350 characters or less"
-    override val checkYourAnswersLabel = "Information about shortage"
-    override val hiddenChangeLink = "information about shortage"
-    override val addMoreInformation = "Enter more information about shortage (optional)"
-  }
 }

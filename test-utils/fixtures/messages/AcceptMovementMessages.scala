@@ -50,19 +50,4 @@ object AcceptMovementMessages {
     override val cyaPartiallyRefused = "Partially refused"
   }
 
-  object Welsh extends ViewMessages with BaseWelsh {
-    override val title = title("Do you want to accept this movement?")
-    override val heading = "Do you want to accept this movement?"
-    override val satisfactory = "Yes, it’s satisfactory"
-    override val unsatisfactory = "Yes, but it’s unsatisfactory"
-    override val refused = "No, I want to refuse the whole movement"
-    override val partiallyRefused = "No, I want to partially refuse the movement"
-    override val requiredError: String = "Select if you want to accept this movement"
-    override val checkYourAnswersLabel = "Receipt status"
-    override val hiddenChangeLinkText = "the receipt status"
-    override val cyaSatisfactory = "Accepted and satisfactory"
-    override val cyaUnsatisfactory = "Accepted and unsatisfactory"
-    override val cyaRefused = "Refused"
-    override val cyaPartiallyRefused = "Partially refused"
-  }
 }

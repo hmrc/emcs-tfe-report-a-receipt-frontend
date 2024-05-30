@@ -48,7 +48,7 @@ class RefusingAnyAmountOfItemFormProviderSpec extends BooleanFieldBehaviours wit
 
   "Error Messages" - {
 
-    Seq(RefusingAnyAmountOfItemMessages.English, RefusingAnyAmountOfItemMessages.Welsh) foreach { messagesForLanguage =>
+    Seq(RefusingAnyAmountOfItemMessages.English) foreach { messagesForLanguage =>
 
       implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(messagesForLanguage.lang))
 

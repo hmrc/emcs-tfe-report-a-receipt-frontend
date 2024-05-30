@@ -42,15 +42,4 @@ object DamageInformationMessages {
     override val addMoreInformation = "Enter more information about damaged items (optional)"
   }
 
-  object Welsh extends ViewMessages with BaseWelsh {
-    override val heading = "Give information about receiving damaged goods"
-    override val title: String = title(heading)
-    override val hint = "Give more information (optional)"
-    override val validationErrorInvalidChars = "Information must not include < and > and : and ;"
-    override val validationError = "Information must contain letters or numbers"
-    override val lengthError = "Information must be 350 characters or less"
-    override val checkYourAnswersLabel = "Information about damaged items"
-    override val hiddenChangeLink = "information about damaged items"
-    override val addMoreInformation = "Enter more information about damaged items (optional)"
-  }
 }

@@ -30,9 +30,4 @@ object AddExcessInformationMessages {
     override val requiredError: String = "Select yes if you want to give information about receiving more goods than expected"
   }
 
-  object Welsh extends ViewMessages with BaseWelsh {
-    override val heading = "Do you want to give information about receiving more goods than expected?"
-    override val title = title(heading)
-    override val requiredError: String = "Select yes if you want to give information about receiving more goods than expected"
-  }
 }

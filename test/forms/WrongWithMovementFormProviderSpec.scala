@@ -49,7 +49,7 @@ class WrongWithMovementFormProviderSpec extends CheckboxFieldBehaviours with Gui
 
   "Error Messages" - {
 
-    Seq(WrongWithMovementMessages.English, WrongWithMovementMessages.Welsh) foreach { messagesForLanguage =>
+    Seq(WrongWithMovementMessages.English) foreach { messagesForLanguage =>
 
       implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(messagesForLanguage.lang))
 

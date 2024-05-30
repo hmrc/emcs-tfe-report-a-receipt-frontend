@@ -48,18 +48,4 @@ object OtherInformationMessages {
     override val addMoreInformation = "Enter more information about other reason(s) you are unsatisfied with this movement"
   }
 
-  object Welsh extends ViewMessages with BaseWelsh {
-    override val refusedHeading = "Give information about other reason(s) you are refusing this movement"
-    override val refusedTitle: String = title(refusedHeading)
-    override val heading = "Give more information about other reason(s) you are unsatisfied with this movement"
-    override val title: String = title(heading)
-    override val hint = "Give information."
-    override val validationErrorInvalidChars = "Information must not include < and > and : and ;"
-    override val validationError = "Information must contain letters or numbers"
-    override val lengthError = "Information must be 350 characters or less"
-    override val requiredError = "Enter more information"
-    override val checkYourAnswersLabel = "Information about other reason(s)"
-    override val hiddenChangeLink = "information about other reason(s) you are unsatisfied with this movement"
-    override val addMoreInformation = "Enter more information about other reason(s) you are unsatisfied with this movement"
-  }
 }

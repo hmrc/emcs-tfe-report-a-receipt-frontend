@@ -41,8 +41,7 @@ class ItemShortageOrExcessViewSpec extends ViewSpecBase with ViewBehaviours {
   "ItemShortageOrExcessView rendered in the Kilograms variant of view" - {
 
     Seq(
-      ItemShortageOrExcessMessages.English -> UnitOfMeasureMessages.English,
-      ItemShortageOrExcessMessages.Welsh -> UnitOfMeasureMessages.English
+      ItemShortageOrExcessMessages.English -> UnitOfMeasureMessages.English
     ).foreach { case (viewMessagesForLanguage, unitOfMeasureMessagesForLanguage) =>
 
       s"when being rendered in lang code of '${viewMessagesForLanguage.lang.code}'" - {
@@ -75,8 +74,7 @@ class ItemShortageOrExcessViewSpec extends ViewSpecBase with ViewBehaviours {
   "ItemShortageOrExcessView rendered in the Litres 15 degrees variant of view" - {
 
     Seq(
-      ItemShortageOrExcessMessages.English -> UnitOfMeasureMessages.English,
-      ItemShortageOrExcessMessages.Welsh -> UnitOfMeasureMessages.English
+      ItemShortageOrExcessMessages.English -> UnitOfMeasureMessages.English
     ).foreach { case (viewMessagesForLanguage, unitOfMeasureMessagesForLanguage) =>
 
       s"when being rendered in lang code of '${viewMessagesForLanguage.lang.code}'" - {
@@ -109,8 +107,7 @@ class ItemShortageOrExcessViewSpec extends ViewSpecBase with ViewBehaviours {
   "ItemShortageOrExcessView rendered in the Litres 20 degrees variant of view" - {
 
     Seq(
-      ItemShortageOrExcessMessages.English -> UnitOfMeasureMessages.English,
-      ItemShortageOrExcessMessages.Welsh -> UnitOfMeasureMessages.English
+      ItemShortageOrExcessMessages.English -> UnitOfMeasureMessages.English
     ).foreach { case (viewMessagesForLanguage, unitOfMeasureMessagesForLanguage) =>
 
       s"when being rendered in lang code of '${viewMessagesForLanguage.lang.code}'" - {
@@ -143,8 +140,7 @@ class ItemShortageOrExcessViewSpec extends ViewSpecBase with ViewBehaviours {
   "ItemShortageOrExcessView rendered in the thousands variant of view" - {
 
     Seq(
-      ItemShortageOrExcessMessages.English -> UnitOfMeasureMessages.English,
-      ItemShortageOrExcessMessages.Welsh -> UnitOfMeasureMessages.English
+      ItemShortageOrExcessMessages.English -> UnitOfMeasureMessages.English
     ).foreach { case (viewMessagesForLanguage, unitOfMeasureMessagesForLanguage) =>
 
       s"when being rendered in lang code of '${viewMessagesForLanguage.lang.code}'" - {

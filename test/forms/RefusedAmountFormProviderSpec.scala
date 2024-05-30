@@ -152,7 +152,7 @@ class RefusedAmountFormProviderSpec extends IntFieldBehaviours with GuiceOneAppP
 
   "Error Messages" - {
 
-    Seq(RefusedAmountMessages.English, RefusedAmountMessages.Welsh) foreach { messagesForLanguage =>
+    Seq(RefusedAmountMessages.English) foreach { messagesForLanguage =>
 
       implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(messagesForLanguage.lang))
 

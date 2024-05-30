@@ -33,7 +33,7 @@ class TimeoutViewSpec extends ViewSpecBase with ViewBehaviours {
 
   "TimeoutView" - {
 
-    Seq(TimeoutMessages.English, TimeoutMessages.Welsh).foreach { messagesForLanguage =>
+    Seq(TimeoutMessages.English).foreach { messagesForLanguage =>
 
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
 

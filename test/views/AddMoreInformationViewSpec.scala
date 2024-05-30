@@ -36,7 +36,7 @@ class AddMoreInformationViewSpec extends ViewSpecBase with ViewBehaviours {
 
     lazy val form = app.injector.instanceOf[AddMoreInformationFormProvider].apply(AddMoreInformationPage)
 
-    Seq(AddMoreInformationMessages.English, AddMoreInformationMessages.Welsh).foreach { messagesForLanguage =>
+    Seq(AddMoreInformationMessages.English).foreach { messagesForLanguage =>
 
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
 
@@ -61,7 +61,7 @@ class AddMoreInformationViewSpec extends ViewSpecBase with ViewBehaviours {
 
     lazy val form = app.injector.instanceOf[AddMoreInformationFormProvider].apply(AddShortageInformationPage)
 
-    Seq(AddShortageInformationMessages.English, AddShortageInformationMessages.Welsh).foreach { messagesForLanguage =>
+    Seq(AddShortageInformationMessages.English).foreach { messagesForLanguage =>
 
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
 
@@ -86,7 +86,7 @@ class AddMoreInformationViewSpec extends ViewSpecBase with ViewBehaviours {
 
     lazy val form = app.injector.instanceOf[AddMoreInformationFormProvider].apply(AddExcessInformationPage)
 
-    Seq(AddExcessInformationMessages.English, AddExcessInformationMessages.Welsh).foreach { messagesForLanguage =>
+    Seq(AddExcessInformationMessages.English).foreach { messagesForLanguage =>
 
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
 
@@ -111,7 +111,7 @@ class AddMoreInformationViewSpec extends ViewSpecBase with ViewBehaviours {
 
     lazy val form = app.injector.instanceOf[AddMoreInformationFormProvider].apply(AddDamageInformationPage)
 
-    Seq(AddDamageInformationMessages.English, AddDamageInformationMessages.Welsh).foreach { messagesForLanguage =>
+    Seq(AddDamageInformationMessages.English).foreach { messagesForLanguage =>
 
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
 
@@ -136,7 +136,7 @@ class AddMoreInformationViewSpec extends ViewSpecBase with ViewBehaviours {
 
     lazy val form = app.injector.instanceOf[AddMoreInformationFormProvider].apply(AddSealsInformationPage)
 
-    Seq(AddSealsInformationMessages.English, AddSealsInformationMessages.Welsh).foreach { messagesForLanguage =>
+    Seq(AddSealsInformationMessages.English).foreach { messagesForLanguage =>
 
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
 
@@ -161,7 +161,7 @@ class AddMoreInformationViewSpec extends ViewSpecBase with ViewBehaviours {
 
     lazy val form = app.injector.instanceOf[AddMoreInformationFormProvider].apply(RemoveItemPage(1))
 
-    Seq(RemoveItemMessages.English, RemoveItemMessages.Welsh).foreach { messagesForLanguage =>
+    Seq(RemoveItemMessages.English).foreach { messagesForLanguage =>
 
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
 

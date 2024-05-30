@@ -42,15 +42,4 @@ object HowGiveInformationMessages {
     override val hiddenChangeLinkText = "how much of this movement is wrong"
   }
 
-  object Welsh extends ViewMessages with BaseWelsh {
-    override val title = title("How do you want to give information about this movement?")
-    override val heading = "How do you want to give information about this movement?"
-    override val wholeMovement = "I want to give information about the whole movement"
-    override val individualItem = "I want to choose which item(s) to give information about"
-    override val requiredError = "Select how you want to give information about this movement"
-    override val checkYourAnswersLabel = "Amount of the movement that is wrong"
-    override val checkYourAnswersWholeMovement = "Whole movement"
-    override val checkYourAnswersIndividualItem = "Individual items"
-    override val hiddenChangeLinkText = "how much of this movement is wrong"
-  }
 }

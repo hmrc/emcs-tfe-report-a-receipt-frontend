@@ -36,12 +36,4 @@ object AddedItemsMessages {
     override val addAnother: String = "Do you want to add another item?"
   }
 
-  object Welsh extends ViewMessages with BaseWelsh {
-    override val headingSingular = "You have given information for 1 item"
-    override val headingPlural = (n: Int) => s"You have given information for $n items"
-    override val titleSingular = title(headingSingular)
-    override val titlePlural = (n: Int) => title(headingPlural(n))
-    override val requiredError: String = "Select yes if you want to give information about another item"
-    override val addAnother: String = "Do you want to add another item?"
-  }
 }

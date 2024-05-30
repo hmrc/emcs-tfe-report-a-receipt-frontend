@@ -52,20 +52,3 @@ trait BaseEnglish extends BaseMessages with EN {
   override val remove: String = "Remove"
 }
 object BaseEnglish extends BaseEnglish
-
-trait BaseWelsh extends BaseMessages with CY {
-  override def title(heading: String) = s"$heading - Excise Movement and Control System - GOV.UK"
-  override val opensInNewTab: String = "(opens in new tab)"
-  override def arcSubheading(arc: String): String = s"Report of receipt for $arc"
-  override val continue = "Continue"
-  override val saveAndContinue = "Save and continue"
-  override val savePreviousAnswersAndExit = "Save previous answers and exit"
-  override val day: String = "Day"
-  override val month: String = "Month"
-  override val year: String = "Year"
-  override val yes: String = "Yes"
-  override val no: String = "No"
-  override val change: String = "Change"
-  override val remove: String = "Remove"
-}
-object BaseWelsh extends BaseWelsh

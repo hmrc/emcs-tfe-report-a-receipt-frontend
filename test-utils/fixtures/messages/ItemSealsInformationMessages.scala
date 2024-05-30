@@ -44,16 +44,4 @@ object ItemSealsInformationMessages {
     override val addMoreInformation = "Enter more information about broken seal(s) (optional)"
   }
 
-  object Welsh extends ViewMessages with BaseWelsh {
-    override val heading: Int => String = i => s"Give information about item $i having broken seal(s)"
-    override val title: Int => String = i => title(heading(i))
-    override val itemDetails: Int => String = i => s"View item $i details"
-    override val hint = "Give more information (optional)"
-    override val validationErrorInvalidChars = "Information must not include < and > and : and ;"
-    override val validationError = "Information must contain letters or numbers"
-    override val lengthError = "Information must be 350 characters or less"
-    override val checkYourAnswersLabel = "Information about broken seal(s)"
-    override val hiddenChangeLink = "information about broken seal(s)"
-    override val addMoreInformation = "Enter more information about broken seal(s) (optional)"
-  }
 }

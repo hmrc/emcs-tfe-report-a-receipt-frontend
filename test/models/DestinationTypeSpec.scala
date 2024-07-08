@@ -30,6 +30,10 @@ class DestinationTypeSpec extends SpecBase {
       DirectDelivery.toString mustBe "4"
       ExemptedOrganisations.toString mustBe "5"
       Export.toString mustBe "6"
+      UnknownDestination.toString mustBe "8"
+      CertifiedConsignee.toString mustBe "9"
+      TemporaryCertifiedConsignee.toString mustBe "10"
+      ReturnToThePlaceOfDispatchOfTheConsignor.toString mustBe "11"
     }
   }
 }

@@ -21,6 +21,7 @@
 @import views.html.helper.CSPNonce
 @import views.html.components.activeTrader
 @import viewmodels.traderInfo.TraderInfo
+@import models.requests.NavBarRequest
 
 @this(
     appConfig: AppConfig,
@@ -76,7 +77,10 @@
 @beforeContent = {
 
     @{ activeTrader(maybeShowActiveTrader, appConfig) }
-
+    @{ request match {
+        case navBarRequest: NavBarRequest => navBarRequest.navBar.getOrElse(Html(""))
+        case _ => Html("")
+    }}
     @if(showBackLink) {
         @govukBackLink(BackLinkViewModel(href = "#").withCssClass("js-visible"))
     }

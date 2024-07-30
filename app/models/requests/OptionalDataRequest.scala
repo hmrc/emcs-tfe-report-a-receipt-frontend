@@ -18,11 +18,14 @@ package models.requests
 
 import models.{TraderKnownFacts, UserAnswers}
 import play.api.mvc.WrappedRequest
+import play.twirl.api.Html
 
 case class OptionalDataRequest[A](request: MovementRequest[A],
                                   userAnswers: Option[UserAnswers],
-                                  traderKnownFacts: Option[TraderKnownFacts]) extends WrappedRequest[A](request) {
+                                  traderKnownFacts: Option[TraderKnownFacts]) extends WrappedRequest[A](request) with NavBarRequest {
   val internalId = request.internalId
   val ern = request.ern
   val arc = request.arc
+
+  override val navBar: Option[Html] = request.navBar
 }

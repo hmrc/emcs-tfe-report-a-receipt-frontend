@@ -85,6 +85,8 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig, configuration: Configu
   def userAllowListBaseUrl: String = s"$userAllowListService/user-allow-list"
   def referenceDataBaseUrl: String = s"$referenceDataService/emcs-tfe-reference-data"
 
+  def emcsTfeFrontendBaseUrl: String = servicesConfig.baseUrl("emcs-tfe-frontend")
+
   def destinationOfficeSuffix: String = configuration.get[String]("constants.destinationOfficeSuffix")
 
   def internalAuthToken: String = configuration.get[String]("internal-auth.token")

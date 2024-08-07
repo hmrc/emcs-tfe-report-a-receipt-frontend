@@ -24,8 +24,7 @@ import models.UserAnswers
 import models.WrongWithMovement._
 import models.response.emcsTfe.GetMovementResponse
 import pages.{AcceptMovementPage, DateOfArrivalPage, MoreInformationPage}
-import play.api.libs.json.Format
-import play.api.libs.json.Json
+import play.api.libs.json.{Format, Json, OFormat}
 import utils.JsonOptionFormatter
 import utils.ModelConstructorHelpers
 
@@ -44,7 +43,7 @@ case class SubmitReportOfReceiptModel(arc: String,
 
 object SubmitReportOfReceiptModel extends JsonOptionFormatter with ModelConstructorHelpers {
 
-  implicit val fmt: Format[SubmitReportOfReceiptModel] = Json.format
+  implicit val fmt: OFormat[SubmitReportOfReceiptModel] = Json.format
 
   private[models] val DESTINATION_OFFICE_PREFIX_GB = "GB"
   private[models] val DESTINATION_OFFICE_PREFIX_XI = "XI"

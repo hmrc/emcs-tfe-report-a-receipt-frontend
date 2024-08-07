@@ -18,11 +18,13 @@ package services
 
 import config.AppConfig
 import connectors.emcsTfe.SubmitReportOfReceiptConnector
+import featureswitch.core.config.{EnableNRS, FeatureSwitching}
 import models.audit.{SubmitReportOfReceiptAuditModel, SubmitReportOfReceiptResponseAuditModel}
 import models.requests.DataRequest
 import models.response.SubmitReportOfReceiptException
 import models.response.emcsTfe.SubmitReportOfReceiptResponse
 import models.submitReportOfReceipt.SubmitReportOfReceiptModel
+import services.nrs.NRSBrokerService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.util.UUID
@@ -31,9 +33,10 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SubmitReportOfReceiptService @Inject()(submitReportOfReceiptConnector: SubmitReportOfReceiptConnector,
+                                             nrsBrokerService: NRSBrokerService,
                                              auditingService: AuditingService,
                                              appConfig: AppConfig)
-                                            (implicit ec: ExecutionContext) {
+                                            (implicit ec: ExecutionContext) extends FeatureSwitching {
 
   def submit(ern: String, arc: String)(implicit hc: HeaderCarrier, dataRequest: DataRequest[_]): Future[SubmitReportOfReceiptResponse] = {
 
@@ -47,6 +50,10 @@ class SubmitReportOfReceiptService @Inject()(submitReportOfReceiptConnector: Sub
       ern = ern
     )
     auditingService.audit(auditSubmission)
+
+    if(isEnabled(EnableNRS)(appConfig)) {
+      nrsBrokerService.submitPayload(submission, ern)
+    }
 
     submitReportOfReceiptConnector.submit(ern, submission).map {
       case Right(success) =>

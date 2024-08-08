@@ -46,14 +46,11 @@ class GetTraderKnownFactsServiceSpec extends SpecBase with MockGetTraderKnownFac
         MockGetTraderKnownFactsConnector.getTraderKnownFacts(testErn).returns(Future.successful(Right(None)))
         testService.getTraderKnownFacts(testErn).futureValue mustBe None
       }
-    }
 
-    "should throw TraderKnownFactsException" - {
       "when Connector returns failure from downstream" in {
 
         MockGetTraderKnownFactsConnector.getTraderKnownFacts(testErn).returns(Future.successful(Left(UnexpectedDownstreamResponseError)))
-        intercept[TraderKnownFactsException](await(testService.getTraderKnownFacts(testErn))).getMessage mustBe
-          s"No known facts found for trader $testErn"
+        testService.getTraderKnownFacts(testErn).futureValue mustBe None
       }
     }
   }

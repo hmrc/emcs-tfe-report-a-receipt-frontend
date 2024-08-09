@@ -18,9 +18,11 @@ package services
 
 import base.SpecBase
 import config.AppConfig
-import fixtures.SubmitReportOfReceiptFixtures
+import featureswitch.core.config.EnableNRS
+import fixtures.{NRSBrokerFixtures, SubmitReportOfReceiptFixtures}
+import mocks.config.MockAppConfig
 import mocks.connectors.MockSubmitReportOfReceiptConnector
-import mocks.services.MockAuditingService
+import mocks.services.{MockAuditingService, MockNRSBrokerService}
 import models.AcceptMovement._
 import models.audit.{SubmitReportOfReceiptAuditModel, SubmitReportOfReceiptResponseAuditModel}
 import models.response.{SubmitReportOfReceiptException, UnexpectedDownstreamResponseError}
@@ -33,58 +35,82 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class SubmitReportOfReceiptServiceSpec extends SpecBase with MockSubmitReportOfReceiptConnector with SubmitReportOfReceiptFixtures with MockAuditingService {
-
-  lazy val mockAppConfig = mock[AppConfig]
+class SubmitReportOfReceiptServiceSpec extends SpecBase
+  with MockSubmitReportOfReceiptConnector
+  with SubmitReportOfReceiptFixtures
+  with MockAuditingService
+  with MockAppConfig
+  with MockNRSBrokerService
+  with NRSBrokerFixtures {
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  lazy val testService = new SubmitReportOfReceiptService(mockSubmitReportOfReceiptConnector, mockAuditingService, mockAppConfig)
+  lazy val testService = new SubmitReportOfReceiptService(mockSubmitReportOfReceiptConnector, mockNRSBrokerService, mockAuditingService, mockAppConfig)
+
+  class Fixture(isNRSEnabled: Boolean) {
+    (() => mockAppConfig.destinationOfficeSuffix).expects().returns("004098").anyNumberOfTimes()
+    MockAppConfig.getFeatureSwitchValue(EnableNRS).returns(isNRSEnabled)
+  }
 
   ".submit(ern: String, submission: SubmitReportOfReceiptModel)" - {
 
-    "should return Success response" - {
+    Seq(true, false).foreach { nrsEnabled =>
 
-      "when Connector returns success from downstream" in {
+      s"when NRS enabled is '$nrsEnabled'" - {
 
-        (() => mockAppConfig.destinationOfficeSuffix).expects().returns("004098").anyNumberOfTimes()
+        "should return Success response" - {
 
-        val userAnswers = emptyUserAnswers
-          .set(DateOfArrivalPage, testDateOfArrival)
-          .set(AcceptMovementPage, Satisfactory)
+          "when Connector returns success from downstream" in new Fixture(nrsEnabled) {
 
-        val request = dataRequest(FakeRequest(), userAnswers)
-        val submission = SubmitReportOfReceiptModel(getMovementResponseModel)(userAnswers, mockAppConfig)
+            val userAnswers = emptyUserAnswers
+              .set(DateOfArrivalPage, testDateOfArrival)
+              .set(AcceptMovementPage, Satisfactory)
 
-        MockAuditingService.verifyAudit(SubmitReportOfReceiptAuditModel("credId", "internalId", "correlationId", submission, "ern")).noMoreThanOnce()
+            val request = dataRequest(FakeRequest(), userAnswers)
+            val submission = SubmitReportOfReceiptModel(getMovementResponseModel)(userAnswers, mockAppConfig)
 
-        MockAuditingService.verifyAudit(
-          SubmitReportOfReceiptResponseAuditModel("credId", "internalId", "correlationId", "arc", "ern", successResponseChRIS.receipt)
-        ).noMoreThanOnce()
+            MockAuditingService.verifyAudit(SubmitReportOfReceiptAuditModel("credId", "internalId", "correlationId", submission, "ern")).noMoreThanOnce()
 
-        MockSubmitReportOfReceiptConnector.submit(testErn, submission).returns(Future.successful(Right(successResponseChRIS)))
+            MockAuditingService.verifyAudit(
+              SubmitReportOfReceiptResponseAuditModel("credId", "internalId", "correlationId", "arc", "ern", successResponseChRIS.receipt)
+            ).noMoreThanOnce()
 
-        testService.submit(testErn, testArc)(hc, request).futureValue mustBe successResponseChRIS
-      }
-    }
+            MockSubmitReportOfReceiptConnector.submit(testErn, submission).returns(Future.successful(Right(successResponseChRIS)))
 
-    "should return Failure response" - {
+            if(nrsEnabled) {
+              MockNRSBrokerService.submitPayload(submission, testErn).returns(Future.successful(Right(nrsBrokerResponseModel)))
+            } else {
+              MockNRSBrokerService.submitPayload(submission, testErn).never()
+            }
 
-      "when Connector returns failure from downstream" in {
+            testService.submit(testErn, testArc)(hc, request).futureValue mustBe successResponseChRIS
+          }
+        }
 
-        (() => mockAppConfig.destinationOfficeSuffix).expects().returns("004098").anyNumberOfTimes()
+        "should return Failure response" - {
 
-        val userAnswers = emptyUserAnswers
-          .set(DateOfArrivalPage, testDateOfArrival)
-          .set(AcceptMovementPage, Satisfactory)
+          "when Connector returns failure from downstream" in new Fixture(nrsEnabled) {
 
-        val request = dataRequest(FakeRequest(), userAnswers)
-        val submission = SubmitReportOfReceiptModel(getMovementResponseModel)(userAnswers, mockAppConfig)
+            val userAnswers = emptyUserAnswers
+              .set(DateOfArrivalPage, testDateOfArrival)
+              .set(AcceptMovementPage, Satisfactory)
 
-        MockAuditingService.verifyAudit(SubmitReportOfReceiptAuditModel("credId", "internalId", "correlationId", submission, "ern")).noMoreThanOnce()
-        MockSubmitReportOfReceiptConnector.submit(testErn, submission).returns(Future.successful(Left(UnexpectedDownstreamResponseError)))
-        intercept[SubmitReportOfReceiptException](await(testService.submit(testErn, testArc)(hc, request))).getMessage mustBe
-          s"Failed to submit Report of Receipt to emcs-tfe for ern: '$testErn' & arc: '$testArc'"
+            val request = dataRequest(FakeRequest(), userAnswers)
+            val submission = SubmitReportOfReceiptModel(getMovementResponseModel)(userAnswers, mockAppConfig)
+
+            MockAuditingService.verifyAudit(SubmitReportOfReceiptAuditModel("credId", "internalId", "correlationId", submission, "ern")).noMoreThanOnce()
+            MockSubmitReportOfReceiptConnector.submit(testErn, submission).returns(Future.successful(Left(UnexpectedDownstreamResponseError)))
+
+            if(nrsEnabled) {
+              MockNRSBrokerService.submitPayload(submission, testErn).returns(Future.successful(Right(nrsBrokerResponseModel)))
+            } else {
+              MockNRSBrokerService.submitPayload(submission, testErn).never()
+            }
+
+            intercept[SubmitReportOfReceiptException](await(testService.submit(testErn, testArc)(hc, request))).getMessage mustBe
+              s"Failed to submit Report of Receipt to emcs-tfe for ern: '$testErn' & arc: '$testArc'"
+          }
+        }
       }
     }
   }

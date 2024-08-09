@@ -16,6 +16,8 @@
 
 package models.response
 
+import play.api.libs.json.JsonValidationError
+
 import scala.util.control.NoStackTrace
 
 sealed trait ErrorResponse {
@@ -41,3 +43,9 @@ case class SubmitReportOfReceiptException(message: String) extends Exception(mes
 case class UserAnswersException(message: String) extends Exception(message) with NoStackTrace with ErrorResponse
 case class MissingMandatoryPage(message: String) extends Exception(message) with NoStackTrace with ErrorResponse
 case class TraderKnownFactsException(message: String) extends Exception(message) with NoStackTrace with ErrorResponse
+
+case class NRSBrokerJsonParsingError(errors: Seq[JsonValidationError]) extends ErrorResponse {
+  val message = s"Errors parsing JSON, errors: $errors"
+}
+
+case class IdentityDataException(message: String) extends ErrorResponse

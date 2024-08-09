@@ -91,6 +91,10 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig, configuration: Configu
 
   def internalAuthToken: String = configuration.get[String]("internal-auth.token")
 
+  private def nrsBrokerService: String = servicesConfig.baseUrl("nrs-broker")
+
+  def nrsBrokerBaseUrl(): String = s"$nrsBrokerService/emcs-tfe-nrs-message-broker"
+
   def getFeatureSwitchValue(feature: String): Boolean = configuration.get[Boolean](feature)
 
   lazy val selfUrl: String = servicesConfig.baseUrl("emcs-tfe-report-a-receipt-frontend")

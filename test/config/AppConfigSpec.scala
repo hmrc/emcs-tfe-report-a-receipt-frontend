@@ -47,7 +47,7 @@ class AppConfigSpec extends SpecBase with FeatureSwitching {
 
         "must return to the new URL" in {
           disable(ReturnToLegacy)
-          config.emcsMovementDetailsUrl(testErn, testArc) mustBe s"http://localhost:8310/emcs/account/consignment/$testErn/$testArc"
+          config.emcsMovementDetailsUrl(testErn, testArc) mustBe s"http://localhost:8310/emcs/account/trader/$testErn/movement/$testArc/overview"
         }
       }
     }

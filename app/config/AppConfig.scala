@@ -65,7 +65,7 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig, configuration: Configu
     if (isEnabled(ReturnToLegacy)) {
       configuration.get[String]("urls.legacy.movementHistory").replace(":ern", ern).replace(":arc", arc)
     } else {
-      configuration.get[String]("urls.emcsTfeMovementDetails") + s"/$ern/$arc"
+      configuration.get[String]("urls.emcsTfeMovementDetails").replace(":ern", ern).replace(":arc", arc)
     }
 
   def emcsMovementsUrl(ern: String): String =

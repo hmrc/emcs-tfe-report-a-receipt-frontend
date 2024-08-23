@@ -62,8 +62,9 @@ class ConfirmationViewSpec extends ViewSpecBase with ViewBehaviours {
             Selectors.p(1) -> messagesForLanguage.whatNextP1,
             Selectors.p(2) -> messagesForLanguage.whatNextP2,
             Selectors.p(3) -> messagesForLanguage.contactHmrc,
-            Selectors.button -> messagesForLanguage.returnToAtAGlance,
-            Selectors.p(4) -> messagesForLanguage.feedback
+            Selectors.p(4) -> messagesForLanguage.returnToMovementLink,
+            Selectors.p(5) -> messagesForLanguage.returnToAccountHomeLink,
+            Selectors.p(6) -> messagesForLanguage.feedback
           ))
         }
 
@@ -98,8 +99,9 @@ class ConfirmationViewSpec extends ViewSpecBase with ViewBehaviours {
             Selectors.bullet(1, 2) -> messagesForLanguage.excessDifferentGoodsBullet1,
             Selectors.bullet(2, 2) -> messagesForLanguage.excessDifferentGoodsBullet2,
             Selectors.p(6) -> messagesForLanguage.contactHmrc,
-            Selectors.button -> messagesForLanguage.returnToAtAGlance,
-            Selectors.p(7) -> messagesForLanguage.feedback
+            Selectors.p(7) -> messagesForLanguage.returnToMovementLink,
+            Selectors.p(8) -> messagesForLanguage.returnToAccountHomeLink,
+            Selectors.p(9) -> messagesForLanguage.feedback
           ))
         }
 
@@ -142,8 +144,9 @@ class ConfirmationViewSpec extends ViewSpecBase with ViewBehaviours {
             Selectors.bullet(1, 3) -> messagesForLanguage.excessDifferentGoodsBullet1,
             Selectors.bullet(2, 3) -> messagesForLanguage.excessDifferentGoodsBullet2,
             Selectors.p(7) -> messagesForLanguage.contactHmrc,
-            Selectors.button -> messagesForLanguage.returnToAtAGlance,
-            Selectors.p(8) -> messagesForLanguage.feedback
+            Selectors.p(8) -> messagesForLanguage.returnToMovementLink,
+            Selectors.p(9) -> messagesForLanguage.returnToAccountHomeLink,
+            Selectors.p(10) -> messagesForLanguage.feedback
           ))
         }
       }

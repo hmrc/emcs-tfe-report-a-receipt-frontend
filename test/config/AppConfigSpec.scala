@@ -17,7 +17,7 @@
 package config
 
 import base.SpecBase
-import featureswitch.core.config.{FeatureSwitching, ReturnToLegacy, StubGetTraderKnownFacts}
+import featureswitch.core.config.{FeatureSwitching, StubGetTraderKnownFacts}
 
 class AppConfigSpec extends SpecBase with FeatureSwitching {
 
@@ -33,72 +33,16 @@ class AppConfigSpec extends SpecBase with FeatureSwitching {
       config.feedbackFrontendSurveyUrl mustBe s"http://localhost:9514/feedback/${config.deskproName}/beta"
     }
 
-    ".emcsMovementDetailsUrl()" - {
-
-      "when ReturnToLegacy is enabled" - {
-
-        "must return to the legacy URL" in {
-          enable(ReturnToLegacy)
-          config.emcsMovementDetailsUrl(testErn, testArc) mustBe s"http://localhost:8080/emcs/trader/$testErn/movement/$testArc/history"
-        }
-      }
-
-      "when ReturnToLegacy is disabled" - {
-
-        "must return to the new URL" in {
-          disable(ReturnToLegacy)
-          config.emcsMovementDetailsUrl(testErn, testArc) mustBe s"http://localhost:8310/emcs/account/consignment/$testErn/$testArc"
-        }
-      }
+    ".emcsMovementDetailsUrl() must return the correct URL" in {
+      config.emcsMovementDetailsUrl(testErn, testArc) mustBe s"http://localhost:8310/emcs/account/trader/$testErn/movement/$testArc/overview"
     }
 
-    ".emcsTfeHomeUrl()" - {
-
-      "when ReturnToLegacy is enabled" - {
-
-        "when an ERN is supplied" - {
-
-          "must return to the legacy URL including the ERN" in {
-            enable(ReturnToLegacy)
-            config.emcsTfeHomeUrl(Some(testErn)) mustBe s"http://localhost:8080/emcs/trader/$testErn"
-          }
-        }
-
-        "when an ERN is NOT supplied" - {
-
-          "must return to the legacy URL without the ERN" in {
-            enable(ReturnToLegacy)
-            config.emcsTfeHomeUrl(None) mustBe s"http://localhost:8080/emcs/trader"
-          }
-        }
-      }
-
-      "when ReturnToLegacy is disabled" - {
-
-        "must return to the new URL" in {
-          disable(ReturnToLegacy)
-          config.emcsTfeHomeUrl(None) mustBe s"http://localhost:8310/emcs/account"
-        }
-      }
+    ".emcsTfeHomeUrl() must return the correct URL" in {
+      config.emcsTfeHomeUrl(None) mustBe s"http://localhost:8310/emcs/account"
     }
 
-    ".emcsMovementsUrl()" - {
-
-      "when ReturnToLegacy is enabled" - {
-
-        "must return to the legacy URL" in {
-          enable(ReturnToLegacy)
-          config.emcsMovementsUrl(testErn) mustBe s"http://localhost:8080/emcs/trader/$testErn/movements?movementtype=all"
-        }
-      }
-
-      "when ReturnToLegacy is disabled" - {
-
-        "must return to the new URL" in {
-          disable(ReturnToLegacy)
-          config.emcsMovementsUrl(testErn) mustBe s"http://localhost:8310/emcs/account/movements-in/$testErn"
-        }
-      }
+    ".emcsMovementsUrl() must return the correct URL" in {
+      config.emcsMovementsUrl(testErn) mustBe s"http://localhost:8310/emcs/account/trader/$testErn/movements"
     }
 
     ".traderKnownFactsReferenceDataBaseUrl" - {

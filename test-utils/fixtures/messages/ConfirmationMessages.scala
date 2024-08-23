@@ -40,7 +40,8 @@ object ConfirmationMessages {
     val excessDifferentGoodsBullet1: String
     val excessDifferentGoodsBullet2: String
     val contactHmrc: String
-    val returnToAtAGlance: String
+    val returnToMovementLink: String
+    val returnToAccountHomeLink: String
     val feedback: String
   }
 
@@ -66,7 +67,8 @@ object ConfirmationMessages {
     override val excessDifferentGoodsBullet1 = "a duty point will be created for those goods"
     override val excessDifferentGoodsBullet2 = "the person or organisation holding the goods must immediately pay the duty on them"
     override val contactHmrc = "Contact the HMRC excise helpline (opens in new tab) if you need more help or information about excise duties."
-    override val returnToAtAGlance = "Return to at a glance"
+    val returnToMovementLink: String = "Return to movement"
+    val returnToAccountHomeLink: String = "Return to account home"
     override val feedback = "What did you think of this service? (opens in new tab) (takes 30 seconds)"
   }
 

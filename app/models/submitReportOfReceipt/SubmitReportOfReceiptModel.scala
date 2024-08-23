@@ -17,16 +17,13 @@
 package models.submitReportOfReceipt
 
 import config.AppConfig
-import models.AcceptMovement
-import models.DestinationType
 import models.DestinationType.TemporaryRegisteredConsignee
-import models.UserAnswers
+import models.{AcceptMovement, DestinationType, UserAnswers}
 import models.WrongWithMovement._
 import models.response.emcsTfe.GetMovementResponse
 import pages.{AcceptMovementPage, DateOfArrivalPage, MoreInformationPage}
-import play.api.libs.json.{Format, Json, OFormat}
-import utils.JsonOptionFormatter
-import utils.ModelConstructorHelpers
+import play.api.libs.json.{Json, OFormat}
+import utils.{JsonOptionFormatter, ModelConstructorHelpers}
 
 import java.time.LocalDate
 

@@ -16,7 +16,7 @@
 
 package config
 
-import featureswitch.core.config.{FeatureSwitching, ReturnToLegacy, StubGetTraderKnownFacts}
+import featureswitch.core.config.{FeatureSwitching, StubGetTraderKnownFacts}
 import play.api.Configuration
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
@@ -29,7 +29,7 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig, configuration: Configu
 
   implicit val config: AppConfig = this
 
-  lazy val host: String    = configuration.get[String]("host")
+  lazy val host: String = configuration.get[String]("host")
   lazy val appName: String = configuration.get[String]("appName")
   lazy val deskproName: String = configuration.get[String]("deskproName")
 
@@ -38,51 +38,46 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig, configuration: Configu
   def betaBannerFeedbackUrl(implicit request: RequestHeader): String =
     s"$contactHost/contact/beta-feedback?service=$deskproName&backUrl=${SafeRedirectUrl(host + request.uri).encodedUrl}"
 
-  lazy val loginUrl: String         = configuration.get[String]("urls.login")
+  lazy val loginUrl: String = configuration.get[String]("urls.login")
+
   def loginContinueUrl(ern: String, arc: String): String = configuration.get[String]("urls.loginContinue") + s"/$ern/$arc"
-  lazy val signOutUrl: String       = configuration.get[String]("urls.signOut")
+
+  lazy val signOutUrl: String = configuration.get[String]("urls.signOut")
   lazy val loginGuidance: String = configuration.get[String]("urls.loginGuidance")
   lazy val registerGuidance: String = configuration.get[String]("urls.registerGuidance")
   lazy val signUpBetaFormUrl: String = configuration.get[String]("urls.signupBetaForm")
 
   lazy val tradeTariffCommoditiesUrl: String = configuration.get[String]("urls.tradeTariffCommodities")
+
   def getUrlForCommodityCode(code: String): String = s"$tradeTariffCommoditiesUrl/${code}00"
 
-  lazy val contactHmrcUrl: String   = configuration.get[String]("urls.contactHmrc")
+  lazy val contactHmrcUrl: String = configuration.get[String]("urls.contactHmrc")
 
   private lazy val feedbackFrontendHost: String = configuration.get[String]("feedback-frontend.host")
-  lazy val feedbackFrontendSurveyUrl: String    = s"$feedbackFrontendHost/feedback/$deskproName/beta"
+  lazy val feedbackFrontendSurveyUrl: String = s"$feedbackFrontendHost/feedback/$deskproName/beta"
 
-  def emcsTfeHomeUrl(ern: Option[String]): String = {
-    if(isEnabled(ReturnToLegacy)) {
-      configuration.get[String]("urls.legacy.atAGlance") + ern.fold("")(s"/" + _)
-    } else {
-      configuration.get[String]("urls.emcsTfeHome")
-    }
-  }
+  def emcsTfeHomeUrl(ern: Option[String]): String =
+    configuration.get[String]("urls.emcsTfeHome")
 
   def emcsMovementDetailsUrl(ern: String, arc: String): String =
-    if (isEnabled(ReturnToLegacy)) {
-      configuration.get[String]("urls.legacy.movementHistory").replace(":ern", ern).replace(":arc", arc)
-    } else {
-      configuration.get[String]("urls.emcsTfeMovementDetails").replace(":ern", ern).replace(":arc", arc)
-    }
+    configuration.get[String]("urls.emcsTfeMovementDetails").replace(":ern", ern).replace(":arc", arc)
 
   def emcsMovementsUrl(ern: String): String =
-    if (isEnabled(ReturnToLegacy)) {
-      configuration.get[String]("urls.legacy.movements").replace(":ern", ern)
-    } else {
-      configuration.get[String]("urls.emcsTfeMovementsIn") + s"/$ern"
-    }
+    configuration.get[String]("urls.emcsTfeMovementsIn").replace(":ern", ern)
 
-  lazy val timeout: Int   = configuration.get[Int]("timeout-dialog.timeout")
+  lazy val timeout: Int = configuration.get[Int]("timeout-dialog.timeout")
   lazy val countdown: Int = configuration.get[Int]("timeout-dialog.countdown")
 
   private def emcsTfeService: String = servicesConfig.baseUrl("emcs-tfe")
+
   private def userAllowListService: String = servicesConfig.baseUrl("user-allow-list")
+
   private def referenceDataService: String = servicesConfig.baseUrl("emcs-tfe-reference-data")
+
   def emcsTfeBaseUrl: String = s"$emcsTfeService/emcs-tfe"
+
   def userAllowListBaseUrl: String = s"$userAllowListService/user-allow-list"
+
   def referenceDataBaseUrl: String = s"$referenceDataService/emcs-tfe-reference-data"
 
   def emcsTfeFrontendBaseUrl: String = servicesConfig.baseUrl("emcs-tfe-frontend")

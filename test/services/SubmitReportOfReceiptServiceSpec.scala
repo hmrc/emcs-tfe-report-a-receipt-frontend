@@ -17,7 +17,6 @@
 package services
 
 import base.SpecBase
-import config.AppConfig
 import featureswitch.core.config.EnableNRS
 import fixtures.{NRSBrokerFixtures, SubmitReportOfReceiptFixtures}
 import mocks.config.MockAppConfig

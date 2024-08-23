@@ -18,7 +18,6 @@ package services
 
 import connectors.referenceData.GetTraderKnownFactsConnector
 import models.TraderKnownFacts
-import models.response.TraderKnownFactsException
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
 

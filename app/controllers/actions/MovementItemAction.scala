@@ -50,6 +50,8 @@ class MovementActionImpl @Inject()(getMovementConnector: GetMovementConnector,
 
 trait MovementAction {
   def apply(arc: String, forceFetchNew: Boolean): ActionRefiner[UserRequest, MovementRequest]
+
   def upToDate(arc: String): ActionRefiner[UserRequest, MovementRequest] = apply(arc, forceFetchNew = true)
+
   def fromCache(arc: String): ActionRefiner[UserRequest, MovementRequest] = apply(arc, forceFetchNew = false)
 }

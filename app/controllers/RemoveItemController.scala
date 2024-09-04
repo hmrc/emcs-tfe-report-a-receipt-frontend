@@ -35,7 +35,6 @@ class RemoveItemController @Inject()(
                                       override val userAnswersService: UserAnswersService,
                                       override val navigator: Navigator,
                                       override val auth: AuthAction,
-                                      override val userAllowList: UserAllowListAction,
                                       override val withMovement: MovementAction,
                                       override val getData: DataRetrievalAction,
                                       override val requireData: DataRequiredAction,
@@ -50,11 +49,12 @@ class RemoveItemController @Inject()(
                  mode: Mode = NormalMode): Action[AnyContent] =
     authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
       withAddedItemAsync(idx) {
-        _ => Future.successful(Ok(view(
-          form = formProvider(RemoveItemPage(idx)),
-          page = RemoveItemPage(idx),
-          action = routes.RemoveItemController.onSubmit(ern, arc, idx, mode)
-        )))
+        _ =>
+          Future.successful(Ok(view(
+            form = formProvider(RemoveItemPage(idx)),
+            page = RemoveItemPage(idx),
+            action = routes.RemoveItemController.onSubmit(ern, arc, idx, mode)
+          )))
       }
     }
 

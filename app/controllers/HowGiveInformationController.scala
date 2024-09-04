@@ -35,14 +35,13 @@ class HowGiveInformationController @Inject()(
                                               override val userAnswersService: UserAnswersService,
                                               override val navigator: Navigator,
                                               override val auth: AuthAction,
-                                              override val userAllowList: UserAllowListAction,
                                               override val withMovement: MovementAction,
                                               override val getData: DataRetrievalAction,
                                               override val requireData: DataRequiredAction,
                                               formProvider: HowGiveInformationFormProvider,
                                               val controllerComponents: MessagesControllerComponents,
                                               view: HowGiveInformationView
-                                        ) extends BaseNavigationController with AuthActionHelper {
+                                            ) extends BaseNavigationController with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String, mode: Mode): Action[AnyContent] =
     authorisedDataRequestWithCachedMovement(ern, arc) { implicit request =>

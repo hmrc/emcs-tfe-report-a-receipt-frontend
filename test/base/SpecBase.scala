@@ -73,7 +73,6 @@ trait SpecBase
       )
       .overrides(
         bind[AuthAction].to[FakeAuthAction],
-        bind[UserAllowListAction].to[FakeUserAllowListAction],
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers, traderKnownFacts)),
         bind[MovementAction].toInstance(new FakeMovementAction(getMovementResponseModel))
       )

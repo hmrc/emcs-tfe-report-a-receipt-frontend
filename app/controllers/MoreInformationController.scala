@@ -36,14 +36,13 @@ class MoreInformationController @Inject()(
                                            override val userAnswersService: UserAnswersService,
                                            override val navigator: Navigator,
                                            override val auth: AuthAction,
-                                           override val userAllowList: UserAllowListAction,
                                            override val withMovement: MovementAction,
                                            override val getData: DataRetrievalAction,
                                            override val requireData: DataRequiredAction,
                                            formProvider: MoreInformationFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
                                            view: MoreInformationView
-                                     ) extends BaseNavigationController with AuthActionHelper with JsonOptionFormatter {
+                                         ) extends BaseNavigationController with AuthActionHelper with JsonOptionFormatter {
 
   def loadMoreInformation(ern: String, arc: String, mode: Mode): Action[AnyContent] =
     onPageLoad(ern, arc, MoreInformationPage, routes.MoreInformationController.submitMoreInformation(ern, arc, mode))

@@ -27,16 +27,15 @@ import services.UserAnswersService
 import javax.inject.Inject
 
 class CheckYourAnswersItemController @Inject()(
-                                            override val messagesApi: MessagesApi,
-                                            override val auth: AuthAction,
-                                            override val userAllowList: UserAllowListAction,
-                                            override val withMovement: MovementAction,
-                                            override val getData: DataRetrievalAction,
-                                            override val requireData: DataRequiredAction,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            val navigator: Navigator,
-                                            val userAnswersService: UserAnswersService
-                                          ) extends BaseNavigationController with AuthActionHelper {
+                                                override val messagesApi: MessagesApi,
+                                                override val auth: AuthAction,
+                                                override val withMovement: MovementAction,
+                                                override val getData: DataRetrievalAction,
+                                                override val requireData: DataRequiredAction,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                val navigator: Navigator,
+                                                val userAnswersService: UserAnswersService
+                                              ) extends BaseNavigationController with AuthActionHelper {
 
   def onPageLoad(ern: String, arc: String, idx: Int): Action[AnyContent] =
     authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>

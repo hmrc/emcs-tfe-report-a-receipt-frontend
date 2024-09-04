@@ -37,7 +37,6 @@ class AddItemMoreInformationController @Inject()(override val messagesApi: Messa
                                                  override val userAnswersService: UserAnswersService,
                                                  override val navigator: Navigator,
                                                  override val auth: AuthAction,
-                                                 override val userAllowList: UserAllowListAction,
                                                  override val withMovement: MovementAction,
                                                  override val getData: DataRetrievalAction,
                                                  override val requireData: DataRequiredAction,
@@ -51,7 +50,7 @@ class AddItemMoreInformationController @Inject()(override val messagesApi: Messa
     onPageLoad(ern, arc, AddItemSealsInformationPage(idx), routes.AddItemMoreInformationController.submitItemSealsInformation(ern, arc, idx, mode), idx)
 
   def submitItemSealsInformation(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
-    onSubmit(ern, arc, AddItemSealsInformationPage(idx), ItemSealsInformationPage(idx), routes.AddItemMoreInformationController.submitItemSealsInformation(ern, arc, idx, mode),idx , mode)
+    onSubmit(ern, arc, AddItemSealsInformationPage(idx), ItemSealsInformationPage(idx), routes.AddItemMoreInformationController.submitItemSealsInformation(ern, arc, idx, mode), idx, mode)
 
   def loadItemDamageInformation(ern: String, arc: String, idx: Int, mode: Mode): Action[AnyContent] =
     onPageLoad(ern, arc, AddItemDamageInformationPage(idx), routes.AddItemMoreInformationController.submitItemDamageInformation(ern, arc, idx, mode), idx)

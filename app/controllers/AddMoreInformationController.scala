@@ -36,7 +36,6 @@ class AddMoreInformationController @Inject()(
                                               override val userAnswersService: UserAnswersService,
                                               override val navigator: Navigator,
                                               override val auth: AuthAction,
-                                              override val userAllowList: UserAllowListAction,
                                               override val withMovement: MovementAction,
                                               override val getData: DataRetrievalAction,
                                               override val requireData: DataRequiredAction,

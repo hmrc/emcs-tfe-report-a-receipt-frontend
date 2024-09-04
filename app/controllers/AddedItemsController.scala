@@ -39,7 +39,6 @@ import scala.concurrent.Future
 class AddedItemsController @Inject()(
                                       override val messagesApi: MessagesApi,
                                       override val auth: AuthAction,
-                                      override val userAllowList: UserAllowListAction,
                                       override val withMovement: MovementAction,
                                       override val getData: DataRetrievalAction,
                                       override val requireData: DataRequiredAction,
@@ -117,7 +116,7 @@ class AddedItemsController @Inject()(
       }.sum > 0
     }
 
-    if ( !isPartiallyRefused || hasAtLeastSomeRefusedAmountOfOneItem() ) {
+    if (!isPartiallyRefused || hasAtLeastSomeRefusedAmountOfOneItem()) {
       Redirect(navigator.nextPage(AddedItemsPage, NormalMode, request.userAnswers))
     } else {
       val formWithError = formProvider().withGlobalError("addedItems.error.atLeastOneItem").fill(false)

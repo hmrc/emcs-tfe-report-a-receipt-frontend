@@ -70,21 +70,15 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig, configuration: Configu
 
   private def emcsTfeService: String = servicesConfig.baseUrl("emcs-tfe")
 
-  private def userAllowListService: String = servicesConfig.baseUrl("user-allow-list")
-
   private def referenceDataService: String = servicesConfig.baseUrl("emcs-tfe-reference-data")
 
   def emcsTfeBaseUrl: String = s"$emcsTfeService/emcs-tfe"
-
-  def userAllowListBaseUrl: String = s"$userAllowListService/user-allow-list"
 
   def referenceDataBaseUrl: String = s"$referenceDataService/emcs-tfe-reference-data"
 
   def emcsTfeFrontendBaseUrl: String = servicesConfig.baseUrl("emcs-tfe-frontend")
 
   def destinationOfficeSuffix: String = configuration.get[String]("constants.destinationOfficeSuffix")
-
-  def internalAuthToken: String = configuration.get[String]("internal-auth.token")
 
   private def nrsBrokerService: String = servicesConfig.baseUrl("nrs-broker")
 

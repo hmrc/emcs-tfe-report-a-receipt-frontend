@@ -246,7 +246,6 @@ checkYourAnswersItem.heading = Check your answers for {0}
 
 confirmation.title = Report of receipt submitted
 confirmation.heading = Report of receipt submitted
-confirmation.button = Return to at a glance
 confirmation.movementInformation.arc.label = Movement ARC
 confirmation.movementInformation.receiptStatus.label = Receipt status
 confirmation.movementInformation.receiptDate.label = Receipt date

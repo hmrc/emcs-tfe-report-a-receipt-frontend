@@ -40,7 +40,7 @@ class DetailsSelectItemController @Inject()(
                                              override val withMovement: MovementAction,
                                              override val getData: DataRetrievalAction,
                                              override val requireData: DataRequiredAction,
-                                                 formProvider: DetailsSelectItemFormProvider,
+                                             formProvider: DetailsSelectItemFormProvider,
                                              val controllerComponents: MessagesControllerComponents,
                                              referenceDataService: ReferenceDataService,
                                              view: DetailsSelectItemView

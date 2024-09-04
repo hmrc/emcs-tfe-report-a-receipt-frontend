@@ -92,7 +92,7 @@ class WrongWithItemController @Inject()(
     newUserAnswers
   }
 
-  private def renderView(status: Status, idx:Int, form: Form[_], mode: Mode)(implicit request: DataRequest[_]) = {
+  private def renderView(status: Status, idx: Int, form: Form[_], mode: Mode)(implicit request: DataRequest[_]) = {
     withMovementItemAsync(idx) {
       referenceDataService.itemWithReferenceData(_) { (item, cnCodeInfo) =>
         Future.successful(status(view(

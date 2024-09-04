@@ -116,7 +116,7 @@ class AddedItemsController @Inject()(
       }.sum > 0
     }
 
-    if ( !isPartiallyRefused || hasAtLeastSomeRefusedAmountOfOneItem() ) {
+    if (!isPartiallyRefused || hasAtLeastSomeRefusedAmountOfOneItem()) {
       Redirect(navigator.nextPage(AddedItemsPage, NormalMode, request.userAnswers))
     } else {
       val formWithError = formProvider().withGlobalError("addedItems.error.atLeastOneItem").fill(false)

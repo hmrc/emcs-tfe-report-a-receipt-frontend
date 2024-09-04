@@ -25,13 +25,13 @@ import views.html.auth.errors.{InactiveEnrolmentView, NoEnrolmentView, NotAnOrga
 import javax.inject.Inject
 
 class ErrorController @Inject()(
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: UnauthorisedView,
-                                        notAnOrgView: NotAnOrganisationView,
-                                        noEnrolmentView: NoEnrolmentView,
-                                        inactiveEnrolmentView: InactiveEnrolmentView,
-                                        notOnPrivateBetaView: NotOnPrivateBetaView
-                                      )(implicit val config: AppConfig) extends FrontendBaseController with I18nSupport {
+                                 val controllerComponents: MessagesControllerComponents,
+                                 view: UnauthorisedView,
+                                 notAnOrgView: NotAnOrganisationView,
+                                 noEnrolmentView: NoEnrolmentView,
+                                 inactiveEnrolmentView: InactiveEnrolmentView,
+                                 notOnPrivateBetaView: NotOnPrivateBetaView
+                               )(implicit val config: AppConfig) extends FrontendBaseController with I18nSupport {
 
   def unauthorised(): Action[AnyContent] = Action { implicit request =>
     Ok(view())

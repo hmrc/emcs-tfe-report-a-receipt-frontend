@@ -16,7 +16,7 @@
 
 package config
 
-import featureswitch.core.config.{FeatureSwitching, StubGetTraderKnownFacts}
+import featureswitch.core.config.FeatureSwitching
 import play.api.Configuration
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
@@ -90,13 +90,7 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig, configuration: Configu
 
   lazy val emcsGeneralEnquiriesUrl: String = configuration.get[String]("urls.emcsGeneralEnquiries")
 
-  private def traderKnownFactsReferenceDataService: String =
-    if (isEnabled(StubGetTraderKnownFacts)) {
-      servicesConfig.baseUrl("emcs-tfe-reference-data-stub")
-    } else {
-      servicesConfig.baseUrl("emcs-tfe-reference-data")
-    }
-
-  def traderKnownFactsReferenceDataBaseUrl: String = s"$traderKnownFactsReferenceDataService/emcs-tfe-reference-data"
+  def traderKnownFactsBaseUrl: String =
+    emcsTfeService + "/emcs-tfe/trader-known-facts"
 
 }

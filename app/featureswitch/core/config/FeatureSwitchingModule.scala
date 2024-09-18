@@ -25,7 +25,7 @@ import javax.inject.Singleton
 @Singleton
 class FeatureSwitchingModule extends Module with FeatureSwitchRegistry {
 
-  val switches: Seq[FeatureSwitch] = Seq(NewShortageExcessFlow, StubGetTraderKnownFacts, EnableNRS)
+  val switches: Seq[FeatureSwitch] = Seq(NewShortageExcessFlow, EnableNRS)
 
   override def bindings(environment: Environment, configuration: Configuration): Seq[Binding[_]] = {
     Seq(
@@ -37,11 +37,6 @@ class FeatureSwitchingModule extends Module with FeatureSwitchRegistry {
 case object NewShortageExcessFlow extends FeatureSwitch {
   override val configName: String = "features.enableNewItemShortageExcessFlow"
   override val displayName: String = "Enable the new Item Shortage/Excess flow"
-}
-
-case object StubGetTraderKnownFacts extends FeatureSwitch {
-  override val configName: String = "features.stub-get-trader-known-facts"
-  override val displayName: String = "Use stub to get trader known facts"
 }
 
 case object EnableNRS extends FeatureSwitch {

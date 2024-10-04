@@ -10,9 +10,7 @@ GET         /refresh-session                                                    
 
 GET         /trader/:ern/movement/:arc/no-information-receipt                                 controllers.JourneyRecoveryController.onPageLoad(ern: String, arc: String)
 
-GET         /account/sign-out-survey                                                          controllers.auth.AuthController.signOut()
-GET         /account/sign-out                                                                 controllers.auth.AuthController.signOutNoSurvey()
-GET         /account/signed-out                                                               controllers.auth.SignedOutController.onPageLoad()
+GET         /account/sign-out                                                                 controllers.auth.AuthController.signOut(becauseOfTimeout: Boolean ?= false)
 
 GET         /trader/:ern/movement/:arc                                                        controllers.IndexController.onPageLoad(ern: String, arc: String)
 POST        /trader/:ern/movement/:arc                                                        controllers.IndexController.onSubmit(ern: String, arc: String)

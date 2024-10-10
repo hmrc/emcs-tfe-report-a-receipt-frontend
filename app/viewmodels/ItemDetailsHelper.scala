@@ -90,7 +90,7 @@ class ItemDetailsHelper @Inject()(list: list) {
         Some(
           createSummaryListRow(
             messages("detailsSelectItem.key.density"),
-            messages("detailsSelectItem.value.density", value.toString(), messages(s"detailsSelectItem.value.density.${cnCodeInformation.unitOfMeasureCode.toUnitOfMeasure}"))
+            messages("detailsSelectItem.value.density", value.toString())
           )
         )
       case None => None

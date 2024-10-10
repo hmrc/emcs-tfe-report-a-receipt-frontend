@@ -200,12 +200,12 @@ class ItemDetailsCardHelper @Inject()(link: link, list: list, appConfig: AppConf
         )
     }
 
-  private def densityRow()(implicit item: MovementItem, cnCodeInformation: CnCodeInformation, messages: Messages) =
+  private def densityRow()(implicit item: MovementItem, messages: Messages) =
     item.density.map {
       density =>
         summaryListRowBuilder(
           Text(messages("itemDetails.key.density")),
-          HtmlContent(messages("itemDetails.value.density", density.toString(), messages(s"itemDetails.value.density.${cnCodeInformation.unitOfMeasureCode.toUnitOfMeasure}")))
+          HtmlContent(messages("itemDetails.value.density", density.toString()))
         )
     }
 

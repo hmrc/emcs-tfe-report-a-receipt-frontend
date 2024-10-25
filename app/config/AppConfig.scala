@@ -18,8 +18,6 @@ package config
 
 import featureswitch.core.config.FeatureSwitching
 import play.api.Configuration
-import play.api.mvc.RequestHeader
-import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import javax.inject.{Inject, Singleton}
@@ -32,11 +30,6 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig, configuration: Configu
   lazy val host: String = configuration.get[String]("host")
   lazy val appName: String = configuration.get[String]("appName")
   lazy val deskproName: String = configuration.get[String]("deskproName")
-
-  private lazy val contactHost = configuration.get[String]("contact-frontend.host")
-
-  def betaBannerFeedbackUrl(implicit request: RequestHeader): String =
-    s"$contactHost/contact/beta-feedback?service=$deskproName&backUrl=${SafeRedirectUrl(host + request.uri).encodedUrl}"
 
   lazy val loginUrl: String = configuration.get[String]("urls.login")
 
@@ -54,7 +47,7 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig, configuration: Configu
   lazy val contactHmrcUrl: String = configuration.get[String]("urls.contactHmrc")
 
   private lazy val feedbackFrontendHost: String = configuration.get[String]("feedback-frontend.host")
-  lazy val feedbackFrontendSurveyUrl: String = s"$feedbackFrontendHost/feedback/$deskproName/beta"
+  lazy val feedbackFrontendSurveyUrl: String = s"$feedbackFrontendHost/feedback/$deskproName"
 
   def emcsTfeHomeUrl(ern: Option[String]): String =
     configuration.get[String]("urls.emcsTfeHome")

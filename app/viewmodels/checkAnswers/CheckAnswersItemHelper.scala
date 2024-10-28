@@ -42,26 +42,21 @@ class CheckAnswersItemHelper @Inject()(
                                       ) extends JsonOptionFormatter {
 
   def summaryList(idx: Int, unitOfMeasure: UnitOfMeasure, onFinalCheckAnswers: Boolean = false)
-                 (implicit request: DataRequest[_], messages: Messages, config: AppConfig): SummaryList = {
-    val additionalLinkIdSignifier = if (onFinalCheckAnswers) s"-item-$idx" else ""
-
-    val rows: Seq[SummaryListRow] =
-      request.userAnswers.get(WrongWithItemPage(idx)).map {
-        answers =>
-          Seq(
-            amountRefusedRow(idx, unitOfMeasure, additionalLinkIdSignifier),
-            whatWasWrongRow(answers, idx, additionalLinkIdSignifier),
-            shortageOrExcessItemSummary.rows(idx, unitOfMeasure, additionalLinkIdSignifier),
-            damagedItemsInformationRow(idx, additionalLinkIdSignifier),
-            brokenSealsInformationRow(idx, additionalLinkIdSignifier),
-            otherInformationRow(idx, additionalLinkIdSignifier)
-          ).flatten
+                 (implicit request: DataRequest[_], messages: Messages, config: AppConfig): SummaryList =
+    SummaryListViewModel(
+      request.userAnswers.get(WrongWithItemPage(idx)).map { answers =>
+        Seq(
+          amountRefusedRow(idx, unitOfMeasure, onFinalCheckAnswers),
+          whatWasWrongRow(answers, idx, onFinalCheckAnswers),
+          shortageOrExcessItemSummary.rows(idx, unitOfMeasure, onFinalCheckAnswers),
+          damagedItemsInformationRow(idx, onFinalCheckAnswers),
+          brokenSealsInformationRow(idx, onFinalCheckAnswers),
+          otherInformationRow(idx, onFinalCheckAnswers)
+        ).flatten
       }.getOrElse(Seq.empty)
+    )
 
-    SummaryListViewModel(rows = rows)
-  }
-
-  private def whatWasWrongRow(answers: Set[WrongWithMovement], idx: Int, additionalLinkIdSignifier: String)
+  private def whatWasWrongRow(answers: Set[WrongWithMovement], idx: Int, onFinalCheckAnswers: Boolean)
                              (implicit request: DataRequest[_], messages: Messages, config: AppConfig): Option[SummaryListRow] =
     Some(SummaryListRowViewModel(
       key = s"${WrongWithItemPage(idx)}.checkYourAnswers.label",
@@ -74,15 +69,17 @@ class CheckAnswersItemHelper @Inject()(
         ActionItemViewModel(
           "site.change",
           routes.WrongWithItemController.loadWrongWithItem(request.userAnswers.ern, request.userAnswers.arc, idx, NormalMode).url,
-          id = WrongWithItemPage(idx) + additionalLinkIdSignifier
-        ).withVisuallyHiddenText(messages(s"${WrongWithItemPage(idx)}.checkYourAnswers.change.hidden"))
+          id = WrongWithItemPage(idx) + s"-item-$idx"
+        ).withVisuallyHiddenText(
+          s"${messages(s"${WrongWithItemPage(idx)}.checkYourAnswers.change.hidden")} ${messages("addedItems.checkYourAnswers.forItem", idx)}"
+        )
       )
     ))
 
-  private def brokenSealsInformationRow(idx: Int, additionalLinkIdSignifier: String)
+  private def brokenSealsInformationRow(idx: Int, onFinalCheckAnswers: Boolean)
                                        (implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] = {
     if (request.userAnswers.get(WrongWithItemPage(idx)).exists(_.contains(BrokenSeals))) {
-      val mode = if (additionalLinkIdSignifier != "") ReviewMode else CheckMode
+      val mode = if (onFinalCheckAnswers) ReviewMode else CheckMode
       request.userAnswers.get(ItemSealsInformationPage(idx)).map {
         case Some(value) if value != "" =>
           SummaryListRowViewModel(
@@ -92,8 +89,10 @@ class CheckAnswersItemHelper @Inject()(
               ActionItemViewModel(
                 "site.change",
                 routes.ItemMoreInformationController.loadItemSealsInformation(request.userAnswers.ern, request.userAnswers.arc, idx, mode).url,
-                id = ItemSealsInformationPage(idx) + additionalLinkIdSignifier
-              ).withVisuallyHiddenText(messages(s"${ItemSealsInformationPage(idx)}.checkYourAnswers.change.hidden"))
+                id = ItemSealsInformationPage(idx) + s"-item-$idx"
+              ).withVisuallyHiddenText(
+                s"${messages(s"${ItemSealsInformationPage(idx)}.checkYourAnswers.change.hidden")} ${messages("addedItems.checkYourAnswers.forItem", idx)}"
+              )
             )
           )
         case _ =>
@@ -101,7 +100,9 @@ class CheckAnswersItemHelper @Inject()(
             key = s"${ItemSealsInformationPage(idx)}.checkYourAnswers.label",
             value = ValueViewModel(HtmlContent(link(
               link = routes.ItemMoreInformationController.loadItemSealsInformation(request.userAnswers.ern, request.userAnswers.arc, idx, mode).url,
-              messageKey = s"${ItemSealsInformationPage(idx)}.checkYourAnswers.addMoreInformation")))
+              messageKey = s"${ItemSealsInformationPage(idx)}.checkYourAnswers.addMoreInformation",
+              hiddenContent = Some(messages("addedItems.checkYourAnswers.forItem", idx))
+            )))
           )
       }
     } else {
@@ -110,18 +111,20 @@ class CheckAnswersItemHelper @Inject()(
   }
 
 
-  private def amountRefusedRow(idx: Int, unitOfMeasure: UnitOfMeasure, additionalLinkIdSignifier: String)
+  private def amountRefusedRow(idx: Int, unitOfMeasure: UnitOfMeasure, onFinalCheckAnswers: Boolean)
                               (implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] = {
 
     if (request.userAnswers.get(RefusingAnyAmountOfItemPage(idx)).nonEmpty) {
-      val mode = if (additionalLinkIdSignifier != "") ReviewMode else CheckMode
+      val mode = if (onFinalCheckAnswers) ReviewMode else CheckMode
       request.userAnswers.get(RefusingAnyAmountOfItemPage(idx)).map {
         case _ if request.userAnswers.get(RefusedAmountPage(idx)).isEmpty =>
           SummaryListRowViewModel(
             key = s"${RefusingAnyAmountOfItemPage(idx)}.checkYourAnswers.label",
             value = ValueViewModel(HtmlContent(link(
               link = routes.RefusedAmountController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, idx, mode).url,
-              messageKey = s"${RefusingAnyAmountOfItemPage(idx)}.checkYourAnswers.addMoreInformation")))
+              messageKey = s"${RefusingAnyAmountOfItemPage(idx)}.checkYourAnswers.addMoreInformation",
+              hiddenContent = Some(messages("addedItems.checkYourAnswers.forItem", idx))
+            )))
           )
         case _ =>
           SummaryListRowViewModel(
@@ -137,8 +140,10 @@ class CheckAnswersItemHelper @Inject()(
               ActionItemViewModel(
                 "site.change",
                 routes.RefusedAmountController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, idx, mode).url,
-                id = RefusingAnyAmountOfItemPage(idx) + additionalLinkIdSignifier
-              ).withVisuallyHiddenText(messages(s"${RefusingAnyAmountOfItemPage(idx)}.checkYourAnswers.change.hidden"))
+                id = RefusingAnyAmountOfItemPage(idx) + s"-item-$idx"
+              ).withVisuallyHiddenText(
+                s"${messages(s"${RefusingAnyAmountOfItemPage(idx)}.checkYourAnswers.change.hidden")} ${messages("addedItems.checkYourAnswers.forItem", idx)}"
+              )
             )
           )
       }
@@ -147,10 +152,10 @@ class CheckAnswersItemHelper @Inject()(
     }
   }
 
-  private def damagedItemsInformationRow(idx: Int, additionalLinkIdSignifier: String)
+  private def damagedItemsInformationRow(idx: Int, onFinalCheckAnswers: Boolean)
                                         (implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] = {
     if (request.userAnswers.get(WrongWithItemPage(idx)).exists(_.contains(Damaged))) {
-      val mode = if (additionalLinkIdSignifier != "") ReviewMode else CheckMode
+      val mode = if (onFinalCheckAnswers) ReviewMode else CheckMode
       request.userAnswers.get(ItemDamageInformationPage(idx)).map {
         case Some(value) if value != "" =>
           SummaryListRowViewModel(
@@ -160,8 +165,10 @@ class CheckAnswersItemHelper @Inject()(
               ActionItemViewModel(
                 "site.change",
                 routes.ItemMoreInformationController.loadItemDamageInformation(request.userAnswers.ern, request.userAnswers.arc, idx, mode).url,
-                id = ItemDamageInformationPage(idx) + additionalLinkIdSignifier
-              ).withVisuallyHiddenText(messages(s"${ItemDamageInformationPage(idx)}.checkYourAnswers.change.hidden"))
+                id = ItemDamageInformationPage(idx) + s"-item-$idx"
+              ).withVisuallyHiddenText(
+                s"${messages(s"${ItemDamageInformationPage(idx)}.checkYourAnswers.change.hidden")} ${messages("addedItems.checkYourAnswers.forItem", idx)}"
+              )
             )
           )
         case _ =>
@@ -169,7 +176,9 @@ class CheckAnswersItemHelper @Inject()(
             key = s"${ItemDamageInformationPage(idx)}.checkYourAnswers.label",
             value = ValueViewModel(HtmlContent(link(
               link = routes.ItemMoreInformationController.loadItemDamageInformation(request.userAnswers.ern, request.userAnswers.arc, idx, mode).url,
-              messageKey = s"${ItemDamageInformationPage(idx)}.checkYourAnswers.addMoreInformation")))
+              messageKey = s"${ItemDamageInformationPage(idx)}.checkYourAnswers.addMoreInformation",
+              hiddenContent = Some(messages("addedItems.checkYourAnswers.forItem", idx))
+            )))
           )
       }
     } else {
@@ -177,12 +186,12 @@ class CheckAnswersItemHelper @Inject()(
     }
   }
 
-  private def otherInformationRow(idx: Int, additionalLinkIdSignifier: String)
+  private def otherInformationRow(idx: Int, onFinalCheckAnswers: Boolean)
                                  (implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] =
     if (request.userAnswers.get(WrongWithItemPage(idx)).exists(_.contains(Other))) {
       request.userAnswers.get(ItemOtherInformationPage(idx)).flatMap {
         case value if value != "" =>
-          val mode = if (additionalLinkIdSignifier != "") ReviewMode else CheckMode
+          val mode = if (onFinalCheckAnswers) ReviewMode else CheckMode
           Some(SummaryListRowViewModel(
             key = s"${ItemOtherInformationPage(idx)}.checkYourAnswers.label",
             value = ValueViewModel(Text(value)),
@@ -190,8 +199,10 @@ class CheckAnswersItemHelper @Inject()(
               ActionItemViewModel(
                 "site.change",
                 routes.ItemOtherInformationController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, idx, mode).url,
-                id = ItemOtherInformationPage(idx) + additionalLinkIdSignifier
-              ).withVisuallyHiddenText(messages(s"${ItemOtherInformationPage(idx)}.checkYourAnswers.change.hidden"))
+                id = ItemOtherInformationPage(idx) + s"-item-$idx"
+              ).withVisuallyHiddenText(
+                s"${messages(s"${ItemOtherInformationPage(idx)}.checkYourAnswers.change.hidden")} ${messages("addedItems.checkYourAnswers.forItem", idx)}"
+              )
             )
           ))
         case _ =>

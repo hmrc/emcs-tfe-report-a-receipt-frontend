@@ -470,6 +470,7 @@ addedItems.heading.plural = You have given information for {0} items
 addedItems.addAnother = Do you want to add another item?
 addedItems.error.required = Select yes if you want to give information about another item
 addedItems.error.atLeastOneItem = You must refuse an amount of at least one item before you can continue
+addedItems.checkYourAnswers.forItem = for item {0}
 
 refusingAnyAmountOfItem.title = Are you refusing any amount of item {0}?
 refusingAnyAmountOfItem.heading = Are you refusing any amount of item {0}?

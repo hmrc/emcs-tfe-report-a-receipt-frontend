@@ -21,12 +21,14 @@ object RefusingAnyAmountOfItemMessages {
   sealed trait ViewMessages { _: i18n =>
     val title: String
     val heading: String
+    val legend: Int => String
     val requiredError: String
   }
 
   object English extends ViewMessages with BaseEnglish {
-    override val heading = "Are you refusing any amount of item 1?"
+    override val heading = "Refusal information"
     override val title = title(heading)
+    override val legend: Int => String = i => s"Are you refusing any amount of item $i?"
     override val requiredError: String = "Select yes if you want to refuse an amount of this item"
   }
 

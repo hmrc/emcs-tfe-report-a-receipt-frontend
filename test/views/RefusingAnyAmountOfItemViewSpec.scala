@@ -47,6 +47,7 @@ class RefusingAnyAmountOfItemViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.title -> messagesForLanguage.title,
           Selectors.h2(1) -> messagesForLanguage.arcSubheading(testArc),
           Selectors.h1 -> messagesForLanguage.heading,
+          Selectors.legend -> messagesForLanguage.legend(1),
           Selectors.radioButton(1) -> messagesForLanguage.yes,
           Selectors.radioButton(2) -> messagesForLanguage.no,
           Selectors.button -> messagesForLanguage.saveAndContinue,

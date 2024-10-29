@@ -32,6 +32,7 @@ trait BaseSelectors {
   val secondaryButton = ".govuk-button--secondary"
   val saveAndExitLink = "#main-content > div > div > form > div.govuk-button-group > a"
   val label: String => String = forId => s"main label[for='$forId']"
+  val legend: String = "main legend"
   def radioButton(radioIndex: Int) = s".govuk-radios > div:nth-child($radioIndex) > label"
   def checkboxItem(index: Int) = s".govuk-checkboxes > div:nth-child($index) > label"
   val dateDay = s".govuk-date-input .govuk-date-input__item:nth-of-type(1)"

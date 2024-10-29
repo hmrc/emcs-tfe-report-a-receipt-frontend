@@ -459,10 +459,6 @@ detailsSelectItem.value.packaging = {0} {1}
 detailsSelectItem.viewAllDetails = View all details for item {0}
 detailsSelectItem.error.required = Select if you want to give information about this item
 
-refusingAnyAmountOfItem.checkYourAnswers.label = Amount refused
-refusingAnyAmountOfItem.checkYourAnswers.amount.value = {0} {1}
-refusingAnyAmountOfItem.checkYourAnswers.addMoreInformation = Refuse an amount of this item (optional)
-
 addedItems.title.singular = You have given information for 1 item
 addedItems.title.plural = You have given information for {0} items
 addedItems.heading.singular = You have given information for 1 item
@@ -471,10 +467,14 @@ addedItems.addAnother = Do you want to add another item?
 addedItems.error.required = Select yes if you want to give information about another item
 addedItems.error.atLeastOneItem = You must refuse an amount of at least one item before you can continue
 
-refusingAnyAmountOfItem.title = Are you refusing any amount of item {0}?
-refusingAnyAmountOfItem.heading = Are you refusing any amount of item {0}?
+refusingAnyAmountOfItem.title = Refusal information
+refusingAnyAmountOfItem.heading = Refusal information
+refusingAnyAmountOfItem.legend = Are you refusing any amount of item {0}?
 refusingAnyAmountOfItem.item = View item {0} details
 refusingAnyAmountOfItem.error.required = Select yes if you want to refuse an amount of this item
+refusingAnyAmountOfItem.checkYourAnswers.label = Amount refused
+refusingAnyAmountOfItem.checkYourAnswers.amount.value = {0} {1}
+refusingAnyAmountOfItem.checkYourAnswers.addMoreInformation = Refuse an amount of this item (optional)
 
 removeItem.title = Are you sure you want to remove item {0}?
 removeItem.heading = Are you sure you want to remove item {0}?

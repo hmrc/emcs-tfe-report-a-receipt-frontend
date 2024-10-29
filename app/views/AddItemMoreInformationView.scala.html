@@ -41,7 +41,7 @@
         cnCodeInformation: CnCodeInformation
 )(implicit request: DataRequest[_], messages: Messages)
 
-    @layout(pageTitle = title(form, messages(AddMoreInformationHelper.titleKey(page), item.itemUniqueReference)), maybeShowActiveTrader = maybeShowActiveTrader(request)) {
+    @layout(pageTitle = title(form, messages(AddMoreInformationHelper.titleKey(page))), maybeShowActiveTrader = maybeShowActiveTrader(request)) {
 
         @formHelper(action, 'autoComplete -> "off") {
 

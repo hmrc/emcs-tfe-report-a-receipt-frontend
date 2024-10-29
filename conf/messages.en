@@ -308,8 +308,9 @@ wrongWithMovement.checkYourAnswers.brokenSeals = Broken seal(s)
 wrongWithMovement.checkYourAnswers.other = Other
 wrongWithMovement.checkYourAnswers.change.hidden = what was wrong
 
-wrongWithItem.title = What’s wrong with item {0}?
-wrongWithItem.heading = What’s wrong with item {0}?
+wrongWithItem.title = Problems with item {0}
+wrongWithItem.heading = Problems with item {0}
+wrongWithItem.legend = What’s wrong with item {0}?
 wrongWithItem.item = View item {0} details
 wrongWithItem.hint = Select all that apply.
 wrongWithItem.shortageOrExcess = I received a shortage or excess

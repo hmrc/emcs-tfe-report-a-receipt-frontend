@@ -480,8 +480,9 @@ removeItem.title = Are you sure you want to remove item {0}?
 removeItem.heading = Are you sure you want to remove item {0}?
 removeItem.error.required = Select yes if you want to remove this item
 
-refusedAmount.title = How many {0} of item {1} are you refusing?
-refusedAmount.heading = How many {0} of item {1} are you refusing?
+refusedAmount.title = Amount refused
+refusedAmount.heading = Amount refused
+refusedAmount.label = How many {0} of item {1} are you refusing?
 refusedAmount.hint = For example, 150 or 12.694.
 refusedAmount.error.required = Enter the amount you are refusing
 refusedAmount.error.maxLength = The amount you are refusing must be {0} characters or less

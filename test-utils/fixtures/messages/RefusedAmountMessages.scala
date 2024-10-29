@@ -19,8 +19,10 @@ package fixtures.messages
 object RefusedAmountMessages {
 
   sealed trait ViewMessages { _: i18n =>
-    def title(unitOfMeasure: String): String
-    def heading(unitOfMeasure: String): String
+    val title: String
+    val heading: String
+    def label(unitOfMeasure: String): String
+    val hint: String
     val requiredError: String
     val nonNumeric: String
     val maxLength: Int => String
@@ -30,9 +32,10 @@ object RefusedAmountMessages {
   }
 
   object English extends ViewMessages with BaseEnglish {
-    override def heading(unitOfMeasureMsg: String) = s"How many $unitOfMeasureMsg of item 1 are you refusing?"
-    override def title(unitOfMeasureMsg: String) = super.title(heading(unitOfMeasureMsg))
-
+    override val heading = "Amount refused"
+    override val title = super.title(heading)
+    override def label(unitOfMeasureMsg: String) = s"How many $unitOfMeasureMsg of item 1 are you refusing?"
+    val hint: String = "For example, 150 or 12.694."
     override val requiredError: String = "Enter the amount you are refusing"
     override val nonNumeric: String = "The amount you are refusing must be a number, like 150 or 12.694"
     override val tooLarge: BigDecimal => String = (max: BigDecimal) => s"The amount you are refusing must be $max or less"

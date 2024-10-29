@@ -19,6 +19,7 @@
 @import models.response.emcsTfe.MovementItem
 @import models.response.referenceData.CnCodeInformation
 @import views.html.components.itemDetailSection
+@import viewmodels.LabelSize
 
 @this(
         layout: templates.Layout,
@@ -49,7 +50,7 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(Text(messages("refusedAmount.heading", messages(s"unitOfMeasure.$unitOfMeasure.long"), idx))).hidden
+                label = LabelViewModel(Text(messages("refusedAmount.label", messages(s"unitOfMeasure.$unitOfMeasure.long"), idx))).withCssClass(LabelSize.Medium.toString)
             )
             .withWidth(Fixed10)
             .withSuffix(PrefixOrSuffix(

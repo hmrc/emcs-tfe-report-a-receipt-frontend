@@ -19,8 +19,9 @@ package fixtures.messages
 object AddItemDamageInformationMessages {
 
   object English extends AddItemInformationMessagesBase with BaseEnglish {
-    override val heading = (i: Int) => s"Do you want to give information about item $i being damaged?"
-    override val title = (i: Int) => title(heading(i))
+    override val heading: String = "More information about damage"
+    override val title: String = title(heading)
+    override val legend = (i: Int) => s"Do you want to give information about item $i being damaged?"
     override val itemDetails = (i: Int) => s"View item $i details"
     val hiddenLegendText = (i: Int) => s"Do you want to give information about item $i being damaged?"
   }

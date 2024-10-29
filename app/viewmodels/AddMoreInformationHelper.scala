@@ -34,5 +34,8 @@ object AddMoreInformationHelper {
   def itemDetailsKey(page: QuestionPage[Boolean])(implicit request: DataRequest[_]): String =
     s"$page${infix()}.itemDetails"
 
+  def legendKey(page: QuestionPage[Boolean])(implicit request: DataRequest[_]): String =
+    s"$page${infix()}.legend"
+
 
 }

@@ -21,8 +21,6 @@ object ItemOtherInformationMessages {
   sealed trait ViewMessages { _: i18n =>
     val title: Int => String
     val heading: Int => String
-    val itemDetails: Int => String
-    val hint: String
     val validationErrorInvalidChars: String
     val validationError: String
     val lengthError: String
@@ -32,8 +30,6 @@ object ItemOtherInformationMessages {
   object English extends ViewMessages with BaseEnglish {
     override val heading: Int => String = i => s"Give information about other reason(s) you are unsatisfied with item $i"
     override val title: Int => String = i => title(heading(i))
-    override val itemDetails: Int => String = i => s"View item $i details"
-    override val hint = "Give more information"
     override val validationErrorInvalidChars = "Information must not include < and > and : and ;"
     override val validationError = "Information must contain letters or numbers"
     override val lengthError = "Information must be 350 characters or less"

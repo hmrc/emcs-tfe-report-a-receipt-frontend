@@ -26,8 +26,6 @@
         formHelper: FormWithCSRF,
         govukErrorSummary: GovukErrorSummary,
         govukCharacterCount: GovukCharacterCount,
-        govukButton: GovukButton,
-        h1: components.h1,
         h2: components.h2,
         p: components.p,
         continueOrExit: components.continueOrExit,
@@ -50,17 +48,14 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        @h1(messages(s"$page.heading", item.itemUniqueReference), Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
-
-        @itemDetails(s"$page.itemDetails", item, cnCodeInformation)
+        @h2(messages("arc.subHeading", request.arc),"govuk-caption-l")
 
         @{
             govukCharacterCount(CharacterCount(
                 id = "more-information",
                 name = "more-information",
                 maxLength = Some(350),
-                label = LabelViewModel(messages(s"$page.heading", item.itemUniqueReference)).hidden,
-                hint = Some(HintViewModel(Text(messages(s"$page.hint")))),
+                label = LabelViewModel(messages(s"$page.heading", item.itemUniqueReference)).asPageHeading(LabelSize.Large),
                 value = form("more-information").value,
                 errorMessage = form.errors("more-information") match {
                     case Nil => None

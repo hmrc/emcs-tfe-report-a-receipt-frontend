@@ -20,6 +20,7 @@
 @import models.response.emcsTfe.MovementItem
 @import viewmodels.ItemDetailsHelper
 @import models.response.referenceData.CnCodeInformation
+@import viewmodels.LegendSize
 
 @this(
         layout: templates.Layout,
@@ -40,7 +41,7 @@
         cnCodeInformation: CnCodeInformation
 )(implicit request: DataRequest[_], messages: Messages)
 
-    @layout(pageTitle = title(form, messages(AddMoreInformationHelper.titleKey(page), item.itemUniqueReference)), maybeShowActiveTrader = maybeShowActiveTrader(request)) {
+    @layout(pageTitle = title(form, messages(AddMoreInformationHelper.titleKey(page))), maybeShowActiveTrader = maybeShowActiveTrader(request)) {
 
         @formHelper(action, 'autoComplete -> "off") {
 
@@ -55,7 +56,7 @@
             @govukRadios(
                 RadiosViewModel.yesNo(
                     field = form("value"),
-                    legend = LegendViewModel(Text(messages(AddMoreInformationHelper.headingKey(page), item.itemUniqueReference))).hidden
+                    legend = LegendViewModel(Text(messages(AddMoreInformationHelper.legendKey(page), item.itemUniqueReference))).withCssClass(LegendSize.Medium.toString)
                 )
             )
 

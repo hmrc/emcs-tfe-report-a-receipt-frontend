@@ -21,6 +21,7 @@ object WrongWithItemMessages {
   sealed trait ViewMessages { _: i18n =>
     val title: Int => String
     val heading: Int => String
+    val legend: Int => String
     val hint: String
     val moreOrLessThanExpected: String
     val shortage: String
@@ -38,8 +39,9 @@ object WrongWithItemMessages {
     val hiddenChangeLinkText: String
   }
   object English extends ViewMessages with BaseEnglish {
-    override val heading: Int => String = i => s"What’s wrong with item $i?"
+    override val heading: Int => String = i => s"Problems with item $i"
     override val title: Int => String = i => title(heading(i))
+    override val legend: Int => String = i => s"What’s wrong with item $i?"
     override val hint = "Select all that apply."
     override val moreOrLessThanExpected: String = "I received a shortage or excess"
     override val shortage: String = "Shortage"

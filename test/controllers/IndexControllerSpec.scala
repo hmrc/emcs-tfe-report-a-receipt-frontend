@@ -17,7 +17,6 @@
 package controllers
 
 import base.SpecBase
-import forms.ContinueDraftFormProvider
 import mocks.services.MockUserAnswersService
 import models.requests.OptionalDataRequest
 import models.{NormalMode, UserAnswers}
@@ -39,7 +38,6 @@ class IndexControllerSpec extends SpecBase with MockUserAnswersService {
         .overrides(bind[UserAnswersService].toInstance(mockUserAnswersService))
         .build()
     lazy val view = application.injector.instanceOf[ContinueDraftView]
-    lazy val form = application.injector.instanceOf[ContinueDraftFormProvider].apply()
     implicit val msgs: Messages = messages(application)
   }
 
@@ -74,31 +72,16 @@ class IndexControllerSpec extends SpecBase with MockUserAnswersService {
             val result = route(application, request).value
 
             status(result) mustEqual OK
-            contentAsString(result) mustBe view(form, routes.IndexController.onSubmit(testErn, testArc)).toString()
+            contentAsString(result) mustBe view(
+              continue = routes.IndexController.continueOrStartAgain(testErn, testArc, continueDraft = true),
+              startAgain = routes.IndexController.continueOrStartAgain(testErn, testArc, continueDraft = false)
+            ).toString()
           }
         }
       }
     }
 
-    ".onSubmit()" - {
-
-      "when user has NOT selected an option" - {
-
-        "must render the page with Errors" in new Fixture(Some(emptyUserAnswers.set(DateOfArrivalPage, testDateOfArrival))) {
-          running(application) {
-
-            val request = FakeRequest(POST, routes.IndexController.onPageLoad(testErn, testArc).url)
-              .withFormUrlEncodedBody(("value", ""))
-
-            implicit val optDataRequest: OptionalDataRequest[_] = optionalDataRequest(request, Some(userAnswers.get))
-            val boundForm = form.bind(Map("value" -> ""))
-            val result = route(application, request).value
-
-            status(result) mustEqual BAD_REQUEST
-            contentAsString(result) mustBe view(boundForm, routes.IndexController.onSubmit(testErn, testArc)).toString()
-          }
-        }
-      }
+    ".continueOrStartAgain()" - {
 
       "when user has selected to continueDraft" - {
 
@@ -107,9 +90,7 @@ class IndexControllerSpec extends SpecBase with MockUserAnswersService {
 
             MockUserAnswersService.set(userAnswers.get).returns(Future.successful(userAnswers.get))
 
-            val request = FakeRequest(POST, routes.IndexController.onPageLoad(testErn, testArc).url)
-              .withFormUrlEncodedBody(("value", "true"))
-
+            val request = FakeRequest(GET, routes.IndexController.continueOrStartAgain(testErn, testArc, continueDraft = true).url)
             val result = route(application, request).value
 
             status(result) mustEqual SEE_OTHER
@@ -125,9 +106,7 @@ class IndexControllerSpec extends SpecBase with MockUserAnswersService {
 
             MockUserAnswersService.set(emptyUserAnswers).returns(Future.successful(emptyUserAnswers))
 
-            val request = FakeRequest(POST, routes.IndexController.onPageLoad(testErn, testArc).url)
-              .withFormUrlEncodedBody(("value", "false"))
-
+            val request = FakeRequest(GET, routes.IndexController.continueOrStartAgain(testErn, testArc, continueDraft = false).url)
             val result = route(application, request).value
 
             status(result) mustEqual SEE_OTHER

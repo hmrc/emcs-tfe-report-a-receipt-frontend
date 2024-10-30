@@ -19,6 +19,7 @@
 @import config.AppConfig
 @import models.response.emcsTfe.MovementItem
 @import models.response.referenceData.CnCodeInformation
+@import viewmodels.LegendSize
 
 @this(
         layout: templates.Layout,
@@ -56,7 +57,7 @@
             CheckboxesViewModel(
                 form   = form,
                 name   = "value",
-                legend = LegendViewModel(Text(messages(s"$page.heading", item.itemUniqueReference))).hidden,
+                legend = LegendViewModel(Text(messages(s"$page.legend", item.itemUniqueReference))).withCssClass(LegendSize.Medium.toString),
                 items  = WrongWithMovement.checkboxItems(page)
             ).withHint(HintViewModel(Text(messages(s"$page.hint"))))
         )

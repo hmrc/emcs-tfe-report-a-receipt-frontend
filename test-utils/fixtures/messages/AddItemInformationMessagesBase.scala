@@ -18,8 +18,9 @@ package fixtures.messages
 
 trait AddItemInformationMessagesBase {
     _: i18n =>
-    val title: Int => String
-    val heading: Int => String
+    val title: String
+    val heading: String
+    val legend: Int => String
     val itemDetails: Int => String
     val hiddenLegendText: Int => String
 }

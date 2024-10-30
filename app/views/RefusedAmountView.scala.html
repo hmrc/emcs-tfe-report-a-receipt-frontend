@@ -19,6 +19,7 @@
 @import models.response.emcsTfe.MovementItem
 @import models.response.referenceData.CnCodeInformation
 @import views.html.components.itemDetailSection
+@import viewmodels.LabelSize
 
 @this(
         layout: templates.Layout,
@@ -34,7 +35,7 @@
 
 @(form: Form[_], action: Call, unitOfMeasure: UnitOfMeasure, item: MovementItem, cnCodeInfo: CnCodeInformation, idx: Int)(implicit request: DataRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("refusedAmount.title", messages(s"unitOfMeasure.$unitOfMeasure.long"), idx)), maybeShowActiveTrader = maybeShowActiveTrader(request)) {
+@layout(pageTitle = title(form, messages("refusedAmount.title")), maybeShowActiveTrader = maybeShowActiveTrader(request)) {
 
     @formHelper(action, 'autoComplete -> "off") {
 
@@ -42,14 +43,14 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        @h1(messages("refusedAmount.heading", messages(s"unitOfMeasure.$unitOfMeasure.long"), idx), Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
+        @h1(messages("refusedAmount.heading"), Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
 
         @itemDetailSection("refusingAnyAmountOfItem.item", item, cnCodeInfo)
 
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(Text(messages("refusedAmount.heading", messages(s"unitOfMeasure.$unitOfMeasure.long"), idx))).hidden
+                label = LabelViewModel(Text(messages("refusedAmount.label", messages(s"unitOfMeasure.$unitOfMeasure.long"), idx))).withCssClass(LabelSize.Medium.toString)
             )
             .withWidth(Fixed10)
             .withSuffix(PrefixOrSuffix(

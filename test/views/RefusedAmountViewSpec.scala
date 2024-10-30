@@ -51,18 +51,15 @@ class RefusedAmountViewSpec extends ViewSpecBase with ViewBehaviours {
         implicit val doc: Document = Jsoup.parse(view(form, testOnwardRoute, Kilograms, item1, CnCodeInformation("", "", `1`), 1).toString())
 
         behave like pageWithExpectedElementsAndMessages(Seq(
-          Selectors.title -> viewMessagesForLanguage.title(unitOfMeasureMessagesForLanguage.kilogramsLong),
+          Selectors.title -> viewMessagesForLanguage.title,
           Selectors.h2(1) -> viewMessagesForLanguage.arcSubheading(testArc),
-          Selectors.h1 -> viewMessagesForLanguage.heading(unitOfMeasureMessagesForLanguage.kilogramsLong),
-          Selectors.label("value") -> viewMessagesForLanguage.heading(unitOfMeasureMessagesForLanguage.kilogramsLong),
+          Selectors.h1 -> viewMessagesForLanguage.heading,
+          Selectors.label("value") -> viewMessagesForLanguage.label(unitOfMeasureMessagesForLanguage.kilogramsLong),
+          Selectors.hint -> viewMessagesForLanguage.hint,
           Selectors.inputSuffix -> unitOfMeasureMessagesForLanguage.kilogramsShort,
           Selectors.button -> viewMessagesForLanguage.saveAndContinue,
           Selectors.id("save-and-exit") -> viewMessagesForLanguage.savePreviousAnswersAndExit
         ))
-
-        "input label should be visually hidden as same as heading" in {
-          doc.select(Selectors.label("value")).hasClass("govuk-visually-hidden") mustBe true
-        }
       }
     }
   }
@@ -84,10 +81,11 @@ class RefusedAmountViewSpec extends ViewSpecBase with ViewBehaviours {
         implicit val doc: Document = Jsoup.parse(view(form, testOnwardRoute, Litres15, item1, CnCodeInformation("", "", `1`), 1).toString())
 
         behave like pageWithExpectedElementsAndMessages(Seq(
-          Selectors.title -> viewMessagesForLanguage.title(unitOfMeasureMessagesForLanguage.litres15Long),
+          Selectors.title -> viewMessagesForLanguage.title,
           Selectors.h2(1) -> viewMessagesForLanguage.arcSubheading(testArc),
-          Selectors.h1 -> viewMessagesForLanguage.heading(unitOfMeasureMessagesForLanguage.litres15Long),
-          Selectors.label("value") -> viewMessagesForLanguage.heading(unitOfMeasureMessagesForLanguage.litres15Long),
+          Selectors.h1 -> viewMessagesForLanguage.heading,
+          Selectors.label("value") -> viewMessagesForLanguage.label(unitOfMeasureMessagesForLanguage.litres15Long),
+          Selectors.hint -> viewMessagesForLanguage.hint,
           Selectors.inputSuffix -> unitOfMeasureMessagesForLanguage.litres15Short,
           Selectors.button -> viewMessagesForLanguage.saveAndContinue,
           Selectors.id("save-and-exit") -> viewMessagesForLanguage.savePreviousAnswersAndExit
@@ -113,10 +111,11 @@ class RefusedAmountViewSpec extends ViewSpecBase with ViewBehaviours {
         implicit val doc: Document = Jsoup.parse(view(form, testOnwardRoute, Litres20, item1, CnCodeInformation("", "", `1`), 1).toString())
 
         behave like pageWithExpectedElementsAndMessages(Seq(
-          Selectors.title -> viewMessagesForLanguage.title(unitOfMeasureMessagesForLanguage.litres20Long),
+          Selectors.title -> viewMessagesForLanguage.title,
           Selectors.h2(1) -> viewMessagesForLanguage.arcSubheading(testArc),
-          Selectors.h1 -> viewMessagesForLanguage.heading(unitOfMeasureMessagesForLanguage.litres20Long),
-          Selectors.label("value") -> viewMessagesForLanguage.heading(unitOfMeasureMessagesForLanguage.litres20Long),
+          Selectors.h1 -> viewMessagesForLanguage.heading,
+          Selectors.label("value") -> viewMessagesForLanguage.label(unitOfMeasureMessagesForLanguage.litres20Long),
+          Selectors.hint -> viewMessagesForLanguage.hint,
           Selectors.inputSuffix -> unitOfMeasureMessagesForLanguage.litres20Short,
           Selectors.button -> viewMessagesForLanguage.saveAndContinue,
           Selectors.id("save-and-exit") -> viewMessagesForLanguage.savePreviousAnswersAndExit
@@ -142,10 +141,11 @@ class RefusedAmountViewSpec extends ViewSpecBase with ViewBehaviours {
         implicit val doc: Document = Jsoup.parse(view(form, testOnwardRoute, Thousands, item1, CnCodeInformation("", "", `1`), 1).toString())
 
         behave like pageWithExpectedElementsAndMessages(Seq(
-          Selectors.title -> viewMessagesForLanguage.title(unitOfMeasureMessagesForLanguage.thousandsLong),
+          Selectors.title -> viewMessagesForLanguage.title,
           Selectors.h2(1) -> viewMessagesForLanguage.arcSubheading(testArc),
-          Selectors.h1 -> viewMessagesForLanguage.heading(unitOfMeasureMessagesForLanguage.thousandsLong),
-          Selectors.label("value") -> viewMessagesForLanguage.heading(unitOfMeasureMessagesForLanguage.thousandsLong),
+          Selectors.h1 -> viewMessagesForLanguage.heading,
+          Selectors.label("value") -> viewMessagesForLanguage.label(unitOfMeasureMessagesForLanguage.thousandsLong),
+          Selectors.hint -> viewMessagesForLanguage.hint,
           Selectors.inputSuffix -> unitOfMeasureMessagesForLanguage.thousandsShort,
           Selectors.button -> viewMessagesForLanguage.saveAndContinue,
           Selectors.id("save-and-exit") -> viewMessagesForLanguage.savePreviousAnswersAndExit

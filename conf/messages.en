@@ -148,8 +148,9 @@ addDamageInformation.title = Do you want to give information about receiving dam
 addDamageInformation.heading = Do you want to give information about receiving damaged goods?
 addDamageInformation.error.required = Select yes if you want to give more information about receiving damaged goods
 
-addItemDamageInformation.title = Do you want to give information about item {0} being damaged?
-addItemDamageInformation.heading = Do you want to give information about item {0} being damaged?
+addItemDamageInformation.title = More information about damage
+addItemDamageInformation.heading = More information about damage
+addItemDamageInformation.legend = Do you want to give information about item {0} being damaged?
 addItemDamageInformation.itemDetails = View item {0} details
 addItemDamageInformation.error.required = Select yes if you want to give more information
 
@@ -157,8 +158,9 @@ addSealsInformation.title = Do you want to give information about receiving good
 addSealsInformation.heading = Do you want to give information about receiving goods with broken seal(s)?
 addSealsInformation.error.required = Select yes if you want to give more information about receiving goods with broken seal(s)
 
-addItemSealsInformation.title = Do you want to give information about item {0} having broken seal(s)?
-addItemSealsInformation.heading = Do you want to give information about item {0} having broken seal(s)?
+addItemSealsInformation.title = More information about broken seal(s)
+addItemSealsInformation.heading = More information about broken seal(s)
+addItemSealsInformation.legend = Do you want to give information about item {0} having broken seal(s)?
 addItemSealsInformation.itemDetails = View item {0} details
 addItemSealsInformation.error.required = Select yes if you want to give more information about broken seal(s)
 
@@ -306,8 +308,9 @@ wrongWithMovement.checkYourAnswers.brokenSeals = Broken seal(s)
 wrongWithMovement.checkYourAnswers.other = Other
 wrongWithMovement.checkYourAnswers.change.hidden = what was wrong
 
-wrongWithItem.title = What’s wrong with item {0}?
-wrongWithItem.heading = What’s wrong with item {0}?
+wrongWithItem.title = Problems with item {0}
+wrongWithItem.heading = Problems with item {0}
+wrongWithItem.legend = What’s wrong with item {0}?
 wrongWithItem.item = View item {0} details
 wrongWithItem.hint = Select all that apply.
 wrongWithItem.shortageOrExcess = I received a shortage or excess
@@ -404,8 +407,6 @@ itemShortageOrExcess.checkYourAnswers.addMoreInformation = Enter more informatio
 
 itemOtherInformation.title = Give information about other reason(s) you are unsatisfied with item {0}
 itemOtherInformation.heading = Give information about other reason(s) you are unsatisfied with item {0}
-itemOtherInformation.itemDetails = View item {0} details
-itemOtherInformation.hint = Give more information
 itemOtherInformation.error.length = Information must be 350 characters or less
 itemOtherInformation.error.required = Enter more information
 itemOtherInformation.error.invalidCharacter = Information must not include < and > and : and ;
@@ -459,10 +460,6 @@ detailsSelectItem.value.packaging = {0} {1}
 detailsSelectItem.viewAllDetails = View all details for item {0}
 detailsSelectItem.error.required = Select if you want to give information about this item
 
-refusingAnyAmountOfItem.checkYourAnswers.label = Amount refused
-refusingAnyAmountOfItem.checkYourAnswers.amount.value = {0} {1}
-refusingAnyAmountOfItem.checkYourAnswers.addMoreInformation = Refuse an amount of this item (optional)
-
 addedItems.title.singular = You have given information for 1 item
 addedItems.title.plural = You have given information for {0} items
 addedItems.heading.singular = You have given information for 1 item
@@ -472,17 +469,22 @@ addedItems.error.required = Select yes if you want to give information about ano
 addedItems.error.atLeastOneItem = You must refuse an amount of at least one item before you can continue
 addedItems.checkYourAnswers.forItem = for item {0}
 
-refusingAnyAmountOfItem.title = Are you refusing any amount of item {0}?
-refusingAnyAmountOfItem.heading = Are you refusing any amount of item {0}?
+refusingAnyAmountOfItem.title = Refusal information
+refusingAnyAmountOfItem.heading = Refusal information
+refusingAnyAmountOfItem.legend = Are you refusing any amount of item {0}?
 refusingAnyAmountOfItem.item = View item {0} details
 refusingAnyAmountOfItem.error.required = Select yes if you want to refuse an amount of this item
+refusingAnyAmountOfItem.checkYourAnswers.label = Amount refused
+refusingAnyAmountOfItem.checkYourAnswers.amount.value = {0} {1}
+refusingAnyAmountOfItem.checkYourAnswers.addMoreInformation = Refuse an amount of this item (optional)
 
 removeItem.title = Are you sure you want to remove item {0}?
 removeItem.heading = Are you sure you want to remove item {0}?
 removeItem.error.required = Select yes if you want to remove this item
 
-refusedAmount.title = How many {0} of item {1} are you refusing?
-refusedAmount.heading = How many {0} of item {1} are you refusing?
+refusedAmount.title = Amount refused
+refusedAmount.heading = Amount refused
+refusedAmount.label = How many {0} of item {1} are you refusing?
 refusedAmount.hint = For example, 150 or 12.694.
 refusedAmount.error.required = Enter the amount you are refusing
 refusedAmount.error.maxLength = The amount you are refusing must be {0} characters or less
@@ -491,13 +493,15 @@ refusedAmount.error.notGreaterThanZero = The amount you are refusing must be mor
 refusedAmount.error.valueTooLarge = The amount you are refusing must be {0} or less
 refusedAmount.error.threeDecimalPlaces = The amount you are refusing must have 3 decimals or less
 
-continueDraft.title = Do you want to continue with this draft report of receipt?
-continueDraft.heading = Do you want to continue with this draft report of receipt?
+continueDraft.title = A report of receipt is already in progress for this movement
+continueDraft.heading = A report of receipt is already in progress for this movement
 continueDraft.error.required = Select if you want to continue with this draft report of receipt
-continueDraft.p1 = A report of receipt is already in progress for this movement. You can continue with this draft, or start a new one.
-continueDraft.indent = If you choose to start a new report of receipt this draft will be deleted.
-continueDraft.continue = Continue with this draft
-continueDraft.startAgain = Start a new report of receipt
+continueDraft.p1 = You can continue with this report of receipt, or start again.
+continueDraft.indent = If you choose to start again the details already entered to receipt this movement will not be saved.
+continueDraft.indent = If you choose to start again the details already entered to receipt this movement will not be saved.
+continueDraft.legend = Do you want to continue with this draft report of receipt?
+continueDraft.continue = Continue
+continueDraft.startAgain = Start again
 
 notPermittedPage.title = There is a problem
 notPermittedPage.heading = There is a problem

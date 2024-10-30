@@ -18,6 +18,7 @@
 @import views.html.components.itemDetailSection
 @import models.response.emcsTfe.MovementItem
 @import models.response.referenceData.CnCodeInformation
+@import viewmodels.LegendSize
 
 @this(
     layout: templates.Layout,
@@ -31,7 +32,7 @@
 
 @(form: Form[_], action: Call, item: MovementItem, cnCodeInfo: CnCodeInformation)(implicit request: DataRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("refusingAnyAmountOfItem.title", item.itemUniqueReference)), maybeShowActiveTrader = maybeShowActiveTrader(request)) {
+@layout(pageTitle = title(form, messages("refusingAnyAmountOfItem.title")), maybeShowActiveTrader = maybeShowActiveTrader(request)) {
 
     @formHelper(action, 'autoComplete -> "off") {
 
@@ -39,14 +40,14 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        @h1(messages("refusingAnyAmountOfItem.heading", item.itemUniqueReference), Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
+        @h1(messages("refusingAnyAmountOfItem.heading"), Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
 
         @itemDetailSection("refusingAnyAmountOfItem.item", item, cnCodeInfo)
 
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(Text(messages("refusingAnyAmountOfItem.heading", item.itemUniqueReference))).hidden
+                legend = LegendViewModel(Text(messages("refusingAnyAmountOfItem.legend", item.itemUniqueReference))).withCssClass(LegendSize.Medium.toString)
             )
         )
 

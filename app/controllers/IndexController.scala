@@ -17,7 +17,6 @@
 package controllers
 
 import controllers.actions.{AuthAction, DataRetrievalAction, MovementAction}
-import forms.ContinueDraftFormProvider
 import models.{NormalMode, UserAnswers}
 import pages.ConfirmationPage
 import play.api.i18n.MessagesApi
@@ -35,7 +34,6 @@ class IndexController @Inject()(override val messagesApi: MessagesApi,
                                 authAction: AuthAction,
                                 withMovement: MovementAction,
                                 getData: DataRetrievalAction,
-                                formProvider: ContinueDraftFormProvider,
                                 view: ContinueDraftView) extends BaseController {
 
   def onPageLoadLegacy(ern: String, arc: String): Action[AnyContent] =
@@ -49,25 +47,22 @@ class IndexController @Inject()(override val messagesApi: MessagesApi,
         case Some(ans) if ans.get(ConfirmationPage).isDefined =>
           initialiseAndRedirect(UserAnswers(request.ern, request.arc))
         case Some(ans) if ans.data.fields.nonEmpty =>
-          Future.successful(Ok(view(formProvider(), routes.IndexController.onSubmit(ern, arc))))
+          Future.successful(Ok(view(
+            routes.IndexController.continueOrStartAgain(ern, arc, continueDraft = true),
+            routes.IndexController.continueOrStartAgain(ern, arc, continueDraft = false),
+          )))
         case _ =>
           initialiseAndRedirect(UserAnswers(request.ern, request.arc))
       }
     }
 
-  def onSubmit(ern: String, arc: String): Action[AnyContent] =
+  def continueOrStartAgain(ern: String, arc: String, continueDraft: Boolean): Action[AnyContent] =
     (authAction(ern, arc) andThen withMovement.fromCache(arc) andThen getData).async { implicit request =>
-      formProvider().bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, routes.IndexController.onSubmit(ern, arc)))),
-        continueDraft => {
-          val userAnswers = request.userAnswers match {
-            case Some(answers) if continueDraft => answers
-            case _ => UserAnswers(request.ern, request.arc)
-          }
-          initialiseAndRedirect(userAnswers)
-        }
-      )
+      val userAnswers = request.userAnswers match {
+        case Some(answers) if continueDraft => answers
+        case _ => UserAnswers(request.ern, request.arc)
+      }
+      initialiseAndRedirect(userAnswers)
     }
 
   private def initialiseAndRedirect(answers: UserAnswers)(implicit hc: HeaderCarrier): Future[Result] =

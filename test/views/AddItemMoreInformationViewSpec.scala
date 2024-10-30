@@ -22,7 +22,7 @@ import forms.AddMoreInformationFormProvider
 import models.ReferenceDataUnitOfMeasure.`1`
 import models.response.referenceData.CnCodeInformation
 import org.jsoup.Jsoup
-import pages.unsatisfactory.individualItems.{AddItemDamageInformationPage, RemoveItemPage, AddItemSealsInformationPage}
+import pages.unsatisfactory.individualItems.{AddItemDamageInformationPage, AddItemSealsInformationPage, RemoveItemPage}
 import play.api.test.FakeRequest
 import views.html.AddItemMoreInformationView
 
@@ -30,9 +30,7 @@ class AddItemMoreInformationViewSpec extends ViewSpecBase with ViewBehaviours {
 
   lazy val view = app.injector.instanceOf[AddItemMoreInformationView]
 
-  object Selectors extends BaseSelectors {
-    val hiddenLegend = ".govuk-fieldset__legend.govuk-visually-hidden"
-  }
+  object Selectors extends BaseSelectors
 
   lazy val form = app.injector.instanceOf[AddMoreInformationFormProvider].apply(RemoveItemPage(1))
 
@@ -52,13 +50,13 @@ class AddItemMoreInformationViewSpec extends ViewSpecBase with ViewBehaviours {
           implicit val doc = Jsoup.parse(view(form, page, testOnwardRoute, item1, CnCodeInformation("", "", `1`)).toString())
 
           behave like pageWithExpectedElementsAndMessages(Seq(
-            Selectors.title -> messagesForLanguage.title(1),
+            Selectors.title -> messagesForLanguage.title,
             Selectors.h2(1) -> messagesForLanguage.arcSubheading(testArc),
-            Selectors.h1 -> messagesForLanguage.heading(1),
+            Selectors.h1 -> messagesForLanguage.heading,
+            Selectors.legend -> messagesForLanguage.legend(1),
             Selectors.detailsSummary(1) -> messagesForLanguage.itemDetails(1),
             Selectors.radioButton(1) -> messagesForLanguage.yes,
             Selectors.radioButton(2) -> messagesForLanguage.no,
-            Selectors.hiddenLegend -> messagesForLanguage.hiddenLegendText(1),
             Selectors.button -> messagesForLanguage.saveAndContinue,
             Selectors.id("save-and-exit") -> messagesForLanguage.savePreviousAnswersAndExit
           ))

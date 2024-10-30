@@ -18,7 +18,6 @@ package views
 
 import base.ViewSpecBase
 import fixtures.messages.ContinueDraftMessages
-import forms.ContinueDraftFormProvider
 import org.jsoup.Jsoup
 import play.api.test.FakeRequest
 import views.html.ContinueDraftView
@@ -31,15 +30,16 @@ class ContinueDraftViewSpec extends ViewSpecBase with ViewBehaviours {
 
   "For the ContinueDraftView view" - {
 
-    lazy val form = app.injector.instanceOf[ContinueDraftFormProvider].apply()
-
     Seq(ContinueDraftMessages.English).foreach { messagesForLanguage =>
 
       s"when being rendered in lang code of '${messagesForLanguage.lang.code}'" - {
 
         implicit val msgs = messages(app, messagesForLanguage.lang)
         implicit val request = optionalDataRequest(FakeRequest())
-        implicit val doc = Jsoup.parse(view(form, testOnwardRoute).toString())
+        implicit val doc = Jsoup.parse(view(
+          controllers.routes.IndexController.continueOrStartAgain(testErn, testArc, continueDraft = true),
+          controllers.routes.IndexController.continueOrStartAgain(testErn, testArc, continueDraft = false)
+        ).toString())
 
         behave like pageWithExpectedElementsAndMessages(Seq(
           Selectors.title -> messagesForLanguage.title,
@@ -47,9 +47,8 @@ class ContinueDraftViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.h1 -> messagesForLanguage.heading,
           Selectors.p(1) -> messagesForLanguage.p1,
           Selectors.inset(1) -> messagesForLanguage.inset,
-          Selectors.radioButton(1) -> messagesForLanguage.continueRadio,
-          Selectors.radioButton(2) -> messagesForLanguage.startAgainRadio,
-          Selectors.button -> messagesForLanguage.continue
+          Selectors.link(1) -> messagesForLanguage.continueButton,
+          Selectors.link(2) -> messagesForLanguage.startAgainLink
         ))
       }
     }

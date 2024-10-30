@@ -32,17 +32,17 @@ import javax.inject.Inject
 
 class ShortageOrExcessItemSummary @Inject()(link: link) {
 
-  def rows(idx: Int, unitOfMeasure: UnitOfMeasure, additionalLinkIdSignifier: String = "")
+  def rows(idx: Int, unitOfMeasure: UnitOfMeasure, isOnFinalCheckAnswers: Boolean = false)
           (implicit request: DataRequest[_], messages: Messages): Seq[SummaryListRow] = {
 
     Seq(
-      shortageOrExcessRow(idx, additionalLinkIdSignifier),
-      amountOfShortageOrExcessRow(idx, unitOfMeasure, additionalLinkIdSignifier),
-      shortageOrExcessInformationRow(idx, additionalLinkIdSignifier)
+      shortageOrExcessRow(idx, isOnFinalCheckAnswers),
+      amountOfShortageOrExcessRow(idx, unitOfMeasure, isOnFinalCheckAnswers),
+      shortageOrExcessInformationRow(idx, isOnFinalCheckAnswers)
     ).flatten
   }
 
-  private def shortageOrExcessRow(idx: Int, additionalLinkIdSignifier: String)
+  private def shortageOrExcessRow(idx: Int, isOnFinalCheckAnswers: Boolean)
                                  (implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] = {
     if (isShortageOrExcess(idx)) {
       request.userAnswers.get(ItemShortageOrExcessPage(idx)).map(
@@ -51,7 +51,7 @@ class ShortageOrExcessItemSummary @Inject()(link: link) {
             key = s"${ItemShortageOrExcessPage(idx)}.checkYourAnswers.shortageOrExcess.label",
             value = ValueViewModel(messages(s"itemShortageOrExcess.shortageOrExcess.${shortageOrExcess.wrongWithItem.toString}")),
             actions = Seq(
-              shortageOrExcessChangeAction(idx, s"shortageOrExcess", additionalLinkIdSignifier)
+              shortageOrExcessChangeAction(idx, s"shortageOrExcess", isOnFinalCheckAnswers)
             )
           )
       )
@@ -60,7 +60,7 @@ class ShortageOrExcessItemSummary @Inject()(link: link) {
     }
   }
 
-  private def amountOfShortageOrExcessRow(idx: Int, unitOfMeasure: UnitOfMeasure, additionalLinkIdSignifier: String)
+  private def amountOfShortageOrExcessRow(idx: Int, unitOfMeasure: UnitOfMeasure, isOnFinalCheckAnswers: Boolean)
                                          (implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] = {
     if (isShortageOrExcess(idx)) {
       request.userAnswers.get(ItemShortageOrExcessPage(idx)).map(
@@ -75,7 +75,7 @@ class ShortageOrExcessItemSummary @Inject()(link: link) {
               )
             ),
             actions = Seq(
-              shortageOrExcessChangeAction(idx, s"amount", additionalLinkIdSignifier)
+              shortageOrExcessChangeAction(idx, s"amount", isOnFinalCheckAnswers)
             )
           )
       )
@@ -84,10 +84,10 @@ class ShortageOrExcessItemSummary @Inject()(link: link) {
     }
   }
 
-  private def shortageOrExcessInformationRow(idx: Int, additionalLinkIdSignifier: String)
+  private def shortageOrExcessInformationRow(idx: Int, isOnFinalCheckAnswers: Boolean)
                                             (implicit request: DataRequest[_], messages: Messages): Option[SummaryListRow] = {
     if (isShortageOrExcess(idx)) {
-      val mode = if(additionalLinkIdSignifier != "") ReviewMode else CheckMode
+      val mode = if(isOnFinalCheckAnswers) ReviewMode else CheckMode
       request.userAnswers.get(ItemShortageOrExcessPage(idx)).map(
         shortageOrExcess =>
           shortageOrExcess.additionalInfo match {
@@ -96,7 +96,7 @@ class ShortageOrExcessItemSummary @Inject()(link: link) {
                 key = s"${ItemShortageOrExcessPage(idx)}.checkYourAnswers.additionalInfo.label",
                 value = ValueViewModel(Text(value)),
                 actions = Seq(
-                  shortageOrExcessChangeAction(idx, s"additionalInfo", additionalLinkIdSignifier)
+                  shortageOrExcessChangeAction(idx, s"additionalInfo", isOnFinalCheckAnswers)
                 )
               )
             case _ =>
@@ -104,7 +104,9 @@ class ShortageOrExcessItemSummary @Inject()(link: link) {
                 key = s"${ItemShortageOrExcessPage(idx)}.checkYourAnswers.additionalInfo.label",
                 value = ValueViewModel(HtmlContent(link(
                   link = routes.ItemShortageOrExcessController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, idx, mode).url,
-                  messageKey = s"${ItemShortageOrExcessPage(idx)}.checkYourAnswers.addMoreInformation")))
+                  messageKey = s"${ItemShortageOrExcessPage(idx)}.checkYourAnswers.addMoreInformation",
+                  hiddenContent = Some(messages("addedItems.checkYourAnswers.forItem", idx))
+                )))
               )
           })
     } else {
@@ -115,13 +117,17 @@ class ShortageOrExcessItemSummary @Inject()(link: link) {
   private def isShortageOrExcess(idx: Int)(implicit request: DataRequest[_]): Boolean =
     request.userAnswers.get(WrongWithItemPage(idx)).exists(_.contains(ShortageOrExcess))
 
-  private def shortageOrExcessChangeAction(idx: Int, changeLabelPage: String, additionalLinkIdSignifier: String)(implicit request: DataRequest[_], messages: Messages): ActionItem = {
-    val mode = if(additionalLinkIdSignifier != "") ReviewMode else CheckMode
+  private def shortageOrExcessChangeAction(idx: Int,
+                                           changeLabelPage: String,
+                                           isOnFinalCheckAnswers: Boolean)(implicit request: DataRequest[_], messages: Messages): ActionItem = {
+    val mode = if(isOnFinalCheckAnswers) ReviewMode else CheckMode
     ActionItemViewModel(
       "site.change",
       routes.ItemShortageOrExcessController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, idx, mode).url,
-      id = s"${ItemShortageOrExcessPage(idx)}-$changeLabelPage$additionalLinkIdSignifier"
-    ).withVisuallyHiddenText(messages(s"${ItemShortageOrExcessPage(idx)}.checkYourAnswers.$changeLabelPage.change.hidden"))
+      id = s"${ItemShortageOrExcessPage(idx)}-$changeLabelPage-item-$idx"
+    ).withVisuallyHiddenText(
+      s"${messages(s"${ItemShortageOrExcessPage(idx)}.checkYourAnswers.$changeLabelPage.change.hidden")} ${messages("addedItems.checkYourAnswers.forItem", idx)}"
+    )
   }
 
 }

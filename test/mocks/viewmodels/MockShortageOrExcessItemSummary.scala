@@ -30,8 +30,8 @@ trait MockShortageOrExcessItemSummary extends MockFactory {
 
   object MockShortageOrExcessItemSummary {
 
-    def rows(): CallHandler5[Int, UnitOfMeasure, String, DataRequest[_], Messages, Seq[SummaryListRow]] =
-      (mockShortageOrExcessItemSummary.rows(_: Int, _: UnitOfMeasure, _:String)(_: DataRequest[_], _: Messages))
+    def rows(): CallHandler5[Int, UnitOfMeasure, Boolean, DataRequest[_], Messages, Seq[SummaryListRow]] =
+      (mockShortageOrExcessItemSummary.rows(_: Int, _: UnitOfMeasure, _: Boolean)(_: DataRequest[_], _: Messages))
         .expects(*, *, *, *, *)
   }
 }

@@ -62,8 +62,10 @@ class ShortageOrExcessItemSummarySpec extends SpecBase {
         ActionItem(
           href = routes.ItemShortageOrExcessController.onPageLoad(testErn, testArc, 1, CheckMode).url,
           content = msgs("site.change"),
-          visuallyHiddenText = Some(msgs(s"${ItemShortageOrExcessPage(1)}.checkYourAnswers.shortageOrExcess.change.hidden")),
-          attributes = Map("id" -> s"${ItemShortageOrExcessPage(1)}-shortageOrExcess")
+          visuallyHiddenText = Some(
+            s"${msgs(s"${ItemShortageOrExcessPage(1)}.checkYourAnswers.shortageOrExcess.change.hidden")} ${msgs("addedItems.checkYourAnswers.forItem", 1)}"
+          ),
+          attributes = Map("id" -> s"${ItemShortageOrExcessPage(1)}-shortageOrExcess-item-1")
         )
       )))
     )
@@ -81,8 +83,10 @@ class ShortageOrExcessItemSummarySpec extends SpecBase {
         ActionItem(
           href = routes.ItemShortageOrExcessController.onPageLoad(testErn, testArc, 1, CheckMode).url,
           content = msgs("site.change"),
-          visuallyHiddenText = Some(msgs(s"${ItemShortageOrExcessPage(1)}.checkYourAnswers.amount.change.hidden")),
-          attributes = Map("id" -> s"${ItemShortageOrExcessPage(1)}-amount")
+          visuallyHiddenText = Some(
+            s"${msgs(s"${ItemShortageOrExcessPage(1)}.checkYourAnswers.amount.change.hidden")} ${msgs("addedItems.checkYourAnswers.forItem", 1)}"
+          ),
+          attributes = Map("id" -> s"${ItemShortageOrExcessPage(1)}-amount-item-1")
         )
       )))
     )
@@ -109,8 +113,10 @@ class ShortageOrExcessItemSummarySpec extends SpecBase {
                     ActionItem(
                       href = routes.ItemShortageOrExcessController.onPageLoad(testErn, testArc, 1, CheckMode).url,
                       content = msgs("site.change"),
-                      visuallyHiddenText = Some(msgs(s"${ItemShortageOrExcessPage(1)}.checkYourAnswers.additionalInfo.change.hidden")),
-                      attributes = Map("id" -> s"${ItemShortageOrExcessPage(1)}-additionalInfo")
+                      visuallyHiddenText = Some(
+                        s"${msgs(s"${ItemShortageOrExcessPage(1)}.checkYourAnswers.additionalInfo.change.hidden")} ${msgs("addedItems.checkYourAnswers.forItem", 1)}"
+                      ),
+                      attributes = Map("id" -> s"${ItemShortageOrExcessPage(1)}-additionalInfo-item-1")
                     )
                   )))
                 )
@@ -128,7 +134,9 @@ class ShortageOrExcessItemSummarySpec extends SpecBase {
                 key = msgs(s"${ItemShortageOrExcessPage(1)}.checkYourAnswers.additionalInfo.label"),
                 value = ValueViewModel(HtmlContent(link(
                   link = routes.ItemShortageOrExcessController.onPageLoad(testErn, testArc, 1, CheckMode).url,
-                  messageKey = s"${ItemShortageOrExcessPage(1)}.checkYourAnswers.addMoreInformation")))
+                  messageKey = s"${ItemShortageOrExcessPage(1)}.checkYourAnswers.addMoreInformation",
+                  hiddenContent = Some(msgs("addedItems.checkYourAnswers.forItem", 1))
+                )))
               )
               "when additionalInfo is an empty String" in new Test {
                 override def additionalInfo: Option[String] = Some("")

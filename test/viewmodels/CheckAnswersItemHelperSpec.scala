@@ -92,8 +92,10 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
       actions = Some(Actions(items = Seq(ActionItem(
         href = routes.WrongWithItemController.loadWrongWithItem(testErn, testArc, 1, NormalMode).url,
         content = msgs("site.change"),
-        visuallyHiddenText = Some(msgs(s"${WrongWithItemPage(1)}.checkYourAnswers.change.hidden")),
-        attributes = Map("id" -> s"${WrongWithItemPage(1)}")
+        visuallyHiddenText = Some(
+          s"${msgs(s"${WrongWithItemPage(1)}.checkYourAnswers.change.hidden")} ${msgs("addedItems.checkYourAnswers.forItem", 1)}"
+        ),
+        attributes = Map("id" -> s"${WrongWithItemPage(1)}-item-1")
       ))))
     )
   }
@@ -115,8 +117,10 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
             actions = Some(Actions(items = Seq(ActionItem(
               href = routes.RefusedAmountController.onPageLoad(testErn, testArc, 1, CheckMode).url,
               content = msgs("site.change"),
-              visuallyHiddenText = Some(msgs(s"${RefusingAnyAmountOfItemPage(1)}.checkYourAnswers.change.hidden")),
-              attributes = Map("id" -> s"${RefusingAnyAmountOfItemPage(1)}")
+              visuallyHiddenText = Some(
+                s"${msgs(s"${RefusingAnyAmountOfItemPage(1)}.checkYourAnswers.change.hidden")} ${msgs("addedItems.checkYourAnswers.forItem", 1)}"
+              ),
+              attributes = Map("id" -> s"${RefusingAnyAmountOfItemPage(1)}-item-1")
             ))))
           )
 
@@ -126,8 +130,10 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
             actions = Some(Actions(items = Seq(ActionItem(
               href = routes.ItemMoreInformationController.loadItemDamageInformation(testErn, testArc, 1, CheckMode).url,
               content = msgs("site.change"),
-              visuallyHiddenText = Some(msgs(s"${ItemDamageInformationPage(1)}.checkYourAnswers.change.hidden")),
-              attributes = Map("id" -> s"${ItemDamageInformationPage(1)}")
+              visuallyHiddenText = Some(
+                s"${msgs(s"${ItemDamageInformationPage(1)}.checkYourAnswers.change.hidden")} ${msgs("addedItems.checkYourAnswers.forItem", 1)}"
+              ),
+              attributes = Map("id" -> s"${ItemDamageInformationPage(1)}-item-1")
             ))))
           )
 
@@ -137,8 +143,10 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
             actions = Some(Actions(items = Seq(ActionItem(
               href = routes.ItemMoreInformationController.loadItemSealsInformation(testErn, testArc, 1, CheckMode).url,
               content = msgs("site.change"),
-              visuallyHiddenText = Some(msgs(s"${ItemSealsInformationPage(1)}.checkYourAnswers.change.hidden")),
-              attributes = Map("id" -> s"${ItemSealsInformationPage(1)}")
+              visuallyHiddenText = Some(
+                s"${msgs(s"${ItemSealsInformationPage(1)}.checkYourAnswers.change.hidden")} ${msgs("addedItems.checkYourAnswers.forItem", 1)}"
+              ),
+              attributes = Map("id" -> s"${ItemSealsInformationPage(1)}-item-1")
             ))))
           )
 
@@ -148,8 +156,10 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
             actions = Some(Actions(items = Seq(ActionItem(
               href = routes.ItemOtherInformationController.onPageLoad(testErn, testArc, 1, CheckMode).url,
               content = msgs("site.change"),
-              visuallyHiddenText = Some(msgs(s"${ItemOtherInformationPage(1)}.checkYourAnswers.change.hidden")),
-              attributes = Map("id" -> s"${ItemOtherInformationPage(1)}")
+              visuallyHiddenText = Some(
+                s"${msgs(s"${ItemOtherInformationPage(1)}.checkYourAnswers.change.hidden")} ${msgs("addedItems.checkYourAnswers.forItem", 1)}"
+              ),
+              attributes = Map("id" -> s"${ItemOtherInformationPage(1)}-item-1")
             ))))
           )
 
@@ -174,7 +184,9 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
           actions = Some(Actions(items = Seq(ActionItem(
             href = routes.ItemMoreInformationController.loadItemDamageInformation(testErn, testArc, 1, ReviewMode).url,
             content = msgs("site.change"),
-            visuallyHiddenText = Some(msgs(s"${ItemDamageInformationPage(1)}.checkYourAnswers.change.hidden")),
+            visuallyHiddenText = Some(
+              s"${msgs(s"${ItemDamageInformationPage(1)}.checkYourAnswers.change.hidden")} ${msgs("addedItems.checkYourAnswers.forItem", 1)}"
+            ),
             attributes = Map("id" -> s"${ItemDamageInformationPage(1)}-item-1")
           ))))
         )
@@ -185,7 +197,9 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
           actions = Some(Actions(items = Seq(ActionItem(
             href = routes.ItemMoreInformationController.loadItemSealsInformation(testErn, testArc, 1, ReviewMode).url,
             content = msgs("site.change"),
-            visuallyHiddenText = Some(msgs(s"${ItemSealsInformationPage(1)}.checkYourAnswers.change.hidden")),
+            visuallyHiddenText = Some(
+              s"${msgs(s"${ItemSealsInformationPage(1)}.checkYourAnswers.change.hidden")} ${msgs("addedItems.checkYourAnswers.forItem", 1)}"
+            ),
             attributes = Map("id" -> s"${ItemSealsInformationPage(1)}-item-1")
           ))))
         )
@@ -196,7 +210,9 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
           actions = Some(Actions(items = Seq(ActionItem(
             href = routes.ItemOtherInformationController.onPageLoad(testErn, testArc, 1, ReviewMode).url,
             content = msgs("site.change"),
-            visuallyHiddenText = Some(msgs(s"${ItemOtherInformationPage(1)}.checkYourAnswers.change.hidden")),
+            visuallyHiddenText = Some(
+              s"${msgs(s"${ItemOtherInformationPage(1)}.checkYourAnswers.change.hidden")} ${msgs("addedItems.checkYourAnswers.forItem", 1)}"
+            ),
             attributes = Map("id" -> s"${ItemOtherInformationPage(1)}-item-1")
           ))))
         )
@@ -207,7 +223,9 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
           actions = Some(Actions(items = Seq(ActionItem(
             href = routes.RefusedAmountController.onPageLoad(testErn, testArc, 1, ReviewMode).url,
             content = msgs("site.change"),
-            visuallyHiddenText = Some(msgs(s"${RefusingAnyAmountOfItemPage(1)}.checkYourAnswers.change.hidden")),
+            visuallyHiddenText = Some(
+              s"${msgs(s"${RefusingAnyAmountOfItemPage(1)}.checkYourAnswers.change.hidden")} ${msgs("addedItems.checkYourAnswers.forItem", 1)}"
+            ),
             attributes = Map("id" -> s"${RefusingAnyAmountOfItemPage(1)}-item-1")
           ))))
         )
@@ -227,7 +245,9 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
           actions = Some(Actions(items = Seq(ActionItem(
             href = routes.WrongWithItemController.loadWrongWithItem(testErn, testArc, 1, NormalMode).url,
             content = msgs("site.change"),
-            visuallyHiddenText = Some(msgs(s"${WrongWithItemPage(1)}.checkYourAnswers.change.hidden")),
+            visuallyHiddenText = Some(
+              s"${msgs(s"${WrongWithItemPage(1)}.checkYourAnswers.change.hidden")} ${msgs("addedItems.checkYourAnswers.forItem", 1)}"
+            ),
             attributes = Map("id" -> s"${WrongWithItemPage(1)}-item-1")
           ))))
         )
@@ -265,7 +285,8 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
             key = s"${ItemDamageInformationPage(1)}.checkYourAnswers.label",
             value = ValueViewModel(HtmlContent(link(
               link = routes.ItemMoreInformationController.loadItemDamageInformation(testErn, testArc, 1, CheckMode).url,
-              messageKey = s"${ItemDamageInformationPage(1)}.checkYourAnswers.addMoreInformation"
+              messageKey = s"${ItemDamageInformationPage(1)}.checkYourAnswers.addMoreInformation",
+              hiddenContent = Some(msgs("addedItems.checkYourAnswers.forItem", 1))
             )))
           )
 
@@ -273,14 +294,16 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
             key = s"${ItemSealsInformationPage(1)}.checkYourAnswers.label",
             value = ValueViewModel(HtmlContent(link(
               link = routes.ItemMoreInformationController.loadItemSealsInformation(testErn, testArc, 1, CheckMode).url,
-              messageKey = s"${ItemSealsInformationPage(1)}.checkYourAnswers.addMoreInformation"
+              messageKey = s"${ItemSealsInformationPage(1)}.checkYourAnswers.addMoreInformation",
+              hiddenContent = Some(msgs("addedItems.checkYourAnswers.forItem", 1))
             )))
           )
           lazy val amountRefusedRow = SummaryListRow(
             key = s"${RefusingAnyAmountOfItemPage(1)}.checkYourAnswers.label",
             value = ValueViewModel(HtmlContent(link(
               link = routes.RefusedAmountController.onPageLoad(testErn, testArc, 1, CheckMode).url,
-              messageKey = s"${RefusingAnyAmountOfItemPage(1)}.checkYourAnswers.addMoreInformation"
+              messageKey = s"${RefusingAnyAmountOfItemPage(1)}.checkYourAnswers.addMoreInformation",
+              hiddenContent = Some(msgs("addedItems.checkYourAnswers.forItem", 1))
             )))
           )
 
@@ -316,7 +339,8 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
             key = s"${ItemDamageInformationPage(1)}.checkYourAnswers.label",
             value = ValueViewModel(HtmlContent(link(
               link = routes.ItemMoreInformationController.loadItemDamageInformation(testErn, testArc, 1, ReviewMode).url,
-              messageKey = s"${ItemDamageInformationPage(1)}.checkYourAnswers.addMoreInformation"
+              messageKey = s"${ItemDamageInformationPage(1)}.checkYourAnswers.addMoreInformation",
+              hiddenContent = Some(msgs("addedItems.checkYourAnswers.forItem", 1))
             )))
           )
 
@@ -324,7 +348,8 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
             key = s"${ItemSealsInformationPage(1)}.checkYourAnswers.label",
             value = ValueViewModel(HtmlContent(link(
               link = routes.ItemMoreInformationController.loadItemSealsInformation(testErn, testArc, 1, ReviewMode).url,
-              messageKey = s"${ItemSealsInformationPage(1)}.checkYourAnswers.addMoreInformation"
+              messageKey = s"${ItemSealsInformationPage(1)}.checkYourAnswers.addMoreInformation",
+              hiddenContent = Some(msgs("addedItems.checkYourAnswers.forItem", 1))
             )))
           )
 
@@ -332,7 +357,8 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
             key = s"${RefusingAnyAmountOfItemPage(1)}.checkYourAnswers.label",
             value = ValueViewModel(HtmlContent(link(
               link = routes.RefusedAmountController.onPageLoad(testErn, testArc, 1, ReviewMode).url,
-              messageKey = s"${RefusingAnyAmountOfItemPage(1)}.checkYourAnswers.addMoreInformation"
+              messageKey = s"${RefusingAnyAmountOfItemPage(1)}.checkYourAnswers.addMoreInformation",
+              hiddenContent = Some(msgs("addedItems.checkYourAnswers.forItem", 1))
             )))
           )
 
@@ -351,7 +377,9 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
             actions = Some(Actions(items = Seq(ActionItem(
               href = routes.WrongWithItemController.loadWrongWithItem(testErn, testArc, 1, NormalMode).url,
               content = msgs("site.change"),
-              visuallyHiddenText = Some(msgs(s"${WrongWithItemPage(1)}.checkYourAnswers.change.hidden")),
+              visuallyHiddenText = Some(
+                s"${msgs(s"${WrongWithItemPage(1)}.checkYourAnswers.change.hidden")} ${msgs("addedItems.checkYourAnswers.forItem", 1)}"
+              ),
               attributes = Map("id" -> s"${WrongWithItemPage(1)}-item-1")
             ))))
           )
@@ -387,7 +415,8 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
             key = s"${ItemDamageInformationPage(1)}.checkYourAnswers.label",
             value = ValueViewModel(HtmlContent(link(
               link = routes.ItemMoreInformationController.loadItemDamageInformation(testErn, testArc, 1, CheckMode).url,
-              messageKey = s"${ItemDamageInformationPage(1)}.checkYourAnswers.addMoreInformation"
+              messageKey = s"${ItemDamageInformationPage(1)}.checkYourAnswers.addMoreInformation",
+              hiddenContent = Some(msgs("addedItems.checkYourAnswers.forItem", 1))
             )))
           )
 
@@ -395,7 +424,8 @@ class CheckAnswersItemHelperSpec extends SpecBase with MockShortageOrExcessItemS
             key = s"${ItemSealsInformationPage(1)}.checkYourAnswers.label",
             value = ValueViewModel(HtmlContent(link(
               link = routes.ItemMoreInformationController.loadItemSealsInformation(testErn, testArc, 1, CheckMode).url,
-              messageKey = s"${ItemSealsInformationPage(1)}.checkYourAnswers.addMoreInformation"
+              messageKey = s"${ItemSealsInformationPage(1)}.checkYourAnswers.addMoreInformation",
+              hiddenContent = Some(msgs("addedItems.checkYourAnswers.forItem", 1))
             )))
           )
 

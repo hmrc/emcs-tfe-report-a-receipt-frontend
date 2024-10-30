@@ -50,8 +50,6 @@ class ItemOtherInformationViewSpec extends ViewSpecBase with ViewBehaviours {
           Selectors.title -> messagesForLanguage.title(1),
           Selectors.h2(1) -> messagesForLanguage.arcSubheading(testArc),
           Selectors.h1 -> messagesForLanguage.heading(1),
-          Selectors.detailsSummary(1) -> messagesForLanguage.itemDetails(1),
-          Selectors.hint -> messagesForLanguage.hint,
           Selectors.button -> messagesForLanguage.saveAndContinue,
           Selectors.id("save-and-exit") -> messagesForLanguage.savePreviousAnswersAndExit
         ))

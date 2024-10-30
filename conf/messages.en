@@ -407,8 +407,6 @@ itemShortageOrExcess.checkYourAnswers.addMoreInformation = Enter more informatio
 
 itemOtherInformation.title = Give information about other reason(s) you are unsatisfied with item {0}
 itemOtherInformation.heading = Give information about other reason(s) you are unsatisfied with item {0}
-itemOtherInformation.itemDetails = View item {0} details
-itemOtherInformation.hint = Give more information
 itemOtherInformation.error.length = Information must be 350 characters or less
 itemOtherInformation.error.required = Enter more information
 itemOtherInformation.error.invalidCharacter = Information must not include < and > and : and ;

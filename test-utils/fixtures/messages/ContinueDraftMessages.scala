@@ -21,21 +21,19 @@ object ContinueDraftMessages {
   sealed trait ViewMessages { _: i18n =>
     val title: String
     val heading: String
-    val requiredError: String
     val p1: String
     val inset: String
-    val continueRadio: String
-    val startAgainRadio: String
+    val continueButton: String
+    val startAgainLink: String
   }
 
   object English extends ViewMessages with BaseEnglish {
-    override val heading = "Do you want to continue with this draft report of receipt?"
+    override val heading = "A report of receipt is already in progress for this movement"
     override val title = title(heading)
-    override val requiredError: String = "Select if you want to continue with this draft report of receipt"
-    override val p1: String = "A report of receipt is already in progress for this movement. You can continue with this draft, or start a new one."
-    override val inset: String = "If you choose to start a new report of receipt this draft will be deleted."
-    override val continueRadio: String = "Continue with this draft"
-    override val startAgainRadio: String = "Start a new report of receipt"
+    override val p1: String = "You can continue with this report of receipt, or start again."
+    override val inset: String = "If you choose to start again the details already entered to receipt this movement will not be saved."
+    override val continueButton: String = "Continue"
+    override val startAgainLink: String = "Start again"
   }
 
 }

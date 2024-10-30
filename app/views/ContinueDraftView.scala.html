@@ -18,60 +18,37 @@
 
 @this(
         layout: templates.Layout,
-        formHelper: FormWithCSRF,
-        govukErrorSummary: GovukErrorSummary,
-        govukRadios: GovukRadios,
-        govukButton: GovukButton,
         h1: components.h1,
         p: components.p,
-        inset: components.inset
+        inset: components.inset,
+        link: components.link
 )
 
-@(form: Form[_], postAction: Call)(implicit request: OptionalDataRequest[_], messages: Messages)
+@(continue: Call, startAgain: Call)(implicit request: OptionalDataRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("continueDraft.title")), maybeShowActiveTrader = maybeShowActiveTrader(request)) {
+@layout(pageTitle = titleNoForm(messages("continueDraft.title")), maybeShowActiveTrader = maybeShowActiveTrader(request)) {
 
-    @formHelper(postAction, 'autoComplete -> "off") {
+    @h1("continueDraft.heading", Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
 
-        @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form, Map("value" -> "continue")))
-        }
-
-        @h1("continueDraft.heading", Some(messages("arc.subHeading", request.arc)), "govuk-heading-l")
-
-        @p() {
-            @messages("continueDraft.p1")
-        }
-
-        @inset() {
-            @p() {
-                @messages("continueDraft.indent")
-            }
-        }
-
-        @govukRadios(
-            RadiosViewModel(
-                field = form("value"),
-                items = Seq(
-                    RadioItem(
-                        id      = Some("continue"),
-                        value   = Some("true"),
-                        content = Text(messages("continueDraft.continue"))
-                    ),
-                    RadioItem(
-                        id      = Some("startAgain"),
-                        value   = Some("false"),
-                        content = Text(messages("continueDraft.startAgain"))
-                    )
-                ),
-                legend = LegendViewModel(Text(messages("continueDraft.heading"))).hidden
-            )
-        )
-
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
+    @p() {
+        @messages("continueDraft.p1")
     }
+
+    @inset() {
+        @p() {
+            @messages("continueDraft.indent")
+        }
+    }
+
+    <div class="govuk-button-group">
+
+        @link(continue.url, "site.continue", button = true)
+
+        @link(startAgain.url, "continueDraft.startAgain", button = false)
+
+    </div>
+
+
 }
 
 @{

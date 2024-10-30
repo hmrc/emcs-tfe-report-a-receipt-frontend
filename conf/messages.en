@@ -494,13 +494,15 @@ refusedAmount.error.notGreaterThanZero = The amount you are refusing must be mor
 refusedAmount.error.valueTooLarge = The amount you are refusing must be {0} or less
 refusedAmount.error.threeDecimalPlaces = The amount you are refusing must have 3 decimals or less
 
-continueDraft.title = Do you want to continue with this draft report of receipt?
-continueDraft.heading = Do you want to continue with this draft report of receipt?
+continueDraft.title = A report of receipt is already in progress for this movement
+continueDraft.heading = A report of receipt is already in progress for this movement
 continueDraft.error.required = Select if you want to continue with this draft report of receipt
-continueDraft.p1 = A report of receipt is already in progress for this movement. You can continue with this draft, or start a new one.
-continueDraft.indent = If you choose to start a new report of receipt this draft will be deleted.
-continueDraft.continue = Continue with this draft
-continueDraft.startAgain = Start a new report of receipt
+continueDraft.p1 = You can continue with this report of receipt, or start again.
+continueDraft.indent = If you choose to start again the details already entered to receipt this movement will not be saved.
+continueDraft.indent = If you choose to start again the details already entered to receipt this movement will not be saved.
+continueDraft.legend = Do you want to continue with this draft report of receipt?
+continueDraft.continue = Continue
+continueDraft.startAgain = Start again
 
 notPermittedPage.title = There is a problem
 notPermittedPage.heading = There is a problem

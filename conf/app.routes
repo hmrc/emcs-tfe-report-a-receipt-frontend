@@ -13,7 +13,7 @@ GET         /trader/:ern/movement/:arc/no-information-receipt                   
 GET         /account/sign-out                                                                 controllers.auth.AuthController.signOut(becauseOfTimeout: Boolean ?= false)
 
 GET         /trader/:ern/movement/:arc                                                        controllers.IndexController.onPageLoad(ern: String, arc: String)
-POST        /trader/:ern/movement/:arc                                                        controllers.IndexController.onSubmit(ern: String, arc: String)
+GET         /trader/:ern/movement/:arc/continue-or-start-again                                controllers.IndexController.continueOrStartAgain(ern: String, arc: String, continueDraft: Boolean)
 
 GET         /trader/:ern/movement/:arc/when-take-delivery                                     controllers.DateOfArrivalController.onPageLoad(ern: String, arc: String, mode: Mode = NormalMode)
 POST        /trader/:ern/movement/:arc/when-take-delivery                                     controllers.DateOfArrivalController.onSubmit(ern: String, arc: String, mode: Mode = NormalMode)

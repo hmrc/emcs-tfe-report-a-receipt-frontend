@@ -64,7 +64,7 @@ class ConfirmationControllerSpec extends SpecBase {
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual errorHandler.badRequestTemplate(req).toString
+          contentAsString(result) mustEqual await(errorHandler.badRequestTemplate(req)).toString
         }
       }
     }

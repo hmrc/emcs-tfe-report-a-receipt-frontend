@@ -22,11 +22,11 @@ import models.ConfirmationDetails
 import pages.ConfirmationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.ConfirmationView
 
 import javax.inject.Inject
+import scala.concurrent.Future
 
 class ConfirmationController @Inject()(
                                         override val messagesApi: MessagesApi,
@@ -37,17 +37,17 @@ class ConfirmationController @Inject()(
                                         val controllerComponents: MessagesControllerComponents,
                                         view: ConfirmationView,
                                         errorHandler: ErrorHandler
-                                      ) extends FrontendBaseController with I18nSupport with AuthActionHelper with Logging {
+                                      ) extends BaseController with I18nSupport with AuthActionHelper with Logging {
 
   def onPageLoad(ern: String, arc: String): Action[AnyContent] =
-    authorisedDataRequestWithCachedMovement(ern, arc) { implicit request =>
+    authorisedDataRequestWithCachedMovementAsync(ern, arc) { implicit request =>
       request.userAnswers.get(ConfirmationPage) match {
         case Some(confirmationDetails: ConfirmationDetails) =>
           logger.info(s"[onPageLoad] Successful Report Receipt flow completed with AcceptMovement status: [${confirmationDetails.receiptStatus}]")
-          Ok(view(confirmationDetails))
+          Future.successful(Ok(view(confirmationDetails)))
         case None =>
           logger.warn("[onPageLoad] Could not retrieve submission receipt reference from User session")
-          BadRequest(errorHandler.badRequestTemplate)
+          errorHandler.badRequestTemplate.map(BadRequest(_))
       }
     }
 }

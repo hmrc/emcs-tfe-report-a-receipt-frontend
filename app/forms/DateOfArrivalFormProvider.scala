@@ -30,10 +30,12 @@ class DateOfArrivalFormProvider @Inject()(timeMachine: TimeMachine) extends Mapp
   def apply(dateOfDispatch: LocalDate)(implicit messages: Messages): Form[LocalDate] =
     Form(
       "value" -> localDate(
-        invalidKey     = "dateOfArrival.error.invalid",
+        notARealDateKey = "dateOfArrival.error.invalid",
         allRequiredKey = "dateOfArrival.error.required.all",
         twoRequiredKey = "dateOfArrival.error.required.two",
-        requiredKey    = "dateOfArrival.error.required"
+        oneRequiredKey = "dateOfArrival.error.required",
+        oneInvalidKey = "dateOfArrival.error.invalid.one",
+        twoInvalidKey = "dateOfArrival.error.invalid.two"
       )
         .verifying(notInFuture("dateOfArrival.error.notInFuture"))
         .verifying(notBeforeDateOfDispatch(dateOfDispatch, "dateOfArrival.error.notBeforeDateOfDispatch"))

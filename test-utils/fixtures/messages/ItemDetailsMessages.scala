@@ -61,7 +61,7 @@ object ItemDetailsMessages {
   }
 
   object English extends ViewMessages with BaseEnglish {
-    override val heading: Int => String = i => s"Item details $i"
+    override val heading: Int => String = i => s"Item $i"
     override val title: Int => String = i => title(heading(i))
     override val h1: Int => String = i => s"Item $i"
     override val h2: String => String = s => s"Report of receipt for $s"

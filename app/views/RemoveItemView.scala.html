@@ -34,7 +34,7 @@
 
 @layout(pageTitle = title(form, messages(AddMoreInformationHelper.titleKey(page), page.idx)), maybeShowActiveTrader = maybeShowActiveTrader(request)) {
 
-    @formHelper(action, 'autoComplete -> "off") {
+    @formHelper(action, Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

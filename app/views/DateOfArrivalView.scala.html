@@ -30,7 +30,7 @@
 
 @layout(pageTitle = title(form, messages("dateOfArrival.title")), maybeShowActiveTrader = maybeShowActiveTrader(request)) {
 
-    @formHelper(action = routes.DateOfArrivalController.onSubmit(request.ern, request.arc, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.DateOfArrivalController.onSubmit(request.ern, request.arc, mode), Symbol("autoComplete") -> "off") {
 
         @defining(form.errors.headOption.map(_.args.map(_.toString)).getOrElse(Seq())) { erroredFields =>
 

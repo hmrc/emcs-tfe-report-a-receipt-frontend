@@ -69,7 +69,7 @@ class CheckAnswersItemHelper @Inject()(
         ActionItemViewModel(
           "site.change",
           routes.WrongWithItemController.loadWrongWithItem(request.userAnswers.ern, request.userAnswers.arc, idx, NormalMode).url,
-          id = WrongWithItemPage(idx) + s"-item-$idx"
+          id = s"${WrongWithItemPage(idx)}-item-$idx"
         ).withVisuallyHiddenText(
           s"${messages(s"${WrongWithItemPage(idx)}.checkYourAnswers.change.hidden")} ${messages("addedItems.checkYourAnswers.forItem", idx)}"
         )
@@ -89,7 +89,7 @@ class CheckAnswersItemHelper @Inject()(
               ActionItemViewModel(
                 "site.change",
                 routes.ItemMoreInformationController.loadItemSealsInformation(request.userAnswers.ern, request.userAnswers.arc, idx, mode).url,
-                id = ItemSealsInformationPage(idx) + s"-item-$idx"
+                id = s"${ItemSealsInformationPage(idx)}-item-$idx"
               ).withVisuallyHiddenText(
                 s"${messages(s"${ItemSealsInformationPage(idx)}.checkYourAnswers.change.hidden")} ${messages("addedItems.checkYourAnswers.forItem", idx)}"
               )
@@ -140,7 +140,7 @@ class CheckAnswersItemHelper @Inject()(
               ActionItemViewModel(
                 "site.change",
                 routes.RefusedAmountController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, idx, mode).url,
-                id = RefusingAnyAmountOfItemPage(idx) + s"-item-$idx"
+                id = s"${RefusingAnyAmountOfItemPage(idx)}-item-$idx"
               ).withVisuallyHiddenText(
                 s"${messages(s"${RefusingAnyAmountOfItemPage(idx)}.checkYourAnswers.change.hidden")} ${messages("addedItems.checkYourAnswers.forItem", idx)}"
               )
@@ -165,7 +165,7 @@ class CheckAnswersItemHelper @Inject()(
               ActionItemViewModel(
                 "site.change",
                 routes.ItemMoreInformationController.loadItemDamageInformation(request.userAnswers.ern, request.userAnswers.arc, idx, mode).url,
-                id = ItemDamageInformationPage(idx) + s"-item-$idx"
+                id = s"${ItemDamageInformationPage(idx)}-item-$idx"
               ).withVisuallyHiddenText(
                 s"${messages(s"${ItemDamageInformationPage(idx)}.checkYourAnswers.change.hidden")} ${messages("addedItems.checkYourAnswers.forItem", idx)}"
               )
@@ -199,7 +199,7 @@ class CheckAnswersItemHelper @Inject()(
               ActionItemViewModel(
                 "site.change",
                 routes.ItemOtherInformationController.onPageLoad(request.userAnswers.ern, request.userAnswers.arc, idx, mode).url,
-                id = ItemOtherInformationPage(idx) + s"-item-$idx"
+                id = s"${ItemOtherInformationPage(idx)}-item-$idx"
               ).withVisuallyHiddenText(
                 s"${messages(s"${ItemOtherInformationPage(idx)}.checkYourAnswers.change.hidden")} ${messages("addedItems.checkYourAnswers.forItem", idx)}"
               )

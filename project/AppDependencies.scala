@@ -4,15 +4,15 @@ object AppDependencies {
 
   val playSuffix = "-play-30"
   val scalatestVersion = "3.2.19"
-  val hmrcBootstrapVersion = "9.5.0"
-  val hmrcMongoVersion = "2.3.0"
+  val hmrcBootstrapVersion = "9.11.0"
+  val hmrcMongoVersion = "2.6.0"
 
   val compile = Seq(
     play.sbt.PlayImport.ws,
-    "uk.gov.hmrc"             %%  s"play-frontend-hmrc$playSuffix" % "11.2.0",
-    "uk.gov.hmrc"             %% s"bootstrap-frontend$playSuffix"  %  hmrcBootstrapVersion,
-    "uk.gov.hmrc.mongo"       %% s"hmrc-mongo$playSuffix"          %  hmrcMongoVersion,
-    "com.google.inject"       %   "guice"                          % "5.1.0"
+    "uk.gov.hmrc"             %% s"play-frontend-hmrc$playSuffix" % "11.2.0",
+    "uk.gov.hmrc"             %% s"bootstrap-frontend$playSuffix" %  hmrcBootstrapVersion,
+    "uk.gov.hmrc.mongo"       %% s"hmrc-mongo$playSuffix"         %  hmrcMongoVersion,
+    "com.google.inject"       %   "guice"                         % "5.1.0"
   )
 
   val test = Seq(

@@ -19,16 +19,17 @@ package connectors.wineOperations
 import base.SpecBase
 import fixtures.GetMovementResponseFixtures
 import mocks.connectors.MockHttpClient
-import models.response.{JsonValidationError, WineOperationsResponse, UnexpectedDownstreamResponseError}
+import models.response.{JsonValidationError, UnexpectedDownstreamResponseError, WineOperationsResponse}
 import play.api.http.{HeaderNames, MimeTypes, Status}
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.{HttpClient, HttpResponse}
+import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.http.client.HttpClientV2
 
 class WineOperationsHttpParserSpec extends SpecBase
   with Status with MimeTypes with HeaderNames with MockHttpClient with GetMovementResponseFixtures {
 
   lazy val httpParser = new WineOperationsHttpParser {
-    override def http: HttpClient = mockHttpClient
+    override def http: HttpClientV2 = mockHttpClient
   }
 
   "WineOperationsReads.read(method: String, url: String, response: HttpResponse)" - {

@@ -18,14 +18,15 @@ package connectors.wineOperations
 
 import config.AppConfig
 import models.requests.WineOperationsRequest
-import models.response.{ErrorResponse, JsonValidationError, WineOperationsResponse, UnexpectedDownstreamResponseError}
+import models.response.{ErrorResponse, JsonValidationError, UnexpectedDownstreamResponseError, WineOperationsResponse}
 import play.api.libs.json.JsResultException
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class GetWineOperationsConnector @Inject()(val http: HttpClient,
+class GetWineOperationsConnector @Inject()(val http: HttpClientV2,
                                            config: AppConfig) extends WineOperationsHttpParser {
 
   lazy val baseUrl: String = config.referenceDataBaseUrl
@@ -33,7 +34,7 @@ class GetWineOperationsConnector @Inject()(val http: HttpClient,
   def getWineOperations(request: WineOperationsRequest)
                           (implicit headerCarrier: HeaderCarrier,
                            executionContext: ExecutionContext): Future[Either[ErrorResponse, WineOperationsResponse]] = {
-    post(baseUrl + "/oracle/wine-operations", request)
+    post(url"$baseUrl/oracle/wine-operations", request)
       .recover {
         case JsResultException(errors) =>
           logger.warn(s"[getWineOperations] Bad JSON response from emcs-tfe-reference-data: " + errors)

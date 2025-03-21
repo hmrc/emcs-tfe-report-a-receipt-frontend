@@ -21,13 +21,14 @@ import models.response.ErrorResponse
 import models.response.emcsTfe.SubmitReportOfReceiptResponse
 import models.submitReportOfReceipt.SubmitReportOfReceiptModel
 import play.api.libs.json.Reads
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SubmitReportOfReceiptConnector @Inject()(val http: HttpClient,
+class SubmitReportOfReceiptConnector @Inject()(val http: HttpClientV2,
                                                config: AppConfig) extends EmcsTfeHttpParser[SubmitReportOfReceiptResponse] {
 
   override implicit val reads: Reads[SubmitReportOfReceiptResponse] = SubmitReportOfReceiptResponse.reads
@@ -35,6 +36,6 @@ class SubmitReportOfReceiptConnector @Inject()(val http: HttpClient,
   lazy val baseUrl: String = config.emcsTfeBaseUrl
   def submit(exciseRegistrationNumber: String, submitReportOfReceiptModel: SubmitReportOfReceiptModel)
             (implicit headerCarrier: HeaderCarrier, executionContext: ExecutionContext): Future[Either[ErrorResponse, SubmitReportOfReceiptResponse]] =
-    post(s"$baseUrl/report-of-receipt/$exciseRegistrationNumber/${submitReportOfReceiptModel.arc}", submitReportOfReceiptModel)
+    post(url"$baseUrl/report-of-receipt/$exciseRegistrationNumber/${submitReportOfReceiptModel.arc}", submitReportOfReceiptModel)
 
 }

@@ -22,7 +22,7 @@ import mocks.connectors.MockHttpClient
 import models.response.UnexpectedDownstreamResponseError
 import org.scalatest.BeforeAndAfterAll
 import play.api.http.{HeaderNames, MimeTypes, Status}
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -46,8 +46,7 @@ class GetTraderKnownFactsConnectorSpec extends SpecBase
       "when downstream call is successful" in {
 
         MockHttpClient.get(
-          url = appConfig.traderKnownFactsBaseUrl,
-          parameters = Seq("exciseRegistrationId" -> testErn)
+          url"${appConfig.traderKnownFactsBaseUrl}?exciseRegistrationId=$testErn"
         ).returns(Future.successful(Right(Some(testMinTraderKnownFacts))))
 
         connector.getTraderKnownFacts(testErn).futureValue mustBe Right(Some(testMinTraderKnownFacts))
@@ -57,8 +56,7 @@ class GetTraderKnownFactsConnectorSpec extends SpecBase
     "should return an error response" - {
       "when downstream call fails" in {
         MockHttpClient.get(
-          url = appConfig.traderKnownFactsBaseUrl,
-          parameters = Seq("exciseRegistrationId" -> testErn)
+          url"${appConfig.traderKnownFactsBaseUrl}?exciseRegistrationId=$testErn"
         ).returns(Future.successful(Left(UnexpectedDownstreamResponseError)))
 
         connector.getTraderKnownFacts(testErn).futureValue mustBe Left(UnexpectedDownstreamResponseError)

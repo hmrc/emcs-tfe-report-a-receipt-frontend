@@ -21,13 +21,14 @@ import models.requests.CnCodeInformationRequest
 import models.response.referenceData.CnCodeInformationResponse
 import models.response.{ErrorResponse, JsonValidationError, UnexpectedDownstreamResponseError}
 import play.api.libs.json.JsResultException
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.client.HttpClientV2
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class GetCnCodeInformationConnector @Inject()(val http: HttpClient,
+class GetCnCodeInformationConnector @Inject()(val http: HttpClientV2,
                                               config: AppConfig) extends ReferenceDataHttpParser {
 
   lazy val baseUrl: String = config.referenceDataBaseUrl

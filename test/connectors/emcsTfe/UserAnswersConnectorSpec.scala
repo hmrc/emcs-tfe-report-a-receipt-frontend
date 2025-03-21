@@ -21,7 +21,8 @@ import config.AppConfig
 import mocks.connectors.MockHttpClient
 import models.response.{JsonValidationError, UnexpectedDownstreamResponseError}
 import play.api.http.{HeaderNames, MimeTypes, Status}
-import uk.gov.hmrc.http.HeaderCarrier
+import play.api.libs.json.Json
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -41,7 +42,7 @@ class UserAnswersConnectorSpec extends SpecBase with Status with MimeTypes with 
 
       "when downstream call is successful and returns some JSON" in {
 
-        MockHttpClient.get(s"${appConfig.emcsTfeBaseUrl}/user-answers/report-receipt/$testErn/$testArc")
+        MockHttpClient.get(url"${appConfig.emcsTfeBaseUrl}/user-answers/report-receipt/$testErn/$testArc")
           .returns(Future.successful(Right(Some(emptyUserAnswers))))
 
         connector.get(testErn, testArc).futureValue mustBe Right(Some(emptyUserAnswers))
@@ -49,7 +50,7 @@ class UserAnswersConnectorSpec extends SpecBase with Status with MimeTypes with 
 
       "when downstream call is successful and returns None" in {
 
-        MockHttpClient.get(s"${appConfig.emcsTfeBaseUrl}/user-answers/report-receipt/$testErn/$testArc")
+        MockHttpClient.get(url"${appConfig.emcsTfeBaseUrl}/user-answers/report-receipt/$testErn/$testArc")
           .returns(Future.successful(Right(None)))
 
         connector.get(testErn, testArc).futureValue mustBe Right(None)
@@ -60,7 +61,7 @@ class UserAnswersConnectorSpec extends SpecBase with Status with MimeTypes with 
 
       "when downstream call fails" in {
 
-        MockHttpClient.get(s"${appConfig.emcsTfeBaseUrl}/user-answers/report-receipt/$testErn/$testArc")
+        MockHttpClient.get(url"${appConfig.emcsTfeBaseUrl}/user-answers/report-receipt/$testErn/$testArc")
           .returns(Future.successful(Left(JsonValidationError)))
 
         connector.get(testErn, testArc).futureValue mustBe Left(JsonValidationError)
@@ -75,8 +76,8 @@ class UserAnswersConnectorSpec extends SpecBase with Status with MimeTypes with 
       "when downstream call is successful and returns some JSON" in {
 
         MockHttpClient.put(
-          url = s"${appConfig.emcsTfeBaseUrl}/user-answers/report-receipt/$testErn/$testArc",
-          body = emptyUserAnswers
+          url = url"${appConfig.emcsTfeBaseUrl}/user-answers/report-receipt/$testErn/$testArc",
+          body = Json.toJson(emptyUserAnswers)
         ).returns(Future.successful(Right(emptyUserAnswers)))
 
         connector.put(emptyUserAnswers).futureValue mustBe Right(emptyUserAnswers)
@@ -88,8 +89,8 @@ class UserAnswersConnectorSpec extends SpecBase with Status with MimeTypes with 
       "when downstream call fails" in {
 
         MockHttpClient.put(
-          url = s"${appConfig.emcsTfeBaseUrl}/user-answers/report-receipt/$testErn/$testArc",
-          body = emptyUserAnswers
+          url = url"${appConfig.emcsTfeBaseUrl}/user-answers/report-receipt/$testErn/$testArc",
+          body = Json.toJson(emptyUserAnswers)
         ).returns(Future.successful(Left(JsonValidationError)))
 
         connector.put(emptyUserAnswers).futureValue mustBe Left(JsonValidationError)
@@ -104,7 +105,7 @@ class UserAnswersConnectorSpec extends SpecBase with Status with MimeTypes with 
       "when downstream call is successful" in {
 
         MockHttpClient.delete(
-          url = s"${appConfig.emcsTfeBaseUrl}/user-answers/report-receipt/$testErn/$testArc"
+          url = url"${appConfig.emcsTfeBaseUrl}/user-answers/report-receipt/$testErn/$testArc"
         ).returns(Future.successful(Right(true)))
 
         connector.delete(testErn, testArc).futureValue mustBe Right(true)
@@ -116,7 +117,7 @@ class UserAnswersConnectorSpec extends SpecBase with Status with MimeTypes with 
       "when downstream call fails" in {
 
         MockHttpClient.delete(
-          url = s"${appConfig.emcsTfeBaseUrl}/user-answers/report-receipt/$testErn/$testArc"
+          url = url"${appConfig.emcsTfeBaseUrl}/user-answers/report-receipt/$testErn/$testArc"
         ).returns(Future.successful(Left(UnexpectedDownstreamResponseError)))
 
         connector.delete(testErn, testArc).futureValue mustBe Left(UnexpectedDownstreamResponseError)

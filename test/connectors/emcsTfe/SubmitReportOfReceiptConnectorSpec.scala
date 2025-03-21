@@ -22,7 +22,8 @@ import fixtures.SubmitReportOfReceiptFixtures
 import mocks.connectors.MockHttpClient
 import models.response.JsonValidationError
 import play.api.http.{HeaderNames, MimeTypes, Status}
-import uk.gov.hmrc.http.HeaderCarrier
+import play.api.libs.json.Json
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -44,8 +45,8 @@ class SubmitReportOfReceiptConnectorSpec extends SpecBase
       "when downstream call is successful" in {
 
         MockHttpClient.post(
-          url = s"${appConfig.emcsTfeBaseUrl}/report-of-receipt/ern/arc",
-          body = maxSubmitReportOfReceiptModel
+          url = url"${appConfig.emcsTfeBaseUrl}/report-of-receipt/ern/arc",
+          body = Json.toJson(maxSubmitReportOfReceiptModel)
         ).returns(Future.successful(Right(successResponseChRIS)))
 
         connector.submit(exciseRegistrationNumber = "ern", maxSubmitReportOfReceiptModel).futureValue mustBe Right(successResponseChRIS)
@@ -57,8 +58,8 @@ class SubmitReportOfReceiptConnectorSpec extends SpecBase
       "when downstream call fails" in {
 
         MockHttpClient.post(
-          url = s"${appConfig.emcsTfeBaseUrl}/report-of-receipt/ern/arc",
-          body = maxSubmitReportOfReceiptModel
+          url = url"${appConfig.emcsTfeBaseUrl}/report-of-receipt/ern/arc",
+          body = Json.toJson(maxSubmitReportOfReceiptModel)
         ).returns(Future.successful(Left(JsonValidationError)))
 
         connector.submit(exciseRegistrationNumber = "ern", maxSubmitReportOfReceiptModel).futureValue mustBe Left(JsonValidationError)

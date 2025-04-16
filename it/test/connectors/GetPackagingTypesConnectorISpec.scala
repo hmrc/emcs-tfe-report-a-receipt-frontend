@@ -1,4 +1,4 @@
-package connectors
+package test.connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.http.Fault

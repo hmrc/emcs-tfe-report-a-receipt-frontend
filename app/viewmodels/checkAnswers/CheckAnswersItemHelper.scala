@@ -18,7 +18,6 @@ package viewmodels.checkAnswers
 
 import config.AppConfig
 import controllers.routes
-import models.UnitOfMeasure.reads
 import models.WrongWithMovement.{BrokenSeals, Damaged, Other}
 import models.requests.DataRequest
 import models.{CheckMode, NormalMode, ReviewMode, UnitOfMeasure, WrongWithMovement}

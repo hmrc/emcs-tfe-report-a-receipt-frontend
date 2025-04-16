@@ -1,4 +1,4 @@
-package connectors
+package test.connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, delete, equalTo, equalToJson, get, put, urlEqualTo}
 import com.github.tomakehurst.wiremock.http.Fault

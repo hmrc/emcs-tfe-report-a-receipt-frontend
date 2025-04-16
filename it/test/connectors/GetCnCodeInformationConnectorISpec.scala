@@ -1,11 +1,13 @@
-package connectors
+package test.connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.http.Fault
-import connectors.wineOperations.GetWineOperationsConnector
+import connectors.referenceData.GetCnCodeInformationConnector
 import generators.ModelGenerators
-import models.requests.WineOperationsRequest
-import models.response.{JsonValidationError, WineOperationsResponse, UnexpectedDownstreamResponseError}
+import models.ReferenceDataUnitOfMeasure
+import models.requests.{CnCodeInformationItem, CnCodeInformationRequest}
+import models.response.referenceData.{CnCodeInformation, CnCodeInformationResponse}
+import models.response.{JsonValidationError, UnexpectedDownstreamResponseError}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -13,12 +15,12 @@ import org.scalatest.{EitherValues, OptionValues}
 import play.api.Application
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK}
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsArray, JsString, Json}
+import play.api.libs.json.{JsArray, Json}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class GetWineOperationsConnectorISpec
+class GetCnCodeInformationConnectorISpec
   extends AnyFreeSpec
     with WireMockHelper
     with ScalaFutures
@@ -37,13 +39,15 @@ class GetWineOperationsConnectorISpec
       )
       .build()
 
-  private lazy val connector: GetWineOperationsConnector = app.injector.instanceOf[GetWineOperationsConnector]
+  private lazy val connector: GetCnCodeInformationConnector = app.injector.instanceOf[GetCnCodeInformationConnector]
 
   ".check" - {
 
-    val url = "/emcs-tfe-reference-data/oracle/wine-operations"
-    val request = WineOperationsRequest(Seq("4", "11", "9"))
-    val requestJson = JsArray(Seq(JsString("4"), JsString("11"), JsString("9")))
+    val url = "/emcs-tfe-reference-data/oracle/cn-code-information"
+    val request = CnCodeInformationRequest(items = Seq(CnCodeInformationItem(productCode = "T400", cnCode = "24029000")))
+    val requestJson = Json.obj(
+      "items" -> Json.arr(Json.obj("productCode" -> "T400", "cnCode" -> "24029000"))
+    )
 
     "must return a response model when the server responds OK" in {
 
@@ -51,16 +55,20 @@ class GetWineOperationsConnectorISpec
         post(urlEqualTo(url))
           .withRequestBody(equalToJson(Json.stringify(requestJson)))
           .willReturn(aResponse().withStatus(OK).withBody(Json.stringify(Json.obj(
-            "4" -> "The product has been sweetened",
-            "11" -> "The product has been partially dealcoholised",
-            "9" -> "The product has been made using oak chips"
+            "24029000" -> Json.obj(
+              "cnCodeDescription" -> "Cigars, cheroots, cigarillos and cigarettes not containing tobacco",
+              "exciseProductCodeDescription" -> "Fine-cut tobacco for the rolling of cigarettes",
+              "unitOfMeasureCode" -> 1
+            )
           ))))
       )
 
-      connector.getWineOperations(request).futureValue mustBe Right(WineOperationsResponse(data = Map(
-        "4" -> "The product has been sweetened",
-        "11" -> "The product has been partially dealcoholised",
-        "9" -> "The product has been made using oak chips"
+      connector.getCnCodeInformation(request).futureValue mustBe Right(CnCodeInformationResponse(data = Map(
+        "24029000" -> CnCodeInformation(
+          cnCodeDescription = "Cigars, cheroots, cigarillos and cigarettes not containing tobacco",
+          exciseProductCodeDescription = "Fine-cut tobacco for the rolling of cigarettes",
+          unitOfMeasureCode = ReferenceDataUnitOfMeasure.`1`
+        )
       )))
     }
 
@@ -72,7 +80,7 @@ class GetWineOperationsConnectorISpec
           .willReturn(aResponse().withStatus(INTERNAL_SERVER_ERROR))
       )
 
-      connector.getWineOperations(request).futureValue mustBe Left(UnexpectedDownstreamResponseError)
+      connector.getCnCodeInformation(request).futureValue mustBe Left(UnexpectedDownstreamResponseError)
     }
 
     "must fail when the server responds with a body that can't be parsed to the expected response model" in {
@@ -88,7 +96,7 @@ class GetWineOperationsConnectorISpec
           ))))
       )
 
-      connector.getWineOperations(request).futureValue mustBe Left(JsonValidationError)
+      connector.getCnCodeInformation(request).futureValue mustBe Left(JsonValidationError)
     }
 
     "must fail when the connection fails" in {
@@ -99,7 +107,7 @@ class GetWineOperationsConnectorISpec
           .willReturn(aResponse().withFault(Fault.RANDOM_DATA_THEN_CLOSE))
       )
 
-      connector.getWineOperations(request).futureValue mustBe Left(UnexpectedDownstreamResponseError)
+      connector.getCnCodeInformation(request).futureValue mustBe Left(UnexpectedDownstreamResponseError)
     }
   }
 }

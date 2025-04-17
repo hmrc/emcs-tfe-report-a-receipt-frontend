@@ -20,7 +20,7 @@ import base.SpecBase
 import config.AppConfig
 import fixtures.{GetMovementResponseFixtures, SubmitReportOfReceiptFixtures, TraderModelFixtures}
 import models.AcceptMovement.{PartiallyRefused, Refused, Satisfactory, Unsatisfactory}
-import models.DestinationType.TemporaryRegisteredConsignee
+import models.DestinationType.{Export, TaxWarehouse, TemporaryRegisteredConsignee}
 import models.HowGiveInformation.{IndividualItem, TheWholeMovement}
 import models.WrongWithMovement.{BrokenSeals, Damaged, Excess, Other, Shortage, ShortageOrExcess}
 import models.response.MissingMandatoryPage
@@ -475,8 +475,41 @@ class SubmitReportOfReceiptModelSpec extends SpecBase
                 )
               )
             )
-
+            val aMovement1: GetMovementResponse = getMovementResponseModel.copy(
+              destinationType = Export,
+                consigneeTrader = Some(
+                  TraderModel(
+                    traderExciseNumber = Some("GB1234567890"),
+                    traderName = None,
+                    address = None,
+                    eoriNumber = Some("GB1234567890")
+                  )
+            )
+            )
+            val aMovement2: GetMovementResponse = getMovementResponseModel.copy(
+              destinationType = TaxWarehouse,
+                  consigneeTrader = Some(
+                    TraderModel(
+                      traderExciseNumber = Some("GB1234567890"),
+                      traderName = None,
+                      address = None,
+                      eoriNumber = Some("GB1234567890")
+                    )
+                  )
+            )
+            val expectedmovement2: GetMovementResponse = getMovementResponseModel.copy(
+              consigneeTrader = Some(
+                TraderModel(
+                  traderExciseNumber = Some("GB1234567890"),
+                  traderName = None,
+                  address = None,
+                  eoriNumber = None
+                )
+              )
+            )
             SubmitReportOfReceiptModel.consigneeTraderDetails(aMovement) mustBe aMovement.consigneeTrader
+            SubmitReportOfReceiptModel.consigneeTraderDetails(aMovement1) mustBe aMovement1.consigneeTrader
+            SubmitReportOfReceiptModel.consigneeTraderDetails(aMovement2) mustBe expectedmovement2.consigneeTrader
           }
         }
 

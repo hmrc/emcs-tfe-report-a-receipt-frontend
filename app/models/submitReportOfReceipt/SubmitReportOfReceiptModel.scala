@@ -17,7 +17,7 @@
 package models.submitReportOfReceipt
 
 import config.AppConfig
-import models.DestinationType.TemporaryRegisteredConsignee
+import models.DestinationType.{Export, TemporaryRegisteredConsignee}
 import models.{AcceptMovement, DestinationType, UserAnswers}
 import models.WrongWithMovement._
 import models.response.emcsTfe.GetMovementResponse
@@ -57,11 +57,12 @@ object SubmitReportOfReceiptModel extends JsonOptionFormatter with ModelConstruc
     (movementDetails.destinationType, movementDetails.consigneeTrader) match {
       case (TemporaryRegisteredConsignee, Some(consignee: TraderModel)) =>
         Some(consignee.copy(traderExciseNumber = Some(userAnswers.ern)))
+      case (destinationType, Some(consignee: TraderModel)) if (destinationType != Export) =>
+        Some(consignee.copy(eoriNumber = None))
       case (_, consignee) =>
         consignee
     }
   }
-
   def apply(movementDetails: GetMovementResponse)(implicit userAnswers: UserAnswers, appConfig: AppConfig): SubmitReportOfReceiptModel = {
 
     SubmitReportOfReceiptModel(

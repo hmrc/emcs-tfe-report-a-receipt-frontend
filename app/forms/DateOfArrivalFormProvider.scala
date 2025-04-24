@@ -34,8 +34,7 @@ class DateOfArrivalFormProvider @Inject()(timeMachine: TimeMachine) extends Mapp
         allRequiredKey = "dateOfArrival.error.required.all",
         twoRequiredKey = "dateOfArrival.error.required.two",
         oneRequiredKey = "dateOfArrival.error.required",
-        oneInvalidKey = "dateOfArrival.error.invalid.one",
-        twoInvalidKey = "dateOfArrival.error.invalid.two"
+        oneInvalidKey = "dateOfArrival.error.invalid.one"
       )
         .verifying(notInFuture("dateOfArrival.error.notInFuture"))
         .verifying(notBeforeDateOfDispatch(dateOfDispatch, "dateOfArrival.error.notBeforeDateOfDispatch"))

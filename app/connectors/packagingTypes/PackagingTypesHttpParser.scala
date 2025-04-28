@@ -20,8 +20,9 @@ import connectors.BaseConnectorUtils
 import models.requests.PackagingTypesRequest
 import models.response.{ErrorResponse, JsonValidationError, PackagingTypesResponse, UnexpectedDownstreamResponseError}
 import play.api.http.Status.OK
-import play.api.libs.json.{Reads, Writes}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
+import play.api.libs.json.{Json, Reads, Writes}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse, StringContextOps}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -30,7 +31,7 @@ trait PackagingTypesHttpParser extends BaseConnectorUtils[PackagingTypesResponse
 
   implicit val reads: Reads[PackagingTypesResponse] = PackagingTypesResponse.reads
 
-  def http: HttpClient
+  def http: HttpClientV2
 
   implicit object PackagingTypesReads extends HttpReads[Either[ErrorResponse, PackagingTypesResponse]] {
     override def read(method: String, url: String, response: HttpResponse): Either[ErrorResponse, PackagingTypesResponse] = {
@@ -50,5 +51,8 @@ trait PackagingTypesHttpParser extends BaseConnectorUtils[PackagingTypesResponse
   }
 
   def post(url: String, body: PackagingTypesRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext, writes: Writes[PackagingTypesRequest]): Future[Either[ErrorResponse, PackagingTypesResponse]] =
-    http.POST[PackagingTypesRequest, Either[ErrorResponse, PackagingTypesResponse]](url, body)(writes, PackagingTypesReads, hc, ec)
+    http
+      .post(url"$url")
+      .withBody(Json.toJson(body))
+      .execute[Either[ErrorResponse, PackagingTypesResponse]]
 }

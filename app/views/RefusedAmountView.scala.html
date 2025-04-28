@@ -37,7 +37,7 @@
 
 @layout(pageTitle = title(form, messages("refusedAmount.title")), maybeShowActiveTrader = maybeShowActiveTrader(request)) {
 
-    @formHelper(action, 'autoComplete -> "off") {
+    @formHelper(action, Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

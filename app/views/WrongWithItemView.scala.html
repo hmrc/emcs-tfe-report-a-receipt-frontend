@@ -43,7 +43,7 @@
 
 @layout(pageTitle = title(form, messages(s"$page.title", item.itemUniqueReference)), maybeShowActiveTrader = maybeShowActiveTrader(request)) {
 
-    @formHelper(action, 'autoComplete -> "off") {
+    @formHelper(action, Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> WrongWithMovement.checkboxItems(page).head.value)))

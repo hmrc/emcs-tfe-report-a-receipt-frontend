@@ -37,7 +37,7 @@
 
 @layout(pageTitle = title(form, messages("detailsSelectItem.title")), maybeShowActiveTrader = maybeShowActiveTrader(request)) {
 
-    @formHelper(action = routes.DetailsSelectItemController.onSubmit(request.ern, request.arc, item.itemUniqueReference), 'autoComplete -> "off") {
+    @formHelper(action = routes.DetailsSelectItemController.onSubmit(request.ern, request.arc, item.itemUniqueReference), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))

@@ -23,6 +23,7 @@ import play.api.test.FakeRequest
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.language.reflectiveCalls
 
 class DataRetrievalActionSpec extends SpecBase with MockUserAnswersService with MockGetTraderKnownFactsService {
 

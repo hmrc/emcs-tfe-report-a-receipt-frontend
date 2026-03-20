@@ -25,7 +25,7 @@ import models.HowGiveInformation.{IndividualItem, TheWholeMovement}
 import models.WrongWithMovement.{BrokenSeals, Damaged, Excess, Other, Shortage, ShortageOrExcess}
 import models.response.MissingMandatoryPage
 import models.response.emcsTfe.GetMovementResponse
-import models.submitReportOfReceipt.SubmitReportOfReceiptModel.{DESTINATION_OFFICE_PREFIX_GB, DESTINATION_OFFICE_PREFIX_XI}
+import models.submitReportOfReceipt.SubmitReportOfReceiptModel.{GB_PREFIX, XI_PREFIX}
 import models.{DestinationType, ItemShortageOrExcessModel, WrongWithMovement}
 import org.scalamock.scalatest.MockFactory
 import pages._
@@ -264,7 +264,7 @@ class SubmitReportOfReceiptModelSpec extends SpecBase
               .set(ItemSealsInformationPage(item2.itemUniqueReference), Some("BrokenSeals"))
 
 
-          val newGetMovementModel = getMovementResponseModel.copy(deliveryPlaceTrader = Some(TraderModel(traderExciseNumber = Some("GB00000000206"), None, None, None)))
+          val newGetMovementModel = getMovementResponseModel.copy(deliveryPlaceTrader = Some(TraderModel(traderId = Some("GB00000000206"), None, None, None)))
           val submission = SubmitReportOfReceiptModel(newGetMovementModel)(userAnswers, mockAppConfig)
 
           submission mustBe SubmitReportOfReceiptModel(
@@ -312,7 +312,7 @@ class SubmitReportOfReceiptModelSpec extends SpecBase
               .set(ItemSealsInformationPage(item2.itemUniqueReference), Some("BrokenSeals"))
 
 
-          val newGetMovementModel = getMovementResponseModel.copy(deliveryPlaceTrader = Some(TraderModel(traderExciseNumber = Some("XI00000000206"), None, None, None)))
+          val newGetMovementModel = getMovementResponseModel.copy(deliveryPlaceTrader = Some(TraderModel(traderId = Some("XI00000000206"), None, None, None)))
           val submission = SubmitReportOfReceiptModel(newGetMovementModel)(userAnswers, mockAppConfig)
 
           submission mustBe SubmitReportOfReceiptModel(
@@ -411,28 +411,34 @@ class SubmitReportOfReceiptModelSpec extends SpecBase
       val GB_ID = "GB123123123"
       val XI_ID = "XI123123123"
 
-      s"must return $DESTINATION_OFFICE_PREFIX_GB" - {
-        s"when logged in user ERN starts with $DESTINATION_OFFICE_PREFIX_GB" in {
+      s"must return $GB_PREFIX" - {
+        s"when logged in user's ERN starts with $GB_PREFIX" in {
           val userAnswers = emptyUserAnswers.copy(ern = GB_ID)
-          SubmitReportOfReceiptModel.destinationOfficePrefix(None)(userAnswers) mustBe DESTINATION_OFFICE_PREFIX_GB
+          SubmitReportOfReceiptModel.destinationOfficePrefix(None)(userAnswers) mustBe GB_PREFIX
         }
-        s"when logged in user ERN starts with $DESTINATION_OFFICE_PREFIX_XI and deliveryPlaceTraders ERN starts with $DESTINATION_OFFICE_PREFIX_GB" in {
+        s"when logged in user's ERN starts with $XI_PREFIX and deliveryPlaceTrader's ID is an ERN starting with $GB_PREFIX" in {
           val userAnswers = emptyUserAnswers.copy(ern = XI_ID)
-          SubmitReportOfReceiptModel.destinationOfficePrefix(Some(TraderModel(traderExciseNumber = Some("GB00000000206"), None, None, None)))(userAnswers) mustBe DESTINATION_OFFICE_PREFIX_GB
+          SubmitReportOfReceiptModel.destinationOfficePrefix(
+            Some(TraderModel(traderId = Some("GB00000000206"), None, None, None))
+          )(userAnswers) mustBe GB_PREFIX
         }
-        s"when logged in user ERN doesn't start with $DESTINATION_OFFICE_PREFIX_GB or $DESTINATION_OFFICE_PREFIX_XI (default case)" in {
+        s"when logged in user's ERN doesn't start with $GB_PREFIX or $XI_PREFIX (default case)" in {
           val userAnswers = emptyUserAnswers.copy(ern = testErn)
-          SubmitReportOfReceiptModel.destinationOfficePrefix(Some(TraderModel(traderExciseNumber = Some("TR00000000206"), None, None, None)))(userAnswers) mustBe DESTINATION_OFFICE_PREFIX_GB
+          SubmitReportOfReceiptModel.destinationOfficePrefix(
+            Some(TraderModel(traderId = Some("a free-form trader ID"), None, None, None))
+          )(userAnswers) mustBe GB_PREFIX
         }
       }
-      s"must return $DESTINATION_OFFICE_PREFIX_XI" - {
-        s"when logged in user ERN starts with $DESTINATION_OFFICE_PREFIX_XI and deliveryPlaceTrader ERN starts with $DESTINATION_OFFICE_PREFIX_XI" in {
+      s"must return $XI_PREFIX" - {
+        s"when logged in user's ERN starts with $XI_PREFIX and deliveryPlaceTrader's ID is an ERN starting with $XI_PREFIX" in {
           val userAnswers = emptyUserAnswers.copy(ern = XI_ID)
-          SubmitReportOfReceiptModel.destinationOfficePrefix(Some(TraderModel(traderExciseNumber = Some("XI00000000206"), None, None, None)))(userAnswers) mustBe DESTINATION_OFFICE_PREFIX_XI
+          SubmitReportOfReceiptModel.destinationOfficePrefix(
+            Some(TraderModel(traderId = Some("XI00000000206"), None, None, None))
+          )(userAnswers) mustBe XI_PREFIX
         }
-        s"when logged in user ERN starts with $DESTINATION_OFFICE_PREFIX_XI and no deliveryPlaceTrader is provided" in {
+        s"when logged in user's ERN starts with $XI_PREFIX and no deliveryPlaceTrader is provided" in {
           val userAnswers = emptyUserAnswers.copy(ern = XI_ID)
-          SubmitReportOfReceiptModel.destinationOfficePrefix(None)(userAnswers) mustBe DESTINATION_OFFICE_PREFIX_XI
+          SubmitReportOfReceiptModel.destinationOfficePrefix(None)(userAnswers) mustBe XI_PREFIX
         }
 
       }
@@ -447,7 +453,7 @@ class SubmitReportOfReceiptModelSpec extends SpecBase
             destinationType = TemporaryRegisteredConsignee,
             consigneeTrader = Some(
               TraderModel(
-                traderExciseNumber = Some("TCA1234567890"),
+                traderId = Some("TCA1234567890"),
                 traderName = None,
                 address = None,
                 eoriNumber = None
@@ -468,7 +474,7 @@ class SubmitReportOfReceiptModelSpec extends SpecBase
               destinationType = destinationType,
               consigneeTrader = Some(
                 TraderModel(
-                  traderExciseNumber = Some("GB1234567890"),
+                  traderId = Some("GB1234567890"),
                   traderName = None,
                   address = None,
                   eoriNumber = None
@@ -479,7 +485,7 @@ class SubmitReportOfReceiptModelSpec extends SpecBase
               destinationType = Export,
                 consigneeTrader = Some(
                   TraderModel(
-                    traderExciseNumber = Some("GB1234567890"),
+                    traderId = Some("GB1234567890"),
                     traderName = None,
                     address = None,
                     eoriNumber = Some("GB1234567890")
@@ -490,7 +496,7 @@ class SubmitReportOfReceiptModelSpec extends SpecBase
               destinationType = TaxWarehouse,
                   consigneeTrader = Some(
                     TraderModel(
-                      traderExciseNumber = Some("GB1234567890"),
+                      traderId = Some("GB1234567890"),
                       traderName = None,
                       address = None,
                       eoriNumber = Some("GB1234567890")
@@ -500,7 +506,7 @@ class SubmitReportOfReceiptModelSpec extends SpecBase
             val expectedmovement2: GetMovementResponse = getMovementResponseModel.copy(
               consigneeTrader = Some(
                 TraderModel(
-                  traderExciseNumber = Some("GB1234567890"),
+                  traderId = Some("GB1234567890"),
                   traderName = None,
                   address = None,
                   eoriNumber = None

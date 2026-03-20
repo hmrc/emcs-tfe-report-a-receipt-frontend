@@ -21,14 +21,14 @@ import models.submitReportOfReceipt.TraderModel
 trait TraderModelFixtures extends BaseFixtures with AddressModelFixtures {
 
   val maxTraderModel = TraderModel(
-    traderExciseNumber = Some("id"),
+    traderId = Some("id"),
     traderName = Some("name"),
     address = Some(maxAddressModel),
     eoriNumber = Some("eori")
   )
 
   val minTraderModel = TraderModel(
-    traderExciseNumber = None,
+    traderId = None,
     traderName = None,
     address = None,
     eoriNumber = None

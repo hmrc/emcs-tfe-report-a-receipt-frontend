@@ -44,10 +44,16 @@ object SubmitReportOfReceiptModel extends JsonOptionFormatter with ModelConstruc
 
   private[models] val GB_PREFIX = "GB"
   private[models] val XI_PREFIX = "XI"
+  private val VALID_PREFIXES = Set(GB_PREFIX, XI_PREFIX)
 
   private[models] def destinationOfficePrefix(deliveryPlaceTrader: Option[TraderModel])(implicit userAnswers: UserAnswers): String = {
     if(userAnswers.isNorthernIrelandTrader) {
-      deliveryPlaceTrader.flatMap(_.traderId).map(_.take(2)).getOrElse(XI_PREFIX)
+      deliveryPlaceTrader.flatMap(_.traderId).flatMap(
+        traderId => {
+          val first2Chars = traderId.take(2)
+          Option.when(VALID_PREFIXES.contains(first2Chars))(first2Chars)
+        }
+      ).getOrElse(XI_PREFIX)
     } else {
       GB_PREFIX
     }

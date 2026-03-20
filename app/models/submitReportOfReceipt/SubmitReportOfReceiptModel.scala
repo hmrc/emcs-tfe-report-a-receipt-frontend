@@ -42,21 +42,21 @@ object SubmitReportOfReceiptModel extends JsonOptionFormatter with ModelConstruc
 
   implicit val fmt: OFormat[SubmitReportOfReceiptModel] = Json.format
 
-  private[models] val DESTINATION_OFFICE_PREFIX_GB = "GB"
-  private[models] val DESTINATION_OFFICE_PREFIX_XI = "XI"
+  private[models] val GB_PREFIX = "GB"
+  private[models] val XI_PREFIX = "XI"
 
   private[models] def destinationOfficePrefix(deliveryPlaceTrader: Option[TraderModel])(implicit userAnswers: UserAnswers): String = {
     if(userAnswers.isNorthernIrelandTrader) {
-      deliveryPlaceTrader.flatMap(_.traderExciseNumber).map(_.take(2)).getOrElse(DESTINATION_OFFICE_PREFIX_XI)
+      deliveryPlaceTrader.flatMap(_.traderId).map(_.take(2)).getOrElse(XI_PREFIX)
     } else {
-      DESTINATION_OFFICE_PREFIX_GB
+      GB_PREFIX
     }
   }
 
   private[models] def consigneeTraderDetails(movementDetails: GetMovementResponse)(implicit userAnswers: UserAnswers): Option[TraderModel] = {
     (movementDetails.destinationType, movementDetails.consigneeTrader) match {
       case (TemporaryRegisteredConsignee, Some(consignee: TraderModel)) =>
-        Some(consignee.copy(traderExciseNumber = Some(userAnswers.ern)))
+        Some(consignee.copy(traderId = Some(userAnswers.ern)))
       case (destinationType, Some(consignee: TraderModel)) if (destinationType != Export) =>
         Some(consignee.copy(eoriNumber = None))
       case (_, consignee) =>

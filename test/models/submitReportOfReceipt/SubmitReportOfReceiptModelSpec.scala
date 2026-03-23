@@ -441,6 +441,12 @@ class SubmitReportOfReceiptModelSpec extends SpecBase
           SubmitReportOfReceiptModel.destinationOfficePrefix(None)(userAnswers) mustBe XI_PREFIX
         }
 
+        s"when logged in user's ERN starts with $XI_PREFIX and deliveryPlaceTrader's ID starts with neither $GB_PREFIX nor $XI_PREFIX" in {
+          val userAnswers = emptyUserAnswers.copy(ern = XI_ID)
+          SubmitReportOfReceiptModel.destinationOfficePrefix(
+            Some(TraderModel(traderId = Some("a free-form trader ID"), None, None, None))
+          )(userAnswers) mustBe XI_PREFIX
+        }
       }
     }
 

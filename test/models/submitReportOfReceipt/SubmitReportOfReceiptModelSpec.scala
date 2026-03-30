@@ -21,11 +21,11 @@ import config.AppConfig
 import fixtures.{GetMovementResponseFixtures, SubmitReportOfReceiptFixtures, TraderModelFixtures}
 import models.AcceptMovement.{PartiallyRefused, Refused, Satisfactory, Unsatisfactory}
 import models.DestinationType.{Export, TaxWarehouse, TemporaryRegisteredConsignee}
+import models.GBOrXI.{GB, XI}
 import models.HowGiveInformation.{IndividualItem, TheWholeMovement}
 import models.WrongWithMovement.{BrokenSeals, Damaged, Excess, Other, Shortage, ShortageOrExcess}
 import models.response.MissingMandatoryPage
 import models.response.emcsTfe.GetMovementResponse
-import models.submitReportOfReceipt.SubmitReportOfReceiptModel.{GB_PREFIX, XI_PREFIX}
 import models.{DestinationType, ItemShortageOrExcessModel, WrongWithMovement}
 import org.scalamock.scalatest.MockFactory
 import pages._
@@ -411,41 +411,41 @@ class SubmitReportOfReceiptModelSpec extends SpecBase
       val GB_ID = "GB123123123"
       val XI_ID = "XI123123123"
 
-      s"must return $GB_PREFIX" - {
-        s"when logged in user's ERN starts with $GB_PREFIX" in {
+      s"must return $GB" - {
+        s"when logged in user's ERN starts with $GB" in {
           val userAnswers = emptyUserAnswers.copy(ern = GB_ID)
-          SubmitReportOfReceiptModel.destinationOfficePrefix(None)(userAnswers) mustBe GB_PREFIX
+          SubmitReportOfReceiptModel.destinationOfficePrefix(None)(userAnswers) mustBe GB
         }
-        s"when logged in user's ERN starts with $XI_PREFIX and deliveryPlaceTrader's ID is an ERN starting with $GB_PREFIX" in {
+        s"when logged in user's ERN starts with $XI and deliveryPlaceTrader's ID is an ERN starting with $GB" in {
           val userAnswers = emptyUserAnswers.copy(ern = XI_ID)
           SubmitReportOfReceiptModel.destinationOfficePrefix(
             Some(TraderModel(traderId = Some("GB00000000206"), None, None, None))
-          )(userAnswers) mustBe GB_PREFIX
+          )(userAnswers) mustBe GB
         }
-        s"when logged in user's ERN doesn't start with $GB_PREFIX or $XI_PREFIX (default case)" in {
+        s"when logged in user's ERN doesn't start with $GB or $XI (default case)" in {
           val userAnswers = emptyUserAnswers.copy(ern = testErn)
           SubmitReportOfReceiptModel.destinationOfficePrefix(
             Some(TraderModel(traderId = Some("a free-form trader ID"), None, None, None))
-          )(userAnswers) mustBe GB_PREFIX
+          )(userAnswers) mustBe GB
         }
       }
-      s"must return $XI_PREFIX" - {
-        s"when logged in user's ERN starts with $XI_PREFIX and deliveryPlaceTrader's ID is an ERN starting with $XI_PREFIX" in {
+      s"must return $XI" - {
+        s"when logged in user's ERN starts with $XI and deliveryPlaceTrader's ID is an ERN starting with $XI" in {
           val userAnswers = emptyUserAnswers.copy(ern = XI_ID)
           SubmitReportOfReceiptModel.destinationOfficePrefix(
             Some(TraderModel(traderId = Some("XI00000000206"), None, None, None))
-          )(userAnswers) mustBe XI_PREFIX
+          )(userAnswers) mustBe XI
         }
-        s"when logged in user's ERN starts with $XI_PREFIX and no deliveryPlaceTrader is provided" in {
+        s"when logged in user's ERN starts with $XI and no deliveryPlaceTrader is provided" in {
           val userAnswers = emptyUserAnswers.copy(ern = XI_ID)
-          SubmitReportOfReceiptModel.destinationOfficePrefix(None)(userAnswers) mustBe XI_PREFIX
+          SubmitReportOfReceiptModel.destinationOfficePrefix(None)(userAnswers) mustBe XI
         }
 
-        s"when logged in user's ERN starts with $XI_PREFIX and deliveryPlaceTrader's ID starts with neither $GB_PREFIX nor $XI_PREFIX" in {
+        s"when logged in user's ERN starts with $XI and deliveryPlaceTrader's ID starts with neither $GB nor $XI" in {
           val userAnswers = emptyUserAnswers.copy(ern = XI_ID)
           SubmitReportOfReceiptModel.destinationOfficePrefix(
             Some(TraderModel(traderId = Some("a free-form trader ID"), None, None, None))
-          )(userAnswers) mustBe XI_PREFIX
+          )(userAnswers) mustBe XI
         }
       }
     }

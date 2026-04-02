@@ -273,7 +273,7 @@ class SubmitReportOfReceiptModelSpec extends SpecBase
             destinationType = newGetMovementModel.destinationType,
             consigneeTrader = newGetMovementModel.consigneeTrader,
             deliveryPlaceTrader = newGetMovementModel.deliveryPlaceTrader,
-            destinationOffice = "GB004098",
+            destinationOffice = "XI004098",
             dateOfArrival = testDateOfArrival,
             acceptMovement = PartiallyRefused,
             individualItems = ReceiptedItemsModel(newGetMovementModel)(userAnswers),
@@ -418,7 +418,7 @@ class SubmitReportOfReceiptModelSpec extends SpecBase
         }
         s"when logged in user ERN starts with $DESTINATION_OFFICE_PREFIX_XI and deliveryPlaceTraders ERN starts with $DESTINATION_OFFICE_PREFIX_GB" in {
           val userAnswers = emptyUserAnswers.copy(ern = XI_ID)
-          SubmitReportOfReceiptModel.destinationOfficePrefix(Some(TraderModel(traderExciseNumber = Some("GB00000000206"), None, None, None)))(userAnswers) mustBe DESTINATION_OFFICE_PREFIX_GB
+          SubmitReportOfReceiptModel.destinationOfficePrefix(Some(TraderModel(traderExciseNumber = Some("GB00000000206"), None, None, None)))(userAnswers) mustBe DESTINATION_OFFICE_PREFIX_XI
         }
         s"when logged in user ERN doesn't start with $DESTINATION_OFFICE_PREFIX_GB or $DESTINATION_OFFICE_PREFIX_XI (default case)" in {
           val userAnswers = emptyUserAnswers.copy(ern = testErn)

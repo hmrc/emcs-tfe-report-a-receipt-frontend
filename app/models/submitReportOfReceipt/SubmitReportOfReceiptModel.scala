@@ -45,10 +45,21 @@ object SubmitReportOfReceiptModel extends JsonOptionFormatter with ModelConstruc
   private[models] val DESTINATION_OFFICE_PREFIX_GB = "GB"
   private[models] val DESTINATION_OFFICE_PREFIX_XI = "XI"
 
+  /**
+   * Determine the destination office prefix for the report-of-receipt message.
+   *
+   * Business rule: the destination office prefix must be derived solely from the jurisdiction
+   * of the logged-in user (i.e. whether they are a Northern Ireland trader). The delivery
+   * place trader identifier must not influence the destination office. This ensures that
+   * Report‑of‑Receipt (IE818) messages for NI traders always use the XI prefix regardless
+   * of the delivery place trader ID.
+   */
   private[models] def destinationOfficePrefix(deliveryPlaceTrader: Option[TraderModel])(implicit userAnswers: UserAnswers): String = {
-    if(userAnswers.isNorthernIrelandTrader) {
-      deliveryPlaceTrader.flatMap(_.traderExciseNumber).map(_.take(2)).getOrElse(DESTINATION_OFFICE_PREFIX_XI)
+    if (userAnswers.isNorthernIrelandTrader) {
+      // For NI traders always use XI prefix
+      DESTINATION_OFFICE_PREFIX_XI
     } else {
+      // For GB traders always use GB prefix
       DESTINATION_OFFICE_PREFIX_GB
     }
   }

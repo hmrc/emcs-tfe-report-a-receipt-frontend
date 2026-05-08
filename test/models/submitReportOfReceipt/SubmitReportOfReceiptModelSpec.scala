@@ -422,8 +422,8 @@ class SubmitReportOfReceiptModelSpec extends SpecBase
             Some(TraderModel(traderId = Some("GB00000000206"), None, None, None))
           )(userAnswers) mustBe GB
         }
-        s"when logged in user's ERN doesn't start with $GB or $XI (default case)" in {
-          val userAnswers = emptyUserAnswers.copy(ern = testErn)
+        s"when logged in user's ERN starts with $GB and deliveryPlaceTrader's ID starts with neither $GB nor $XI" in {
+          val userAnswers = emptyUserAnswers.copy(ern = GB_ID)
           SubmitReportOfReceiptModel.destinationOfficePrefix(
             Some(TraderModel(traderId = Some("a free-form trader ID"), None, None, None))
           )(userAnswers) mustBe GB

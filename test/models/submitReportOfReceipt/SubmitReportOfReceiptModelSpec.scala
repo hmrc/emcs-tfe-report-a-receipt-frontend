@@ -411,38 +411,36 @@ class SubmitReportOfReceiptModelSpec extends SpecBase
       val GB_ID = "GB123123123"
       val XI_ID = "XI123123123"
 
-      s"must return $GB" - {
-        s"when logged in user's ERN starts with $GB" in {
-          val userAnswers = emptyUserAnswers.copy(ern = GB_ID)
+      s"when logged in user's ERN starts with $GB, it should always return $GB" - {
+        val userAnswers = emptyUserAnswers.copy(ern = GB_ID)
+
+        s"when no deliveryPlaceTrader is provided" in {
           SubmitReportOfReceiptModel.destinationOfficePrefix(None)(userAnswers) mustBe GB
         }
-        s"when logged in user's ERN starts with $XI and deliveryPlaceTrader's ID is an ERN starting with $GB" in {
-          val userAnswers = emptyUserAnswers.copy(ern = XI_ID)
-          SubmitReportOfReceiptModel.destinationOfficePrefix(
-            Some(TraderModel(traderId = Some("GB00000000206"), None, None, None))
-          )(userAnswers) mustBe GB
-        }
-        s"when logged in user's ERN starts with $GB and deliveryPlaceTrader's ID starts with neither $GB nor $XI" in {
-          val userAnswers = emptyUserAnswers.copy(ern = GB_ID)
+        s"when deliveryPlaceTrader's ID starts with neither $GB nor $XI" in {
           SubmitReportOfReceiptModel.destinationOfficePrefix(
             Some(TraderModel(traderId = Some("a free-form trader ID"), None, None, None))
           )(userAnswers) mustBe GB
         }
       }
-      s"must return $XI" - {
-        s"when logged in user's ERN starts with $XI and deliveryPlaceTrader's ID is an ERN starting with $XI" in {
-          val userAnswers = emptyUserAnswers.copy(ern = XI_ID)
+
+      s"when logged in user's ERN starts with $XI" - {
+        val userAnswers = emptyUserAnswers.copy(ern = XI_ID)
+
+        s"when deliveryPlaceTrader's ID is an ERN starting with $GB, it should return $GB" in {
+          SubmitReportOfReceiptModel.destinationOfficePrefix(
+            Some(TraderModel(traderId = Some("GB00000000206"), None, None, None))
+          )(userAnswers) mustBe GB
+        }
+        s"when deliveryPlaceTrader's ID is an ERN starting with $XI, it should return $XI" in {
           SubmitReportOfReceiptModel.destinationOfficePrefix(
             Some(TraderModel(traderId = Some("XI00000000206"), None, None, None))
           )(userAnswers) mustBe XI
         }
-        s"when logged in user's ERN starts with $XI and no deliveryPlaceTrader is provided" in {
-          val userAnswers = emptyUserAnswers.copy(ern = XI_ID)
+        s"when no deliveryPlaceTrader is provided, it should return $XI" in {
           SubmitReportOfReceiptModel.destinationOfficePrefix(None)(userAnswers) mustBe XI
         }
-
-        s"when logged in user's ERN starts with $XI and deliveryPlaceTrader's ID starts with neither $GB nor $XI" in {
-          val userAnswers = emptyUserAnswers.copy(ern = XI_ID)
+        s"when deliveryPlaceTrader's ID starts with neither $GB nor $XI, it should return $XI" in {
           SubmitReportOfReceiptModel.destinationOfficePrefix(
             Some(TraderModel(traderId = Some("a free-form trader ID"), None, None, None))
           )(userAnswers) mustBe XI

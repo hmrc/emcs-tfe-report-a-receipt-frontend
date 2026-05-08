@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,24 +14,18 @@
  * limitations under the License.
  */
 
-package fixtures
+package models
 
-import models.submitReportOfReceipt.TraderModel
+sealed trait GBOrXI
 
-trait TraderModelFixtures extends BaseFixtures with AddressModelFixtures {
+object GBOrXI {
+  case object GB extends GBOrXI
+  case object XI extends GBOrXI
 
-  val maxTraderModel = TraderModel(
-    traderId = Some("id"),
-    traderName = Some("name"),
-    address = Some(maxAddressModel),
-    eoriNumber = Some("eori")
-  )
-
-  val minTraderModel = TraderModel(
-    traderId = None,
-    traderName = None,
-    address = None,
-    eoriNumber = None
-  )
-
+  def fromTwoChars(twoChars: String): Option[GBOrXI] =
+    twoChars.toUpperCase match {
+      case "GB" => Some(GB)
+      case "XI" => Some(XI)
+      case _ => None
+    }
 }

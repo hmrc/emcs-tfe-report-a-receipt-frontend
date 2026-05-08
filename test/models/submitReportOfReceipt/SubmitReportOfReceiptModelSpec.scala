@@ -417,6 +417,21 @@ class SubmitReportOfReceiptModelSpec extends SpecBase
         s"when no deliveryPlaceTrader is provided" in {
           SubmitReportOfReceiptModel.destinationOfficePrefix(None)(userAnswers) mustBe GB
         }
+        s"when no traderId is provided" in {
+          SubmitReportOfReceiptModel.destinationOfficePrefix(
+            Some(TraderModel(traderId = None, None, None, None))
+          )(userAnswers) mustBe GB
+        }
+        s"when deliveryPlaceTrader's ID starts with $GB" in {
+          SubmitReportOfReceiptModel.destinationOfficePrefix(
+            Some(TraderModel(traderId = Some("GB00000000206"), None, None, None))
+          )(userAnswers) mustBe GB
+        }
+        s"when deliveryPlaceTrader's ID starts with $XI" in {
+          SubmitReportOfReceiptModel.destinationOfficePrefix(
+            Some(TraderModel(traderId = Some("XI00000000206"), None, None, None))
+          )(userAnswers) mustBe GB
+        }
         s"when deliveryPlaceTrader's ID starts with neither $GB nor $XI" in {
           SubmitReportOfReceiptModel.destinationOfficePrefix(
             Some(TraderModel(traderId = Some("a free-form trader ID"), None, None, None))
@@ -439,6 +454,11 @@ class SubmitReportOfReceiptModelSpec extends SpecBase
         }
         s"when no deliveryPlaceTrader is provided, it should return $XI" in {
           SubmitReportOfReceiptModel.destinationOfficePrefix(None)(userAnswers) mustBe XI
+        }
+        s"when no traderId is provided, it should return $XI" in {
+          SubmitReportOfReceiptModel.destinationOfficePrefix(
+            Some(TraderModel(traderId = None, None, None, None))
+          )(userAnswers) mustBe XI
         }
         s"when deliveryPlaceTrader's ID starts with neither $GB nor $XI, it should return $XI" in {
           SubmitReportOfReceiptModel.destinationOfficePrefix(

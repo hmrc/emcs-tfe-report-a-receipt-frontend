@@ -31,16 +31,28 @@ import java.util.UUID
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+import play.api.libs.json.Json
+import utils.Logging
+
 @Singleton
 class SubmitReportOfReceiptService @Inject()(submitReportOfReceiptConnector: SubmitReportOfReceiptConnector,
                                              nrsBrokerService: NRSBrokerService,
                                              auditingService: AuditingService,
                                              appConfig: AppConfig)
-                                            (implicit ec: ExecutionContext) extends FeatureSwitching {
+                                            (implicit ec: ExecutionContext) extends FeatureSwitching with Logging {
 
   def submit(ern: String, arc: String)(implicit hc: HeaderCarrier, dataRequest: DataRequest[_]): Future[SubmitReportOfReceiptResponse] = {
 
     val submission = SubmitReportOfReceiptModel(dataRequest.movementDetails)(dataRequest.userAnswers, appConfig)
+
+    // Log the final payload
+    try {
+      val payloadJson = Json.toJson(submission)
+      logger.info(s"[submit] Sending payload to emcs-tfe for arc: ${submission.arc} - payload:\n${Json.prettyPrint(payloadJson)}")
+    } catch {
+      case e: Throwable =>
+        logger.warn(s"[submit] Failed to serialize payload for logging: ${e.getMessage}")
+    }
 
     val auditSubmission = SubmitReportOfReceiptAuditModel(
       credentialId = dataRequest.request.request.credId,

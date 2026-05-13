@@ -18,9 +18,10 @@ package models.submitReportOfReceipt
 
 import config.AppConfig
 import models.DestinationType.{Export, TemporaryRegisteredConsignee}
-import models.{AcceptMovement, DestinationType, UserAnswers}
+import models.GBOrXI.{GB, XI, fromTwoChars}
 import models.WrongWithMovement._
 import models.response.emcsTfe.GetMovementResponse
+import models.{AcceptMovement, DestinationType, GBOrXI, UserAnswers}
 import pages.{AcceptMovementPage, DateOfArrivalPage, MoreInformationPage}
 import play.api.libs.json.{Json, OFormat}
 import utils.{JsonOptionFormatter, ModelConstructorHelpers}
@@ -42,27 +43,40 @@ object SubmitReportOfReceiptModel extends JsonOptionFormatter with ModelConstruc
 
   implicit val fmt: OFormat[SubmitReportOfReceiptModel] = Json.format
 
-  private[models] val DESTINATION_OFFICE_PREFIX_GB = "GB"
-  private[models] val DESTINATION_OFFICE_PREFIX_XI = "XI"
+  private[models] def destinationOfficePrefix(maybeDeliveryPlaceTrader: Option[TraderModel])(implicit userAnswers: UserAnswers): GBOrXI = {
+    val gbOrXiFromUserAnswers = if (userAnswers.isNorthernIrelandTrader) XI else GB
 
-  private[models] def destinationOfficePrefix(deliveryPlaceTrader: Option[TraderModel])(implicit userAnswers: UserAnswers): String = {
-    if(userAnswers.isNorthernIrelandTrader) {
-      deliveryPlaceTrader.flatMap(_.traderExciseNumber).map(_.take(2)).getOrElse(DESTINATION_OFFICE_PREFIX_XI)
-    } else {
-      DESTINATION_OFFICE_PREFIX_GB
+    // If this Option is Some, it's value can only be GB or XI.
+    // We allow for the possibility that it might be neither (None) because the DeliveryPlaceTrader's trader ID can be anything when the DestinationType
+    // is not a warehouse.
+    // Even though it seems most EMCS systems in the UK and EU use ERNs for trader ID regardless of DestinationType,
+    // we have seen non-ERNs in use in the real world - see DLSC-1775 for an example.
+    val maybeGBOrXIFromDeliveryPlaceTraderPrefix = for {
+      deliveryPlaceTrader <- maybeDeliveryPlaceTrader
+      traderId <- deliveryPlaceTrader.traderId
+      gbOrXi <- fromTwoChars(traderId.take(2))
+    } yield gbOrXi
+
+    // If the ERN from the user's answers starts with XI, and the DeliveryPlaceTrader's trader ID starts with GB or XI, we use the latter.
+    // Otherwise, we use the GB or XI from the user's answers.
+    // We've checked with Core that this behaviour is correct.
+    (gbOrXiFromUserAnswers, maybeGBOrXIFromDeliveryPlaceTraderPrefix) match {
+      case (XI, Some(gbOrXiFromPrefix)) => gbOrXiFromPrefix
+      case _ => gbOrXiFromUserAnswers
     }
   }
 
   private[models] def consigneeTraderDetails(movementDetails: GetMovementResponse)(implicit userAnswers: UserAnswers): Option[TraderModel] = {
     (movementDetails.destinationType, movementDetails.consigneeTrader) match {
       case (TemporaryRegisteredConsignee, Some(consignee: TraderModel)) =>
-        Some(consignee.copy(traderExciseNumber = Some(userAnswers.ern)))
+        Some(consignee.copy(traderId = Some(userAnswers.ern)))
       case (destinationType, Some(consignee: TraderModel)) if (destinationType != Export) =>
         Some(consignee.copy(eoriNumber = None))
       case (_, consignee) =>
         consignee
     }
   }
+
   def apply(movementDetails: GetMovementResponse)(implicit userAnswers: UserAnswers, appConfig: AppConfig): SubmitReportOfReceiptModel = {
 
     SubmitReportOfReceiptModel(
@@ -71,7 +85,7 @@ object SubmitReportOfReceiptModel extends JsonOptionFormatter with ModelConstruc
       destinationType = movementDetails.destinationType,
       consigneeTrader = consigneeTraderDetails(movementDetails),
       deliveryPlaceTrader = movementDetails.deliveryPlaceTrader,
-      destinationOffice = destinationOfficePrefix(movementDetails.deliveryPlaceTrader) + appConfig.destinationOfficeSuffix,
+      destinationOffice = s"${destinationOfficePrefix(movementDetails.deliveryPlaceTrader)}${appConfig.destinationOfficeSuffix}",
       dateOfArrival = mandatoryPage(DateOfArrivalPage),
       acceptMovement = mandatoryPage(AcceptMovementPage),
       individualItems = ReceiptedItemsModel(movementDetails),

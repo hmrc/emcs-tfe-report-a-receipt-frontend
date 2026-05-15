@@ -45,14 +45,10 @@ class SubmitReportOfReceiptService @Inject()(submitReportOfReceiptConnector: Sub
 
     val submission = SubmitReportOfReceiptModel(dataRequest.movementDetails)(dataRequest.userAnswers, appConfig)
 
-    // Log the final payload
-    try {
-      val payloadJson = Json.toJson(submission)
-      logger.info(s"[submit] Sending payload to emcs-tfe for arc: ${submission.arc} - payload:\n${Json.prettyPrint(payloadJson)}")
-    } catch {
-      case e: Throwable =>
-        logger.warn(s"[submit] Failed to serialize payload for logging: ${e.getMessage}")
-    }
+    // Log the final payload and the Delivery Place Trader Excise Number for Destination Office Prefix
+      val deliveryPlaceTraderExciseNumberForDestinationOfficePrefix = dataRequest.movementDetails.deliveryPlaceTrader.flatMap(_.traderId)
+      logger.info(s"[submit] Sending payload to emcs-tfe for arc: ${submission.arc} - payload:\n${Json.prettyPrint(Json.toJson(submission))}")
+      logger.info(s"[submit] Delivery Place Trader Excise Number for arc ${submission.arc}: ${deliveryPlaceTraderExciseNumberForDestinationOfficePrefix.getOrElse("None")}")
 
     val auditSubmission = SubmitReportOfReceiptAuditModel(
       credentialId = dataRequest.request.request.credId,

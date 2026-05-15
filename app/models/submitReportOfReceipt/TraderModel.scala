@@ -19,7 +19,11 @@ package models.submitReportOfReceipt
 import play.api.libs.json.Json.JsValueWrapper
 import play.api.libs.json.{Format, Json, Writes}
 
-case class TraderModel(traderId: Option[String],
+// Strictly speaking, traderExciseNumber should be called traderId here because the trader type is DeliveryPlaceTrader.
+// This is also the case when the trader type is ConsigneeTrader or TransportTrader.
+// In these cases the values for this field do not have to be ERNs.
+// Unfortunately, emcs-tfe expects all TraderModels to use the same field name (traderExciseNumber)
+case class TraderModel(traderExciseNumber: Option[String],
                        traderName: Option[String],
                        address: Option[AddressModel],
                        eoriNumber: Option[String])
@@ -29,7 +33,7 @@ object TraderModel {
 
   val auditWrites = Writes[TraderModel] { model =>
     Json.obj(Seq[Option[(String, JsValueWrapper)]](
-      model.traderId.map("traderId" -> _),
+      model.traderExciseNumber.map("traderId" -> _),
       model.traderName.map("traderName" -> _),
       model.address.map("address" -> _),
       model.eoriNumber.map("eoriNumber" -> _)

@@ -53,7 +53,7 @@ object SubmitReportOfReceiptModel extends JsonOptionFormatter with ModelConstruc
     // we have seen non-ERNs in use in the real world - see DLSC-1775 for an example.
     val maybeGBOrXIFromDeliveryPlaceTraderPrefix = for {
       deliveryPlaceTrader <- maybeDeliveryPlaceTrader
-      traderId <- deliveryPlaceTrader.traderId
+      traderId <- deliveryPlaceTrader.traderExciseNumber
       gbOrXi <- fromTwoChars(traderId.take(2))
     } yield gbOrXi
 
@@ -69,7 +69,7 @@ object SubmitReportOfReceiptModel extends JsonOptionFormatter with ModelConstruc
   private[models] def consigneeTraderDetails(movementDetails: GetMovementResponse)(implicit userAnswers: UserAnswers): Option[TraderModel] = {
     (movementDetails.destinationType, movementDetails.consigneeTrader) match {
       case (TemporaryRegisteredConsignee, Some(consignee: TraderModel)) =>
-        Some(consignee.copy(traderId = Some(userAnswers.ern)))
+        Some(consignee.copy(traderExciseNumber = Some(userAnswers.ern)))
       case (destinationType, Some(consignee: TraderModel)) if (destinationType != Export) =>
         Some(consignee.copy(eoriNumber = None))
       case (_, consignee) =>

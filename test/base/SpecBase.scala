@@ -30,7 +30,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Request
 import play.api.test.FakeRequest
-import play.twirl.api.Html
+import uk.gov.hmrc.govukfrontend.views.viewmodels.servicenavigation.ServiceNavigationItem
 
 trait SpecBase
   extends AnyFreeSpec
@@ -46,23 +46,23 @@ trait SpecBase
   def messages(app: Application): Messages = messagesApi(app).preferred(FakeRequest())
   def messages(app: Application, lang: Lang): Messages = messagesApi(app).preferred(Seq(lang))
 
-  def userRequest[A](request: Request[A], ern: String = testErn, navBar: Option[Html] = None): UserRequest[A] =
+  def userRequest[A](request: Request[A], ern: String = testErn, navBar: Option[Seq[ServiceNavigationItem]] = None): UserRequest[A] =
     UserRequest(request, ern, testInternalId, testCredId, false, navBar)
 
-  def movementRequest[A](request: Request[A], ern: String = testErn, navBar: Option[Html] = None): MovementRequest[A] =
+  def movementRequest[A](request: Request[A], ern: String = testErn, navBar: Option[Seq[ServiceNavigationItem]] = None): MovementRequest[A] =
     MovementRequest(userRequest(request, ern, navBar), testArc, getMovementResponseModel)
 
   def optionalDataRequest[A](request: Request[A],
                              userAnswers: Option[UserAnswers] = None,
                              traderKnownFacts: Option[TraderKnownFacts] = None,
-                             navBar: Option[Html] = None): OptionalDataRequest[A] =
+                             navBar: Option[Seq[ServiceNavigationItem]] = None): OptionalDataRequest[A] =
     OptionalDataRequest(movementRequest(request, navBar = navBar), userAnswers, traderKnownFacts)
 
   def dataRequest[A](request: Request[A],
                      userAnswers: UserAnswers = emptyUserAnswers,
                      ern: String = testErn,
                      traderKnownFacts: Option[TraderKnownFacts] = Some(testMinTraderKnownFacts),
-                     navBar: Option[Html] = None): DataRequest[A] =
+                     navBar: Option[Seq[ServiceNavigationItem]] = None): DataRequest[A] =
     DataRequest(movementRequest(request, ern, navBar), userAnswers, traderKnownFacts)
 
   protected def applicationBuilder(userAnswers: Option[UserAnswers] = None,

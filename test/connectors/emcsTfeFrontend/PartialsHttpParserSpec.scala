@@ -23,17 +23,20 @@ import uk.gov.hmrc.http.HttpResponse
 
 class PartialsHttpParserSpec extends SpecBase with Status with PartialsHttpParser {
 
-  val htmlString = "<div><p>hello</p></div>"
+  val jsonString =
+    """[{"text":"Home","href":"/home-link","active":false,"current":false,"classes":"","attributes":{}},
+      |{"text":"Messages","href":"/messages-link","active":false,"current":false,"classes":"",
+      |"attributes":{}}]""".stripMargin
 
   "PartialReads.read(method: String, url: String, response: HttpResponse)" - {
 
     "should return a successful response" - {
 
-      "when valid HTML is returned that can be parsed to the model" in {
+      "when valid json is returned that can be parsed to the model" in {
 
-        val httpResponse = HttpResponse(Status.OK, "<div><p>hello</p></div>")
+        val httpResponse = HttpResponse(Status.OK, jsonString)
 
-        PartialReads.read("GET", s"/emcs/partial/navigation/trader/$testErn", httpResponse) mustBe Some(Html(htmlString))
+        PartialReads.read("GET", s"/emcs/partial/navigation-items/trader/$testErn", httpResponse) mustBe someNavItems
       }
     }
 
@@ -41,7 +44,7 @@ class PartialsHttpParserSpec extends SpecBase with Status with PartialsHttpParse
 
       s"when status is not OK (${Status.OK})" in {
         val httpResponse = HttpResponse(Status.NO_CONTENT, "")
-        PartialReads.read("GET", s"/emcs/partial/navigation/trader/$testErn", httpResponse) mustBe None
+        PartialReads.read("GET", s"/emcs/partial/navigation-items/trader/$testErn", httpResponse) mustBe None
       }
     }
   }

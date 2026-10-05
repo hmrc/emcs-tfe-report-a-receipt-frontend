@@ -203,7 +203,7 @@ class AuthActionSpec extends SpecBase with BaseFixtures with BeforeAndAfterAll w
 
                   "allow the User through, returning a 200 (OK)" in new Harness {
 
-                    MockNavBarPartialConnector.getNavBar(testErn).returns(Future.successful(Some(Html("<nav>NavBar</nav>"))))
+                    MockNavBarPartialConnector.getNavBar(testErn).returns(Future.successful(someNavItems))
                     override val authConnector = new FakeSuccessAuthConnector(authResponse(enrolments = Enrolments(Set(
                       Enrolment(
                         key = EnrolmentKeys.EMCS_ENROLMENT,

@@ -20,6 +20,8 @@ import models.ReferenceDataUnitOfMeasure.`1`
 import models.{TraderKnownFacts, UserAnswers}
 import models.response.referenceData.CnCodeInformation
 import play.api.mvc.Call
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.servicenavigation.ServiceNavigationItem
 
 import java.time.{Instant, LocalDate}
 import java.time.temporal.ChronoUnit
@@ -52,5 +54,11 @@ trait BaseFixtures {
     addressLine5 = None,
     postcode = None
   )
+
+  val someNavItems =
+    Some(Seq(
+      ServiceNavigationItem(content = Text("Home"), href = "/home-link"),
+      ServiceNavigationItem(content = Text("Messages"), href = "/messages-link")
+    ))
 
 }

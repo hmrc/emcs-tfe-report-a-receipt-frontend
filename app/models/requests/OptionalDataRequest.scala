@@ -18,7 +18,7 @@ package models.requests
 
 import models.{TraderKnownFacts, UserAnswers}
 import play.api.mvc.WrappedRequest
-import play.twirl.api.Html
+import uk.gov.hmrc.govukfrontend.views.viewmodels.servicenavigation.ServiceNavigationItem
 
 case class OptionalDataRequest[A](request: MovementRequest[A],
                                   userAnswers: Option[UserAnswers],
@@ -27,5 +27,5 @@ case class OptionalDataRequest[A](request: MovementRequest[A],
   val ern = request.ern
   val arc = request.arc
 
-  override val navBar: Option[Html] = request.navBar
+  override val navBarItems: Option[Seq[ServiceNavigationItem]] = request.navBarItems
 }

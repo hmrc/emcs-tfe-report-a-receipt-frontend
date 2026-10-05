@@ -37,18 +37,16 @@ class NavBarPartialConnectorSpec extends SpecBase
 
   lazy val connector = new NavBarPartialConnector(mockHttpClient, appConfig)
 
-  val dummyHtml = Html("<div><p>hello</p></div>")
-
   "getNavBar()" - {
 
-    "should return Some(Html)" - {
+    "should return some json string" - {
 
       "when call to TFE Frontend is successful" in {
 
-        MockHttpClient.get(url"${appConfig.emcsTfeFrontendBaseUrl}/emcs/partials/navigation/trader/$testErn")
-          .returns(Future.successful(Some(dummyHtml)))
+        MockHttpClient.get(url"${appConfig.emcsTfeFrontendBaseUrl}/emcs/partials/navigation-items/trader/$testErn")
+          .returns(Future.successful(someNavItems))
 
-        connector.getNavBar(exciseRegistrationNumber = testErn).futureValue mustBe Some(dummyHtml)
+        connector.getNavBarItems(exciseRegistrationNumber = testErn).futureValue mustBe someNavItems
       }
     }
 
@@ -56,10 +54,10 @@ class NavBarPartialConnectorSpec extends SpecBase
 
       "when call to TFE Frontend fails" in {
 
-        MockHttpClient.get(url"${appConfig.emcsTfeFrontendBaseUrl}/emcs/partials/navigation/trader/$testErn")
+        MockHttpClient.get(url"${appConfig.emcsTfeFrontendBaseUrl}/emcs/partials/navigation-items/trader/$testErn")
           .returns(Future.failed(new Exception("foo")))
 
-        connector.getNavBar(exciseRegistrationNumber = testErn).futureValue mustBe None
+        connector.getNavBarItems(exciseRegistrationNumber = testErn).futureValue mustBe None
       }
     }
   }
